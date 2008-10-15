@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lwjgl/jinput.jar"/>
+	<classpathentry kind="lib" path="lwjgl/lwjgl_util.jar"/>
+	<classpathentry kind="lib" path="lwjgl/lwjgl.jar" sourcepath="lwjgl-source-1.1.4.zip"/>
+	<classpathentry kind="lib" path="lwjgl-opt/lwjgl_devil.jar" sourcepath="lwjgl-source-1.1.4.zip"/>
+	<classpathentry kind="lib" path="lwjgl-opt/lwjgl_fmod3.jar"/>
+	<classpathentry kind="lib" path="lib/timer.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/JMugen.Common"/>
+	<classpathentry kind="lib" path="dll"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
