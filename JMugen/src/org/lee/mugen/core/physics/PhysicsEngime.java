@@ -261,6 +261,7 @@ public class PhysicsEngime {
 				sprOne.getInfo().moveXPos(-r1.intersection(r2).width);
 			}
 			checkGoodPositionInScreen(sprOne);
+			
 		}
 
 

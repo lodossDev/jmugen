@@ -375,7 +375,7 @@ public class Stage {
 			if (diff < -5 && !PhysicsEngime.isOutOfScreeen(sprRight, 1))
 				getCamera().addX(1);
 			
-			if (diff > 5 && !PhysicsEngime.isOutOfScreeen(sprLeft, 1))
+			if (diff > 5 && !PhysicsEngime.isOutOfScreeen(sprLeft, -1))
 				getCamera().addX(-1);
 			//////
 			int yCam = getCamera().getY();

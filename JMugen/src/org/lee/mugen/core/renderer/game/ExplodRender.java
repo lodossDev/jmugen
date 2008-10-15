@@ -41,6 +41,7 @@ public class ExplodRender implements Renderable {
 		AirData air = sprite.getSprAnimMng().getCurrentImageSprite().getAirData();
 		ImageSpriteSFF imgSprite = sprite.getCurrentImageSpriteSFF();
 		float xOffset = (imgSprite.getXAxis()) * xScale;
+		System.out.println(imgSprite.getXAxis());
 		float yOffset = (imgSprite.getYAxis()) * yScale;
 		if (sprite.getExplod().getPostype() == Postype.left || sprite.getExplod().getPostype() == Postype.right) {
 			x = 0;
@@ -48,6 +49,7 @@ public class ExplodRender implements Renderable {
 		} else {
 			xOffset = 0;//imgSprite.getXAxis();
 			yOffset = 0;//imgSprite.getYAxis();
+			
 		}
 		boolean isFlipH = air.isMirrorH;
 		if (sprite.getExplod().getPostype() == Postype.p1 || sprite.getExplod().getPostype() == Postype.p2
@@ -64,19 +66,18 @@ public class ExplodRender implements Renderable {
 		SpriteDrawProperties dp = sprite.getSprAnimMng().getSpriteDrawProperties();
 
 		float xPos = pos.getX() + x - xOffset + air.getXOffSet() * xScale;
-		if (air.isMirrorH)
-			xPos = xPos
-			- (
-					isFlipH? 
-							ic.getWidth() + xOffset + air.getXOffSet() * xScale
-							: xOffset + air.getXOffSet() * xScale);
+//		if (air.isMirrorH)
+//			xPos = xPos
+//			- (
+//					isFlipH? 
+//							ic.getWidth() + xOffset + air.getXOffSet() * xScale
+//							: xOffset + air.getXOffSet() * xScale);
+		
+		if (air.isMirrorH && !isFlipH)
+			xPos = xPos + imgSprite.getXAxis();
 		float yPos = pos.getY() + y - yOffset + air.getYOffSet() * yScale;
-		if (air.isMirrorV)
-			yPos = yPos
-			- (
-					air.isMirrorV? 
-							ic.getHeight() + yOffset + air.getYOffSet() * yScale
-							: yOffset + air.getYOffSet() * yScale);
+		if (air.isMirrorV&& !isFlipV)
+			yPos = yPos + imgSprite.getYAxis();
 		DrawProperties drawProperties = new DrawProperties(xPos, yPos, isFlipH, isFlipV, ic);
 //		DrawProperties drawProperties = new DrawProperties(73, 133, isFlipH, isFlipV, ic);
 		

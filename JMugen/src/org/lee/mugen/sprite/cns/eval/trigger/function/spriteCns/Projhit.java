@@ -62,7 +62,6 @@ public class Projhit extends SpriteCnsTriggerFunction {
 		} else {
 			projid = null;
 		}
-
 		Valueable value = new Valueable() {
 
 			public Object getValue(String spriteId, Valueable... params) {

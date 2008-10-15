@@ -82,7 +82,7 @@ public class StateCtrl implements Cloneable {
 							o = trig.getValue(spriteId);
 								
 						} catch (Exception e) {
-							// TODO: handle exception
+							e.printStackTrace();
 						}
 						if (o != null)
 							trigValue = getFloatValue(o);

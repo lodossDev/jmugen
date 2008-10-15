@@ -65,7 +65,7 @@ public enum Postype {
 			break;
 		case p2:
 			pos.setX(p2.getInfo().getXPos()
-				+ (p2.isFlip() ? -offset.getX() : offset.getX()));
+				+ (p2.isFlip() ? offset.getX() : -offset.getX()));
 			pos.setY(p2.getInfo().getYPos() + offset.getY());
 			break;
 

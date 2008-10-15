@@ -279,10 +279,7 @@ public class CnsParse {
 					}
 				};
 				stateDef.addExecutor(functionable);
-				
 			}
-			
-			
 		}
 		if (Integer.parseInt(stateDef.getId()) >= 0)
 		for (String key: defaultsMap.keySet()) {

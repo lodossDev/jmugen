@@ -22,13 +22,20 @@ import org.lee.mugen.util.BeanTools;
 
 public class Parser {
 	public static void main(String[] args) {
-		String[] tokens = ExpressionFactory.expression2Tokens("Hidefattr = 3, = 6");
+		String[] tokens = ExpressionFactory.expression2Tokens("Hidefattr = 3");
 		Wrap<MathFunction> firstOp = new Wrapper<MathFunction>();
 		Wrap<Valueable> value1 = new Wrapper<Valueable>();
 		Wrap<MathFunction> compareOp = new Wrapper<MathFunction>();
 		Wrap<Valueable> value2 = new Wrapper<Valueable>();
 		Wrap<String[]> key = new Wrapper<String[]>();
 		getValueForSpecialOpAndReturnPos(tokens, 0, key, firstOp, value1, compareOp, value2);
+		
+		System.out.println(
+								key.getValue()[0] 
+				               + firstOp.getValue().getOp()
+				               + value1.getValue().getValue("") 
+				               + (compareOp.getValue() != null ? compareOp.getValue().getOp() : "") 
+				               + (value2.getValue() != null? value2.getValue().getValue(""): ""));
 		
 	}
 	private static final File[] SEARCH_DIR_FOR = new File[] {
@@ -93,6 +100,8 @@ public class Parser {
 		}
 		
 	}
+	
+	
 	private static boolean isOpEq(String op) {
 		return "=".equals(op) || "<".equals(op) || "<=".equals(op) || ">".equals(op) || ">=".equals(op);
 	}
@@ -159,7 +168,10 @@ public class Parser {
 				} else if (isOpEq(token)) {
 					state = 4;
 				} else {
-					state = 5;
+					if (state != 4)
+						state = 6;
+					else
+						state = 5;
 				}
 			} else if (state == 4) {
 				if (isOpEq(token)) {
