@@ -1,0 +1,26 @@
+uniform sampler2D BaseImage;
+uniform sampler2D BlendImage;
+
+uniform vec4 palbright;
+uniform vec4 palcontrast;
+uniform vec4 palpostbright;
+
+uniform vec4 add;
+uniform vec4 mul;
+
+uniform vec4 color;
+
+
+void main (void)
+{
+    vec4 sprColor = texture2D(BlendImage, gl_TexCoord[0].xy);
+    sprColor = sprColor +  (vec4(0.2, 0.2, 0.2, 0));
+    vec4 result =(( (sprColor+palbright)*palcontrast + palpostbright) + add) * mul;
+    //vec4 result = (sprColor+palbright)*palcontrast + palpostbright;
+    result = clamp(result, 0.0, 1.0);
+
+	if (sprColor.a != 0.0)
+	    gl_FragColor = result;
+
+	
+}
