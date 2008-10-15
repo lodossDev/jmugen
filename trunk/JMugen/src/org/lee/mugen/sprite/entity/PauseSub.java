@@ -27,7 +27,7 @@ public class PauseSub {
 			movetime--;
 	}
 	public boolean isPauseMoveTime() {
-		return movetime <= 0;
+		return movetime > 0;
 	}
 	private Sprite spriteFrom;
 

@@ -14,9 +14,13 @@ import org.lee.mugen.fight.Name.PlayerName;
 import org.lee.mugen.input.MugenDrawer;
 import org.lee.mugen.renderer.DrawProperties;
 import org.lee.mugen.renderer.GraphicsWrapper;
+import org.lee.mugen.renderer.PalFxSub;
+import org.lee.mugen.renderer.RGB;
 import org.lee.mugen.renderer.Renderable;
 import org.lee.mugen.sprite.base.AbstractAnimManager.SpriteDrawProperties;
 import org.lee.mugen.sprite.baseForParse.ImageSpriteSFF;
+import org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns.Roundsexisted;
+import org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns.Roundstate;
 
 public class LifeBarRenderNormal implements Renderable {
 
@@ -26,6 +30,7 @@ public class LifeBarRenderNormal implements Renderable {
 		ImageSpriteSFF sff = bg.getCurrentImageSff();
 		if (sff == null)
 			return;
+		
 		SpriteDrawProperties dp = bg.getSpriteDrawProperties();
 		if (bg.getFacing() == -1) {
 			DrawProperties drawProperties = new DrawProperties(
@@ -36,7 +41,7 @@ public class LifeBarRenderNormal implements Renderable {
 			drawProperties.setXRightSrc(drawProperties.getXRightSrc() + (x - x2));
 			drawProperties.setXRightDst(drawProperties.getXRightDst() + (x - x2));
 
-			md.draw(drawProperties);
+			draw(md, drawProperties);
 		} else if (bg.getFacing() == 1) {
 			DrawProperties drawProperties = new DrawProperties(
 					pos.x - sff.getXAxis(), 
@@ -45,13 +50,18 @@ public class LifeBarRenderNormal implements Renderable {
 					false, sff.getImage());
 			drawProperties.setXLeftSrc(drawProperties.getXLeftSrc() + (x - x2));
 			drawProperties.setXLeftDst(drawProperties.getXLeftDst() + (x - x2));
-			md.draw(drawProperties);
+			
+			draw(md, drawProperties);
 		}
 	
 	}
+	
+	private void draw(MugenDrawer md, DrawProperties drawProperties) {
+		drawProperties.setPalfx(thisCustompalFx);
+		md.draw(drawProperties);
+	}
+	
 	public void render(MugenDrawer md, Point pos, Bg bg) {
-
-		
 		ImageSpriteSFF sff = bg.getCurrentImageSff();
 		if (sff == null)
 			return;
@@ -62,15 +72,15 @@ public class LifeBarRenderNormal implements Renderable {
 					pos.y - sff.getYAxis() + bg.getOffset().y, 
 					true, 
 					false, sff.getImage());
-
-			md.draw(drawProperties);
+			
+			draw(md, drawProperties);
 		} else if (bg.getFacing() == 1) {
 			DrawProperties drawProperties = new DrawProperties(
 					pos.x - sff.getXAxis() + bg.getOffset().x, 
 					pos.y - sff.getYAxis() + bg.getOffset().y, 
 					false, 
 					false, sff.getImage());
-			md.draw(drawProperties);
+			draw(md, drawProperties);
 		}
 	
 	}
@@ -109,7 +119,28 @@ public class LifeBarRenderNormal implements Renderable {
 		
 		StateMachine.getInstance().getFightDef().getFiles().getFont().get(fontIdx).draw(pos.x, pos.y, md, name, fontSens);
 	}
+	
+	
+	
+	PalFxSub thisCustompalFx = new PalFxSub();
+	{
+		thisCustompalFx.setMul(new RGB(255f, 255f, 255f, 0f));
+	}
+
+	
 	public void render() {
+		if (StateMachine.getInstance().getGameState().getRoundState() != Roundstate.COMBAT) {
+			thisCustompalFx.getMul().setA(0f);
+//			thisCustompalFx.getMul().setR(0f);
+//			thisCustompalFx.getMul().setG(0f);
+//			thisCustompalFx.getMul().setB(0f);
+			return;
+		} else if (thisCustompalFx.getMul().getA() < 255) {
+			thisCustompalFx.getMul().setA(thisCustompalFx.getMul().getA() + 1f);
+//			thisCustompalFx.getMul().setR(thisCustompalFx.getMul().getR() + 1f);
+//			thisCustompalFx.getMul().setG(thisCustompalFx.getMul().getG() + 1f);
+//			thisCustompalFx.getMul().setB(thisCustompalFx.getMul().getB() + 1f);
+		}
 //		GraphicsWrapper.getInstance().scale(0.5f, 0.5f);
 		render(StateMachine.getInstance().getFightDef().getLifebar().getP1());
 		render(StateMachine.getInstance().getFightDef().getLifebar().getP2());

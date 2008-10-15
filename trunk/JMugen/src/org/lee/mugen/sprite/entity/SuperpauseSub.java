@@ -30,7 +30,7 @@ public class SuperpauseSub {
 //	}
 	
 	public boolean isSuperpauseMoveTime() {
-		return getMovetime() <= 0;
+		return getMovetime() > 0;
 	}
 	private Sprite sprite;
 	private int time;

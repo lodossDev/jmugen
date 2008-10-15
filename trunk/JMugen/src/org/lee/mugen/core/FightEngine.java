@@ -1201,7 +1201,7 @@ public class FightEngine {
 					if (!projectiles.contains(s.getInfo().getLastHitdef())) {
 						ProjectileSub sub = (ProjectileSub) s.getInfo().getLastHitdef();
 						if (id != null && id > 0) {
-							if (sub.getProjid() == id.intValue()) {
+							if (sub.getProjid() != null && sub.getProjid() == id.intValue()) {
 								projectiles.add((ProjectileSub) sub);
 							}
 						} else {
