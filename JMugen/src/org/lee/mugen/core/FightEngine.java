@@ -567,6 +567,10 @@ public class FightEngine {
 		if (hitdef.getP2facing() == 1) {
 			sprite.getInfo().setFlip(!sprHitter.isFlip());
 		}
+		if (hitdef.getSnap() != null) {
+			sprite.getInfo().setXPos((float) (hitdef.getSpriteHitter().getRealXPos() + hitdef.getSnap().getX()));
+			sprite.getInfo().setYPos((float) (hitdef.getSpriteHitter().getRealYPos() + hitdef.getSnap().getY()));
+		}
 		
 		if (hitdef.getP2stateno() != null) {
 //			sprite.getSprAnimMng().setChangeAnim2(true, sprHitter.getSpriteId());

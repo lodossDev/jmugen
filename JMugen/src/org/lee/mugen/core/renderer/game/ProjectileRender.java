@@ -34,8 +34,9 @@ public class ProjectileRender implements Renderable {
 		
 		SpriteAnimManager sprAnimManager = sprite.getSprAnimMng();
 		ImageContainer ic = sprite.getCurrentImage();
-		if (ic ==  null)
+		if (ic ==  null) {
 			return;
+		}
 		AirData air = sprAnimManager.getCurrentImageSprite().getAirData();
 		boolean isFlip = sprite.isFlip();
 

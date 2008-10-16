@@ -6,7 +6,6 @@ import org.lee.mugen.core.StateMachine;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.SpriteCns;
-import org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub;
 import org.lee.mugen.sprite.cns.AbstractCnsFunction;
 import org.lee.mugen.util.BeanTools;
 
@@ -64,21 +63,11 @@ public abstract class StateCtrlFunction extends AbstractCnsFunction {
 			Method m = this.getClass().getMethod("parseFor"
 					+ nameCaseCamel.replace('.', '$'), String.class,
 					String.class);
-//			if (getClass().getName().indexOf("projectile") != -1 && ("parseFor"
-//					+ nameCaseCamel.replace('.', '$')).equals("parseForPausetime"))
-//				System.out.println();
-//			Method m = getMethod(this.getClass(), "parseFor"
-//					+ nameCaseCamel.replace('.', '$'));
 			return (Valueable[]) m.invoke(this, name, value);
 		} catch (NoSuchMethodException e) {
 			throw e;
-//			throw new IllegalArgumentException(nameCaseCamel
-//					+ " Parsing has to be implement in  "
-//					+ this.getClass().getName() + " class");
-
 		} 
 		catch (Exception e) {
-//			e.printStackTrace();
 			throw new IllegalArgumentException(
 					getClass().getName()
 							+ " do not describe a static method parse that return valuuable[] for given values ");

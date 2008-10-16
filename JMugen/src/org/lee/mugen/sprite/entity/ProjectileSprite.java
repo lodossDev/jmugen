@@ -5,6 +5,8 @@ import java.awt.Point;
 import org.lee.mugen.core.StateMachine;
 import org.lee.mugen.sprite.background.Camera;
 import org.lee.mugen.sprite.base.AbstractSprite;
+import org.lee.mugen.sprite.baseForParse.ImageSpriteSFF;
+import org.lee.mugen.sprite.character.AnimElement;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.SpriteAnimManager;
 
@@ -60,7 +62,8 @@ x positif s'éloigne du centre de l'écran alors qu'un offset x négatif s'en ra
 
 	@Override
 	public boolean isFlip() {
-		return isFlip;
+		// TODO : ERROR Mugen But test with Goku HR for Super Kamehame it is reverse because of Animation flip and the type = projectile that give a reverse velocity ???, To ask for the communoties
+		return isFlip ^ getSprAnimMng().getCurrentImageSprite().isMirrorH();
 	}
 
 	boolean firstTimeConnect = false;
@@ -73,7 +76,26 @@ x positif s'éloigne du centre de l'écran alors qu'un offset x négatif s'en ra
 			return remove;
 		}		
 	}
+	@Override
+	public PointF getPosToDraw() {
+		ProjectileSub explod = getProjectileSub();
+		Postype postype = explod.getPostype();
+		Sprite parent = StateMachine.getInstance().getRoot(explod.getSpriteParent());
+		PointF pos = postype.computePos(parent, 
+				StateMachine.getInstance().getFirstEnnmy(parent.getSpriteId()), 
+				explod.getOffset(), 
+				0);
+		if (explod.getPostype() == Postype.left) {
+			pos.setLocation(explod.getOffset().getX(), explod.getOffset().getY());
+			return pos;
+		} else if (explod.getPostype() == Postype.right) {
+			pos.setLocation(320 + explod.getOffset().getX(), explod.getOffset().getY());// - (getCurrentImage().getWidth() * explod.getScale().getX()), explod.getPos().y);
+			return pos;
+		}
+		
+		return super.getPosToDraw();
 	
+	}
 	boolean isProjHitSprite = false;
 	private boolean isHitAnim() {
 		return projectileSub.getProjhitanim() != -1 && projectileSub.getProjhitanim() == sprAnimMng.getAction();
@@ -91,7 +113,12 @@ x positif s'éloigne du centre de l'écran alors qu'un offset x négatif s'en ra
 	@Override
 	public void process() {
 		
-		if ((isProjHitSprite && !isHitAnim()) 
+		if (!isProjHitSprite && !isHitAnim() 
+				&& sprAnimMng.getAnimTime() == 0 
+				&& sprAnimMng.getAction() == projectileSub.getProjanim()
+				&& projectileSub.getProjremanim() != -1) {
+			sprAnimMng.setAction(projectileSub.getProjremanim());
+		} else if ((isProjHitSprite && !isHitAnim()) 
 				|| (isProjHitSprite && projectileSub.getProjhitanim() == -1))
 			sprAnimMng.setAction(projectileSub.getProjhitanim());
 		if ((isProjHitSprite && isHitAnimFinish()) || (isProjHitSprite && sprAnimMng.getAction() == -1)) {
@@ -107,9 +134,9 @@ x positif s'éloigne du centre de l'écran alors qu'un offset x négatif s'en ra
 		if (waitCancelAnim)
 			return;
 		if (isInHitAnim() || isInCancelAnim())
-			projectileSub.addHisRemoveVelocity(isFlip);
+			projectileSub.addHisRemoveVelocity(isFlip());
 		else
-			projectileSub.addHisVelocity(isFlip);
+			projectileSub.addHisVelocity(isFlip());
 		
 		// remove by removetime
 		remove = projectileSub.getProjremovetime() == 0;
@@ -144,7 +171,15 @@ x positif s'éloigne du centre de l'écran alors qu'un offset x négatif s'en ra
 	}
 
 	public void setProjHitSprite() {
-		isProjHitSprite = true;		
+		if (getProjectileSub().getProjhits() > 0) {
+//			&& getProjectileSub().getSpriteParent().getSpriteState().getTimeInState() % getProjectileSub().getProjmisstime() == 0
+			getProjectileSub().setProjhits(getProjectileSub().getProjhits() - 1);
+		} 
+		
+		if (getProjectileSub().getProjhits() <= 0) {
+			isProjHitSprite = true;		
+		} 
+		
 	}
 	public ProjectileSub getProjectileSub() {
 		return projectileSub;
