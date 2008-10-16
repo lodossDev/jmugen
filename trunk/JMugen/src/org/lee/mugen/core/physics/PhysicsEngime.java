@@ -131,7 +131,6 @@ public class PhysicsEngime {
 		
 		boolean isOnePlayerpush = sprOne.getInfo().getPlayerpush() >= 0;
 		boolean isTwoPlayerpush = sprTwo.getInfo().getPlayerpush() >= 0;
-		
 		checkGoodPositionInScreen(sprOne);
 		checkGoodPositionInScreen(sprTwo);
 		

@@ -10,6 +10,7 @@ import org.lee.mugen.sprite.baseForParse.SpriteSFF;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.SpriteAnimManager;
 import org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub;
+import org.lee.mugen.sprite.entity.ProjectileSprite;
 import org.lee.mugen.sprite.entity.SuperpauseSub;
 
 public class SparkRender {
@@ -78,7 +79,14 @@ public class SparkRender {
 			}
 			
 			xReal = spriteHitted.getRealXPos() + ((isFlip ^ spriteLaunchHit.getSprAnimMng().getCurrentImageSprite().isMirrorH()? -1:1) * hitdef.getSparkxy().getSpark_x());
-			yReal = spriteHitted.getRealYPos() + hitdef.getSparkxy().getSpark_y();
+		
+			
+			if (hitdef.getSpriteHitter() instanceof ProjectileSprite) {
+				yReal = hitdef.getSpriteHitter().getRealYPos() + hitdef.getSparkxy().getSpark_y();
+				
+			} else {
+				yReal = spriteHitted.getRealYPos() + hitdef.getSparkxy().getSpark_y();
+			}
 						
 			AbstractSprite sprToRender = new AbstractSprite() {
 				float _x = union != null && !isBlocked? union.x + union.width/2: xReal;

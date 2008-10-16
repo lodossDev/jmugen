@@ -24,7 +24,7 @@ public class Posadd extends StateCtrlFunction {
 			if (x != null) {
 				float fx = Parser.getFloatValue(x.getValue(spriteId));
 				sprInfo.moveXPos(fx);
-					
+				
 
 //				PhysicsEngime.processSpriteCommonPhysicsSubBetter(sprite, StateMachine.getInstance().getFightEngine().getEnemynear(sprite, -1), false);
 			}
