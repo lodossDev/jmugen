@@ -138,6 +138,7 @@ public class JGameWindow extends Canvas implements GameWindow {
 	public Graphics2D getDrawGraphics() {
 		Graphics2D g = (Graphics2D) normalBuffer.createGraphics();
 		g.scale(2, 2);
+		
 		return g;
 	}
 	
