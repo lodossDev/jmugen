@@ -80,7 +80,7 @@ public class ExplodSprite extends AbstractSprite {
 			if (explod.getBindtime() > 0) 
 				explod.decreaseBindtime();
 		} else {
-			int mulFace = explod.getFacing() == 0? 1: explod.getFacing();
+			int mulFace = (explod.getFacing() == 0? -1: explod.getFacing()) * (getExplod().getSprite().isFlip()?-1:1);
 			explod.getVel().addX(explod.getAccel().getX());
 			explod.getVel().addY(explod.getAccel().getY());
 			

@@ -1,5 +1,8 @@
 package org.lee.mugen.sprite.cns.type.function;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.lee.mugen.core.StateMachine;
 import org.lee.mugen.core.renderer.game.ExplodRender;
 import org.lee.mugen.core.renderer.game.SpriteShadowRender;
@@ -98,17 +101,40 @@ public class Explod extends StateCtrlFunction {
         		,"scale","sprpriority","ontop"
         		,"shadow","ownpal","removeongethit"});
     }
-    @Override
-    public Valueable[] parseValue(String name, String value) {
+
+	
+	private static Map<String, String> _RENAME_FIELD = new HashMap<String, String>();
+	static {
+		_RENAME_FIELD.put("velocity", "vel");
+	}
+
+	
+	/**
+	 * because of some compatibilties
+	 */
+	@Override
+	public void addParam(String name, Valueable[] param) {
+		if (_RENAME_FIELD.containsKey(name)) {
+			name = _RENAME_FIELD.get(name);
+		}
+		super.addParam(name, param);
+	}
+	@Override
+	public Valueable[] parseValue(String name, String value) {
+		if (_RENAME_FIELD.containsKey(name)) {
+			name = _RENAME_FIELD.get(name);
+		}
 		String[] tokens = ExpressionFactory.expression2Tokens(value);
 		Valueable[] vals = ExpressionFactory.evalExpression(tokens);
 		return vals;
-	}
-
+	};
+    
+    
     @Override
     public Object getValue(String spriteId, Valueable... params) {
     	ExplodSub explodSub = new ExplodSub();
     	fillBean(spriteId, explodSub);
+    	
     	explodSub.setSprite(StateMachine.getInstance().getSpriteInstance(spriteId));
     	
     	

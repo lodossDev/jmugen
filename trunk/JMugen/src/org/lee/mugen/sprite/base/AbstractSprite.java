@@ -2,6 +2,7 @@ package org.lee.mugen.sprite.base;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.lee.mugen.core.StateMachine;
@@ -102,6 +103,9 @@ public abstract class AbstractSprite {
 
 	public List<Rectangle> getCns1() {
 		AnimElement imgSpr = getSprAnimMng().getCurrentImageSprite();
+		if (imgSpr == null)
+			return Collections.EMPTY_LIST;
+
 		return getCns(imgSpr.getAtacksRec());
 
 	}

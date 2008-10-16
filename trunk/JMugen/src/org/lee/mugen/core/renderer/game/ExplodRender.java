@@ -41,7 +41,6 @@ public class ExplodRender implements Renderable {
 		AirData air = sprite.getSprAnimMng().getCurrentImageSprite().getAirData();
 		ImageSpriteSFF imgSprite = sprite.getCurrentImageSpriteSFF();
 		float xOffset = (imgSprite.getXAxis()) * xScale;
-		System.out.println(imgSprite.getXAxis());
 		float yOffset = (imgSprite.getYAxis()) * yScale;
 		if (sprite.getExplod().getPostype() == Postype.left || sprite.getExplod().getPostype() == Postype.right) {
 			x = 0;
@@ -65,23 +64,9 @@ public class ExplodRender implements Renderable {
 		// rotate if
 		SpriteDrawProperties dp = sprite.getSprAnimMng().getSpriteDrawProperties();
 
-		float xPos = pos.getX() + x - xOffset + air.getXOffSet() * xScale;
-//		if (air.isMirrorH)
-//			xPos = xPos
-//			- (
-//					isFlipH? 
-//							ic.getWidth() + xOffset + air.getXOffSet() * xScale
-//							: xOffset + air.getXOffSet() * xScale);
-		
-		if (air.isMirrorH && !isFlipH)
-			xPos = xPos + imgSprite.getXAxis();
+		float xPos = pos.getX() + x  + air.getXOffSet() * xScale;
 		float yPos = pos.getY() + y - yOffset + air.getYOffSet() * yScale;
-		if (air.isMirrorV&& !isFlipV)
-			yPos = yPos + imgSprite.getYAxis();
 		DrawProperties drawProperties = new DrawProperties(xPos, yPos, isFlipH, isFlipV, ic);
-//		DrawProperties drawProperties = new DrawProperties(73, 133, isFlipH, isFlipV, ic);
-		
-		
 		if (dp.isActive()) {
 			AngleDrawProperties angle = new AngleDrawProperties();
 			angle.setAngleset(-dp.getAngleset());
@@ -108,23 +93,15 @@ public class ExplodRender implements Renderable {
 			
 		}
 		
-
 		drawProperties.setXScaleFactor(xScale);
 		drawProperties.setYScaleFactor(yScale);
 		
 		// TODO TypeBlit.ASD, TypeBlit.A
 
-
-
-//		GraphicsWrapper.getInstance().scale(sprite.getExplod().getScale().x, sprite.getExplod().getScale().y);
-
 		if (!sprite.getPalfx().isNoPalFx()) {
 			sprite.getPalfx().setDrawProperties(drawProperties);
-			//drawProperties.setTrans(Trans.ADD1);
 		}
-//		drawProperties.setTrans(Trans.ADD1);
 		GraphicsWrapper.getInstance().draw(drawProperties);
-//		GraphicsWrapper.getInstance().scale(1f/sprite.getExplod().getScale().x, 1f/sprite.getExplod().getScale().y);
 
 	}
 	public int getPriority() {

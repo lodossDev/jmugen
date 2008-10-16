@@ -81,7 +81,7 @@ public class DebugRender implements Renderable {
 			String[] strSpriteInfos = {
 				"Author : " + sprite.getDefinition().getInfo().getAuthor()
 				,"Name : " + sprite.getDefinition().getInfo().getName()
-				,"SpriteID : " + sprite.getSpriteId() + " - is Pause : " + sprite.isPause()
+				,"SpriteID : " + sprite.getSpriteId() + " - is SuperPause : " + StateMachine.getInstance().getGlobalEvents().isSuperPause()
 				,"Game Fps = " + StateMachine.getInstance().getWindow().getTimer().getFps()
 			};
 			String[] strSpriteInfos2 = {

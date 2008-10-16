@@ -482,10 +482,11 @@ public class StateMachine implements Game {
 			if (sprCmdProc != null) {
 				sprCmdProc.process();
 			}
+
 			
 			if (globalEvents.canGameProcessWithPause(s)) {
 				s.process();
-			} else if (globalEvents.isSuperPause()) {
+			} else {
 //				s.processPause();
 			}
 		}
@@ -520,7 +521,10 @@ public class StateMachine implements Game {
 					iter.remove();
 			}
 //		}
-		if (globalEvents.isSuperPause() || globalEvents.isPause()) {
+		if ( globalEvents.isPause()) {
+//			instanceOfStage.process();
+		} else if (globalEvents.isSuperPause()) {
+			instanceOfStage.process();
 			
 		} else {
 			instanceOfStage.process();

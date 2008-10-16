@@ -6,6 +6,7 @@ import org.lee.mugen.core.StateMachine;
 import org.lee.mugen.sprite.background.Stage;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.SpriteHelper;
+import org.lee.mugen.sprite.character.SpriteCns.MoveType;
 import org.lee.mugen.sprite.character.SpriteCns.Physics;
 import org.lee.mugen.sprite.character.SpriteCns.Type;
 import org.lee.mugen.sprite.cns.type.function.Assertspecial.Flag;
@@ -108,35 +109,11 @@ public class PhysicsEngime {
 	}
 	
 	private static Rectangle getGlobalWidthRect(Sprite spr) {
+		if (spr.getInfo().getYPos() < 0 && getGlobalClsn2ect(spr) == null) {
+			return getGlobalClsn2ect(spr);
+		}
 
-
-	
-		boolean isFlip = spr.isFlip();
-		Stage stage = StateMachine.getInstance().getInstanceOfStage();
-		float _mvX = stage.getCamera().getX();
-		float _mvY = stage.getCamera().getY();
-
-		float x = 0;
-		float y = 0;
-		x = _mvX + stage.getCamera().getWidth() / 2;
-		y = stage.getStageinfo().getZoffset() + _mvY;
-		int topX = (int) (isFlip ? spr.getInfo().getWidth().getFront() : spr
-				.getInfo().getWidth().getBack());
-		int bottomX = (int) (isFlip ? spr.getInfo().getWidth().getBack() : spr
-				.getInfo().getWidth().getFront());
-		int topY = (int) (spr.getInfo().getSize().getHeight());
-		int bottomY = 0;
-
-		topX = (int) (spr.getRealXPos() - topX);
-		bottomX = (int) (spr.getRealXPos() + bottomX);
-		topY = (int) (spr.getRealYPos() - topY);
-		bottomY = (int) (spr.getRealYPos());
-
-		Rectangle r = new Rectangle(topX, topY, Math.abs(bottomX - topX), Math
-				.abs(bottomY - topY));
-		r.translate((int) (_mvX + stage.getCamera().getWidth() / 2),
-				(int) (stage.getStageinfo().getZoffset() + _mvY));
-		return r;
+		return getRectEdge(spr);
 	}
 	
 	private static void correctRectangle(Rectangle r) {
@@ -154,7 +131,6 @@ public class PhysicsEngime {
 		
 		boolean isOnePlayerpush = sprOne.getInfo().getPlayerpush() >= 0;
 		boolean isTwoPlayerpush = sprTwo.getInfo().getPlayerpush() >= 0;
-		
 		
 		checkGoodPositionInScreen(sprOne);
 		checkGoodPositionInScreen(sprTwo);
@@ -268,9 +244,33 @@ public class PhysicsEngime {
 	}
 
 	private static Rectangle getRectEdge(Sprite spr) {
-//		if (spr.getInfo().getPhysics() == Physics.A)
-//			return getGlobalClsn2ect(spr);
-		return getGlobalWidthRect(spr);
+
+		boolean isFlip = spr.isFlip();
+		Stage stage = StateMachine.getInstance().getInstanceOfStage();
+		float _mvX = stage.getCamera().getX();
+		float _mvY = stage.getCamera().getY();
+
+		float x = 0;
+		float y = 0;
+		x = _mvX + stage.getCamera().getWidth() / 2;
+		y = stage.getStageinfo().getZoffset() + _mvY;
+		int topX = (int) (isFlip ? spr.getInfo().getWidth().getFront() : spr
+				.getInfo().getWidth().getBack());
+		int bottomX = (int) (isFlip ? spr.getInfo().getWidth().getBack() : spr
+				.getInfo().getWidth().getFront());
+		int topY = (int) (spr.getInfo().getSize().getHeight());
+		int bottomY = 0;
+
+		topX = (int) (spr.getRealXPos() - topX);
+		bottomX = (int) (spr.getRealXPos() + bottomX);
+		topY = (int) (spr.getRealYPos() - topY);
+		bottomY = (int) (spr.getRealYPos());
+
+		Rectangle r = new Rectangle(topX, topY, Math.abs(bottomX - topX), Math
+				.abs(bottomY - topY));
+		r.translate((int) (_mvX + stage.getCamera().getWidth() / 2),
+				(int) (stage.getStageinfo().getZoffset() + _mvY));
+		return r;
 	}
 
 	public static void checkGoodPositionInScreen(Sprite sprOne) {

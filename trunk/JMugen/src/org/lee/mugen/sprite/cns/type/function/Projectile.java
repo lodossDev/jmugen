@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.renderer.game.CnsRender;
 import org.lee.mugen.core.renderer.game.SpriteShadowRender;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.character.Sprite;
@@ -89,10 +90,21 @@ public class Projectile extends Hitdef {
 		ProjectileSub projectile = new ProjectileSub(sprOne);
 		projectile.setSpriteId(spriteId);
 		fillBean(spriteId, projectile);
-		ProjectileSprite projectileSprite = new ProjectileSprite(projectile);
+		final ProjectileSprite projectileSprite = new ProjectileSprite(projectile);
 		projectile.setSpriteHitter(projectileSprite);
 		StateMachine.getInstance().getFightEngine().add(projectile);
 		StateMachine.getInstance().addRender(new SpriteShadowRender(projectileSprite, false));
+		
+		
+		// This help me to see CNS For Projectile
+//		CnsRender cnsRender = new CnsRender(projectileSprite) {
+//			@Override
+//			public boolean remove() {
+//				return projectileSprite.remove();
+//			}
+//		};
+//		cnsRender.setShowAttackCns(true);
+//		StateMachine.getInstance().addRender(cnsRender);
 		return null;
 	}
 
