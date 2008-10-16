@@ -19,8 +19,10 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.lee.mugen.imageIO.ImageScale2x;
 import org.lee.mugen.imageIO.PCXLoader;
 import org.lee.mugen.imageIO.RawPCXImage;
+import org.lee.mugen.imageIO.Scale2xImageFilter;
 import org.lee.mugen.imageIO.PCXLoader.PCXHeader;
 import org.lee.mugen.input.MugenDrawer;
 import org.lee.mugen.renderer.AngleDrawProperties;
@@ -250,6 +252,9 @@ public class LMugenDrawer extends MugenDrawer {
 		// bind to the appropriate texture for this sprite
 		texture.bind();
 
+//		scale(0.5f, 0.5f); // This scale help me to see out of screen
+//		GL11.glTranslated(160, 240, 0);
+		
 		processRotationProperties(dp.getAngleDrawProperties());
 		// if (dp.getXScaleFactor() != 1f && dp.getYScaleFactor() != 1) {
 		// GL11.glScaled(dp.getXScaleFactor(), dp.getYScaleFactor(), 0);
@@ -266,6 +271,10 @@ public class LMugenDrawer extends MugenDrawer {
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		// make sure the start and end points are drawn - GL implementations
 		// seem a bit flakey on this
+		
+//		scale(0.5f, 0.5f);
+//		GL11.glTranslated(160, 240, 0);
+		
 		GL11.glBegin(GL11.GL_POINTS);
 		GL11.glVertex2f(x1, y1);
 		GL11.glVertex2f(x2, y2);
@@ -275,6 +284,11 @@ public class LMugenDrawer extends MugenDrawer {
 		GL11.glVertex2f(x2, y2);
 		GL11.glEnd();
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		
+		
+//		GL11.glTranslated(-160, -240, 0);
+//		scale(2f, 2f);
+		
 	}
 
 	@Override
