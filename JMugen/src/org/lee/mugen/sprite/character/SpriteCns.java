@@ -864,7 +864,10 @@ public class SpriteCns implements Cloneable {
 			for (Sprite s : StateMachine.getInstance().getEnnmies(getSprite()))
 				if (!s.getSpriteId().equals(spriteId) && !(s instanceof SpriteHelper))
 					spr = s;
-			isFlip = !spr.getInfo().isFlip();
+			if (xPos > spr.getInfo().getXPos())
+				isFlip = true;
+			else 
+				isFlip = false;
 		}
 	}
 

@@ -465,7 +465,13 @@ public class ProjectileSub extends HitDefSub {
 	}
 
 	public void addHisVelocity(boolean isFlip) {
-		x += isFlip ? -getVelocity().getX() : getVelocity().getX();
+		getVelocity().setX(getVelocity().getX() + getAccel().getX());
+		getVelocity().setY(getVelocity().getY() + getAccel().getY());
+		
+		getVelocity().setX(getVelocity().getX() * getVelmul().getX());
+		getVelocity().setY(getVelocity().getY() * getVelmul().getY());
+		
+		x += (isFlip ? -getVelocity().getX() : getVelocity().getX());
 		y += getVelocity().getY();
 	}
 

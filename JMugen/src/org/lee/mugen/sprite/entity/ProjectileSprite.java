@@ -20,6 +20,8 @@ public class ProjectileSprite extends AbstractSprite {
 		StateMachine machine = StateMachine.getInstance();
 		Sprite sprHitter = machine.getSpriteInstance(projectile.getSpriteId());
 		isFlip = sprHitter.isFlip();
+		if (projectile.getVelocity().getX() < 0)
+			isFlip = !isFlip;
 		
 		sprAnimMng = new SpriteAnimManager(sprHitter.getSpriteId()){
 
@@ -63,7 +65,7 @@ x positif s'éloigne du centre de l'écran alors qu'un offset x négatif s'en ra
 	@Override
 	public boolean isFlip() {
 		// TODO : ERROR Mugen But test with Goku HR for Super Kamehame it is reverse because of Animation flip and the type = projectile that give a reverse velocity ???, To ask for the communoties
-		return isFlip ^ getSprAnimMng().getCurrentImageSprite().isMirrorH();
+		return isFlip;
 	}
 
 	boolean firstTimeConnect = false;

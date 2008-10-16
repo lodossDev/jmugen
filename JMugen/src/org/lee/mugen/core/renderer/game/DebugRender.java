@@ -78,11 +78,23 @@ public class DebugRender implements Renderable {
 			int _mvY = stage.getCamera().getY();
 			int x = 10;
 			int y = 150;
+			int left = stage.getBound().getScreenleft();
+			int right = stage.getBound().getScreenright();
+
+			int leftLimit = left + stage.getCamera().getBoundleft()
+					- stage.getCamera().getWidth() / 2
+					+ stage.getCamera().getTension();
+
+			int rightLimit = -right + stage.getCamera().getBoundright()
+					+ stage.getCamera().getWidth() / 2
+					- stage.getCamera().getTension();
+			
 			String[] strSpriteInfos = {
 				"Author : " + sprite.getDefinition().getInfo().getAuthor()
 				,"Name : " + sprite.getDefinition().getInfo().getName()
-				,"SpriteID : " + sprite.getSpriteId() + " - is SuperPause : " + StateMachine.getInstance().getGlobalEvents().isSuperPause()
-				,"Game Fps = " + StateMachine.getInstance().getWindow().getTimer().getFps()
+				,"SpriteID : " + sprite.getSpriteId() + " - IsFlip : " + sprite.isFlip()
+				,"Game Fps = " + StateMachine.getInstance().getWindow().getTimer().getFps() 
+				+ " - Stage Width " + leftLimit+ " - " + rightLimit
 			};
 			String[] strSpriteInfos2 = {
 				"Life = " + sprInfo.getLife()

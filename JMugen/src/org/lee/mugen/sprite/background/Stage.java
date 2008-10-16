@@ -293,29 +293,34 @@ public class Stage {
 
 
 	private int[] getMinMaxForXSprite() {
-		int[] minMax = new int[2];
+		Integer[] minMax = new Integer[2];
 		for (Sprite s: StateMachine.getInstance().getSprites()) {
 			if (s instanceof SpriteHelper && (((SpriteHelper)s).getHelperSub().getHelpertype().equals("normal")))
 				continue;
-			int[] frontBack = s.getInfo().getCurrentFrontAndBackSize();
-			int back = s.isFlip()? frontBack[1]: -frontBack[1];
-			back = 0;
-			minMax[0] = (int) Math.min(s.getInfo().getXPos() + back, minMax[0]);
-			minMax[1] = (int) Math.max(s.getInfo().getXPos() + back, minMax[1]);
+			if (minMax[0] == null)
+				minMax[0] = (int) s.getInfo().getXPos();
+			if (minMax[1] == null)
+				minMax[1] = (int) s.getInfo().getXPos();
+			
+			minMax[0] = (int) Math.min(s.getInfo().getXPos(), minMax[0]);
+			minMax[1] = (int) Math.max(s.getInfo().getXPos(), minMax[1]);
 		}
-		return minMax;
-	}
+		return new int[] {minMax[0], minMax[1]};}
 	
 	private int[] getMinMaxForYSprite() {
-		int[] minMax = new int[2];
+		Integer[] minMax = new Integer[2];
 		for (Sprite s: StateMachine.getInstance().getSprites()) {
 			if (s instanceof SpriteHelper && (((SpriteHelper)s).getHelperSub().getHelpertype().equals("normal")))
 				continue;
+			if (minMax[0] == null)
+				minMax[0] = (int) s.getInfo().getYPos();
+			if (minMax[1] == null)
+				minMax[1] = (int) s.getInfo().getYPos();
+			
 			minMax[0] = (int) Math.min(s.getInfo().getYPos(), minMax[0]);
 			minMax[1] = (int) Math.max(s.getInfo().getYPos(), minMax[1]);
 		}
-		return minMax;
-	}
+		return new int[] {minMax[0], minMax[1]};}
 
 
 
@@ -350,12 +355,10 @@ public class Stage {
 			int left = getBound().getScreenleft();
 			int right = getBound().getScreenright();
 
-			int leftLimit = left + getCamera().getBoundleft()
-					- getCamera().getWidth() / 2
+			int leftLimit = left + getCamera().getBoundleft()+160
 					+ getCamera().getTension();
 
-			int rightLimit = -right + getCamera().getBoundright()
-					+ getCamera().getWidth() / 2
+			int rightLimit = -right + getCamera().getBoundright()+160
 					- getCamera().getTension();
 			
 			int diff = xCam + xSpr;

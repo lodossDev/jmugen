@@ -41,10 +41,13 @@ public class Animelem extends SpriteCnsTriggerFunction {
 		Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);
 		final int[] grpImg = tick < 0? sprite.getSprAnimMng().getAnimElemNoNegative(tick): sprite.getSprAnimMng().getAnimElemNoImgCount();
 
+
+		
 		if (grp == grpImg[0]) {
 			res = Parser.getIntValue(opSecond.getValue(spriteId, new Valueable[] {
 					new IntValueable(grpImg[1]), 
 					new IntValueable(tick)}));
+			
 			return res == 0? 0: 1;
 		}
 		
