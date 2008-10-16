@@ -6,6 +6,8 @@ import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.awt.image.ConvolveOp;
+import java.awt.image.Kernel;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
@@ -18,10 +20,7 @@ import org.lee.mugen.renderer.GameWindow;
 import org.lee.mugen.renderer.ImageContainer;
 import org.lee.mugen.renderer.Trans;
 
-import com.jhlabs.composite.MiscComposite;
-
 public class JMugenDrawer extends MugenDrawer {
-	private PalfxFilter palfxFilter = new PalfxFilter();
 	
 	private void processRotationProperties(AngleDrawProperties dp) {
 		if (dp != null) {
@@ -39,12 +38,15 @@ public class JMugenDrawer extends MugenDrawer {
 		Graphics2D g = (Graphics2D) window.getDrawGraphics();
 		Composite composite = null;
 		if (dp.getTrans() == Trans.ADD) {
-			composite = MiscComposite.getInstance(MiscComposite.ADD, 1f);
+			composite = MiscCompositeIndexColor.getInstance(MiscCompositeIndexColor.ADD, 1f);
+//			composite = AlphaComposite.getInstance(AlphaComposite.XOR);
 		} else if (dp.getTrans() == Trans.ADD1) {
-			composite = MiscComposite.getInstance(MiscComposite.ADD, 1f);
+			composite = MiscCompositeIndexColor.getInstance(MiscCompositeIndexColor.ADD, 1f);
+//			composite = AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 0.5f);
 		} else if (dp.getTrans() == Trans.SUB) {
 			
-			composite = MiscComposite.getInstance(MiscComposite.SUBTRACT, 0.5f);
+			composite = MiscCompositeIndexColor.getInstance(MiscCompositeIndexColor.SUBTRACT, 0.5f);
+//			composite = AlphaComposite.getInstance(AlphaComposite.DST_OUT);
 
 		}
 		
@@ -54,7 +56,12 @@ public class JMugenDrawer extends MugenDrawer {
 		}
 		
 		BufferedImage img = (BufferedImage) dp.getIc().getImg();
-		
+//		float data[] = { 0.0625f, 0.125f, 0.0625f, 0.125f, 0.25f, 0.125f,
+//		        0.0625f, 0.125f, 0.0625f };
+//		    Kernel kernel = new Kernel(3, 3, data);
+//		    ConvolveOp convolve = new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP,
+//		        null);
+//		    img = convolve.filter(img, null);
 		
 		
 		processRotationProperties(dp.getAngleDrawProperties());
@@ -71,6 +78,7 @@ public class JMugenDrawer extends MugenDrawer {
 			xScale = dp.getAngleDrawProperties().getXScale();
 			yScale = dp.getAngleDrawProperties().getYScale();
 		}
+		g.setClip((int)dp.getXLeftDst(), (int)dp.getYTopDst(), img.getWidth(), img.getHeight());
 		g.drawImage(
 				img, 
 				(int)dp.getXLeftDst(), 
@@ -138,7 +146,7 @@ public class JMugenDrawer extends MugenDrawer {
 	public ImageContainer getImageContainer(Object imageData) {
 		RawPCXImage pcx = (RawPCXImage) imageData;
 		try {
-			BufferedImage image = (BufferedImage) PCXLoader.loadImage(new ByteArrayInputStream(
+			BufferedImage image = (BufferedImage) PCXLoader.loadImageColorIndexed(new ByteArrayInputStream(
 						pcx.getData()), pcx.getPalette(), false, true);
 			return new ImageContainer(image, image.getWidth(), image.getHeight());
 		} catch (IOException e) {
