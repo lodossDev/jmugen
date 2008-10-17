@@ -26,6 +26,7 @@ import org.lee.mugen.imageIO.RawPCXImage;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.devil.IL;
 import org.lwjgl.devil.ILU;
+import org.lwjgl.opengl.ARBTextureCompression;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.glu.GLU;
