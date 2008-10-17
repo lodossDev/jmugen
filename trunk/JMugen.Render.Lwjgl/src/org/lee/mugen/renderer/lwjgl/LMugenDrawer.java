@@ -323,14 +323,7 @@ public class LMugenDrawer extends MugenDrawer {
 
 		public ImageContainerText(Object img, int width, int height) {
 			super(img, width, height);
-			RawPCXImage pcx = (RawPCXImage) img;
-			try {
-				this.img = (BufferedImage) PCXLoader.loadImage(new ByteArrayInputStream(
-							pcx.getData()), pcx.getPalette(), false, true);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			
 		}
 		Texture text = null;
 		AtomicBoolean isTextSet = new AtomicBoolean(false);
@@ -340,6 +333,14 @@ public class LMugenDrawer extends MugenDrawer {
 				return text;
 			}
 			try {
+				RawPCXImage pcx = (RawPCXImage) img;
+				try {
+					this.img = (BufferedImage) PCXLoader.loadImage(new ByteArrayInputStream(
+								pcx.getData()), pcx.getPalette(), false, true);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				text = TextureLoader.getTextureLoader().getTexture((BufferedImage) img);
 				isTextSet.set(true);
 			} catch (IOException e) {
@@ -368,7 +369,9 @@ public class LMugenDrawer extends MugenDrawer {
         int width = header.xmax - header.xmin + 1;
         int height = header.ymax - header.ymin + 1;
         
-		ImageContainer result = new ImageContainerText(pcx , width, height);
+        ImageContainer result = new ImageContainerText(pcx , width, height);
+        
+//        ImageContainer result = new ImageContainer(pcx , width, height);
 		list.add(result);
 		return result;
 			
