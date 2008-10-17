@@ -29,7 +29,7 @@ public class Bindtoparent extends StateCtrlFunction {
 				@Override
 				public PointF getPos() {
 					return new PointF(parent.getInfo().getXPos() + 
-			    	    	(parent.isFlip()? -parentSub.getPos().getX(): parentSub.getPos().getX()),
+			    	    	(parent.isFlip()? +parentSub.getPos().getX(): -parentSub.getPos().getX()),
 			    	    	parent.getInfo().getYPos() + parentSub.getPos().getY()
 			    	    	);
 				}

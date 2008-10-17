@@ -92,8 +92,6 @@ public class CnsRender implements Renderable {
 			}
 		}
 		
-		if (sprite instanceof ProjectileSprite)
-			System.out.println();
 		if (showAttackCns) {
 			g.setColor(Color.RED);
 			for (java.awt.Rectangle r: sprite.getCns1()) {

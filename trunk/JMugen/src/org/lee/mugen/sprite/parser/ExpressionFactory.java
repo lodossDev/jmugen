@@ -221,8 +221,6 @@ public class ExpressionFactory {
 				ops.add(newOp);
 				i++;
 			} else if (isProcessSprite && Pattern.matches(SpriteRedirect.SPRITE_REDIRECT_REG, tokens[i])) {
-				if (tokens[i].equals("target"))
-					System.out.println();
 				MathFunction newOp = (MathFunction) SpriteRedirect.getFunction(tokens[i]);
 				if (newOp.getFunction() instanceof SpriteRedirect.SpecialPatternRedirect){
 					

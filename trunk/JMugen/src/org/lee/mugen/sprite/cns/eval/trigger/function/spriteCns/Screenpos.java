@@ -3,9 +3,11 @@ package org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns;
 import java.util.List;
 
 import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.parser.type.StringValueable;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.background.Stage;
 import org.lee.mugen.sprite.character.Sprite;
+import org.lee.mugen.sprite.character.SpriteCns;
 import org.lee.mugen.sprite.cns.eval.function.SpriteCnsTriggerFunction;
 import org.lee.mugen.sprite.entity.PointF;
 
@@ -20,6 +22,20 @@ public class Screenpos extends SpriteCnsTriggerFunction {
 		super("screenpos", new String[] {"x", "y"});
 	}
 
+	@Override
+	public Object getValue(String spriteId, Valueable... params) {
+		String p = params[0].getValue(spriteId).toString();
+		Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);
+		final Stage stage = StateMachine.getInstance().getInstanceOfStage();
+		
+		if ("x".equals(p)) {
+			return getPosRelativeToScreen(stage, sprite.getRealXPos(), sprite.getRealYPos()).getX();
+		} else if ("y".equals(p)) {
+			return getPosRelativeToScreen(stage, sprite.getRealXPos(), sprite.getRealYPos()).getY();		
+		}
+		throw new IllegalArgumentException("arg must be x or y");
+	}
+	
 	private static PointF getPosRelativeToScreen(Stage stage, float xRealPos, float yRealPos) {
 
 		// TODO SCALE if 
@@ -35,28 +51,14 @@ public class Screenpos extends SpriteCnsTriggerFunction {
 	}
 	@Override
 	public int parseValue(String[] tokens, int pos, List<Valueable> result) {
-		//screenpos x
-		//screenpos y
 		pos++;
-		final Stage stage = StateMachine.getInstance().getInstanceOfStage();
-		if ("x".equals(tokens[pos])) {
-			Valueable v = new Valueable() {
-				public Object getValue(String spriteId, Valueable... params) {
-					Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);
-					return getPosRelativeToScreen(stage, sprite.getRealXPos(), sprite.getRealYPos()).getX();
-				}
-			};
-			result.add(v);
-		} else {
-			Valueable v = new Valueable() {
-				public Object getValue(String spriteId, Valueable... params) {
-					Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);
-					return getPosRelativeToScreen(stage, sprite.getRealXPos(), sprite.getRealYPos()).getY();
-				}
-			};
-			result.add(v);
-			
+		if (!"x".equals(tokens[pos]) && !"y".equals(tokens[pos])) {
+			throw new IllegalArgumentException("arg must be x or y");
 		}
+		final String component = tokens[pos];
+		final Valueable valueable = new StringValueable(component);
+		result.add(valueable);
 		return pos;
 	}
+	
 }

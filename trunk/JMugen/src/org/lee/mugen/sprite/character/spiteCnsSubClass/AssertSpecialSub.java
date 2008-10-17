@@ -3,9 +3,19 @@ package org.lee.mugen.sprite.character.spiteCnsSubClass;
 import org.lee.mugen.sprite.cns.type.function.Assertspecial.Flag;
 
 public class AssertSpecialSub {
+	private int time = 1;
 	private Flag flag;
 	private Flag flag2;
 	private Flag flag3;
+	
+	public boolean isValid() {
+		return time >= 0;
+	}
+	
+	public void decrease() {
+		if (time >= 0)
+			time--;
+	}
 	
 	public Flag getFlag() {
 		return flag;

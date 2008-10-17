@@ -1,6 +1,7 @@
 package org.lee.mugen.core;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -16,6 +17,7 @@ import org.lee.mugen.renderer.PalFxSub;
 import org.lee.mugen.renderer.Renderable;
 import org.lee.mugen.sprite.base.AbstractSprite;
 import org.lee.mugen.sprite.character.Sprite;
+import org.lee.mugen.sprite.character.spiteCnsSubClass.AssertSpecialSub;
 import org.lee.mugen.sprite.cns.type.function.Assertspecial;
 import org.lee.mugen.sprite.entity.AssertSpecialEval;
 import org.lee.mugen.sprite.entity.EnvcolorSub;
@@ -114,13 +116,16 @@ public class GameGlobalEvents {
 	public boolean isAssertSpecial(String spriteId, Assertspecial.Flag flag) {
 		for (AssertSpecialEval as: assertSpecials) {
 			if (as.getSpriteId().equals(spriteId) || spriteId == null) {
-				if (as.getAssertspecial().getFlag() == flag
-						||
-						as.getAssertspecial().getFlag2() == flag
-						||
-						as.getAssertspecial().getFlag3() == flag
-						) {
-					return true;
+				if (as.getAssertspecial().isValid()) {
+					if (as.getAssertspecial().getFlag() == flag
+							||
+							as.getAssertspecial().getFlag2() == flag
+							||
+							as.getAssertspecial().getFlag3() == flag
+							) {
+						return true;
+					}
+					
 				}
 			}
 		}
@@ -130,7 +135,13 @@ public class GameGlobalEvents {
 	
 	public void enter() {
 		envcolor.decreaseTime();
-		assertSpecials.clear();
+		for (Iterator<AssertSpecialEval> iter = assertSpecials.iterator(); iter.hasNext();) {
+			AssertSpecialEval ase = iter.next();
+			if (!ase.getAssertspecial().isValid()) {
+				iter.remove();
+			}
+			ase.getAssertspecial().decrease();
+		}
 	}
 	
 	public void leave() {

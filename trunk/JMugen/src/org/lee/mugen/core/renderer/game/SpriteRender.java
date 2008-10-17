@@ -83,7 +83,7 @@ public class SpriteRender implements Renderable {
 			imageContainer = sprite.getCurrentImage();
 			
 		} catch (Exception e) {
-			System.out.println("img not exist");
+			System.err.println("img not exist");
 		}
 		if (imageContainer == null)
 			return;

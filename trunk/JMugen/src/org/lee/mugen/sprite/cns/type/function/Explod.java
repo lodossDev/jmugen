@@ -147,8 +147,12 @@ public class Explod extends StateCtrlFunction {
         	StateMachine.getInstance().addRender(shadowRender);
     	}
 
+		if (explodSub.getAnim().getAction() == 7322)
+			System.out.println("7322");
 
     	StateMachine.getInstance().getOtherSprites().add(explodSprite);
+    	explodSprite.remove();
+    	explodSprite.isProcess();
     	StateMachine.getInstance().addRender(render);
     	return null;
     }

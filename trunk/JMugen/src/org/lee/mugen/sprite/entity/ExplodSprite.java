@@ -56,7 +56,6 @@ public class ExplodSprite extends AbstractSprite {
 	
 	@Override
 	public void process() {
-		
 		if (forceRemove)
 			return;
 		this.sprAnimMng.process();
@@ -122,7 +121,7 @@ public class ExplodSprite extends AbstractSprite {
 					return true;
 				return error 
 					// cas ou l'explod est creer par un helper et que le helper a ete detruit
-					|| StateMachine.getInstance().getSpriteInstance(explod.getSprite().getSpriteId()) == null 
+//					|| StateMachine.getInstance().getSpriteInstance(explod.getSprite().getSpriteId()) == null 
 					|| this.sprAnimMng.getAnimTime() == 0
 					|| this.sprAnimMng.getCurrentImageSprite().getDelay() == -1;
 				
