@@ -66,16 +66,7 @@ public class Targetstate extends StateCtrlFunction {
 		}
 		spriteState.targetState(StateMachine.getInstance().getRootId(spriteId), ivalue);
 		
-	
-
-		
-
-		
 		return null;
-	}
-	public static Valueable[] parse(String name, String value) {
-		String[] tokens = ExpressionFactory.expression2Tokens(value);
-		return ExpressionFactory.evalExpression(tokens);
 	}
 
 }

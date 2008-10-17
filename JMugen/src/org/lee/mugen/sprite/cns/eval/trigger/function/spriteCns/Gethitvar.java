@@ -323,7 +323,7 @@ public class Gethitvar extends SpriteCnsTriggerFunction {
 				Sprite sprOne = StateMachine.getInstance().getSpriteInstance(spriteId);
 				HitDefSub hitdefFrom = sprOne.getInfo().getLastHitdef();
 				if (hitdefFrom == null)
-					return null;
+					return sprOne.getInfo().getMovement().getYaccel();
 
 				boolean hitover = ((Integer) new Hitover().getValue(spriteId, params)).intValue() == 1;
 				if (hitover)

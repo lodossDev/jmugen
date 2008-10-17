@@ -9,7 +9,9 @@ public class Sndpan extends StateCtrlFunction {
     public Sndpan() {
         super("sndpan", new String[] {});
     }
-    public static Valueable[] parse(String name, String value) {
+    
+    @Override
+    public Valueable[] parse(String name, String value) {
         return null;
     }
     public void addParam(String name, Valueable[] param) {

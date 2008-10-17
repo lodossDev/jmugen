@@ -14,10 +14,6 @@ public class Anglemul extends StateCtrlFunction {
     public Anglemul() {
         super("anglemul", new String[] {"value"});
     }
-	public static Valueable[] parse(String name, String value) {
-		String[] tokens = ExpressionFactory.expression2Tokens(value);
-		return ExpressionFactory.evalExpression(tokens);
-	}
 
 	@Override
 	public Object getValue(String spriteId, Valueable... params) {

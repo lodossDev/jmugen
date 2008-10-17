@@ -73,8 +73,5 @@ public class Bindtotarget extends StateCtrlFunction {
 		return null;
 		
 	}
-	public static Valueable[] parse(String name, String value) {
-		return ExpressionFactory.evalExpression(value);
-	}
     
 }

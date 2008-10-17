@@ -343,7 +343,7 @@ public class PhysicsEngime {
 
 		sprite.getInfo().getVelset().addY(friction);
 
-		if (sprite.getInfo().getYPos() > 2) {
+		if (sprite.getInfo().getYPos() >= 0) {
 			sprite.getInfo().getVelset().setY(0);
 			sprite.getInfo().setYPos(0);
 			sprite.getSpriteState().changeStateDef(52);

@@ -7,9 +7,11 @@ public class Gamemakeanim extends StateCtrlFunction {
 
 	// TODO : gamemakeanim
 	public Gamemakeanim() {
-		super("gamemakeanim", new String[] {});
+		super("gamemakeanim", new String[] {"value", "under", "pos", "random"});
 	}
-	public static Valueable[] parse(String name, String value) {
+	
+	@Override
+	public Valueable[] parse(String name, String value) {
 		return null;
 	}
 	public void addParam(String name, Valueable[] param) {

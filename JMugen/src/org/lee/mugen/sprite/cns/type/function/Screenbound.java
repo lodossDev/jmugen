@@ -9,7 +9,7 @@ import org.lee.mugen.sprite.parser.Parser;
 public class Screenbound extends StateCtrlFunction {
 
     public Screenbound() {
-        super("screenbound", new String[] {"value"});
+        super("screenbound", new String[] {"value", "movecamera"});
     }
 
     
@@ -31,8 +31,4 @@ public class Screenbound extends StateCtrlFunction {
     	}
     	return null;
     }
-	public static Valueable[] parse(String name, String value) {
-		String[] tokens = ExpressionFactory.expression2Tokens(value);
-		return ExpressionFactory.evalExpression(tokens);
-	}
 }

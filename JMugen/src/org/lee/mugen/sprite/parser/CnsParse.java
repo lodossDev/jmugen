@@ -208,6 +208,8 @@ public class CnsParse {
 //				}
 //			}
 		}
+		StateCtrlFunction.endOfParsing();
+		
 	}
 //	static final String[] defaultNamesStateDef = {"type", "movetype", "physics", "facep2", "movehitpersist", "hitcountpersist"};
 //	static final String[] defaultValuesStateDef = {"S", "I", "N", "0", "0", "0"};
@@ -384,20 +386,28 @@ public class CnsParse {
 			} else {
 				try {
 
-					Valueable[] valueables = stateCtrlFunction.parseValue(name, value);
-					stateCtrlFunction.addParam(name, valueables);
+					
+					if (stateCtrlFunction != null && stateCtrlFunction.containsParam(name)) {
+						Valueable[] valueables = stateCtrlFunction.parseValue(name, value);
+						stateCtrlFunction.addParam(name, valueables);
+					} else {
+//						System.out.println(
+//								" Warning : Statedef[" + stateDefId + "] - StateCtrl[" + stateCtrlId + "]" + 
+//								" : Type = " + stateCtrlFunction.getFunctionName() + 
+//								" doesn't take this argument >> " + line);
+					}
 					
 				} catch (RuntimeException e) {
-					//e.printStackTrace();
-					System.err.println("RuntimeExecption skip error : " + "stateDef = " + stateDefId + " - stateCtrl = " + stateCtrlId + " >> " + line);
-					//e.printStackTrace();
-					//throw e;
+					System.err.println(
+							" Err " + e.getClass() + " : Statedef[" + stateDefId + "] - StateCtrl[" + stateCtrlId + "]" + 
+							" : Type = " + stateCtrlFunction.getFunctionName() + 
+							" >> " + line);
 				}
 			}
 		}
 		try {
 			if (!stateCtrlFunction.control()) {
-				throw new IllegalStateException("Some  of mandatory field aren't filled for this " + stateCtrlFunction.getFunctionName());
+				throw new IllegalStateException("Some of mandatory field aren't filled for this " + stateCtrlFunction.getFunctionName());
 			}
 			
 		} catch (Exception e) {
@@ -500,22 +510,12 @@ public class CnsParse {
 		m.find();
 		String id = m.group(1);
 		CnsParse.parseStateCtrl(stateDef, stateDef.getId(), id, grp);
+		
+		StateCtrlFunction.endOfParsing();
+		
 	}
 	
-//	public static StateDef parseStateDefF(GroupText grp, Sprite sprite)
-//	throws Exception {
-//		if (!(Pattern.matches(STATEDEF, grp.getSection()))) {
-//			throw new IllegalArgumentException("this section : "
-//					+ grp.getSection() + " is not [command] section");
-//		}
-//		Matcher m = Pattern.compile(STATEDEF).matcher(grp.getSection());
-//		m.find();
-//		String id = m.group(1);
-//		StateDef stateDef = CnsParse.parseStateDef(id, grp, "");
-//		// new StateDef(grp.getSection(), spriteId);
-//		return stateDef;
-//	}
-	
+//	public static S
 	/*
 	 * 
 	 * [Statedef -1] [State -1, command name]

@@ -9,7 +9,10 @@ public class Targetdrop extends StateCtrlFunction {
     public Targetdrop() {
         super("targetdrop", new String[] {});
     }
-    public static Valueable[] parse(String name, String value) {
+    
+    
+    @Override
+    public Valueable[] parse(String name, String value) {
         return null;
     }
     public void addParam(String name, Valueable[] param) {

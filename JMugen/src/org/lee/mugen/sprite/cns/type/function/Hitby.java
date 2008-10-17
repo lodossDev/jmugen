@@ -28,9 +28,6 @@ public class Hitby extends StateCtrlFunction {
 		sprite.getInfo().setHitby(hitBySub);
 		return null;
 	}
-	public static Valueable[] parse(String name, String value) {
-		return ExpressionFactory.evalExpression(value);
-	}
 	// TODO HITBY
 	public static Valueable[] parseForValue(String name, String value) {
 		final Object v = BeanTools.getConvertersMap().get(ReversalAttrClass.class).convert(value);
@@ -54,4 +51,15 @@ public class Hitby extends StateCtrlFunction {
 		};
 		return vals;
 	}
+	
+//	@Override
+//	public Valueable[] parse(String name, String value) {
+//		if ("value".equals(name)) {
+//			return parseForValue(name, value);
+//		} 
+//		if ("value2".equals(name)) {
+//			return parseForValue2(name, value);
+//		} 
+//		return super.parse(name, value);
+//	}
 }

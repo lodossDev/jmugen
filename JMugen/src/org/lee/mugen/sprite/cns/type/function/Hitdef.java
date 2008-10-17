@@ -856,11 +856,6 @@ public class Hitdef extends StateCtrlFunction {
 	public Hitdef(String name, String...params) {
 		super(name, params);
 	}
-	public static Valueable[] parse(String name, String value) {
-	    String[] tokens = ExpressionFactory.expression2Tokens(value);
-	    Valueable[] vals = ExpressionFactory.evalExpression(tokens);
-	    return vals;
-	}
 	/*
 	 * attr = hit_attribute (string) This is the attribute of the attack. It is
 	 * used to determine if the attack can hit P2. It has the format: attr =

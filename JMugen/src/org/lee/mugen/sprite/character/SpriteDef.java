@@ -80,7 +80,7 @@ public class SpriteDef {
 		
 		
 		public String getAuthor() {
-			return author;
+			return author.substring(1, author.length() - 1);
 		}
 
 		public void setAuthor(String author) {

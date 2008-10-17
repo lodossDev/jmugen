@@ -27,10 +27,6 @@ public class Afterimage extends StateCtrlFunction {
 	// an "alpha" parameter if you use this)
 	//"sub" for colour subtraction (like a shadow effect)
 	
-	public static Valueable[] parse(String name, String value) {
-		String[] tokens = ExpressionFactory.expression2Tokens(value);
-		return ExpressionFactory.evalExpression(tokens);
-	}
 	public static Valueable[] parseForTrans(String name, String value) {
 
 		value = value.toUpperCase();
@@ -38,6 +34,15 @@ public class Afterimage extends StateCtrlFunction {
 		final Valueable v = new ObjectValueable(trans);
 		return new Valueable[] {v};
 	}
+	
+//	@Override
+//	public Valueable[] parse(String name, String value) {
+//		if ("trans".equals(name)) {
+//			return parseForTrans(name, value);
+//		} else {
+//			return super.parse(name, value);
+//		}
+//	}
 
 	public Afterimage() {
 		super("afterimage", new String[] {

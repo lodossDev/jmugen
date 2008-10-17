@@ -9,7 +9,10 @@ public class Targetpoweradd extends StateCtrlFunction {
     public Targetpoweradd() {
         super("targetpoweradd", new String[] {});
     }
-    public static Valueable[] parse(String name, String value) {
+    
+    
+    @Override
+    public Valueable[] parse(String name, String value) {
         return null;
     }
     public void addParam(String name, Valueable[] param) {

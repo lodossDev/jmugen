@@ -14,10 +14,6 @@ public class Hitfallset extends StateCtrlFunction {
 	public Hitfallset() {
 		super("hitfallset", new String[] {"value", "xvel", "yvel"});
 	}
-	public static Valueable[] parse(String name, String value) {
-		String[] tokens = ExpressionFactory.expression2Tokens(value);
-		return ExpressionFactory.evalExpression(tokens);
-	}
 
 	@Override
 	public Object getValue(String spriteId, Valueable... params) {

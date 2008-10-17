@@ -54,8 +54,4 @@ public class Targetvelset extends StateCtrlFunction {
 	}
     
     
-	public static Valueable[] parse(String name, String value) {
-		String[] tokens = ExpressionFactory.expression2Tokens(value);
-		return ExpressionFactory.evalExpression(tokens);
-	}
 }

@@ -24,9 +24,6 @@ public class ExplodRender implements Renderable {
 	}
 	
 	public void render() {
-		if (sprite.getExplod().getAnim().getAction() == 7322)
-			System.out.println("Draw");
-
 		float xScale = sprite.getExplod().getScale().getX();
 		float yScale = sprite.getExplod().getScale().getY();
 		
@@ -68,8 +65,9 @@ public class ExplodRender implements Renderable {
 		// rotate if
 		SpriteDrawProperties dp = sprite.getSprAnimMng().getSpriteDrawProperties();
 
-		float xPos = pos.getX() + x - xOffset + air.getXOffSet() * xScale;
-		float yPos = pos.getY() + y - yOffset + air.getYOffSet() * yScale;
+		float xPos = pos.getX() + x - xOffset;
+		float yPos = pos.getY() + y - yOffset;
+		
 		DrawProperties drawProperties = new DrawProperties(xPos, yPos, isFlipH, isFlipV, ic);
 		if (dp.isActive()) {
 			AngleDrawProperties angle = new AngleDrawProperties();

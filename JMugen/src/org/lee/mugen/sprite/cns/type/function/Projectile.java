@@ -151,7 +151,7 @@ public class Projectile extends Hitdef {
 				,"projremovetime","velocity","remvelocity","accel","velmul"
 				,"projhits","projmisstime","projpriority","projsprpriority"
 				,"projedgebound","projstagebound","projheightbound","offset"
-				,"postype","projshadow","supermovetime","pausemovetime"
+				,"postype","projshadow","supermovetime","pausemovetime", "removeongethit"
 				// check For id
 		});
 		_DEFAULT_VALUES_MAP.putAll(buildDefaultValuesMapForProjectile());
@@ -160,11 +160,6 @@ public class Projectile extends Hitdef {
 	///////////////////////////////////////////////////////////////////
 	// Projectile
 	
-	public static Valueable[] parse(String name, String value) {
-	    String[] tokens = ExpressionFactory.expression2Tokens(value);
-	    Valueable[] vals = ExpressionFactory.evalExpression(tokens);
-	    return vals;
-	}
 
 	public static Valueable[] parseForProjid(String name, String value) {
 	    String[] tokens = ExpressionFactory.expression2Tokens(value);
@@ -291,6 +286,11 @@ public class Projectile extends Hitdef {
 	    Valueable[] vals = ExpressionFactory.evalExpression(tokens);
 	    return vals;
 	}
-
+	public static Valueable[] parseForRemoveongethit(String name, String value) {
+	    String[] tokens = ExpressionFactory.expression2Tokens(value);
+	    Valueable[] vals = ExpressionFactory.evalExpression(tokens);
+	    return vals;
+	}
+	
 	
 }

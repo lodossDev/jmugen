@@ -136,17 +136,21 @@ public class Camera {
 	public int getX() {
 		return x + (envShake.getTime() > 0? r.nextInt(envShake.getAmpl() <= 0? 1: 2): 0);
 	}
+	
+	public int getXNoShaKe() {
+		return x;
+	}
 
 	public void setX(int x) {
 		this.x = x;
-		if (this.x < boundleft)
-			this.x = boundleft;
-		if (this.x > boundright)
-			this.x = boundright;
 	}
 
 	public int getY() {
 		return y + (envShake.getTime() > 0? r.nextInt(envShake.getAmpl() <= 0? 5: 5): 0);
+	}
+	
+	public int getYNoShake() {
+		return y;
 	}
 
 	
@@ -157,10 +161,6 @@ public class Camera {
 
 	public void addX(int i) {
 		x += i;
-		if (this.x < boundleft)
-			this.x = boundleft;
-		if (this.x > boundright)
-			this.x = boundright;
 	}
 	 
 	public void addY(int i) {

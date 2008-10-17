@@ -43,9 +43,4 @@ public class Bindtoroot extends StateCtrlFunction {
     	}
     	return null;
     }
-	public static Valueable[] parse(String name, String value) {
-		String[] tokens = ExpressionFactory.expression2Tokens(value);
-		Valueable[] vals = ExpressionFactory.evalExpression(tokens);
-		return vals;
-	}
 }

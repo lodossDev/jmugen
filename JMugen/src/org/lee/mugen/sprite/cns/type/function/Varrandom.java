@@ -1,5 +1,8 @@
 package org.lee.mugen.sprite.cns.type.function;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.lee.mugen.core.StateMachine;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.character.Sprite;
@@ -15,6 +18,27 @@ import org.lee.mugen.util.MugenRandom;
  */
 public class Varrandom extends StateCtrlFunction {
 
+	private static Map<String, String> _RENAME_FIELD = new HashMap<String, String>();
+	static {
+		_RENAME_FIELD.put("value", "range");
+	}
+	@Override
+	public boolean containsParam(String param) {
+		return getParamNames().contains(param) || _RENAME_FIELD.containsKey(param);
+	}
+	
+	/**
+	 * because of some compatibilties
+	 */
+	@Override
+	public void addParam(String name, Valueable[] param) {
+		if (_RENAME_FIELD.containsKey(name)) {
+			name = _RENAME_FIELD.get(name);
+		}
+		super.addParam(name, param);
+	}
+	
+	
 	public Varrandom() {
 		super("varrandom", new String[] {"v", "range"});
 	}
@@ -62,9 +86,5 @@ public class Varrandom extends StateCtrlFunction {
 		} 
 		spriteState.getVars().setVar(iv + "", randomValue);
 		return null;
-	}
-	public static Valueable[] parse(String name, String value) {
-		String[] tokens = ExpressionFactory.expression2Tokens(value);
-		return ExpressionFactory.evalExpression(tokens);
 	}
 }

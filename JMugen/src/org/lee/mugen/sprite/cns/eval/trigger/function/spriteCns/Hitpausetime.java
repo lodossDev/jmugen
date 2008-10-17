@@ -12,6 +12,8 @@ public class Hitpausetime extends SpriteCnsTriggerFunction {
 	@Override
 	public Object getValue(String spriteId, Valueable... params) {
 		Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);
+		if (sprite.getTempPause() != null)
+			return sprite.getTempPause();
 		return sprite.getPause() > 0? sprite.getPause(): 0;
 	}
 

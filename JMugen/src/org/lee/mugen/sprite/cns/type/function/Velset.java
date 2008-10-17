@@ -17,10 +17,6 @@ public class Velset extends StateCtrlFunction {
 		super("velset", new String[] { "x", "y", "z"});
 	}
 
-	public static Valueable[] parse(String name, String value) {
-		String[] tokens = ExpressionFactory.expression2Tokens(value);
-		return ExpressionFactory.evalExpression(tokens);
-	}
 
 	@Override
 	public Object getValue(String spriteId, Valueable... p) {

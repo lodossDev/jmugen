@@ -1,16 +1,28 @@
 package org.lee.mugen.sprite.cns.eval.function;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.lee.mugen.core.StateMachine;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.SpriteCns;
 import org.lee.mugen.sprite.cns.AbstractCnsFunction;
+import org.lee.mugen.sprite.parser.ExpressionFactory;
 import org.lee.mugen.util.BeanTools;
 
 public abstract class StateCtrlFunction extends AbstractCnsFunction {
 	private boolean isInterrupt = false;
+	
+	public boolean containsParam(String param) {
+		return getParamNames().contains(param);
+	}
+	
+	public Valueable[] parse(String name, String value) {
+		String[] tokens = ExpressionFactory.expression2Tokens(value);
+		return ExpressionFactory.evalExpression(tokens);
+	}
 	
 	public boolean isInterrupt() {
 		return isInterrupt;
@@ -39,48 +51,54 @@ public abstract class StateCtrlFunction extends AbstractCnsFunction {
 		super(functionName, paramNames);
 	}
 
+	private static Map<Class, Map<String, Method>> shareCacheMap = new HashMap<Class, Map<String, Method>>();
+	
+	public static void endOfParsing() {
+		shareCacheMap.clear();
+	}
+	
 	@Override
 	public Valueable[] parseValue(String name, String value) {
-		try {
+		String nameCaseCamel = Character.toUpperCase(name.charAt(0)) + name.substring(1);
+		String buildMethodName = "parseFor" + nameCaseCamel.replace('.', '$');
+
+//		try {
 			
-			return parseSpecial(name, value);
-		} catch (NoSuchMethodException e) {
-			try {
-				Method m = this.getClass().getMethod("parse", String.class,
-						String.class);
-				return (Valueable[]) m.invoke(this, name, value);
-			} catch (Exception e1) {
-				throw new IllegalArgumentException(
-						getClass().getName()
-						+ " do not describe a static method parse that return valuuable[] for given values ");
+			Map<String, Method> methodOfClassMap = shareCacheMap.get(getClass());
+			if (methodOfClassMap == null) {
+				methodOfClassMap = new HashMap<String, Method>();
+				
+				Method[] methods = this.getClass().getMethods();
+				// Assert that there are no overload
+				for (Method m: methods) {
+					if (m.getName().startsWith("parseFor")) {
+						methodOfClassMap.put(m.getName(), m);
+					}
+				}
+				shareCacheMap.put(getClass(), methodOfClassMap);
+			
 			}
-		}
-	}
-	public Valueable[] parseSpecial(String name, String value) throws NoSuchMethodException {
-		String nameCaseCamel = Character.toUpperCase(name.charAt(0))
-				+ name.substring(1);
-		try {
-			Method m = this.getClass().getMethod("parseFor"
-					+ nameCaseCamel.replace('.', '$'), String.class,
-					String.class);
-			return (Valueable[]) m.invoke(this, name, value);
-		} catch (NoSuchMethodException e) {
-			throw e;
-		} 
-		catch (Exception e) {
-			throw new IllegalArgumentException(
-					getClass().getName()
-							+ " do not describe a static method parse that return valuuable[] for given values ");
-		}
-	}
-	private static Method getMethod(Class clazz, String name) throws NoSuchMethodException {
-		for (Method m: clazz.getMethods()) {
-			if (m.getName().equals(name)) {
-				return m;
+			
+			Method m = methodOfClassMap.get(buildMethodName);
+			if (m != null) {
+				try {
+					return (Valueable[]) m.invoke(this, name, value);
+				} catch (Exception e) {
+					throw new IllegalArgumentException(
+							getClass().getName()
+							+ " Error In Parsing " + buildMethodName + " >> " + name + " = " + value);
+				}
 			}
-		}
-		throw new NoSuchMethodException();
+			return parse(name, value);
+			
+//		} catch (Exception e) {
+//			throw new IllegalArgumentException(
+//					getClass().getName()
+//					+ " do not describe a static method parse that return valuuable[] for given values ");
+//		}
 	}
+
+
 	private void executeGenerics(String spriteId, Object bean, String prefixFunction, String name, Valueable... pValueables)
 			throws Exception {
 

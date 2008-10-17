@@ -57,6 +57,9 @@ public class SpriteRender implements Renderable {
 			adp.setYAnchor(pos.getY() + y + imgSprite.getYAxis() * yScale);
 			adp.setXScale(dp.getXScale());
 			adp.setYScale(dp.getYScale());
+			if (sprite.isFlip()) {
+				adp.setAngleset(adp.getAngleset() * -1);
+			}
 			drawProperties.setAngleDrawProperties(adp);
 			drawProperties.setXScaleFactor(dp.getXScale());
 			drawProperties.setYScaleFactor(dp.getYScale());
