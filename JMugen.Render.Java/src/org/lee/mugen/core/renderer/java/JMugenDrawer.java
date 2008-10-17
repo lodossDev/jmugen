@@ -20,6 +20,8 @@ import org.lee.mugen.renderer.GameWindow;
 import org.lee.mugen.renderer.ImageContainer;
 import org.lee.mugen.renderer.Trans;
 
+import composite.BlendComposite;
+
 public class JMugenDrawer extends MugenDrawer {
 	
 	private void processRotationProperties(AngleDrawProperties dp) {
@@ -32,21 +34,21 @@ public class JMugenDrawer extends MugenDrawer {
 
 	}
 	
+	
 	@Override
 	public void draw(DrawProperties dp) {
 		JGameWindow window = (JGameWindow) getInstanceOfGameWindow();
 		Graphics2D g = (Graphics2D) window.getDrawGraphics();
 		Composite composite = null;
 		if (dp.getTrans() == Trans.ADD) {
-			composite = MiscCompositeIndexColor.getInstance(MiscCompositeIndexColor.ADD, 1f);
-//			composite = AlphaComposite.getInstance(AlphaComposite.XOR);
+//			composite = MiscCompositeIndexColor.getInstance(MiscCompositeIndexColor.ADD, 1f);
+			composite = AlphaComposite.getInstance(AlphaComposite.SRC_ATOP);
 		} else if (dp.getTrans() == Trans.ADD1) {
-			composite = MiscCompositeIndexColor.getInstance(MiscCompositeIndexColor.ADD, 1f);
-//			composite = AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 0.5f);
+//			composite = MiscCompositeIndexColor.getInstance(MiscCompositeIndexColor.ADD, 1f);
+			composite = AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 0.5f);
 		} else if (dp.getTrans() == Trans.SUB) {
-			
-			composite = MiscCompositeIndexColor.getInstance(MiscCompositeIndexColor.SUBTRACT, 0.5f);
-//			composite = AlphaComposite.getInstance(AlphaComposite.DST_OUT);
+//			composite = MiscCompositeIndexColor.getInstance(MiscCompositeIndexColor.SUBTRACT, 0.5f);
+			composite = AlphaComposite.getInstance(AlphaComposite.DST_OUT);
 
 		}
 		
@@ -146,8 +148,13 @@ public class JMugenDrawer extends MugenDrawer {
 	public ImageContainer getImageContainer(Object imageData) {
 		RawPCXImage pcx = (RawPCXImage) imageData;
 		try {
+//			BufferedImage image = (BufferedImage) PCXLoader.loadImage(new ByteArrayInputStream(
+//					pcx.getData()), pcx.getPalette(), false, true);
+
+			
 			BufferedImage image = (BufferedImage) PCXLoader.loadImageColorIndexed(new ByteArrayInputStream(
-						pcx.getData()), pcx.getPalette(), false, true);
+					pcx.getData()), pcx.getPalette(), false, true);
+
 			return new ImageContainer(image, image.getWidth(), image.getHeight());
 		} catch (IOException e) {
 			throw new IllegalArgumentException();
