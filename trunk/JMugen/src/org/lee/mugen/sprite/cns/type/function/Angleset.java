@@ -17,10 +17,6 @@ public class Angleset extends StateCtrlFunction {
     public Angleset() {
         super("angleset", new String[] {"value"});
     }
-    public static Valueable[] parse(String name, String value) {
-		String[] tokens = ExpressionFactory.expression2Tokens(value);
-		return ExpressionFactory.evalExpression(tokens);
-    }
 
     
     @Override

@@ -60,7 +60,7 @@ public class Helper extends StateCtrlFunction {
 		final SpriteHelper helperSpr = new SpriteHelper(spriteId + "'s helper " + helperSub.hashCode(), sprite, helperSub);
 
 		fillBeanSize(spriteId, helperSpr.getInfo());
-		System.out.println("Create helper " + helperSub.getId());
+//		System.out.println("Create helper " + helperSub.getId());
 		
 		
 		if (helperSpr.getHelperSub().getFacing() == -1)

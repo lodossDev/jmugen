@@ -143,7 +143,8 @@ public class Assertspecial extends StateCtrlFunction {
 		return null;
 	}
 
-	public static Valueable[] parse(String name, String value) {
+	@Override
+	public Valueable[] parse(String name, String value) {
 		final Flag flag = Flag.valueOf(value);
 		return new Valueable[] {new ObjectValueable(flag)};
 	}

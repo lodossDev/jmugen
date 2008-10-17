@@ -29,9 +29,6 @@ public class Nothitby extends StateCtrlFunction {
 		sprite.getInfo().setNothitby(notHitBySub);
 		return null;
 	}
-	public static Valueable[] parse(String name, String value) {
-		return ExpressionFactory.evalExpression(value);
-	}
 	// TODO NOTHITBY
 	public static Valueable[] parseForValue(String name, String value) {
 		final Object v = BeanTools.getConvertersMap().get(ReversalAttrClass.class).convert(value);

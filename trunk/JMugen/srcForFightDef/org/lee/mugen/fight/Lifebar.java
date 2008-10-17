@@ -283,10 +283,17 @@ public class Lifebar {
 
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
-				System.err.println(this.getClass().getName()
-						+ " setProperties cause problem ! >" + accessor + " = "
-						+ objectValues);
+//				e.printStackTrace();
+
+				System.err.print(this.getClass().getName()
+						+ " doesn't know this property > " + accessor + " = ");
+				int i = 0;
+				for (Object o: objectValues) {
+					i++;
+					System.err.print(o + (i < objectValues.length? ", ": ""));
+
+				}
+				System.err.println();
 			}
 		}
 	}

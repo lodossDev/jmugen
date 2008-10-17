@@ -107,7 +107,10 @@ public class Explod extends StateCtrlFunction {
 	static {
 		_RENAME_FIELD.put("velocity", "vel");
 	}
-
+	@Override
+	public boolean containsParam(String param) {
+		return getParamNames().contains(param) || _RENAME_FIELD.containsKey(param);
+	}
 	
 	/**
 	 * because of some compatibilties
@@ -129,6 +132,8 @@ public class Explod extends StateCtrlFunction {
 		return vals;
 	};
     
+	
+
     
     @Override
     public Object getValue(String spriteId, Valueable... params) {
@@ -146,9 +151,6 @@ public class Explod extends StateCtrlFunction {
     		SpriteShadowRender shadowRender = new SpriteShadowRender(explodSprite, false);
         	StateMachine.getInstance().addRender(shadowRender);
     	}
-
-		if (explodSub.getAnim().getAction() == 7322)
-			System.out.println("7322");
 
     	StateMachine.getInstance().getOtherSprites().add(explodSprite);
     	explodSprite.remove();

@@ -13,10 +13,6 @@ public class Statetypeset extends StateCtrlFunction {
 	public Statetypeset() {
 		super("statetypeset", new String[] {"physics", "statetype", "movetype"});
 	}
-	public static Valueable[] parse(String name, String value) {
-		String[] tokens = ExpressionFactory.expression2Tokens(value);
-		return ExpressionFactory.evalExpression(tokens);
-	}
 	@Override
 	public Object getValue(String spriteId, Valueable... p) {
 		Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);

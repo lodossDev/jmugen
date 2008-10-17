@@ -29,7 +29,7 @@ public class Bindtoparent extends StateCtrlFunction {
 				@Override
 				public PointF getPos() {
 					return new PointF(parent.getInfo().getXPos() + 
-			    	    	(parent.isFlip()? +parentSub.getPos().getX(): -parentSub.getPos().getX()),
+			    	    	(parent.isFlip()? -parentSub.getPos().getX(): +parentSub.getPos().getX()),
 			    	    	parent.getInfo().getYPos() + parentSub.getPos().getY()
 			    	    	);
 				}
@@ -43,9 +43,4 @@ public class Bindtoparent extends StateCtrlFunction {
     	}
     	return null;
     }
-	public static Valueable[] parse(String name, String value) {
-		String[] tokens = ExpressionFactory.expression2Tokens(value);
-		Valueable[] vals = ExpressionFactory.evalExpression(tokens);
-		return vals;
-	}
 }

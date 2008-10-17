@@ -269,7 +269,8 @@ public class FightEngine {
 				e.printStackTrace();
 			}
 
-			spriteHitter.setPause(hitdef.getPausetime().getP1_pausetime());
+			if (spriteHitter != null) // It's a helper
+				spriteHitter.setPause(hitdef.getPausetime().getP1_pausetime());
 			
 			sprite.getInfo().setLastHitdef(hitdef);
 			sprite.getInfo().addLife(-hitdef.getDamage().getHit_damage());

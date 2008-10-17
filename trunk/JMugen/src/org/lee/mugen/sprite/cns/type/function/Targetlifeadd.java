@@ -14,10 +14,6 @@ public class Targetlifeadd extends StateCtrlFunction {
     public Targetlifeadd() {
         super("targetlifeadd", new String[] {"value", "id", "kill", "absolute"});
     }
-	public static Valueable[] parse(String name, String value) {
-		String[] tokens = ExpressionFactory.expression2Tokens(value);
-		return ExpressionFactory.evalExpression(tokens);
-	}
 	
 	@Override
 	public Object getValue(String spriteId, Valueable... p) {

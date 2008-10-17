@@ -12,12 +12,6 @@ public class Bgpalfx extends StateCtrlFunction {
 		super("bgpalfx", new String[] { "time", "add", "mul", "sinadd",
 				"invertall", "color" });
 	}
-	public static Valueable[] parse(String name, String value) {
-		String[] tokens = ExpressionFactory.expression2Tokens(value);
-		Valueable[] vals = ExpressionFactory.evalExpression(tokens);
-		return vals;
-	}
-
 
 	@Override
 	public Object getValue(String spriteId, Valueable... params) {

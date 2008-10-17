@@ -14,10 +14,6 @@ public class Explodbindtime extends StateCtrlFunction {
     public Explodbindtime() {
         super("explodbindtime", new String[] {"id", "value", "time"});
     }
-    public static Valueable[] parse(String name, String value) {
-		return ExpressionFactory.evalExpression(value);
-    }
-    
     @Override
     protected Object[] getDefaultValues(String name) {
     	if ("id".equals(name)) {

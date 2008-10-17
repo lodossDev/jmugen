@@ -7,9 +7,11 @@ public class Displaytoclipboard extends StateCtrlFunction {
 
     // TODO : displaytoclipboard
     public Displaytoclipboard() {
-        super("displaytoclipboard", new String[] {});
+        super("displaytoclipboard", new String[] {"text", "params"});
     }
-    public static Valueable[] parse(String name, String value) {
+    
+    @Override
+    public Valueable[] parse(String name, String value) {
         return null;
     }
     public void addParam(String name, Valueable[] param) {

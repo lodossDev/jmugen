@@ -301,10 +301,11 @@ public class BGCtrlDef {
 						bgCtrlFunction.addParam(name, valueables);
 						
 					} catch (RuntimeException e) {
-						//e.printStackTrace();
-						System.err.println("RuntimeExecption skip error : " + "stateDef = " + bgDefId + " - stateCtrl = " + bgCtrlId + " >> " + line);
-						
-						//throw e;
+						System.err.println(
+								"Parsing BGCtrlDef for Type : " + bgCtrlFunction.getFunctionName() + 
+								" in bgDefId = " + bgDefId + 
+								" - bgCtrlId = " + bgCtrlId + 
+								" doesn't take this argument >> " + line);
 					}
 				}
 			}

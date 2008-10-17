@@ -19,11 +19,6 @@ public class Afterimagetime extends StateCtrlFunction {
 	public Afterimagetime() {
 		super("afterimagetime", new String[] {"time"});
 	}
-	public static Valueable[] parse(String name, String value) {
-		String[] tokens = ExpressionFactory.expression2Tokens(value);
-		Valueable[] vals = ExpressionFactory.evalExpression(tokens);
-		return vals;
-	}
 	@Override
 	public Object getValue(String spriteId, Valueable... params) {
 		List<Renderable> list = StateMachine.getInstance().getRenderables();

@@ -25,6 +25,7 @@ import org.lee.mugen.sprite.baseForParse.SpriteSFF;
 import org.lee.mugen.sprite.character.AnimGroup;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.SpriteHelper;
+import org.lee.mugen.sprite.cns.eval.function.StateCtrlFunction;
 import org.lee.mugen.sprite.parser.ExpressionFactory;
 import org.lee.mugen.sprite.parser.Parser;
 import org.lee.mugen.sprite.parser.Parser.GroupText;
@@ -204,6 +205,9 @@ public class Stage {
 		SffReader sffReader = new SffReader(file.getAbsolutePath(), null);
 		SpriteSFF spriteSFF = new SpriteSFF(sffReader, true);
 		stage.setSpriteSFF(spriteSFF);
+		
+		StateCtrlFunction.endOfParsing();
+		
 		return stage;
 	}
 	
@@ -333,7 +337,7 @@ public class Stage {
 				bg.process();
 			}
 		}
-		int xCam = getCamera().getX();
+		int xCam = getCamera().getXNoShaKe();
 		int xSpr = 0;
 
 		int[] minMaxX = getMinMaxForXSprite();
@@ -341,17 +345,9 @@ public class Stage {
 		int maxX = minMaxX[1];
 		xSpr = minX + (maxX - minX)/2;
 		
-//		int yCam = getCamera().getY();
-//		int ySpr = 0;
-//
-//		int[] minMaxY = getMinMaxForYSprite();
-//		int minY = minMaxY[0];
-//		int maxY = minMaxY[1];
-//		ySpr = minY + (maxY - minY)/2;
-
-		if (getCamera().getEnvShake().getTime() > 0) {
-			
-		} else {
+//		if (getCamera().getEnvShake().getTime() > 0) {
+//			
+//		} else {
 			int left = getBound().getScreenleft();
 			int right = getBound().getScreenright();
 
@@ -366,7 +362,7 @@ public class Stage {
 			Sprite sprRight = StateMachine.getInstance().getSpriteInstance("1");
 			
 			for (Sprite s: StateMachine.getInstance().getSprites()) {
-				if (s instanceof SpriteHelper && (((SpriteHelper)s).getHelperSub().getHelpertype().equals("normal")))
+				if (s instanceof SpriteHelper)// && (((SpriteHelper)s).getHelperSub().getHelpertype().equals("normal")))
 					continue;
 				if (sprLeft.getInfo().getXPos() > s.getInfo().getXPos())
 					sprLeft = s;
@@ -380,36 +376,43 @@ public class Stage {
 			
 			if (diff > 5 && !PhysicsEngime.isOutOfScreeen(sprLeft, -1))
 				getCamera().addX(-1);
-			//////
-			int yCam = getCamera().getY();
+			
+			
+			
+			
+			////// Y 
+			int yCam = getCamera().getYNoShake();
 			int ySpr = 0;
+			Sprite highestSpr = null;
 			for (Sprite spr: StateMachine.getInstance().getSprites()) {
-				if (!(spr instanceof SpriteHelper)) {
-					ySpr = (int) Math.min(ySpr, spr.getInfo().getYPos());
-				}
+				if (spr instanceof SpriteHelper)
+					continue;
+				if (highestSpr == null)
+					highestSpr = spr;
+				if (highestSpr.getInfo().getYPos() > spr.getInfo().getYPos())
+					highestSpr = spr;
+				ySpr = (int) Math.min(ySpr, spr.getInfo().getYPos());
 			}
-			ySpr = ySpr < -150? ySpr: 0;
-			int yDiff = yCam + ySpr;
+			int yDiff = yCam - ySpr;
 			if (yDiff < 0)
-				getCamera().setY(getCamera().getY() + 1);
+				getCamera().setY((int) (yCam + highestSpr.getInfo().getVelset().getY()));
 			
 			if (yDiff > 0)
-				getCamera().setY(getCamera().getY() - 1);
+				getCamera().setY((int) (yCam - highestSpr.getInfo().getVelset().getY()));
 			
-			if (getCamera().getX() < leftLimit)
+			if (getCamera().getXNoShaKe() < leftLimit)
 				getCamera().setX(leftLimit);
-			if (getCamera().getX() > rightLimit)
+			if (getCamera().getXNoShaKe() > rightLimit)
 				getCamera().setX(rightLimit);
-			if (getCamera().getY() < getCamera().getBoundlow())
+			if (getCamera().getYNoShake() < getCamera().getBoundlow())
 				getCamera().setY(getCamera().getBoundlow());
-			if (getCamera().getY() > -getCamera()
+			if (getCamera().getYNoShake() > -getCamera()
 					.getBoundhigh())
 				getCamera().setY(-getCamera().getBoundhigh());
 		
 			
-		}
+//		}
 		getCamera().getEnvShake().addTime(-1);
-//		getCamera().setX(-429);
 	}
 
 

@@ -18,12 +18,6 @@ public class Allpalfx extends StateCtrlFunction {
         super("allpalfx", new String[] {"time", "add", "mul", "sinadd",
 				"invertall", "color" });
 	}
-	public static Valueable[] parse(String name, String value) {
-		String[] tokens = ExpressionFactory.expression2Tokens(value);
-		Valueable[] vals = ExpressionFactory.evalExpression(tokens);
-		return vals;
-	}
-
 
 	@Override
 	public Object getValue(String spriteId, Valueable... params) {

@@ -31,6 +31,16 @@ public class Varadd extends StateCtrlFunction {
 	private List<Functionable> listOfValSet = new ArrayList<Functionable>();
 	private List<Functionable> listOfValFSet = new ArrayList<Functionable>();
 
+	protected String REG_IS_VAR_PARAM = (
+			_SYSVAR_REG + "|" + _SYSVAR_F_REG + "|" + _VAR_REG + "|" + _VAR_F_REG
+	);
+
+	
+	@Override
+    public boolean containsParam(String param) {
+    	return super.containsParam(param) || Pattern.matches(REG_IS_VAR_PARAM, param);
+    }
+	
 	public void addParam(String name, Valueable[] param) {
 		
 		if (Pattern.matches(_SYSVAR_REG, name)) {
@@ -134,7 +144,7 @@ public class Varadd extends StateCtrlFunction {
 		}
 		int index = getParamIndex(name);
 		if (index == -1) {
-			System.out.println("Ce parametre n'existe pas : Varset : " + name);
+			System.out.println("This line can't be compile in Varset >> " + name);
 			return;
 		}
 			
@@ -191,9 +201,5 @@ public class Varadd extends StateCtrlFunction {
 		}
 		
 		return null;
-	}
-	public static Valueable[] parse(String name, String value) {
-		String[] tokens = ExpressionFactory.expression2Tokens(value);
-		return ExpressionFactory.evalExpression(tokens);
 	}
 }

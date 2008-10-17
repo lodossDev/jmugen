@@ -1,6 +1,7 @@
 package org.lee.mugen.sprite.character;
 
 import java.awt.Rectangle;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -26,7 +27,7 @@ import org.lee.mugen.sprite.entity.PointF;
 import org.lee.mugen.sprite.entity.Shake;
 import org.lee.mugen.sprite.parser.Parser;
 
-public class SpriteCns implements Cloneable {
+public class SpriteCns implements Cloneable, Serializable {
 	public static enum Type {
 		S("STAND", 1), C("CROUCH", 2), I("IN_THE_AIR", 4), L("LYING_DOUWN", 8), A(
 				"IN_THE_AIR", 4), U("UNCHANGED", 32);
@@ -783,13 +784,15 @@ public class SpriteCns implements Cloneable {
 	public void setPhysics(Physics physics) {
 		if (physics == Physics.U)
 			return;
+//		if (this.physics == Physics.A && physics == Physics.S && getSprite().getSpriteState().getCurrentState().getIntId() == 50)
+//			System.out.println();
 		this.physics = physics;
 	}
 
 	public void setPhysics(Object physics) {
 		if (Physics.valueOf(physics.toString()) == Physics.U)
 			return;
-		this.physics = Physics.valueOf(physics.toString());
+		setPhysics(Physics.valueOf(physics.toString()));
 	}
 
 	public Type getType() {

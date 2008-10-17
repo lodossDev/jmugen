@@ -795,6 +795,9 @@ public class BeanTools {
 		return convertersMap;
 	}
 	private static Pattern LIST_PARTTERN_BEAN = Pattern.compile(".*(\\d+)");
+	
+	
+	
 	public static void setObject(Object bean, String acces, Object value)
 			throws SecurityException, NoSuchMethodException,
 			IllegalArgumentException, IllegalAccessException,
@@ -818,11 +821,11 @@ public class BeanTools {
 					}
 				} catch (NoSuchMethodException nsme) {
 					// TODO: handle exception
-				}catch (Exception e) {
-					e.printStackTrace();
+//					nsme.printStackTrace();
+				} catch (Exception e) {
+//					e.printStackTrace();
 				}
 			} 
-			
 			Object o = PropertyUtils.getProperty(bean, newBean);
 			setObject(o, target, value);
 				
@@ -871,7 +874,7 @@ public class BeanTools {
 			return m;
 			
 		} catch (Exception e) {
-			// TODO: handle exception
+//			e.printStackTrace();
 		}
 		return null;
 	 }

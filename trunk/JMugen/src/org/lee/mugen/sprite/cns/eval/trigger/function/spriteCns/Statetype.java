@@ -45,7 +45,7 @@ public class Statetype extends SpriteCnsTriggerFunction {
 
 				public Object getValue(String spriteId, Valueable... params) {
 					final Sprite spr = StateMachine.getInstance().getSpriteInstance(spriteId);
-					return spr.getInfo().getType() != type ? 1: 0;
+					return spr.getInfo().getType().getBit() != type.getBit() ? 1: 0;
 				}
 				
 			};
@@ -59,7 +59,7 @@ public class Statetype extends SpriteCnsTriggerFunction {
 
 				public Object getValue(String spriteId, Valueable... params) {
 					final Sprite spr = StateMachine.getInstance().getSpriteInstance(spriteId);
-					return spr.getInfo().getType() == type? 1: 0;
+					return spr.getInfo().getType().getBit() == type.getBit()? 1: 0;
 				}
 				
 			};

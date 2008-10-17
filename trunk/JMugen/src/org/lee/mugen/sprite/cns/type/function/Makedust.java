@@ -95,10 +95,6 @@ public class Makedust extends StateCtrlFunction {
 	
 	private static Map<String, MakeDustSpriteManager> MAKEDUSTMAP = new HashMap<String, MakeDustSpriteManager>();
 	
-	public static Valueable[] parse(String name, String value) {
-		String[] tokens = ExpressionFactory.expression2Tokens(value);
-		return ExpressionFactory.evalExpression(tokens);
-	}
 	public void addParam(String name, Valueable[] param) {
 		int index = getParamIndex(name);
 		if (index == -1) {

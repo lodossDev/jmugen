@@ -12,10 +12,15 @@ public class Null extends StateCtrlFunction {
 	public Null() {
 		super("null", new String[0]);
 	}
-	public static Valueable[] parse(String name, String value) {
+	@Override
+	public Valueable[] parse(String name, String value) {
 		return null;
 	}
 	public void addParam(String name, Valueable[] param) {
 
+	}
+	@Override
+	public boolean containsParam(String param) {
+		return true;
 	}
 }

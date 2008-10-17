@@ -14,13 +14,9 @@ public class Reversaldef extends StateCtrlFunction {
 	// TODO : reversaldef
 	public Reversaldef() {
 		super("reversaldef", new String[] { "pausetime", "sparkno", "sparkxy",
-				"hitsound", "p1stateno", "p2stateno"});
+				"hitsound", "p1stateno", "p2stateno", "reversal.attr"});
 	}
 
-	public static Valueable[] parse(String name, String value) {
-		String[] tokens = ExpressionFactory.expression2Tokens(value);
-		return ExpressionFactory.evalExpression(tokens);
-	}
 
 	public static Valueable[] parseForReversal$attr(String name, final String value) {
 		final Object v = BeanTools.getConvertersMap().get(ReversalAttrClass.class).convert(value);

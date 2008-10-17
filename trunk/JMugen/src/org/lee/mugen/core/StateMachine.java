@@ -43,6 +43,7 @@ import org.lee.mugen.sprite.entity.AfterImageSprite;
 import org.lee.mugen.sprite.entity.ExplodSprite;
 import org.lee.mugen.sprite.entity.MakeDustSpriteManager;
 import org.lee.mugen.sprite.entity.ProjectileSprite;
+import org.lee.mugen.sprite.parser.ExpressionFactory;
 
 import com.sun.org.apache.bcel.internal.generic.GETSTATIC;
 
@@ -214,7 +215,7 @@ public class StateMachine implements Game {
 				_spriteMap.remove(spriteId);
 				
 				if (spr instanceof SpriteHelper) {
-					System.out.println("destroy " + spriteId);
+//					System.out.println("destroy " + spriteId);
 					SpriteHelper sprH = (SpriteHelper) spr;
 					ISpriteCmdProcess scp = getSpriteCmdProcessMap().get(sprH.getHelperSub().getSpriteFrom().getSpriteId());
 					if (scp != null)
@@ -280,7 +281,11 @@ public class StateMachine implements Game {
 		if (!spriteLoader.isEmpty()) {
 			for (SpriteLoader sl: spriteLoader) {
 				System.out.println("Load Sprite " + sl.def);
+				
+				ExpressionFactory.totalTime = 0;
 				loadSprite(sl);
+				System.out.println("Expression compile Time for Sprite " + sl.getDef() + " >> "+ ExpressionFactory.totalTime);
+
 			}
 			spriteLoader.clear();			
 		}

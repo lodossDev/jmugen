@@ -47,8 +47,4 @@ public class Changestate extends StateCtrlFunction {
 		spriteState.changeStateDef(ivalue);
 		return null;
 	}
-	public static Valueable[] parse(String name, String value) {
-		String[] tokens = ExpressionFactory.expression2Tokens(value);
-		return ExpressionFactory.evalExpression(tokens);
-	}
 }

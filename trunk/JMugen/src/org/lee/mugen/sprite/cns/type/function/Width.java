@@ -20,12 +20,6 @@ public class Width extends StateCtrlFunction {
 		super("width", new String[] { "edge", "player", "value" });
 	}
 
-	public static Valueable[] parse(String name, String value) {
-		String[] tokens = ExpressionFactory.expression2Tokens(value);
-		Valueable[] vals = ExpressionFactory.evalExpression(tokens);
-		return vals;
-	}
-
 	@Override
 	public Object getValue(String spriteId, Valueable... params) {
 		Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);

@@ -7,9 +7,11 @@ public class Forcefeedback extends StateCtrlFunction {
 
 	// TODO : Forcefeedback
 	public Forcefeedback() {
-		super("forcefeedback", new String[] {});
+		super("forcefeedback", new String[] {"waveform", "time", "freq", "ampl", "self"});
 	}
-	public static Valueable[] parse(String name, String value) {
+	
+	@Override
+	public Valueable[] parse(String name, String value) {
 		return null;
 	}
 	public void addParam(String name, Valueable[] param) {

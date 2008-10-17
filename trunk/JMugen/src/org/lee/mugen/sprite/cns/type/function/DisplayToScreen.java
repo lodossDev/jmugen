@@ -39,11 +39,6 @@ public class DisplayToScreen extends StateCtrlFunction {
 		super("displaytoscreen", new String[] {"value", "pos", "time"});
 	}
 
-	public static Valueable[] parse(String name, String value) {
-		String[] tokens = ExpressionFactory.expression2Tokens(value);
-		Valueable[] vals = ExpressionFactory.evalExpression(tokens);
-		return vals;
-	}
 	@Override
 	public Object getValue(String spriteId, Valueable... params) {
 		DisplayToScreenSub sub = new DisplayToScreenSub();

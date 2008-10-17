@@ -168,8 +168,10 @@ public class ExpressionFactory {
 	public static Valueable[] evalExpression(String[] tokens) {
 		return evalExpression(tokens, true, false);
 	}
-	
+	public static long totalTime = 0;
 	public static Valueable[] evalExpression(String[] tokens, boolean isProcessSprite, boolean isProcessBg) {
+		long start = System.currentTimeMillis();
+		
 		final LinkedList<Valueable> values = new LinkedList<Valueable>();
 		final LinkedList<MathFunction> ops = new LinkedList<MathFunction>();
 		int i = 0;
@@ -365,6 +367,11 @@ public class ExpressionFactory {
 		}
 
 		giveValue(values, ops, valuableList);
+		
+		long end = System.currentTimeMillis();
+		
+		totalTime += end - start;
+		
 		return (Valueable[]) valuableList.toArray(new Valueable[0]);
 	}
 
@@ -372,12 +379,9 @@ public class ExpressionFactory {
 			LinkedList<MathFunction> ops, 
 			ArrayList<Valueable> valuableList) {
 		Collections.sort(ops, new Comparator<MathFunction>() {
-
 			public int compare(MathFunction o1, MathFunction o2) {
-				
 				return o2.getPriority() - o1.getPriority();
 			}
-			
 		});
 		for (final MathFunction op: ops) {
 			int paramCount = op.getParamCount();
