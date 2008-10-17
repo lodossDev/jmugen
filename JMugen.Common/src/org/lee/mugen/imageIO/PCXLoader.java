@@ -41,6 +41,8 @@ public class PCXLoader {
         IndexColorModel icm = new IndexColorModel(8, 256, convertToByteArray(pal.r), convertToByteArray(pal.g), convertToByteArray(pal.b), 0);
         
         image = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_INDEXED, icm);
+        
+//        BufferedImage.TYPE_INT_RGB
 
 //WritableRaster raster = Raster.createInterleavedRaster(DataBuffer.TYPE_BYTE, width, height , 3,null);
 //		
