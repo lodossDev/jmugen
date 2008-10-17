@@ -36,13 +36,14 @@ import org.lee.mugen.renderer.lwjgl.shader.PalFxShader;
 import org.lwjgl.opengl.GL11;
 
 public class LMugenDrawer extends MugenDrawer {
-
+	private boolean isScaleByForMeDebug() {
+		return false;
+	}
 	private void processRotationProperties(AngleDrawProperties dp) {
 		if (dp != null) {
 			GL11.glTranslatef(dp.getXAnchor(), dp.getYAnchor(), 0);
 			GL11.glRotatef(dp.getAngleset(), 0, 0, 1);
 			GL11.glTranslatef(-dp.getXAnchor(), -dp.getYAnchor(), 0);
-			// scale(dp.getXScale(), dp.getYScale());
 
 		}
 
@@ -251,16 +252,16 @@ public class LMugenDrawer extends MugenDrawer {
 
 		// bind to the appropriate texture for this sprite
 		texture.bind();
+		
+		
+		if (isScaleByForMeDebug()) {
+			scale(0.5f, 0.5f); // This scale help me to see out of screen
+			GL11.glTranslated(160, 240, 0);
+		}
 
-//		scale(0.5f, 0.5f); // This scale help me to see out of screen
-//		GL11.glTranslated(160, 240, 0);
 		
 		processRotationProperties(dp.getAngleDrawProperties());
-		// if (dp.getXScaleFactor() != 1f && dp.getYScaleFactor() != 1) {
-		// GL11.glScaled(dp.getXScaleFactor(), dp.getYScaleFactor(), 0);
-		// }
 
-		// GL11.glScaled(0.5f, 0.5f, 0);
 		drawWithPropertiesColor(dp);
 		GL11.glPopMatrix();
 
@@ -272,8 +273,10 @@ public class LMugenDrawer extends MugenDrawer {
 		// make sure the start and end points are drawn - GL implementations
 		// seem a bit flakey on this
 		
-//		scale(0.5f, 0.5f);
-//		GL11.glTranslated(160, 240, 0);
+		if (isScaleByForMeDebug()) {
+			scale(0.5f, 0.5f); // This scale help me to see out of screen
+			GL11.glTranslated(160, 240, 0);
+		}
 		
 		GL11.glBegin(GL11.GL_POINTS);
 		GL11.glVertex2f(x1, y1);
@@ -285,9 +288,11 @@ public class LMugenDrawer extends MugenDrawer {
 		GL11.glEnd();
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		
-		
-//		GL11.glTranslated(-160, -240, 0);
-//		scale(2f, 2f);
+		if (isScaleByForMeDebug()) {
+			GL11.glTranslated(-160, -240, 0);
+			scale(2f, 2f);
+		}
+
 		
 	}
 
@@ -322,8 +327,6 @@ public class LMugenDrawer extends MugenDrawer {
 			try {
 				this.img = (BufferedImage) PCXLoader.loadImage(new ByteArrayInputStream(
 							pcx.getData()), pcx.getPalette(), false, true);
-				if (this.img == null)
-					System.out.println();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
