@@ -55,9 +55,10 @@ public class StateCtrl implements Cloneable {
 		if (getSprite(spriteId).isPause() && getIgnorehitpause() == 0 && Integer.parseInt(stateDefId) > 0) {
 			return isTriggered = false;
 		}
-		if (getSprite(spriteId).isPause() && getIgnorehitpause() > 0) {
+		if (getSprite(spriteId).isPause() && getIgnorehitpause() > 0 && getIgnorehitpause() != 1) {
 			ignorehitpause--;
 		}
+		
 		
 		if (persistentCounter >= 0) {
 			boolean mainTrig = true;

@@ -210,14 +210,16 @@ public class SparkRender {
 				
 				@Override
 				public boolean remove() {
-					if (spriteAnimManager.getAction() == -1)
+					if (this.sprAnimMng.getAction() == -1)
 						return true;
-					if (sprAnimMng.getCurrentGroupSprite() == null)
+					if (this.sprAnimMng.getCurrentGroupSprite() == null)
 						return true;
 					return error || this.sprAnimMng.getAnimTime() == 0;
 				}
 				
 			};
+			sprToRender.setSprAnimMng(spriteAnimManager);
+			sprToRender.setSprAnimMng(spriteAnimManager);
 			
 			return sprToRender;
 		}

@@ -153,8 +153,6 @@ public abstract class StateCtrlFunction extends AbstractCnsFunction {
 	//				throw new IllegalStateException("This state musn't be reached !!  " + getClass());
 				}
 			}
-			
-
 	}
 	protected Object[] getValueFromName(String spriteId, String name) {
 		int nameIndex = getParamIndex(name);

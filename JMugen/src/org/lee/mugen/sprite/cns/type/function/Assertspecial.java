@@ -115,6 +115,8 @@ public class Assertspecial extends StateCtrlFunction {
 			Valueable flag = valueableParams[flagIndex][0];
 			if (flag != null) {
 				Flag eflag = (Flag) flag.getValue(spriteId);
+				if (eflag == Flag.nowalk)
+					System.out.println();
 				assertSpecial.setFlag(eflag);
 			}
 		}		

@@ -19,6 +19,7 @@ import org.lee.mugen.core.renderer.game.AfterimageRender;
 import org.lee.mugen.core.renderer.game.BackgroundRender;
 import org.lee.mugen.core.renderer.game.CnsRender;
 import org.lee.mugen.core.renderer.game.DebugRender;
+import org.lee.mugen.core.renderer.game.ExplodRender;
 import org.lee.mugen.core.renderer.game.LifeBarRenderNormal;
 import org.lee.mugen.core.renderer.game.MakedustRender;
 import org.lee.mugen.core.renderer.game.SpriteRender;
@@ -551,7 +552,8 @@ public class StateMachine implements Game {
 				}
 			}
 			if (renderable.isProcess()) {
-				renderable.render();
+//				if (renderable instanceof ExplodRender)
+					renderable.render();
 			}
 			if (renderable.remove()) {
 				toRemove.add(renderable);

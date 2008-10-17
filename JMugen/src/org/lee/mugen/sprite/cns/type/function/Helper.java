@@ -1,8 +1,10 @@
 package org.lee.mugen.sprite.cns.type.function;
 
 import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.renderer.game.CnsRender;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.character.Sprite;
+import org.lee.mugen.sprite.character.SpriteCns;
 import org.lee.mugen.sprite.character.SpriteHelper;
 import org.lee.mugen.sprite.cns.eval.function.StateCtrlFunction;
 import org.lee.mugen.sprite.entity.HelperSub;
@@ -28,7 +30,21 @@ public class Helper extends StateCtrlFunction {
         });
     }
 
-
+    public void fillBeanSize(String spriteId, SpriteCns beanSub) {
+		String error = null;
+			for (String paramName : getParamNames()) {
+				try {
+					error = paramName;
+					if (paramName.startsWith("size")) {
+						fillBeanChild(spriteId, paramName, beanSub);
+					}
+				} catch (Exception e) {
+					System.err.println(beanSub.getClass().getName() + ">>>>>>>>>" + error);
+					e.printStackTrace();
+	//				throw new IllegalStateException("This state musn't be reached !!  " + getClass());
+				}
+			}
+	}
 
     @Override
     public Object getValue(String spriteId, Valueable... params) {
@@ -37,8 +53,13 @@ public class Helper extends StateCtrlFunction {
 		HelperSub helperSub = new HelperSub();
 		fillBean(spriteId, helperSub);
 		helperSub.setSpriteFrom(sprite);
-		SpriteHelper helperSpr = new SpriteHelper(spriteId + "'s helper " + helperSub.hashCode(), sprite, helperSub);
+		
 
+		
+		
+		final SpriteHelper helperSpr = new SpriteHelper(spriteId + "'s helper " + helperSub.hashCode(), sprite, helperSub);
+
+		fillBeanSize(spriteId, helperSpr.getInfo());
 		System.out.println("Create helper " + helperSub.getId());
 		
 		
@@ -51,6 +72,17 @@ public class Helper extends StateCtrlFunction {
 		helperSpr.getInfo().setXPos(pos.getX());
 		helperSpr.getInfo().setYPos(pos.getY());
 		StateMachine.getInstance().addSpriteHelper(helperSpr);
+		
+		
+//		CnsRender cnsRender = new CnsRender(helperSpr) {
+//		@Override
+//		public boolean remove() {
+//			return helperSpr.remove();
+//		}
+//	};
+//	cnsRender.setShowAttackCns(true);
+//	StateMachine.getInstance().addRender(cnsRender);
+		
 		
 		helperSpr.getSpriteState().changeStateDef(helperSub.getStateno());
 
