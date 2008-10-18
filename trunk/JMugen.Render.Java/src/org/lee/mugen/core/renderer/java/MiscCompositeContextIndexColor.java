@@ -78,9 +78,6 @@ public class MiscCompositeContextIndexColor implements CompositeContext {
 
 		srcPix = src.getPixels(x, y0, w, dstOut.getHeight(), srcPix);
 		dstPix = dstIn.getPixels(x, y0, w, dstOut.getHeight(), dstPix);
-//		if (w * 4 * dstOut.getHeight() != srcPix.length)
-//			System.out.println();
-//		System.out.println(srcPix.length + " ------ x =" + x + " w =" + w + " y = " + y0 + " h = " + dstOut.getHeight());
 		for (int i = 0; i < srcPix.length;) {
 			switch ( rule ) {
 			case MiscCompositeIndexColor.ADD:

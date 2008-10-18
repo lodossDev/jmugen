@@ -29,16 +29,17 @@ package composite;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
+import java.awt.event.ActionListener;
+
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
-import javax.swing.JLabel;
-import javax.swing.event.ChangeListener;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  *
