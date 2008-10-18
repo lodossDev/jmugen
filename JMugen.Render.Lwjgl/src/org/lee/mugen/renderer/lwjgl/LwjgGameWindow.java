@@ -1,8 +1,6 @@
 package org.lee.mugen.renderer.lwjgl;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -15,14 +13,12 @@ import org.lee.mugen.core.Game.DebugAction;
 import org.lee.mugen.input.CmdProcDispatcher;
 import org.lee.mugen.input.ISpriteCmdProcess;
 import org.lee.mugen.renderer.GameWindow;
-import org.lee.mugen.renderer.ImageContainer;
 import org.lee.mugen.renderer.MugenTimer;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GLContext;
 
 public class LwjgGameWindow implements GameWindow {
 
@@ -163,7 +159,7 @@ public class LwjgGameWindow implements GameWindow {
 		return title;
 	}
 
-	public void start() throws Exception {
+	private void initDisplay() throws Exception {
 		try {
 			setDisplayMode();
 			Display.create();
@@ -188,12 +184,29 @@ public class LwjgGameWindow implements GameWindow {
 			initKeys();
 			
 			
-			if (callback != null) {
-				callback.init(this);
-			}
+
 		} catch (LWJGLException le) {
 		}
+	}
+	
+	
+	Thread loadingThread = new Thread() {
+		@Override
+		public void run() {
+			if (callback != null) {
+				try {
+					callback.init(LwjgGameWindow.this);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+	};
 
+	public void start() throws Exception {
+		initDisplay();
+		loadingThread.start();
 		gameLoop();
 	}
 
@@ -312,82 +325,37 @@ public class LwjgGameWindow implements GameWindow {
 
 			}
 		}
-
 	}
-	int totalTexture = 0;
-	boolean isFinishLoadText = false;
+
+	
 	public void gameLoop() throws Exception {
-//		SpriteDebugerUI sprDebugerUI = new SpriteDebugerUI();
-//		sprDebugerUI.setVisible(true);
-		Collections.sort(LMugenDrawer.list, new Comparator<ImageContainer>() {
-
-			@Override
-			public int compare(ImageContainer o1, ImageContainer o2) {
-				// TODO Auto-generated method stub
-				return o1.getWidth() * o1.getWidth() - o2.getWidth() * o2.getWidth();
-			}});
-//		Collections.shuffle(LMugenDrawer.list);
-
-		boolean isThreadStart = false;
-		final Object thisContext = Display.getDrawable().getContext();
-		Thread textureLoaderThread = new Thread() {
-			@Override
-			public void run() {
-				try {
-					for (ImageContainer ic: LMugenDrawer.list) {
-						GLContext.useContext(thisContext);
-//						Display.makeCurrent();
-//						log("Start Loading => Texture width=" + ic.getWidth() + " - height=" + ic.getHeight());
-
-						ic.getImg();
-						totalTexture++;
-//						log("End loading Texture " + (LMugenDrawer.list.size() - totalTexture) + " remainings");
-						System.out.print(".");
-						if (totalTexture%80 == 0)
-							System.out.println();		
-					}
-
-				} catch (LWJGLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-			}
-		};
-//		IL.create();
-//		ILU.create();
-		List<ImageContainer> tempList = new ArrayList<ImageContainer>();
-		tempList.addAll(LMugenDrawer.list);
-		Iterator<ImageContainer> iteratorIC = tempList.iterator();
+		
 		while (gameRunning) {
 
-			if (callback != null) {
-				keyManagementExecute();
-				if (getTimer().getFramerate() == 0) {
-					getTimer().sleep(1000 / 60);
-					Display.update();
-					continue;
+			if (loadingThread.isAlive()) {
+				callback.displayPendingScreeen();
+				getTimer().sleep(500);
+			} else {
+				if (callback != null) {
+					keyManagementExecute();
+					if (getTimer().getFramerate() == 0) {
+						getTimer().sleep(1000 / 60);
+						Display.update();
+						continue;
+					}
+
+					GL11.glClear(GL11.GL_COLOR_BUFFER_BIT
+							| GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_ACCUM_BUFFER_BIT);
+					GL11.glMatrixMode(GL11.GL_MODELVIEW);
+					GL11.glLoadIdentity();
+
+					callback.update(1);
+					callback.render();
+					callback.renderDebugInfo();
 				}
-
-				GL11.glClear(GL11.GL_COLOR_BUFFER_BIT
-						| GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_ACCUM_BUFFER_BIT);
-				GL11.glMatrixMode(GL11.GL_MODELVIEW);
-				GL11.glLoadIdentity();
-
-//				if (!isThreadStart) {
-//					isThreadStart = true;
-//					textureLoaderThread.start();
-//				}
-
-				callback.update(1);
-				callback.render();
-				callback.renderDebugInfo();
 			}
 			
-//			if (iteratorIC.hasNext() && getTimer().getFps() > 60) {
-//				iteratorIC.next().getImg();
-////				System.out.println("Loading Texture");
-//			}
+			
 			getTimer().sleep();
 			Display.update();
 			if (Display.isCloseRequested()
