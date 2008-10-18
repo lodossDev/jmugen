@@ -25,11 +25,14 @@ public class Parentdist extends SpriteCnsTriggerFunction {
 	@Override
 	public Object getValue(String spriteId, Valueable... params) {
 		String p = params[0].getValue(spriteId).toString();
+		if (!(StateMachine.getInstance().getSpriteInstance(spriteId) instanceof SpriteHelper))
+			return null;
 		SpriteHelper helper = (SpriteHelper) StateMachine.getInstance().getSpriteInstance(spriteId);
 		SpriteCns helperInfo = helper.getInfo();
 
 		Sprite parent = StateMachine.getInstance().getParent(helper);
-		
+		if (parent == null)
+			return null;
 		if ("x".equals(p)) {
 			return helperInfo.isFlip()? getXDiff(helper, parent): -getXDiff(helper, parent);
 		} else if ("y".equals(p)) {

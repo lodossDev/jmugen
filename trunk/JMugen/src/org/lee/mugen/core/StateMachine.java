@@ -280,12 +280,7 @@ public class StateMachine implements Game {
 	private void loadSprites() throws Exception {
 		if (!spriteLoader.isEmpty()) {
 			for (SpriteLoader sl: spriteLoader) {
-				System.out.println("Load Sprite " + sl.def);
-				
-				ExpressionFactory.totalTime = 0;
 				loadSprite(sl);
-				System.out.println("Expression compile Time for Sprite " + sl.getDef() + " >> "+ ExpressionFactory.totalTime);
-
 			}
 			spriteLoader.clear();			
 		}

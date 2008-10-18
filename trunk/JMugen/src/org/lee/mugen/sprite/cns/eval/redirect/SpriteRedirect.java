@@ -24,13 +24,15 @@ public class SpriteRedirect {
 	public static final String ENEMYNEAR_WITH_ID_GROUP_REGEX = "enemynear";
 	
 	
-	public static final String SPRITE_REDIRECT_REG = "(" + ROOT_GROUP_REGEX + ")" + "|" +
-	"(" + PARENT_GROUP_REGEX + ")" + "|" +
-	"(" + ENEMYNEAR_WITH_ID_GROUP_REGEX + ")" + "|" +
-	"(" + HELPER_WITH_ID_GROUP_REGEX + ")" + "|" +
-	"(" + PLAYER_WITH_ID_GROUP_REGEX + ")" + "|" +
-	"(" + TARGET_WITH_ID_GROUP_REGEX + ")" + "|" +
-	"(" + ENEMY_GROUP_REGEX + ")";
+	public static final String SPRITE_REDIRECT_REG = "\\b(" + ROOT_GROUP_REGEX + ")\\b" + "|" +
+	"\\b(" + PARENT_GROUP_REGEX + ")\\b" + "|" +
+	"\\b(" + ENEMYNEAR_WITH_ID_GROUP_REGEX + ")\\b" + "|" +
+	"\\b(" + HELPER_WITH_ID_GROUP_REGEX + ")\\b" + "|" +
+	"\\b(" + PLAYER_WITH_ID_GROUP_REGEX + ")\\b" + "|" +
+	"\\b(" + TARGET_WITH_ID_GROUP_REGEX + ")\\b" + "|" +
+	"\\b(" + ENEMY_GROUP_REGEX + ")\\b";
+	
+	public static Pattern P_SPRITE_REDIRECT_REG = Pattern.compile(SPRITE_REDIRECT_REG);
 	
 	private static Map<String, MathFunction> functionInfoMap = buildFunctionInfo();
 

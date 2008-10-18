@@ -1189,7 +1189,7 @@ public class FightEngine {
 			for (HitDefSub hitdef: hitdefs) {
 				if (hitdef instanceof ProjectileSub) {
 					ProjectileSub sub = (ProjectileSub) hitdef;
-					if (sub.getProjid() == id.intValue()) {
+					if (sub.getProjid() != null && sub.getProjid() == id.intValue()) {
 						projectiles.add((ProjectileSub) hitdef);
 					}
 				}

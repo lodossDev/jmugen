@@ -8,7 +8,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.lee.mugen.parser.type.FloatValueable;
 import org.lee.mugen.parser.type.Functionable;
+import org.lee.mugen.parser.type.IntValueable;
+import org.lee.mugen.parser.type.StringValueable;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.background.bgCtrlFunction.BgFunctionDef;
 import org.lee.mugen.sprite.cns.eval.function.MathFunction;
@@ -20,21 +23,10 @@ import org.lee.mugen.sprite.cns.eval.redirect.SpriteRedirect;
 import org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns.Gethitvar;
 
 public class ExpressionFactory {
-	public static void main(String[] args) {
-//		String str = "root,animelem = 1 || root,animelem = 3 || root,animelem = 4";
-//		String[] tokens = expression2Tokens(str);
-//		evalExpression(str);
-//		for (String s: tokens)
-//			System.out.println(s);
-		
-		System.out.println(Pattern.matches(CnsParse._STATE_CTRL_TITLE_REGEX, "	[state 8990, shift]"));
-		
-	}
 	private static final String _OPEN_BRACET_GRP_REGEX = "\\(";
 
 	private static final String _CLOSE_BRACET_GRP_REGEX = "\\)";
 
-//	private static final String _KEY_WORDS_REGEX = "(begin|action|clsn1|clsn2|clsn1default|clsn2default|loopstart)";
 
 	private static final String _OPERATOR_REGEX = CnsOperatorsDef.getOperatorRegex();//"((=|!=|<=|>=|<|>|,|:|\\+|-|/|\\%|\\*))";
 
@@ -58,39 +50,17 @@ public class ExpressionFactory {
 
 
 	private static final String _CONST_STRING = "(\"[^\"\\\\]*(\\\\.^\"\\\\]*)*\")";
+	
+	// add parentdist because of helper parent regex, i solve later
 	public static final Pattern _TOKENIZE_CNS_REGEX = Pattern
 			.compile(_CONST_STRING + "|" + SpriteRedirect.SPRITE_REDIRECT_REG + "|" + _CONST_SPRITE_REGEX + "|" + _CONST_STRING_REG_EXP + "|" + _TRIGGER_MATHS_FUNCTION_REGEX + "|" + _TRIGGER_FUNCTION_SPRITE_REGEX + "|" + _TRIGGER_FUNCTION_BG_REGEX + "|"
 					+ _SPECIAL_OPERATOR_REGEX + "|" +  _OPERATOR_REGEX + "|" + _FLOAT_REGEX + "|"
 					+ _OPEN_BRACET_GRP_REGEX + "|"
 					+ _CLOSE_BRACET_GRP_REGEX + "|" + _STRING_REX_EXP);
 
-
-	
-	private static class Executor implements Valueable {
-
-		Functionable function;
-		Valueable[] params;
-
-		public Executor(Functionable function, Valueable... params) {
-			this.function = function;
-			this.params = params;
-		}
-
-		public Object getValue(String spriteId, Valueable... params) {
-			if (params == null || params.length == 0) {
-				return function.getValue(spriteId, this.params);
-			} else {
-				throw new IllegalArgumentException(
-						"Especialy this Valuable doesn't take params");
-			}
-		}
-	}
-
 	private static boolean isThisTokenIsOp(String[] tokens, int pos) {
-		
 		if (pos == 0)
 			return false;
-		
 		if (Pattern.matches("\\(|\\[|,|=|<|>|-|\\+|<=|>=|&&|\\|\\||&|\\||!=|\\*", tokens[pos - 1]))
 			return false;
 		return true;
@@ -168,32 +138,51 @@ public class ExpressionFactory {
 	public static Valueable[] evalExpression(String[] tokens) {
 		return evalExpression(tokens, true, false);
 	}
+	
+	
+	
 	public static long totalTime = 0;
+	
+	
+	
+	private static Pattern P_OPEN_BRACET_GRP_REGEX = Pattern.compile(_OPEN_BRACET_GRP_REGEX);
+
+	private static final Pattern P_FLOAT_REGEX = Pattern.compile(_FLOAT_REGEX);
+	private static final Pattern P_SPECIAL_OPERATOR_REGEX = Pattern.compile(_SPECIAL_OPERATOR_REGEX);
+	private static final Pattern P_OPERATOR_REGEX = Pattern.compile(_OPERATOR_REGEX);
+	private static final Pattern P_TRIGGER_MATHS_FUNCTION_REGEX = Pattern.compile(_TRIGGER_MATHS_FUNCTION_REGEX);
+	private static final Pattern P_CONST_SPRITE_REGEX = Pattern.compile(_CONST_SPRITE_REGEX);
+	private static final Pattern P_TRIGGER_FUNCTION_SPRITE_REGEX = Pattern.compile(_TRIGGER_FUNCTION_SPRITE_REGEX);
+	private static final Pattern P_TRIGGER_FUNCTION_BG_REGEX = Pattern.compile(_TRIGGER_FUNCTION_BG_REGEX);
+	private static final Pattern P_STRING_REX_EXP = Pattern.compile(_STRING_REX_EXP);
+	private static final Pattern P_CONST_EXP = Pattern.compile("const *\\((.*)\\)");
+	
+	private static boolean isMatch(Pattern reg, String input) {
+		return reg.matcher(input).matches();
+	}
+	
+	
 	public static Valueable[] evalExpression(String[] tokens, boolean isProcessSprite, boolean isProcessBg) {
-		long start = System.currentTimeMillis();
+		
 		
 		final LinkedList<Valueable> values = new LinkedList<Valueable>();
 		final LinkedList<MathFunction> ops = new LinkedList<MathFunction>();
 		int i = 0;
 		ArrayList<Valueable> valuableList = new ArrayList<Valueable>();
 		while (i < tokens.length) {
-			if (Pattern.matches(_OPEN_BRACET_GRP_REGEX, tokens[i])) {
+			if (isMatch(P_OPEN_BRACET_GRP_REGEX, tokens[i])) {
 				String[] subTokens = getCloseInTokens(tokens, i, "(", ")");
 				Valueable valueable = evalExpression(subTokens)[0];
 				values.add(valueable);
 				i += subTokens.length + 1;
 				i++;
-			} else if (Pattern.matches(_FLOAT_REGEX, tokens[i])) {
+			} else if (isMatch(P_FLOAT_REGEX, tokens[i])) {
 				final float res = Float.parseFloat(tokens[i]);
-				values.add(new Valueable() {
-					public Object getValue(String spriteId, Valueable... params) {
-						return res;
-					}
-				});
+				values.add(new FloatValueable(res));
 				i++;
-			} else if (Pattern.matches(_SPECIAL_OPERATOR_REGEX, tokens[i])) {
+			} else if (isMatch(P_SPECIAL_OPERATOR_REGEX, tokens[i])) {
 				final String[] subTokens = expressionSpecialOp2Tokens(
-						tokens[i], Pattern.compile(_SPECIAL_OPERATOR_REGEX));
+						tokens[i], P_SPECIAL_OPERATOR_REGEX);
 				String equalityOp = subTokens[0];
 				String openBracet = subTokens[1];
 				final float first = Float.parseFloat(subTokens[2]);
@@ -202,27 +191,17 @@ public class ExpressionFactory {
 
 				Valueable[] valueables = new Valueable[3];
 				valueables[0] = values.getLast();
-				valueables[1] = new Valueable() {
-					public Object getValue(String spriteId, Valueable... params) {
-						return first;
-					}
-				};
-				valueables[2] = new Valueable() {
-					public Object getValue(String spriteId, Valueable... params) {
-						return last;
-					}
-				};
+				valueables[1] = new FloatValueable(first);
+				valueables[2] = new FloatValueable(last);
 
 				MathFunction newOp = CnsOperatorsDef.getSpecialOp(equalityOp
 						+ openBracet + closeBracet);
-//				Executor executor = new Executor(newOp, valueables);
-//				values.add(executor);
 				values.add(newOp);
 				values.add(valueables[1]);
 				values.add(valueables[2]);
 				ops.add(newOp);
 				i++;
-			} else if (isProcessSprite && Pattern.matches(SpriteRedirect.SPRITE_REDIRECT_REG, tokens[i])) {
+			} else if (isProcessSprite && SpriteRedirect.P_SPRITE_REDIRECT_REG.matcher(tokens[i]).matches()) {
 				MathFunction newOp = (MathFunction) SpriteRedirect.getFunction(tokens[i]);
 				if (newOp.getFunction() instanceof SpriteRedirect.SpecialPatternRedirect){
 					
@@ -241,15 +220,11 @@ public class ExpressionFactory {
 				values.add(newOp);
 				ops.add(newOp);
 				i++;
-			} else if (Pattern.matches(_OPERATOR_REGEX, tokens[i])) {
+			} else if (isMatch(P_OPERATOR_REGEX, tokens[i])) {
 				if (tokens[i].equals("-") || tokens[i].equals("+")) {
 					final int mul = tokens[i].equals("-")? -1: 1;
 					if (!isThisTokenIsOp(tokens, i)) {
-						values.add(new Valueable() {
-
-							public Object getValue(String spriteId, Valueable... params) {
-								return mul;
-							}});
+						values.add(new IntValueable(mul));
 						MathFunction mulOp = CnsOperatorsDef.getOperator("*");
 						ops.add(mulOp);
 						values.add(mulOp);
@@ -263,11 +238,7 @@ public class ExpressionFactory {
 					giveValue(values, ops, valuableList);
 					i++;
 					if (i > tokens.length - 1) {
-						values.add(new Valueable() {
-
-							public Object getValue(String spriteId, Valueable... params) {
-								return 0;
-							}});
+						values.add(IntValueable.Zero);
 					}
 					continue;
 				}
@@ -277,7 +248,7 @@ public class ExpressionFactory {
 				
 				i++;
 				
-			} else if (Pattern.matches(_TRIGGER_MATHS_FUNCTION_REGEX, tokens[i])) {
+			} else if (isMatch(P_TRIGGER_MATHS_FUNCTION_REGEX, tokens[i])) {
 				final Functionable f = MathsFunctionDef.getFunction(tokens[i]);
 				i++;
 				String[] subTokens = {};
@@ -301,25 +272,22 @@ public class ExpressionFactory {
 					}
 				});
 				i++;
-			} else if (isProcessSprite && Pattern.matches(_CONST_SPRITE_REGEX, tokens[i])) {
+			} else if (isProcessSprite && isMatch(P_CONST_SPRITE_REGEX, tokens[i])) {
 				
-				Matcher m = Pattern.compile("const *\\((.*)\\)").matcher(tokens[i]);
+				Matcher m = P_CONST_EXP.matcher(tokens[i]);
 				m.find();
 				final String constant = m.group(1);
 				
 				
 				final SpriteCnsTriggerFunction f = SpriteCnsFunctionDef.getSpriteCnsFunc("const");
 				i++;
-				
+				final StringValueable constantValueable = new StringValueable(constant);
 				values.add(new Valueable() {
 					public Object getValue(String spriteId, Valueable... params) {
-						return f.getValue(spriteId, new Valueable() {
-							public Object getValue(String spriteId, Valueable... params) {
-								return constant;
-							}});
+						return f.getValue(spriteId, constantValueable);
 					}
 				});
-			} else if (isProcessSprite && Pattern.matches(_TRIGGER_FUNCTION_SPRITE_REGEX, tokens[i])) {
+			} else if (isProcessSprite && isMatch(P_TRIGGER_FUNCTION_SPRITE_REGEX, tokens[i])) {
 				final SpriteCnsTriggerFunction f = SpriteCnsFunctionDef.getSpriteCnsFunc(tokens[i]);
 				// TODO : Do trigger own parser from function
 				List<Valueable> result = new ArrayList<Valueable>();
@@ -333,7 +301,7 @@ public class ExpressionFactory {
 					}
 				});
 				i++;
-			} else if (isProcessBg && Pattern.matches(_TRIGGER_FUNCTION_BG_REGEX, tokens[i])) {
+			} else if (isProcessBg && isMatch(P_TRIGGER_FUNCTION_BG_REGEX, tokens[i])) {
 				final SpriteCnsTriggerFunction f = BgFunctionDef.getSpriteCnsFunc(tokens[i]);
 				// TODO : Do trigger own parser from function
 				List<Valueable> result = new ArrayList<Valueable>();
@@ -347,19 +315,13 @@ public class ExpressionFactory {
 					}
 				});
 				i++;
-			} else if (Pattern.matches(_STRING_REX_EXP, tokens[i])) {
-				final String res;// = tokens[i];
+			} else if (isMatch(P_STRING_REX_EXP, tokens[i])) {
 				String goodString = tokens[i];
-				if (goodString.startsWith("\"") && goodString.endsWith("\"")) {
-					goodString = goodString.substring(1, goodString.length() - 1).replaceAll("\\\"", "\"");
+				if (goodString.startsWith(_DBL_QUOTE) && goodString.endsWith(_DBL_QUOTE)) {
+					goodString = goodString.substring(1, goodString.length() - 1).replaceAll(_SLASH_DBL_QUOTE, _DBL_QUOTE);
 				}
-				res = goodString;
-				
-				values.add(new Valueable() {
-					public Object getValue(String spriteId, Valueable... params) {
-						return res;
-					}
-				});
+				StringValueable goodStringValuable = new StringValueable(goodString);
+				values.add(goodStringValuable);
 				i++;
 			} else {
 				throw new IllegalStateException("this state must not be reacheds");
@@ -368,21 +330,23 @@ public class ExpressionFactory {
 
 		giveValue(values, ops, valuableList);
 		
-		long end = System.currentTimeMillis();
-		
-		totalTime += end - start;
-		
 		return (Valueable[]) valuableList.toArray(new Valueable[0]);
 	}
+	
+	private static final String _DBL_QUOTE = "\"";
+	private static final String _SLASH_DBL_QUOTE = "\\\"";
 
+	
+	private static final Comparator<MathFunction> _MATHFUNCTION_SORTER = new Comparator<MathFunction>() {
+		public int compare(MathFunction o1, MathFunction o2) {
+			return o2.getPriority() - o1.getPriority();
+		}
+	};
+	
 	private static void giveValue(final LinkedList<Valueable> values, 
 			LinkedList<MathFunction> ops, 
 			ArrayList<Valueable> valuableList) {
-		Collections.sort(ops, new Comparator<MathFunction>() {
-			public int compare(MathFunction o1, MathFunction o2) {
-				return o2.getPriority() - o1.getPriority();
-			}
-		});
+		Collections.sort(ops, _MATHFUNCTION_SORTER);
 		for (final MathFunction op: ops) {
 			int paramCount = op.getParamCount();
 			int index = values.indexOf(op);
@@ -437,7 +401,7 @@ public class ExpressionFactory {
 					values.add(index, result);
 				} else {
 					values.remove(op);
-					System.err.println("Plus rien pour cet operateur unaire. l'expression avant est retournée");
+//					System.err.println("Plus rien pour cet operateur unaire. l'expression avant est retournée");
 					continue;
 				}
 			}
