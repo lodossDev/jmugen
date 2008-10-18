@@ -110,7 +110,7 @@ public class Scale2xImageFilter extends ReplicateScaleFilter {
 		byte pixels[],
 		int off,
 		int scansize) {
-		// System.out.println("Unexpectedly in Scale2xImageFilter.setPixels() with byte[]!");
+		// Logger.log("Unexpectedly in Scale2xImageFilter.setPixels() with byte[]!");
 
 		int newPixels[] = new int[pixels.length];
 

@@ -1,6 +1,5 @@
 package org.lee.mugen.input;
 
-import org.lee.mugen.input.AbstractCommand.Kind;
 
 /**
  * PressCommand
