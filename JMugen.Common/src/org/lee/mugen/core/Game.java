@@ -65,4 +65,8 @@ public interface Game {
 	}
 	public void onDebugAction(DebugAction action);
 
+	
+	// TODO : delete this
+	public void displayPendingScreeen();
+
 }
