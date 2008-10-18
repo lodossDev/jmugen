@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
+import org.lee.mugen.util.Logger;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.ARBProgram;
 import org.lwjgl.opengl.ARBShaderObjects;
@@ -139,9 +140,9 @@ public abstract class Shader {
 		for ( int i = 0; i < logLength; i++ )
 			charArray[i] = (char)log.get();
 
-		System.out.println("\nInfo Log of Shader Object: " + file);
-		System.out.println("--------------------------");
-		System.out.println(new String(charArray, 0, logLength));
+		Logger.log("\nInfo Log of Shader Object: " + file);
+		Logger.log("--------------------------");
+		Logger.log(new String(charArray, 0, logLength));
 	}
 
 	protected static void printShaderProgramInfoLog(int ID) {
@@ -160,9 +161,9 @@ public abstract class Shader {
 		for ( int i = 0; i < logLength; i++ )
 			charArray[i] = (char)log.get();
 
-		System.out.println("\nShader Program Info Log: ");
-		System.out.println("--------------------------");
-		System.out.println(new String(charArray, 0, logLength));
+		Logger.log("\nShader Program Info Log: ");
+		Logger.log("--------------------------");
+		Logger.log(new String(charArray, 0, logLength));
 	}
 
 	public void rezet() {

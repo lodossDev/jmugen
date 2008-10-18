@@ -14,15 +14,11 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.lee.mugen.imageIO.ImageScale2x;
 import org.lee.mugen.imageIO.PCXLoader;
 import org.lee.mugen.imageIO.RawPCXImage;
-import org.lee.mugen.imageIO.Scale2xImageFilter;
 import org.lee.mugen.imageIO.PCXLoader.PCXHeader;
 import org.lee.mugen.input.MugenDrawer;
 import org.lee.mugen.renderer.AngleDrawProperties;
@@ -317,12 +313,19 @@ public class LMugenDrawer extends MugenDrawer {
 			.getInstance(ColorSpace.CS_sRGB), new int[] { 8, 8, 8, 8 }, true,
 			false, ComponentColorModel.TRANSLUCENT, DataBuffer.TYPE_BYTE);
 
-	public static List<ImageContainer> list = new ArrayList<ImageContainer>();
 
 	private class ImageContainerText extends ImageContainer {
 
 		public ImageContainerText(Object img, int width, int height) {
 			super(img, width, height);
+			RawPCXImage pcx = (RawPCXImage) img;
+			try {
+				this.img = (BufferedImage) PCXLoader.loadImage(new ByteArrayInputStream(
+							pcx.getData()), pcx.getPalette(), false, true);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 		}
 		Texture text = null;
@@ -333,14 +336,6 @@ public class LMugenDrawer extends MugenDrawer {
 				return text;
 			}
 			try {
-				RawPCXImage pcx = (RawPCXImage) img;
-				try {
-					this.img = (BufferedImage) PCXLoader.loadImage(new ByteArrayInputStream(
-								pcx.getData()), pcx.getPalette(), false, true);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
 				text = TextureLoader.getTextureLoader().getTexture((BufferedImage) img);
 				isTextSet.set(true);
 			} catch (IOException e) {
@@ -348,6 +343,25 @@ public class LMugenDrawer extends MugenDrawer {
 			}
 			img = null;
 			return text;
+		}
+
+		public void free() {
+			if (text != null)
+				TextureLoader.getTextureLoader().free(text);
+		}
+		
+		@Override
+		public void reload(ImageContainer img) {
+			ImageContainerText imgText = (ImageContainerText) img;
+			Texture textTemp = text;
+			this.img = imgText.img;
+			if (text != null && isTextSet.get())
+				TextureLoader.getTextureLoader().free(textTemp);
+			isTextSet.set(false);
+			this.width = img.getWidth();
+			this.height = img.getHeight();
+
+
 		}
 	}
 	
@@ -371,8 +385,6 @@ public class LMugenDrawer extends MugenDrawer {
         
         ImageContainer result = new ImageContainerText(pcx , width, height);
         
-//        ImageContainer result = new ImageContainer(pcx , width, height);
-		list.add(result);
 		return result;
 			
 			

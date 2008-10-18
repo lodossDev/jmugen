@@ -23,10 +23,10 @@ import java.util.Hashtable;
 import javax.imageio.ImageIO;
 
 import org.lee.mugen.imageIO.RawPCXImage;
+import org.lee.mugen.util.Logger;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.devil.IL;
 import org.lwjgl.devil.ILU;
-import org.lwjgl.opengl.ARBTextureCompression;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.glu.GLU;
@@ -244,7 +244,8 @@ public class TextureLoader {
         
         GL11.glTexImage2D(target, 
                       0, 
-                      dstPixelFormat, 
+//                    dstPixelFormat, 
+                      GL11.GL_RGBA8,
                       get2Fold(bufferedImage.getWidth()), 
                       get2Fold(bufferedImage.getHeight()), 
                       0, 
@@ -432,6 +433,7 @@ public class TextureLoader {
     } 
     
     public void free(Texture texture) {
+    	Logger.log("Free Texture");
         IntBuffer scratch = BufferUtils.createIntBuffer(1);
         scratch.put(0, texture.getTextureID());
         GL11.glDeleteTextures(scratch);

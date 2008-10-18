@@ -1,31 +1,22 @@
 package org.lee.mugen.renderer.lwjgl;
 
-import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.ComponentColorModel;
 import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferByte;
-import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
-import java.util.Hashtable;
 
 import javax.imageio.ImageIO;
 
-import org.lee.mugen.imageIO.RawPCXImage;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.devil.IL;
-import org.lwjgl.devil.ILU;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.glu.GLU;
