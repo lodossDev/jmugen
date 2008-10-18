@@ -6,8 +6,6 @@ import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.awt.image.ConvolveOp;
-import java.awt.image.Kernel;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
@@ -19,8 +17,6 @@ import org.lee.mugen.renderer.DrawProperties;
 import org.lee.mugen.renderer.GameWindow;
 import org.lee.mugen.renderer.ImageContainer;
 import org.lee.mugen.renderer.Trans;
-
-import composite.BlendComposite;
 
 public class JMugenDrawer extends MugenDrawer {
 	
