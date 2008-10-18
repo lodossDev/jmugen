@@ -60,7 +60,7 @@ public class SpriteDebugerUI extends JFrame {
 		JPanel pnlForSprChooser = new JPanel();
 		pnlForSprChooser.setLayout(new BoxLayout(pnlForSprChooser, BoxLayout.LINE_AXIS));
 		
-		lblForCbxSprChooser = new JLabel("Sprite : ");
+		lblForCbxSprChooser = new JLabel("Click Here After Sprite Load");
 
 		lblForCbxSprChooser.setPreferredSize(new Dimension(70, 25));
 		
