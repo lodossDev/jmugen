@@ -1,8 +1,6 @@
 package org.lee.mugen.sprite.baseForParse;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -93,6 +91,31 @@ public class SpriteSFF {
 		List<GroupSpriteSFF> l = new ArrayList<GroupSpriteSFF>();
 		l.addAll(_groupMap.values());
 		return l;
+	}
+
+	public void free() {
+		int i = 0;
+		for (GroupSpriteSFF grp: _groupMap.values()) {
+			for (ImageSpriteSFF img: grp.ImgMap().values()) {
+				img.getImage().free();
+				i++;
+			}
+		}
+		Logger.log("Total Image Free " + i);
+	}
+
+	public void reload(SpriteSFF spriteSFF) {
+		int i = 0;
+		for (GroupSpriteSFF grp: _groupMap.values()) {
+			for (ImageSpriteSFF img: grp.ImgMap().values()) {
+				if (spriteSFF.getGroupSpr(grp.getGrpNum()) == null || spriteSFF.getGroupSpr(grp.getGrpNum()).getImgSpr(img.getImgNum()) == null)
+					throw new IllegalArgumentException("reload Sprite must be the same groupe");
+				ImageSpriteSFF imgSFF = spriteSFF.getGroupSpr(grp.getGrpNum()).getImgSpr(img.getImgNum());
+				img.getImage().reload(imgSFF.getImage());
+				i++;
+			}
+		}
+		Logger.log("Total Image reloaded " + i);
 	}
 
 }

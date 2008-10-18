@@ -5,8 +5,6 @@ import java.awt.Point;
 import org.lee.mugen.core.StateMachine;
 import org.lee.mugen.sprite.background.Camera;
 import org.lee.mugen.sprite.base.AbstractSprite;
-import org.lee.mugen.sprite.baseForParse.ImageSpriteSFF;
-import org.lee.mugen.sprite.character.AnimElement;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.SpriteAnimManager;
 

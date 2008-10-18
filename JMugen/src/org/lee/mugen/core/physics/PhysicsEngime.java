@@ -6,7 +6,6 @@ import org.lee.mugen.core.StateMachine;
 import org.lee.mugen.sprite.background.Stage;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.SpriteHelper;
-import org.lee.mugen.sprite.character.SpriteCns.MoveType;
 import org.lee.mugen.sprite.character.SpriteCns.Physics;
 import org.lee.mugen.sprite.character.SpriteCns.Type;
 import org.lee.mugen.sprite.cns.type.function.Assertspecial.Flag;

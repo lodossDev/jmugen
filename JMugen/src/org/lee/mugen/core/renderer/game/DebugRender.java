@@ -10,7 +10,6 @@ import org.lee.mugen.renderer.Renderable;
 import org.lee.mugen.sprite.background.Stage;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.SpriteCns;
-import org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns.Backedgedist;
 import org.lee.mugen.sprite.common.resource.FontParser;
 import org.lee.mugen.sprite.common.resource.FontProducer;
 

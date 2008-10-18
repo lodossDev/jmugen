@@ -55,7 +55,7 @@ public enum Postype {
 			pos.setY(offset.getY());
 			break;
 		case right:
-			pos.setX(stage.getCamera().getWidth() - offset.getX());
+			pos.setX(stage.getCamera().getWidth()/2 - facing * offset.getX());
 			pos.setY(offset.getY());
 			break;
 		case p1:

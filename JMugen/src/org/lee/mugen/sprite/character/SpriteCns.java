@@ -448,11 +448,8 @@ public class SpriteCns implements Cloneable, Serializable {
 //		if (bindTo != null && bindTo.getTime() > 0) {
 //			
 //		} else {
-//		if (getSprite().getSpriteId().startsWith("1's helper"))
-//			System.out.println();
-			xPos = pos;
-			xPosWhenBind = pos;
-//		}
+		xPos = pos;
+		xPosWhenBind = pos;
 	}
 
 	public void moveXPos(float x) {
@@ -784,8 +781,6 @@ public class SpriteCns implements Cloneable, Serializable {
 	public void setPhysics(Physics physics) {
 		if (physics == Physics.U)
 			return;
-//		if (this.physics == Physics.A && physics == Physics.S && getSprite().getSpriteState().getCurrentState().getIntId() == 50)
-//			System.out.println();
 		this.physics = physics;
 	}
 

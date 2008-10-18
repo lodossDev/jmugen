@@ -2,8 +2,6 @@ package org.lee.mugen.sprite.common.resource;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,7 +9,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import org.lee.mugen.imageIO.PCXLoader;
 import org.lee.mugen.imageIO.PCXPalette;
 import org.lee.mugen.imageIO.RawPCXImage;
 import org.lee.mugen.io.LittleEndianDataInputStream;

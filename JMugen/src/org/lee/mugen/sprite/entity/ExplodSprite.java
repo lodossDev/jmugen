@@ -32,10 +32,10 @@ public class ExplodSprite extends AbstractSprite {
 				explod.getPos(), 
 				explod.getFacing());
 		if (explod.getPostype() == Postype.left) {
-			pos.setLocation(explod.getPos().x, explod.getPos().y);
+			pos.setLocation(pos.getX(), pos.getY());
 			return pos;
 		} else if (explod.getPostype() == Postype.right) {
-			pos.setLocation(320 + explod.getPos().x, explod.getPos().y);// - (getCurrentImage().getWidth() * explod.getScale().getX()), explod.getPos().y);
+			pos.setLocation(pos.getX(), pos.getY());// - (getCurrentImage().getWidth() * explod.getScale().getX()), explod.getPos().y);
 			return pos;
 		}
 		

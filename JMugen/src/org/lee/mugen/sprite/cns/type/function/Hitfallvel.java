@@ -6,7 +6,6 @@ import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.spiteCnsSubClass.VelSetSub;
 import org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub.Fall;
 import org.lee.mugen.sprite.cns.eval.function.StateCtrlFunction;
-import org.lee.mugen.sprite.parser.ExpressionFactory;
 
 public class Hitfallvel extends StateCtrlFunction {
 

@@ -17,7 +17,6 @@ import org.lee.mugen.renderer.PalFxSub;
 import org.lee.mugen.renderer.Renderable;
 import org.lee.mugen.sprite.base.AbstractSprite;
 import org.lee.mugen.sprite.character.Sprite;
-import org.lee.mugen.sprite.character.spiteCnsSubClass.AssertSpecialSub;
 import org.lee.mugen.sprite.cns.type.function.Assertspecial;
 import org.lee.mugen.sprite.entity.AssertSpecialEval;
 import org.lee.mugen.sprite.entity.EnvcolorSub;

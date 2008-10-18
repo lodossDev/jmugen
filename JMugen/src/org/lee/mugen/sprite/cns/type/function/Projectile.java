@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.lee.mugen.core.StateMachine;
-import org.lee.mugen.core.renderer.game.CnsRender;
 import org.lee.mugen.core.renderer.game.SpriteShadowRender;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.character.Sprite;

@@ -21,6 +21,7 @@ import org.lee.mugen.sprite.parser.ExpressionFactory;
 import org.lee.mugen.sprite.parser.Parser;
 import org.lee.mugen.sprite.parser.Parser.GroupText;
 import org.lee.mugen.util.BeanTools;
+import org.lee.mugen.util.Logger;
 
 public class BGCtrlDef {
 	public static final String _END = "(?:(?: *;.*$)|(?: *$))";
@@ -263,7 +264,7 @@ public class BGCtrlDef {
 				} else if ("type".equals(name)) {
 					bgCtrlFunction = BgCtrlFunctionDef.getStateCtrlFunc(value);
 					if (bgCtrlFunction == null) {
-						System.out.println("TODO : type = " + value);
+						Logger.log("TODO : type = " + value);
 						return null; // TODO remove
 					}
 

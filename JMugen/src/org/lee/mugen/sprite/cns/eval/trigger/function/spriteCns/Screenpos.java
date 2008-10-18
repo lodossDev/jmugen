@@ -7,7 +7,6 @@ import org.lee.mugen.parser.type.StringValueable;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.background.Stage;
 import org.lee.mugen.sprite.character.Sprite;
-import org.lee.mugen.sprite.character.SpriteCns;
 import org.lee.mugen.sprite.cns.eval.function.SpriteCnsTriggerFunction;
 import org.lee.mugen.sprite.entity.PointF;
 

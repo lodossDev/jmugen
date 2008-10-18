@@ -223,7 +223,8 @@ public final class SoundSystem {
 			Runnable r = new Runnable() {
 				public void run() {
 					try {
-						playAudio(sound);
+						if (sound != null)
+							playAudio(sound);
 					} catch (Exception e) {
 						e.printStackTrace();
 					} finally {

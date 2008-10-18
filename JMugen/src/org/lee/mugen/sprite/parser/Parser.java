@@ -19,6 +19,7 @@ import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.cns.eval.function.MathFunction;
 import org.lee.mugen.sprite.cns.eval.operator.CnsOperatorsDef;
 import org.lee.mugen.util.BeanTools;
+import org.lee.mugen.util.Logger;
 
 public class Parser {
 	public static void main(String[] args) {
@@ -30,7 +31,7 @@ public class Parser {
 		Wrap<String[]> key = new Wrapper<String[]>();
 		getValueForSpecialOpAndReturnPos(tokens, 0, key, firstOp, value1, compareOp, value2);
 		
-		System.out.println(
+		Logger.log(
 								key.getValue()[0] 
 				               + firstOp.getValue().getOp()
 				               + value1.getValue().getValue("") 

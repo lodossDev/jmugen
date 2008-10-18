@@ -232,14 +232,13 @@ public class SpriteRedirect {
 			Integer id = null;
 			Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);
 			
-//			if (spriteId.equals("1") && sprite.getSpriteState().getCurrentState().getIntId() == 1010)
-//				System.out.println();
 			if (param != null) {
 				id = Parser.getIntValue(param.getValue(spriteId));
 			}
 			int count = 0;
 			Sprite last = null;
 			for (Sprite s: ennemies) {
+				// TODO Check why i comment this
 //				if (!(s instanceof SpriteHelper) 
 //						|| (s instanceof SpriteHelper && ((SpriteHelper)s).getHelperSub().getHelpertype().equals("normal"))) {
 //					if (id != null && id == count)

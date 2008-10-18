@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -52,10 +53,13 @@ public class Sprite extends AbstractSprite implements Cloneable {
 			for (String key : kvs.keySet()) {
 				String value = kvs.get(key);
 
-				Matcher m = Pattern.compile("(^.*pal|^.*st)[0-9]*$").matcher(
+				Matcher m = Pattern.compile("(^.*pal|^.*st)([0-9]*)$").matcher(
 						key);
-				if (m.find())
+				if (m.find()) {
+					value = m.group(2) + "," + value;
 					key = m.group(1);
+					
+				}
 				// String[] tokens = ExpressionFactory.expression2Tokens(value);
 				// Valueable[] vals = ExpressionFactory.evalExpression(tokens);
 				// Object[] obs = ValueableUtils.convert(vals);
@@ -75,6 +79,114 @@ public class Sprite extends AbstractSprite implements Cloneable {
 		spriteDef.setCnsGroups(grps);
 		return spriteDef;
 	}
+	
+	public void nextPal() {
+		SpriteDef oneDef = StateMachine.getInstance().getSpriteDef(spriteId);
+		if (pal + 1 < oneDef.getFiles().getPal().length - 1)
+			changePal(pal + 1);
+	}
+	
+	public void previousPal() {
+		if (pal - 1 > 0)
+			changePal(pal - 1);
+	}
+	
+	public void roundPal() {
+		SpriteDef oneDef = StateMachine.getInstance().getSpriteDef(spriteId);
+		if (pal + 1 < oneDef.getFiles().getPal().length - 1)
+			changePal(pal + 1);
+		else
+			changePal(0);
+	}
+	
+
+//	private String[] getSuitablePalPath() {
+//		String[] pals = definition.getFiles().getPal();
+//		String[] result = new String[pals.length];
+//		
+//		for (int i = 0; i < pals.length; i++) {
+//			StringTokenizer token = new StringTokenizer(pals[i], ",");
+//			int id = Integer.parseInt(token.nextToken());
+//			String palPath = token.nextToken();
+//			
+//			result[id-1] = palPath;
+//		}
+//		
+//		return result;
+//	}
+	
+	private void buildSpriteSff(int pal, boolean isReload) throws FileNotFoundException,
+			IOException {
+
+		byte[] tempsPal = null;
+		Integer defaultPal = 0;
+		if (definition.getInfo().getPal().getDefaults().length > 0)
+			defaultPal = definition.getInfo().getPal().getDefaults()[0];
+		if (pal != 0)
+			defaultPal = pal + 1;
+		else
+			defaultPal = 0;
+		String pathToAct = null;
+		String sffPath = new File(definition.getParentPath(), definition
+				.getFiles().getSprite()).getAbsolutePath();
+		if (defaultPal - 1 > 0) {
+			pathToAct = new File(definition.getParentPath(), definition.getFiles().getPal()[defaultPal - 1]).getAbsolutePath();
+
+		}
+		log("Copy Stream into memory");
+		if (pathToAct != null) {
+			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			IOUtils.copy(new FileInputStream(pathToAct), bos);
+			tempsPal = bos.toByteArray();
+			byte[] tempsInvers = new byte[768];
+			int count = 3;
+			for (int i = 0; i < tempsInvers.length; i += count) {
+				int c = 0;
+				int cm = count - 1;
+				for (int cc = 0; cc < count; cc++)
+					tempsInvers[i + c++] = tempsPal[768 - i - cm-- - 1];
+
+			}
+			tempsPal = tempsInvers;
+		}
+		log("End Copy Stream into memory");
+
+		log("Load SFFReader");
+
+		SffReader sffReader = new SffReader(sffPath, tempsPal);
+		log("End Load SFFReader");
+		
+		log("Load SpriteSff");
+
+		SpriteSFF spriteSFF = new SpriteSFF(sffReader, true);
+		log("End Load SpriteSff");
+		
+		SpriteSFF oldSff = getSpriteSFF();
+		
+		if (isReload) {
+			oldSff.reload(spriteSFF);
+		} else {
+			setSpriteSFF(spriteSFF);
+		}
+		this.pal = pal;
+		
+
+		
+	
+		
+	}
+	public void changePal(int pal) {
+		try {
+			buildSpriteSff(pal, true);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	@Override
 	public float getXScale() {
 		return getInfo().getSize().getXscale();
@@ -144,7 +256,7 @@ public class Sprite extends AbstractSprite implements Cloneable {
 			this.pal = pal;
 			
 			log("Load Sff");
-			buildSpriteSff(pal);
+			buildSpriteSff(pal, false);
 			log("End Load Sff");
 			
 			log("Load Sound");
@@ -163,53 +275,7 @@ public class Sprite extends AbstractSprite implements Cloneable {
 		}
 
 	}
-	private void buildSpriteSff(int pal) throws FileNotFoundException,
-			IOException {
-		byte[] temps = null;
-		Integer defaultPal = 0;
-		if (definition.getInfo().getPal().getDefaults().length > 0)
-			defaultPal = definition.getInfo().getPal().getDefaults()[0];
-		if (pal != 0)
-			defaultPal = pal + 1;
-		else
-			defaultPal = 0;
-		String pathToAct = null;
-		String sffPath = new File(definition.getParentPath(), definition
-				.getFiles().getSprite()).getAbsolutePath();
-		if (defaultPal - 1 > 0) {
-			pathToAct = new File(definition.getParentPath(), definition
-					.getFiles().getPal()[defaultPal - 1]).getAbsolutePath();
 
-		}
-		log("Copy Stream into memory");
-		if (pathToAct != null) {
-			ByteArrayOutputStream bos = new ByteArrayOutputStream();
-			IOUtils.copy(new FileInputStream(pathToAct), bos);
-			temps = bos.toByteArray();
-			byte[] tempsInvers = new byte[768];
-			int count = 3;
-			for (int i = 0; i < tempsInvers.length; i += count) {
-				int c = 0;
-				int cm = count - 1;
-				for (int cc = 0; cc < count; cc++)
-					tempsInvers[i + c++] = temps[768 - i - cm-- - 1];
-
-			}
-			temps = tempsInvers;
-		}
-		log("End Copy Stream into memory");
-
-		log("Load SFFReader");
-
-		SffReader sffReader = new SffReader(sffPath, temps);
-		log("End Load SFFReader");
-		
-		log("Load SpriteSff");
-
-		SpriteSFF spriteSFF = new SpriteSFF(sffReader, true);
-		log("End Load SpriteSff");
-		setSpriteSFF(spriteSFF);
-	}
 
 	@Override
 	public Object clone() throws CloneNotSupportedException {
@@ -371,19 +437,6 @@ public class Sprite extends AbstractSprite implements Cloneable {
 		this.spriteState = spriteState;
 	}
 
-
-	
-	public void setNewPal(int pal) {
-		try {
-			buildSpriteSff(++pal);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}		
-	}
 	public Integer getTempPause() {
 		return tempPause;
 	}

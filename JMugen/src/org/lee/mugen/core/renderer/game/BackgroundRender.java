@@ -107,7 +107,6 @@ public class BackgroundRender implements IBackgroundRenderer {
 						|| bg.getBgType() == BG.Type.NORM) {
 					int grpno = bg.getSpriteno().getGrp();
 					int imgno = bg.getSpriteno().getImg();
-//					System.out.println(grpno + " " + imgno);
 					ImageSpriteSFF imgSprSff = sffSprite.getGroupSpr(grpno)
 							.getImgSpr(imgno);
 					ImageContainer img = (ImageContainer) imgSprSff.getImage();

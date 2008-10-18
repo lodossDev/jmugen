@@ -9,10 +9,8 @@ import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.renderer.RGB;
 import org.lee.mugen.renderer.Trans;
 import org.lee.mugen.sprite.character.Sprite;
-import org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub.AffectTeam;
 import org.lee.mugen.sprite.cns.eval.function.StateCtrlFunction;
 import org.lee.mugen.sprite.entity.AfterImageSprite;
-import org.lee.mugen.sprite.parser.ExpressionFactory;
 /**
  * Parse : OK
  * Renderer not because Opengl issue

@@ -166,8 +166,8 @@ public abstract class StateCtrlFunction extends AbstractCnsFunction {
 					error = paramName;
 					fillBeanChild(spriteId, paramName, beanSub);
 				} catch (Exception e) {
-					System.err.println(beanSub.getClass().getName() + ">>>>>>>>>" + error);
-					e.printStackTrace();
+					System.err.println(beanSub.getClass().getName() + ">>>>>>>>>" + error + " is not immpl. yet");
+//					e.printStackTrace();
 	//				throw new IllegalStateException("This state musn't be reached !!  " + getClass());
 				}
 			}

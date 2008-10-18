@@ -30,13 +30,14 @@ import org.lee.mugen.sprite.parser.ExpressionFactory;
 import org.lee.mugen.sprite.parser.Parser;
 import org.lee.mugen.sprite.parser.Parser.GroupText;
 import org.lee.mugen.util.BeanTools;
+import org.lee.mugen.util.Logger;
 
 public class Stage {
 	public static void main(String[] args) {
 		Pattern p = Pattern.compile(_BG_SECTION_REGEX);
 		Matcher m = p.matcher("bg sky");
 		if (m.find()) {
-			System.out.println(m.group(1));
+			Logger.log(m.group(1));
 		}
 	}
 	private Info info = new Info(this);
@@ -351,10 +352,10 @@ public class Stage {
 			int left = getBound().getScreenleft();
 			int right = getBound().getScreenright();
 
-			int leftLimit = left + getCamera().getBoundleft()+160
+			int leftLimit = left + getCamera().getBoundleft()+80
 					+ getCamera().getTension();
 
-			int rightLimit = -right + getCamera().getBoundright()+160
+			int rightLimit = -right + getCamera().getBoundright()+150
 					- getCamera().getTension();
 			
 			int diff = xCam + xSpr;

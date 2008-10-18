@@ -27,6 +27,7 @@ import org.lee.mugen.sprite.cns.eval.function.StateCtrlFunction;
 import org.lee.mugen.sprite.cns.eval.function.StateCtrlFunctionDef;
 import org.lee.mugen.sprite.parser.Parser.GroupText;
 import org.lee.mugen.util.BeanTools;
+import org.lee.mugen.util.Logger;
 import org.lee.mugen.util.debugger.SpriteDebuggerCns;
 
 public class CnsParse {
@@ -333,6 +334,7 @@ public class CnsParse {
 			
 			if (Pattern.matches(_TRIGGER_MAIN, line)) {
 				try {
+					
 					String[] tokens = ExpressionFactory.expression2Tokens(value);
 					final Valueable[] valueables = ExpressionFactory.evalExpression(tokens);
 					assert valueables != null && valueables.length > 0 : "parseStateCtrl valueables is empty";
@@ -365,7 +367,7 @@ public class CnsParse {
 			} else if ("type".equals(name)) {
 				stateCtrlFunction = StateCtrlFunctionDef.getStateCtrlFunc(value);
 				if (stateCtrlFunction == null) {
-					System.out.println("TODO : type = " + value);
+					Logger.log("TODO : type = " + value);
 					return; // TODO remove
 				}
 
@@ -391,7 +393,7 @@ public class CnsParse {
 						Valueable[] valueables = stateCtrlFunction.parseValue(name, value);
 						stateCtrlFunction.addParam(name, valueables);
 					} else {
-//						System.out.println(
+//						Logger.log(
 //								" Warning : Statedef[" + stateDefId + "] - StateCtrl[" + stateCtrlId + "]" + 
 //								" : Type = " + stateCtrlFunction.getFunctionName() + 
 //								" doesn't take this argument >> " + line);

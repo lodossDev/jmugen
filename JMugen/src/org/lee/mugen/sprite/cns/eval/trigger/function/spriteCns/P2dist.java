@@ -52,8 +52,6 @@ public class P2dist extends SpriteCnsTriggerFunction {
 		SpriteCns spriteInfo = sprite.getInfo();
 
 		if ("x".equals(p)) {
-//			if (sprite.getSprAnimMng().getAction() == 340)
-//				System.out.println(spriteInfo.isFlip()? getXDiff(spriteId, params): -getXDiff(spriteId, params));
 			return spriteInfo.isFlip()? getXDiff(spriteId, params): -getXDiff(spriteId, params);
 		} else if ("y".equals(p)) {
 			return -getYDiff(spriteId, params);		

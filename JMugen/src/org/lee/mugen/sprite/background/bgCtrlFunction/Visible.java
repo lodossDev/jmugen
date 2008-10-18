@@ -7,7 +7,6 @@ import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.background.BG;
 import org.lee.mugen.sprite.background.Stage;
 import org.lee.mugen.sprite.cns.eval.function.StateCtrlFunction;
-import org.lee.mugen.sprite.parser.ExpressionFactory;
 import org.lee.mugen.sprite.parser.Parser;
 
 public class Visible extends StateCtrlFunction {

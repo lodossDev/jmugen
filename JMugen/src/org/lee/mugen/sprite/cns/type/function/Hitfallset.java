@@ -6,7 +6,6 @@ import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.SpriteCns.Type;
 import org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub;
 import org.lee.mugen.sprite.cns.eval.function.StateCtrlFunction;
-import org.lee.mugen.sprite.parser.ExpressionFactory;
 import org.lee.mugen.sprite.parser.Parser;
 
 public class Hitfallset extends StateCtrlFunction {

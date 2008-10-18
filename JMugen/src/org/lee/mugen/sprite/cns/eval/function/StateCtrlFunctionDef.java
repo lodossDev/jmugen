@@ -20,6 +20,7 @@ import org.lee.mugen.sprite.cns.type.function.Bindtoroot;
 import org.lee.mugen.sprite.cns.type.function.Bindtotarget;
 import org.lee.mugen.sprite.cns.type.function.Changeanim;
 import org.lee.mugen.sprite.cns.type.function.Changeanim2;
+import org.lee.mugen.sprite.cns.type.function.Changepal;
 import org.lee.mugen.sprite.cns.type.function.Changestate;
 import org.lee.mugen.sprite.cns.type.function.Clearclipboard;
 import org.lee.mugen.sprite.cns.type.function.Ctrlset;
@@ -192,6 +193,7 @@ public class StateCtrlFunctionDef {
 
 		stateCtrlFunctionMap.put("poweradd", new Poweradd());
 		stateCtrlFunctionMap.put("changeanim", new Changeanim());
+		stateCtrlFunctionMap.put("changepal", new Changepal());
 		stateCtrlFunctionMap.put("changestate", new Changestate());
 		stateCtrlFunctionMap.put("ctrlset", new Ctrlset());
 		stateCtrlFunctionMap.put("defencemulset", new Defencemulset());
