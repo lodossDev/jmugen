@@ -55,9 +55,28 @@ public class AirParser {
     public static final Pattern _AIR_DATA_PATTERN = Pattern.compile(_AIR_DATA_REGEX);
 
 
-
     
+	private static final Pattern grpActionPattern = Pattern.compile(_GRP_ACTION_REGEX);
 
+	
+	private static final Pattern P_COMMENT_OR_EMPTY_REGEX = Pattern.compile(_COMMENT_OR_EMPTY_REGEX);
+	private static final Pattern P_CLSN1DEFAULT_REGEX = Pattern.compile(_CLSN1DEFAULT_REGEX);
+	private static final Pattern P_CLSN2DEFAULT_REGEX = Pattern.compile(_CLSN2DEFAULT_REGEX);
+	private static final Pattern P_CLSN1_REGEX = Pattern.compile(_CLSN1_REGEX);
+	private static final Pattern P_CLSN2_REGEX = Pattern.compile(_CLSN2_REGEX);
+	private static final Pattern P_CLSN1_RECT_REGEX = Pattern.compile(_CLSN1_RECT_REGEX);
+	private static final Pattern P_CLSN2_RECT_REGEX = Pattern.compile(_CLSN2_RECT_REGEX);
+	private static final Pattern P_LOOP_START_REGEX = Pattern.compile(_LOOP_START_REGEX);
+
+	/*
+
+
+	 */
+	
+	private static boolean isMatch(Pattern reg, String input) {
+		return reg.matcher(input).matches();
+	}
+	
     private String getLine(StringTokenizer br) throws IOException {
         String line = null;
         if (!br.hasMoreTokens())
@@ -77,7 +96,7 @@ public class AirParser {
     }
     
 	private boolean parseGroup(String grp) throws IOException {
-    	Pattern grpActionPattern = Pattern.compile(_GRP_ACTION_REGEX);
+    	
 
     	StringTokenizer strToken = new StringTokenizer(grp, "\r\n");
     	
@@ -101,13 +120,6 @@ public class AirParser {
         clsn2defaultInOut.setValue(new Rectangle[0]);
         
 
-		Pattern clsn1DefReg = Pattern.compile(_CLSN1DEFAULT_REGEX);
-		Pattern clsn2DefReg = Pattern.compile(_CLSN2DEFAULT_REGEX);
-		Pattern clsn1Reg = Pattern.compile(_CLSN1_REGEX);
-		Pattern clsn2Reg = Pattern.compile(_CLSN2_REGEX);
-		Pattern clsn1RectReg = Pattern.compile(_CLSN1_RECT_REGEX);
-		Pattern clsn2RectReg = Pattern.compile(_CLSN2_RECT_REGEX);
-
         Wrapper<Rectangle[]> clsn1InOut = new Wrapper<Rectangle[]>();
         
         Wrapper<Rectangle[]> clsn2InOut = new Wrapper<Rectangle[]>();
@@ -118,25 +130,25 @@ public class AirParser {
     		if (line == null)
     			break;
     		
-            if (Pattern.matches(_COMMENT_OR_EMPTY_REGEX, line)) {
+            if (isMatch(P_COMMENT_OR_EMPTY_REGEX, line)) {
             	
-            } else if (Pattern.matches(_CLSN1DEFAULT_REGEX, line)) {
+            } else if (isMatch(P_CLSN1DEFAULT_REGEX, line)) {
             	clsn1InOut.setValue(new Rectangle[0]);
-                parseClsn(line, strToken, clsn1defaultInOut, clsn1DefReg, clsn1RectReg);
-            } else if (Pattern.matches(_CLSN2DEFAULT_REGEX, line)) {
+                parseClsn(line, strToken, clsn1defaultInOut, P_CLSN1DEFAULT_REGEX, P_CLSN1_RECT_REGEX);
+            } else if (isMatch(P_CLSN2DEFAULT_REGEX, line)) {
             	clsn2InOut.setValue(new Rectangle[0]);
-                parseClsn(line, strToken, clsn2defaultInOut, clsn2DefReg, clsn2RectReg);
-            } else if (Pattern.matches(_CLSN1_REGEX, line)) {
+                parseClsn(line, strToken, clsn2defaultInOut, P_CLSN2DEFAULT_REGEX, P_CLSN2_RECT_REGEX);
+            } else if (isMatch(P_CLSN1_REGEX, line)) {
             	clsn1InOut.setValue(new Rectangle[0]);
-                parseClsn(line, strToken, clsn1InOut, clsn1Reg, clsn1RectReg);
-            } else if (Pattern.matches(_CLSN2_REGEX, line)) {
+                parseClsn(line, strToken, clsn1InOut, P_CLSN1_REGEX, P_CLSN1_RECT_REGEX);
+            } else if (isMatch(P_CLSN2_REGEX, line)) {
             	clsn2InOut.setValue(new Rectangle[0]);
-                parseClsn(line, strToken, clsn2InOut, clsn2Reg, clsn2RectReg);
-            } else if (Pattern.matches(_CLSN1_RECT_REGEX, line)) {
-                parseClsn(line, strToken, clsn1InOut, clsn1Reg, clsn1RectReg);
-            } else if (Pattern.matches(_CLSN2_RECT_REGEX, line)) {
-                parseClsn(line, strToken, clsn2InOut, clsn2Reg, clsn2RectReg);
-            } else if (Pattern.matches(_LOOP_START_REGEX, line)) {
+                parseClsn(line, strToken, clsn2InOut, P_CLSN2_REGEX, P_CLSN2_RECT_REGEX);
+            } else if (isMatch(P_CLSN1_RECT_REGEX, line)) {
+                parseClsn(line, strToken, clsn1InOut, P_CLSN1_REGEX, P_CLSN1_RECT_REGEX);
+            } else if (isMatch(P_CLSN2_RECT_REGEX, line)) {
+                parseClsn(line, strToken, clsn2InOut, P_CLSN2_REGEX, P_CLSN2_RECT_REGEX);
+            } else if (isMatch(P_LOOP_START_REGEX, line)) {
             	parseLoopStart(line, airGrp);
     		} else if (_AIR_DATA_PATTERN.matcher(line).find()) {
     			parseAirData(
@@ -212,13 +224,20 @@ public class AirParser {
     }
     public static boolean parseLoopStart(String line, AirGroup aGrp) {
     	line = getFormatedLine(line);
-        if (!Pattern.matches(_LOOP_START_REGEX, line))
+        if (!isMatch(P_LOOP_START_REGEX, line))
             return false;
         aGrp.loopStart = aGrp.airDataList.size();
         return true;
     }
 	
 	
+    
+    private static final Pattern P_A = Pattern.compile(".*a$");
+    private static final Pattern P_AS09d09 = Pattern.compile(".*as([0-9]+)d([0-9]+).*");
+    private static final Pattern P_A09 = Pattern.compile(".*a([0-9]+).*");
+    private static final Pattern P_S09 = Pattern.compile(".*s([0-9]+).*");
+    private static final Pattern P_S = Pattern.compile(".*s$");
+    
     public static boolean parseAirData(String line, AirGroup aGrp, Wrapper<Rectangle[]> clsn1, Wrapper<Rectangle[]> clsn2) {
         line = getFormatedLine(line).replace(" ", "");
         if (line == null || !_AIR_DATA_PATTERN.matcher(line).find())
@@ -248,11 +267,11 @@ public class AirParser {
         	airData.clsn2 = (Rectangle[])clsn2.getValue().clone();
         aGrp.airDataList.add(airData);
         
-        Matcher adPattern = Pattern.compile(".*a$").matcher(line);
-        Matcher asdPattern = Pattern.compile(".*as([0-9]+)d([0-9]+).*").matcher(line);
-        Matcher aPattern = Pattern.compile(".*a([0-9]+).*").matcher(line);
-        Matcher sPattern = Pattern.compile(".*s([0-9]+).*").matcher(line);
-        Matcher sdPattern = Pattern.compile(".*s$").matcher(line);
+        Matcher adPattern = P_A.matcher(line);
+        Matcher asdPattern = P_AS09d09.matcher(line);
+        Matcher aPattern = P_A09.matcher(line);
+        Matcher sPattern = P_S09.matcher(line);
+        Matcher sdPattern = P_S.matcher(line);
         
 //        sPattern.find();
         if (adPattern.find() || sdPattern.find()) {

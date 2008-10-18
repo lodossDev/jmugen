@@ -18,9 +18,9 @@ public class TestFrame {
 			System.exit(1);
 		}
 
-		args[0] = "gokuHR";
+		args[0] = "kof_joe";
 		args[1] = "0";
-		args[2] = "gokuHR"; //"venom_ggxx";
+		args[2] = "ccixiangfei"; //"venom_ggxx";
 		args[3] = "0";
 		args[4] = "sfa3sagat" + ".def";
 		args[5] = "resource/sound/ADX_S060.wav";
