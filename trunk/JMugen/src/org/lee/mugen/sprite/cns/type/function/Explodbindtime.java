@@ -6,7 +6,6 @@ import org.lee.mugen.core.StateMachine;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.cns.eval.function.StateCtrlFunction;
 import org.lee.mugen.sprite.entity.ExplodSprite;
-import org.lee.mugen.sprite.parser.ExpressionFactory;
 
 public class Explodbindtime extends StateCtrlFunction {
 

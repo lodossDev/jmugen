@@ -58,7 +58,7 @@ public class ExplodRender implements Renderable {
 		boolean isFlipV = air.isMirrorV ^ sprite.getExplod().getVfacing() == -1;
 
 		isFlipH = isFlipH ^ sprite.getExplod().getFacing() == -1;
-		
+
 		PointF pos = sprite.getPosToDraw();
 		
 

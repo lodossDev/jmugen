@@ -19,7 +19,6 @@ import org.lee.mugen.core.renderer.game.AfterimageRender;
 import org.lee.mugen.core.renderer.game.BackgroundRender;
 import org.lee.mugen.core.renderer.game.CnsRender;
 import org.lee.mugen.core.renderer.game.DebugRender;
-import org.lee.mugen.core.renderer.game.ExplodRender;
 import org.lee.mugen.core.renderer.game.LifeBarRenderNormal;
 import org.lee.mugen.core.renderer.game.MakedustRender;
 import org.lee.mugen.core.renderer.game.SpriteRender;
@@ -28,6 +27,7 @@ import org.lee.mugen.fight.FightDef;
 import org.lee.mugen.input.CmdProcDispatcher;
 import org.lee.mugen.input.ISpriteCmdProcess;
 import org.lee.mugen.renderer.GameWindow;
+import org.lee.mugen.renderer.GraphicsWrapper;
 import org.lee.mugen.renderer.MugenTimer;
 import org.lee.mugen.renderer.Renderable;
 import org.lee.mugen.sprite.background.Stage;
@@ -39,13 +39,12 @@ import org.lee.mugen.sprite.cns.StateDef;
 import org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns.Roundstate;
 import org.lee.mugen.sprite.cns.type.function.Assertspecial;
 import org.lee.mugen.sprite.cns.type.function.Assertspecial.Flag;
+import org.lee.mugen.sprite.common.resource.FontParser;
+import org.lee.mugen.sprite.common.resource.FontProducer;
 import org.lee.mugen.sprite.entity.AfterImageSprite;
 import org.lee.mugen.sprite.entity.ExplodSprite;
 import org.lee.mugen.sprite.entity.MakeDustSpriteManager;
 import org.lee.mugen.sprite.entity.ProjectileSprite;
-import org.lee.mugen.sprite.parser.ExpressionFactory;
-
-import com.sun.org.apache.bcel.internal.generic.GETSTATIC;
 
 /**
  * 
@@ -215,7 +214,7 @@ public class StateMachine implements Game {
 				_spriteMap.remove(spriteId);
 				
 				if (spr instanceof SpriteHelper) {
-//					System.out.println("destroy " + spriteId);
+//					log("destroy " + spriteId);
 					SpriteHelper sprH = (SpriteHelper) spr;
 					ISpriteCmdProcess scp = getSpriteCmdProcessMap().get(sprH.getHelperSub().getSpriteFrom().getSpriteId());
 					if (scp != null)
@@ -280,6 +279,8 @@ public class StateMachine implements Game {
 	private void loadSprites() throws Exception {
 		if (!spriteLoader.isEmpty()) {
 			for (SpriteLoader sl: spriteLoader) {
+				log("Load Sprite " + sl.def);
+				loadingText += "\nloading Sprite " + sl.getSpriteId() + " : ";
 				loadSprite(sl);
 			}
 			spriteLoader.clear();			
@@ -396,15 +397,17 @@ public class StateMachine implements Game {
 	List<CnsRender> cnsRenderList = new ArrayList<CnsRender>();
 	public void init(GameWindow container) throws Exception {
 		setWindow(container);
+
+		loadingText += "\nloading Fight.def";
+		
 		fightDef.init();
 		try {
-			loadSprites();
-			loadStage();
 			
-			getSpriteInstance("1").getInfo().setXPos(getInstanceOfStage().getPlayerinfo().getP1startx());
-			getSpriteInstance("2").getInfo().setXPos(getInstanceOfStage().getPlayerinfo().getP2startx());
-			getSpriteInstance("2").getInfo().setFlip(true);
+			loadSprites();
+			
+			loadingText += "\nloading Stage ";
 
+			loadStage();
 			globalEvents = new GameGlobalEvents();
 			
 			addRender(new SpriteShadowRender(getSpriteInstance("1"), false));
@@ -420,7 +423,9 @@ public class StateMachine implements Game {
 			
 			if (gameState.getGameType() == 1)
 				addRender(new LifeBarRenderNormal());
-//
+
+		
+		
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -437,6 +442,8 @@ public class StateMachine implements Game {
 			s.getInfo().init();
 			s.process();
 		}
+		
+		initRound();
 	}
 
 	
@@ -926,46 +933,51 @@ public class StateMachine implements Game {
 	}
 	private boolean systemPause = false;
 	private boolean forceUpdate = false;
+	
+	private void initRound() {
+		getInstanceOfStage().getCamera().init();
+
+		getSpriteInstance("1").getInfo().setXPos(getInstanceOfStage().getPlayerinfo().getP1startx());
+		getSpriteInstance("1").getInfo().setYPos(0);
+		
+		getSpriteInstance("1").getSpriteState().clearVars();
+		getSpriteInstance("1").getInfo().setFlip(false);
+		getSpriteInstance("1").getSpriteState().selfstate(5900);
+		getSpriteInstance("1").getInfo().init();
+		
+		
+		_spriteHelperRemoveList.addAll(getHelpersIds(getSpriteInstance("1")));
+		_spriteHelperRemoveList.addAll(getHelpersIds(getSpriteInstance("2")));
+		
+		getOtherSprites().clear();
+		
+		getSpriteInstance("2").getInfo().setXPos(getInstanceOfStage().getPlayerinfo().getP2startx());
+		getSpriteInstance("2").getInfo().setYPos(0);
+		
+		getSpriteInstance("2").getInfo().setFlip(true);
+		getSpriteInstance("2").getSpriteState().clearVars();
+		getSpriteInstance("2").getSpriteState().selfstate(5900);
+		getSpriteInstance("2").getInfo().init();
+		
+		for (Iterator<Sprite> iter = getSprites().iterator();iter.hasNext();) {
+			Sprite spr = iter.next();
+			if (spr instanceof SpriteHelper)
+				iter.remove();
+		}
+		getGameState().setRoundState(0);
+		getGameState().setRoundsExisted(0);
+		
+		stateSpr1 = Roundstate.PRE_INTRO;
+		stateSpr2 = Roundstate.PRE_INTRO;
+	}
+	
 	public void onDebugAction(DebugAction action) {
 		switch (action) {
 		case SWICTH_PLAYER_DEBUG_INFO:
 			DebugRender.debugRender.nextSprite();
 			break;
 		case INIT_PLAYER:
-			getInstanceOfStage().getCamera().init();
-
-			getSpriteInstance("1").getInfo().setXPos(getInstanceOfStage().getPlayerinfo().getP1startx());
-			getSpriteInstance("1").getInfo().setYPos(0);
-			
-			getSpriteInstance("1").getSpriteState().clearVars();
-			getSpriteInstance("1").getInfo().setFlip(false);
-			getSpriteInstance("1").getSpriteState().selfstate(5900);
-			getSpriteInstance("1").getInfo().init();
-			
-			
-			_spriteHelperRemoveList.addAll(getHelpersIds(getSpriteInstance("1")));
-			_spriteHelperRemoveList.addAll(getHelpersIds(getSpriteInstance("2")));
-			
-			getOtherSprites().clear();
-			
-			getSpriteInstance("2").getInfo().setXPos(getInstanceOfStage().getPlayerinfo().getP2startx());
-			getSpriteInstance("2").getInfo().setYPos(0);
-			
-			getSpriteInstance("2").getInfo().setFlip(true);
-			getSpriteInstance("2").getSpriteState().clearVars();
-			getSpriteInstance("2").getSpriteState().selfstate(5900);
-			getSpriteInstance("2").getInfo().init();
-			
-			for (Iterator<Sprite> iter = getSprites().iterator();iter.hasNext();) {
-				Sprite spr = iter.next();
-				if (spr instanceof SpriteHelper)
-					iter.remove();
-			}
-			getGameState().setRoundState(0);
-			getGameState().setRoundsExisted(0);
-			
-			stateSpr1 = Roundstate.PRE_INTRO;
-			stateSpr2 = Roundstate.PRE_INTRO;
+			initRound();
 			break;
 		case SHOW_HIDE_CNS:
 			for (CnsRender cnsRender: cnsRenderList) {
@@ -1025,6 +1037,32 @@ public class StateMachine implements Game {
 	}
 	public void renderDebugInfo() {
 		DebugRender.debugRender.render();
-		
 	}
+	
+	String loadingText = "";
+	long aTime = System.currentTimeMillis();
+	public void displayPendingScreeen() {
+		try {
+			if (System.currentTimeMillis() - aTime > 1000 
+					&& loadingText != null && loadingText.length() > 0) {
+			
+				loadingText += ".";
+				aTime = System.currentTimeMillis();
+			}
+			String[] strSpriteInfos = loadingText.split("\n");
+			FontProducer fp = FontParser.getFontProducer();
+			int addX = 0;
+			int x = 10;
+			int y = 10;
+			for (String s: strSpriteInfos) {
+				fp.draw(x, y+=fp.getSize().height, GraphicsWrapper.getInstance(), s);
+				addX = Math.max(addX, s.length());
+			}
+			aTime++;
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+
+	}
+	
 }

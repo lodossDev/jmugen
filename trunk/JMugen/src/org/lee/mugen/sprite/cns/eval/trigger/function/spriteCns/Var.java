@@ -18,7 +18,6 @@ public class Var extends SpriteCnsTriggerFunction {
 		SpriteState spriteState = sprite.getSpriteState();
 		
 		int index = Parser.getIntValue(params[0].getValue(spriteId));
-		
 		return spriteState.getVars().getVar(String.valueOf(index));
 	}
 }

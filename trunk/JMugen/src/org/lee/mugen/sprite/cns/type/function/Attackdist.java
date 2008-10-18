@@ -4,7 +4,6 @@ import org.lee.mugen.core.StateMachine;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub;
 import org.lee.mugen.sprite.cns.eval.function.StateCtrlFunction;
-import org.lee.mugen.sprite.parser.ExpressionFactory;
 import org.lee.mugen.sprite.parser.Parser;
 
 public class Attackdist extends StateCtrlFunction {

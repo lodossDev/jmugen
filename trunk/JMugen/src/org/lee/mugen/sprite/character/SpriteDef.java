@@ -2,6 +2,7 @@ package org.lee.mugen.sprite.character;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.lee.mugen.sprite.parser.Parser.GroupText;
@@ -167,7 +168,17 @@ public class SpriteDef {
 		}
 
 		public String[] getPal() {
-			return pal.toArray(new String[0]);
+			Collections.sort(pal);
+			List<String> result = new ArrayList<String>();
+			
+			for (String s: st) {
+				String[] token = s.split(",");
+				if (token.length == 2) {
+					result.add(token[1]);
+				}
+			}
+			
+			return result.toArray(new String[0]);
 		}
 
 		public void setPal(String...pal) {
@@ -194,7 +205,17 @@ public class SpriteDef {
 		}
 
 		public String[] getSt() {
-			return st.toArray(new String[0]);
+			Collections.sort(st);
+			List<String> result = new ArrayList<String>();
+			
+			for (String s: st) {
+				String[] token = s.split(",");
+				if (token.length == 2) {
+					result.add(token[1]);
+				}
+			}
+			
+			return result.toArray(new String[0]);
 		}
 
 		public void addSt(String...st) {

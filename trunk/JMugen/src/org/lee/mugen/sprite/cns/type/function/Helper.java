@@ -1,7 +1,6 @@
 package org.lee.mugen.sprite.cns.type.function;
 
 import org.lee.mugen.core.StateMachine;
-import org.lee.mugen.core.renderer.game.CnsRender;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.SpriteCns;
@@ -60,7 +59,7 @@ public class Helper extends StateCtrlFunction {
 		final SpriteHelper helperSpr = new SpriteHelper(spriteId + "'s helper " + helperSub.hashCode(), sprite, helperSub);
 
 		fillBeanSize(spriteId, helperSpr.getInfo());
-//		System.out.println("Create helper " + helperSub.getId());
+//		Logger.log("Create helper " + helperSub.getId());
 		
 		
 		if (helperSpr.getHelperSub().getFacing() == -1)

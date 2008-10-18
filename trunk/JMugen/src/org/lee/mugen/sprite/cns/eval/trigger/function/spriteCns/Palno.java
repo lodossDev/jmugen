@@ -6,7 +6,6 @@ import org.lee.mugen.sprite.cns.eval.function.SpriteCnsTriggerFunction;
 
 public class Palno extends SpriteCnsTriggerFunction {
 
-	// TODO : Palno
 	public Palno() {
 		super("palno", new String[] {});
 	}

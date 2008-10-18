@@ -23,6 +23,7 @@ public class Command extends SpriteCnsTriggerFunction {
 		Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);
 		SpriteCns info = sprite.getInfo();
 		boolean b = ((Boolean)params[1].getValue(spriteId)).booleanValue();
+
 		if (b) {
 			return info.getCommand(params[0].getValue(spriteId).toString());
 		} else {

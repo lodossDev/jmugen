@@ -207,8 +207,8 @@ public class FightEngine {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-
-			spriteHitter.setPause(hitdef.getGuard().getPausetime().getP1_pausetime());
+			if (spriteHitter != null) // It's a helper
+				spriteHitter.setPause(hitdef.getGuard().getPausetime().getP1_pausetime());
 
 			sprite.getInfo().setLastHitdef(hitdef);
 
@@ -314,8 +314,8 @@ public class FightEngine {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-
-			spriteHitter.setPause(hitdef.getPausetime().getP1_pausetime());
+			if (spriteHitter != null) // It's a helper
+				spriteHitter.setPause(hitdef.getPausetime().getP1_pausetime());
 			
 			sprite.getInfo().setLastHitdef(hitdef);
 			sprite.getInfo().addLife(-hitdef.getDamage().getGuard_damage());
@@ -448,7 +448,8 @@ public class FightEngine {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			spriteHitter.setPause(hitdef.getGuard().getPausetime().getP1_pausetime());
+			if (spriteHitter != null) // It's a helper
+				spriteHitter.setPause(hitdef.getGuard().getPausetime().getP1_pausetime());
 
 			long currentTime = StateMachine.getInstance().getGameState().getGameTime();
 			hitdef.setLastTimeBlockBySomething(currentTime);
@@ -537,8 +538,8 @@ public class FightEngine {
 				removes.add(hitdef);
 			}
 			
-			
-			spriteHitter.setPause(hitdef.getPausetime().getP1_pausetime());
+			if (spriteHitter != null) // It's a helper
+				spriteHitter.setPause(hitdef.getPausetime().getP1_pausetime());
 
 			sprite.getInfo().getShake().setAmpl(2);
 			sprite.getInfo().getShake().setTime(

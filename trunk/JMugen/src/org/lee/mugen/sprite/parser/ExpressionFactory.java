@@ -21,6 +21,7 @@ import org.lee.mugen.sprite.cns.eval.function.SpriteCnsTriggerFunction;
 import org.lee.mugen.sprite.cns.eval.operator.CnsOperatorsDef;
 import org.lee.mugen.sprite.cns.eval.redirect.SpriteRedirect;
 import org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns.Gethitvar;
+import org.lee.mugen.util.Logger;
 
 public class ExpressionFactory {
 	private static final String _OPEN_BRACET_GRP_REGEX = "\\(";
@@ -104,7 +105,7 @@ public class ExpressionFactory {
 		if (open > 0) {
 		//	throw new IllegalArgumentException("Token must contains '"
 			//		+ closeStr + "'");
-			System.out.println("Warning !! le fichier n'est pas vraiment clean il y a une ( en trop");
+			Logger.log("Warning !! le fichier n'est pas vraiment clean il y a une ( en trop");
 		}
 		return list.toArray(new String[list.size()]);
 	}

@@ -7,7 +7,6 @@ import org.lee.mugen.sprite.cns.eval.function.StateCtrlFunction;
 import org.lee.mugen.sprite.entity.BindToSub;
 import org.lee.mugen.sprite.entity.BindToTargetSub;
 import org.lee.mugen.sprite.entity.PointF;
-import org.lee.mugen.sprite.parser.ExpressionFactory;
 
 /**
  * 

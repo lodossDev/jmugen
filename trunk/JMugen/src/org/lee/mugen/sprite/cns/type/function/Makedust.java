@@ -12,8 +12,8 @@ import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.cns.eval.function.StateCtrlFunction;
 import org.lee.mugen.sprite.entity.MakeDustSpriteManager;
 import org.lee.mugen.sprite.entity.PointF;
-import org.lee.mugen.sprite.parser.ExpressionFactory;
 import org.lee.mugen.sprite.parser.Parser;
+import org.lee.mugen.util.Logger;
 
 public class Makedust extends StateCtrlFunction {
 
@@ -98,7 +98,7 @@ public class Makedust extends StateCtrlFunction {
 	public void addParam(String name, Valueable[] param) {
 		int index = getParamIndex(name);
 		if (index == -1) {
-			System.out.println("add more param " + name);
+			Logger.log("add more param " + name);
 			int len = paramNameIndexMap.size();
 			paramNameIndexMap.put(name, len);
 			Valueable[][] newTable = new Valueable[valueableParams.length + 1][];

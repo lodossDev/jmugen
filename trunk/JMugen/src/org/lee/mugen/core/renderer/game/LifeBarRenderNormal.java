@@ -19,7 +19,6 @@ import org.lee.mugen.renderer.RGB;
 import org.lee.mugen.renderer.Renderable;
 import org.lee.mugen.sprite.base.AbstractAnimManager.SpriteDrawProperties;
 import org.lee.mugen.sprite.baseForParse.ImageSpriteSFF;
-import org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns.Roundsexisted;
 import org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns.Roundstate;
 
 public class LifeBarRenderNormal implements Renderable {

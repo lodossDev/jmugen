@@ -6,7 +6,6 @@ import org.lee.mugen.parser.air.AirGroup;
 import org.lee.mugen.parser.air.AirParser;
 import org.lee.mugen.sprite.character.AnimElement;
 import org.lee.mugen.sprite.character.AnimGroup;
-import org.lee.mugen.sprite.character.SpriteAnimManager;
 
 public class AbstractAnimManager {
 	public static class SpriteDrawProperties {

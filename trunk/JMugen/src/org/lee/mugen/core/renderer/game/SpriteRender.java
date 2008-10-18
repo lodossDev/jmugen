@@ -8,7 +8,6 @@ import org.lee.mugen.renderer.AngleDrawProperties;
 import org.lee.mugen.renderer.DrawProperties;
 import org.lee.mugen.renderer.GraphicsWrapper;
 import org.lee.mugen.renderer.ImageContainer;
-import org.lee.mugen.renderer.PalFxSub;
 import org.lee.mugen.renderer.Renderable;
 import org.lee.mugen.renderer.Trans;
 import org.lee.mugen.sprite.background.Stage;

@@ -7,7 +7,6 @@ import org.lee.mugen.core.renderer.game.ImageRender;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.cns.eval.function.StateCtrlFunction;
 import org.lee.mugen.sprite.common.resource.FontParser;
-import org.lee.mugen.sprite.parser.ExpressionFactory;
 
 public class DisplayToScreen extends StateCtrlFunction {
 	public static class DisplayToScreenSub {

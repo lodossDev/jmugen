@@ -8,7 +8,6 @@ import org.lee.mugen.sprite.cns.eval.function.StateCtrlFunction;
 import org.lee.mugen.sprite.entity.BindToParentSub;
 import org.lee.mugen.sprite.entity.BindToSub;
 import org.lee.mugen.sprite.entity.PointF;
-import org.lee.mugen.sprite.parser.ExpressionFactory;
 
 public class Bindtoroot extends StateCtrlFunction {
 

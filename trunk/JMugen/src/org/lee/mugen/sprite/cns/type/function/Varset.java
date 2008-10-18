@@ -13,6 +13,7 @@ import org.lee.mugen.sprite.character.SpriteState;
 import org.lee.mugen.sprite.cns.eval.function.StateCtrlFunction;
 import org.lee.mugen.sprite.parser.ExpressionFactory;
 import org.lee.mugen.sprite.parser.Parser;
+import org.lee.mugen.util.Logger;
 
 public class Varset extends StateCtrlFunction {
 	public Varset() {
@@ -139,7 +140,7 @@ public class Varset extends StateCtrlFunction {
 		}
 		int index = getParamIndex(name);
 		if (index == -1) {
-			System.out.println("This line can't be compile in Varset >> " + name);
+			Logger.log("This line can't be compile in Varset >> " + name);
 			return;
 		}
 			
@@ -167,6 +168,7 @@ public class Varset extends StateCtrlFunction {
 		int svfIndex = getParamIndex("sfv");
 		int valueIndex = getParamIndex("value");
 		
+
 		
 		Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);
 		

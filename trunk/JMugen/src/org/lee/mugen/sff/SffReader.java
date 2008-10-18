@@ -1,17 +1,12 @@
 package org.lee.mugen.sff;
 
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-
-import javax.imageio.ImageIO;
 
 import org.lee.mugen.imageIO.PCXLoader;
 import org.lee.mugen.imageIO.PCXPalette;

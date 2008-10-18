@@ -10,7 +10,6 @@ import org.lee.mugen.renderer.Renderable;
 import org.lee.mugen.sprite.background.Stage;
 import org.lee.mugen.sprite.base.AbstractSprite;
 import org.lee.mugen.sprite.character.Sprite;
-import org.lee.mugen.sprite.entity.ProjectileSprite;
 
 public class CnsRender implements Renderable {
 	
