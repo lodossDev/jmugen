@@ -191,12 +191,6 @@ public class PCXLoader {
         }
         in.close();
 //        
-//        GraphicsConfiguration gc = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
-//		Image result = gc.createCompatibleImage(image.getWidth(),image.getHeight(),Transparency.BITMASK);
-//		
-//		// draw our source image into the accelerated image
-//		result.getGraphics().drawImage(image,0,0,null);
-//		
         BufferedImage result = image;
         if (isFlipH || isFlipV) {
             result = new BufferedImage(glAlphaColorModel, raster, false, new Hashtable());

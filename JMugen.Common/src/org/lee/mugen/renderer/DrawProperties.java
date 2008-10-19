@@ -1,6 +1,7 @@
 package org.lee.mugen.renderer;
 
 
+
 public class DrawProperties {
 	
 	public boolean isFlipH() {

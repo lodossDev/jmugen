@@ -2,7 +2,6 @@ package org.lee.mugen.renderer;
 
 import java.util.ResourceBundle;
 
-import org.lee.mugen.input.MugenDrawer;
 
 public class GraphicsWrapper {
 	

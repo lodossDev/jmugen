@@ -1,15 +1,16 @@
-package org.lee.mugen.input;
+package org.lee.mugen.renderer;
 
 import java.awt.Color;
 import java.awt.Rectangle;
 
-import org.lee.mugen.renderer.DrawProperties;
-import org.lee.mugen.renderer.GameWindow;
-import org.lee.mugen.renderer.ImageContainer;
 
 public abstract class MugenDrawer {
+	
+	
+	
 	public abstract GameWindow getInstanceOfGameWindow();
 	public abstract ImageContainer getImageContainer(Object imageData);
+	
 	public abstract void scale(float x, float y);
 	public abstract void draw(DrawProperties drawProperties);
 	public abstract void drawRect(float x1, float y1, float width, float height);
@@ -39,5 +40,5 @@ public abstract class MugenDrawer {
 	}
 	public abstract void setColor(float r, float g, float b);
 	public abstract void setColor(float r, float g, float b, float a);
-
+	
 }

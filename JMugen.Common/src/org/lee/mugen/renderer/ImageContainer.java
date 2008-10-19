@@ -1,10 +1,6 @@
 package org.lee.mugen.renderer;
 
 
-
-
-
-
 public class ImageContainer {
 	protected Object img;
 	protected int width;
@@ -40,3 +36,8 @@ public class ImageContainer {
 	}
 	
 }
+
+
+
+
+
