@@ -11,11 +11,11 @@ import java.io.IOException;
 
 import org.lee.mugen.imageIO.PCXLoader;
 import org.lee.mugen.imageIO.RawPCXImage;
-import org.lee.mugen.input.MugenDrawer;
 import org.lee.mugen.renderer.AngleDrawProperties;
 import org.lee.mugen.renderer.DrawProperties;
 import org.lee.mugen.renderer.GameWindow;
 import org.lee.mugen.renderer.ImageContainer;
+import org.lee.mugen.renderer.MugenDrawer;
 import org.lee.mugen.renderer.Trans;
 
 public class JMugenDrawer extends MugenDrawer {
