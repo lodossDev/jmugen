@@ -305,7 +305,7 @@ public class TextureLoader {
                       0, 
 //                    dstPixelFormat, 
 //                      GL11.GL_RGBA,
-                      EXTTextureCompressionS3TC.GL_COMPRESSED_RGBA_S3TC_DXT5_EXT,
+                      GL11.GL_RGBA16,
                       texWidth, 
                       texHeight, 
                       0, 
