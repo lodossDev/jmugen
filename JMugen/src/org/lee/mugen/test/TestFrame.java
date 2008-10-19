@@ -41,7 +41,8 @@ public class TestFrame {
 				"JMugen : This version is an alpha version" + "\n" + 
 				"* Memory is not optimized :" + "\n" + 
 				"    - Loading : Low Res Characters with Low Res Stage => 100 Mo" + "\n" + 
-				"    - Loading : Hi res Characters with Hi Res Stage => 800 Mo" + "\n" + 
+				"    - Loading : Hi res Characters with Hi Res Stage => 1 000 Mo !!! " +
+				"                (I have to find a way to load Compressed Image (pcx) directly to the GPU)" + "\n" + 
 				"* There are two version of this JMugen (Default is Opengl)" + "\n" + 
 				"    - OpenGL (For now Shader 2 is requiered)" + "\n" + 
 				"    - Software (no support for now palFx,proper rotation, ...)" + "\n" + 
@@ -60,8 +61,9 @@ public class TestFrame {
 				"    2 - ReversalDef (it might be a complicate part)" + "\n" + 
 				"    3 - I'll see" + "\n" + 
 				"" + "\n" + 
-				"* Note : you have to keep this directory stucture and you will need this file : resource\\data\\common.cmd" + "\n" + 
-				"         This File is a list of controller that append the statedef -1 and it is use for controlling the sprite " +  "\n" + 
+				"* Note : - you have to keep this directory stucture and you will need this file : resource\\data\\common.cmd" + "\n" + 
+				"           This File is a list of controller that append the statedef -1 and it is use for controlling the sprite " +  "\n" +
+				"         - There is a Debugger windows, you can change on the fly the state, to use it , once the Two sprite appears click on 'click here'" + "\n" +
 				"\n" + 
 				"-------------------------------------------------------------------------------------------------------\n" + 
 				"Now it will prompt to choose Characters, stage and music (music is not required)", "JMugen 0.01b", JOptionPane.INFORMATION_MESSAGE);
