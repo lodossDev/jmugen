@@ -27,6 +27,7 @@ import org.lee.mugen.util.Logger;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.devil.IL;
 import org.lwjgl.devil.ILU;
+import org.lwjgl.opengl.EXTTextureCompressionS3TC;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.glu.GLU;
@@ -303,7 +304,8 @@ public class TextureLoader {
         GL11.glTexImage2D(target, 
                       0, 
 //                    dstPixelFormat, 
-                      GL11.GL_RGBA,
+//                      GL11.GL_RGBA,
+                      EXTTextureCompressionS3TC.GL_COMPRESSED_RGBA_S3TC_DXT5_EXT,
                       texWidth, 
                       texHeight, 
                       0, 

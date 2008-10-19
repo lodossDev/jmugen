@@ -17,7 +17,7 @@ import org.lee.mugen.util.debugger.SpriteDebugerUI;
 public class TestFrame {
 
 
-	public static void main2(String[] args) throws Exception {
+	public static void launchUI() throws Exception {
 
 		final StateMachine statemachine = StateMachine.getInstance();
 
@@ -37,6 +37,34 @@ public class TestFrame {
 		String stage = null;
 		String music = null;
 		
+		JOptionPane.showMessageDialog(null, 
+				"JMugen : This version is an alpha version" + "\n" + 
+				"* Memory is not optimized :" + "\n" + 
+				"    - Loading : Low Res Characters with Low Res Stage => 100 Mo" + "\n" + 
+				"    - Loading : Hi res Characters with Hi Res Stage => 800 Mo" + "\n" + 
+				"* There are two version of this JMugen (Default is Opengl)" + "\n" + 
+				"    - OpenGL (For now Shader 2 is requiered)" + "\n" + 
+				"    - Software (no support for now palFx,proper rotation, ...)" + "\n" + 
+				"* Key Mapping => edit The file keys.properties" + "\n" + 
+				"* To change Renderer edit the file render.properties" + "\n" + 
+				"" + "\n" + 
+				"For Hi Res Stage support you have to add in the " + "\n" + 
+				"    file Stage.def in [Scaling] section theses 2 new element xscale = 0.5 and yscale = 0.5" + "\n" + 
+				"" + "\n" + 
+				"*- No Implemted Yet and very need by Mugen " + "\n" + 
+				"    - Reversedef " + "\n" +
+				"*- WIP : " + "\n" + 
+				"    1 - Parser Speed Optimisation " + "\n" + 
+				"    (RAOH's state.cns is about 1.5M and have many many expressions, " + "\n" + 
+				"     it take about 12 sec to load it all)" + "\n" + "\n" + 
+				"    2 - ReversalDef (it might be a complicate part)" + "\n" + 
+				"    3 - I'll see" + "\n" + 
+				"" + "\n" + 
+				"* Note : you have to keep this directory stucture and you will need this file : resource\\data\\common.cmd" + "\n" + 
+				"         This File is a list of controller that append the statedef -1 and it is use for controlling the sprite " +  "\n" + 
+				"\n" + 
+				"-------------------------------------------------------------------------------------------------------\n" + 
+				"Now it will prompt to choose Characters, stage and music (music is not required)", "JMugen 0.01b", JOptionPane.INFORMATION_MESSAGE);
 		
 		JOptionPane.showMessageDialog(null, "Choose the first Char", "JMugen 0.01b", JOptionPane.INFORMATION_MESSAGE);
 		JFileChooser fcSelectChar = new JFileChooser(new File(".", "resource/chars"));
@@ -140,13 +168,13 @@ public class TestFrame {
 		gameWindow.start();
 		
 	}
-
 	public static void main(String[] args) throws Exception {
+//		launchDirect();
+		launchUI();
+	}
+	
+	public static void launchDirect() throws Exception {
 
-		if (true) {
-			main2(null);
-			return;
-		}
 		
 	    String nativeLF = UIManager.getSystemLookAndFeelClassName();
 	    
@@ -160,14 +188,12 @@ public class TestFrame {
 	    }
 	    
 	    
-		String[] args2 = new String[] {
+		String[] args = new String[] {
 			"kfm", "0", 
 			"kfm", "0",
 			"stage0.def",
 			"ADX_S060.wav"
 		};
-		args = args2;
-		
 		
 		final StateMachine statemachine = StateMachine.getInstance();
 		statemachine.getGameState().setGameType(1);

@@ -87,6 +87,16 @@ public class BackgroundRender implements IBackgroundRenderer {
 	public void render() {
 		Stage stage = StateMachine.getInstance().getInstanceOfStage();
 		int xStartForAll = stage.getCamera().getWidth() / 2;
+		
+		int left = stage.getBound().getScreenleft();
+		int right = stage.getBound().getScreenright();
+
+		int leftLimit = left + stage.getCamera().getBoundleft()
+				+ stage.getCamera().getTension();
+
+		int rightLimit = -right + stage.getCamera().getBoundright()
+				- stage.getCamera().getTension();
+		
 		int width = (Math.abs(stage.getCamera().getBoundleft()) + Math
 				.abs(stage.getCamera().getBoundright())) + stage.getCamera().getWidth();
 		float _mvX = stage.getCamera().getX();

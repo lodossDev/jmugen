@@ -29,7 +29,7 @@ import org.lee.mugen.imageIO.PCXPalette;
  * @author Brian Matzon
  */
 public class TestImagePCX extends JFrame {
-	final String parentDir = "C:/dev/workspace/JMugen/ryu2/";
+	final String parentDir = "C:/Documents and Settings/Dr Wong/Bureau/Win Mugen/chars/cvsryu/cvsryu/";
 	public static void main(String[] args) {
 		new TestImagePCX();
 		

@@ -134,8 +134,8 @@ public class PhysicsEngime {
 		checkGoodPositionInScreen(sprTwo);
 		
 
-		if (sprOne.getInfo().getType() == Type.L || sprTwo.getInfo().getType() == Type.L)
-			return;
+//		if (sprOne.getInfo().getType() == Type.L || sprTwo.getInfo().getType() == Type.L)
+//			return;
 		
 		if (isOnePlayerpush || isTwoPlayerpush)
 			return;
