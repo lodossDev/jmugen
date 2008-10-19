@@ -313,15 +313,7 @@ public class LMugenDrawer extends MugenDrawer {
 		GL11.glScaled(x, y, 0);
 	}
 
-	static ColorModel glAlphaColorModel = new ComponentColorModel(ColorSpace
-			.getInstance(ColorSpace.CS_sRGB), new int[] { 8, 8, 8, 8 }, true,
-			false, ComponentColorModel.TRANSLUCENT, DataBuffer.TYPE_BYTE);
-    static ColorModel glColorModel = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB),
-            new int[] {8,8,8,0},
-            false,
-            false,
-            ComponentColorModel.OPAQUE,
-            DataBuffer.TYPE_BYTE);
+
 
 	public class ImageContainerText extends ImageContainer {
 
@@ -351,8 +343,12 @@ public class LMugenDrawer extends MugenDrawer {
 				} else if (imageStatus.get() == RAW_PCX) {
 					RawPCXImage pcx = (RawPCXImage) img;
 					try {
-						BufferedImage image = (BufferedImage) PCXLoader.loadImage(new ByteArrayInputStream(
-									pcx.getData()), pcx.getPalette(), false, true);
+						BufferedImage image = (BufferedImage) PCXLoader.loadImageColorIndexed(new ByteArrayInputStream(
+								pcx.getData()), pcx.getPalette(), false, true);
+
+//						BufferedImage image = (BufferedImage) PCXLoader.loadImage(new ByteArrayInputStream(
+//								pcx.getData()), pcx.getPalette(), false, true);
+
 						img = TextureLoader.getTextureLoader().getTexture(image);
 						imageStatus.set(TEXTURE);
 						return img;
@@ -383,8 +379,6 @@ public class LMugenDrawer extends MugenDrawer {
 
 		}
 		
-
-		
 		public void prepareImageToTexture() {
 			synchronized (this) {
 				if (imageStatus.get() == RAW_PCX) {
@@ -403,9 +397,13 @@ public class LMugenDrawer extends MugenDrawer {
 				}
 			}
 		}
+		
 	}
 	
-	private static final int LIST_IMG_TO_PROCESS_COUNT = 10;
+	private static long memoryusage = 0;
+	
+	
+	private static final int LIST_IMG_TO_PROCESS_COUNT = 3;
 	private static List<ImageContainerText>[] IMAGE_TO_PROCESS_LIST = null;
 	private static boolean[] jobFinish = new boolean[LIST_IMG_TO_PROCESS_COUNT];
 	private static int currentListToAdd = 0;
@@ -463,6 +461,12 @@ public class LMugenDrawer extends MugenDrawer {
 		for (Iterator<LMugenDrawer.ImageContainerText> iter = list.iterator(); iter.hasNext();) {
 			iter.next().prepareImageToTexture();
 			iter.remove();
+			try {
+				Thread.sleep(20);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 	private static Comparator<ImageContainerText> IMAGE_CONTAINER_COMPARATOR = new Comparator<ImageContainerText>() {
@@ -497,6 +501,20 @@ public class LMugenDrawer extends MugenDrawer {
 		}
 		return result;
 	}
+	
+	
+	
+	static ColorModel glAlphaColorModel = new ComponentColorModel(ColorSpace
+			.getInstance(ColorSpace.CS_sRGB), new int[] { 8, 8, 8, 8 }, true,
+			false, ComponentColorModel.TRANSLUCENT, DataBuffer.TYPE_BYTE);
+    static ColorModel glColorModel = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB),
+            new int[] {8,8,8,0},
+            false,
+            false,
+            ComponentColorModel.BITMASK,
+            DataBuffer.TYPE_BYTE);
+    
+    
 	public static byte[] pcxToRawRGBA(byte[] data) throws IOException {
     	BufferedImage image;
 
@@ -545,21 +563,26 @@ public class LMugenDrawer extends MugenDrawer {
                 if (xp < width) {
                 	int[] alpha = new int[] {255};
 
-                     if (true)
-                         isAboutTheSameColor(
+                     
+                	if (
+                	isAboutTheSameColor(
                              pal.r[value],
                              pal.g[value],
                              pal.b[value], 
                              pal.r[0], 
                              pal.g[0], 
                              pal.b[0], 
-                             alpha);
-                     int color = ImageUtils.getARGB(
-                             alpha[0],
-                             pal.r[value],
-                             pal.g[value],
-                             pal.b[value]);
-                    image.setRGB(xp, yp, color);
+                             alpha)) {
+//                		
+                	} else {
+                        int color = ImageUtils.getARGB(
+                                alpha[0],
+                                pal.r[value],
+                                pal.g[value],
+                                pal.b[value]);
+                        image.setRGB(xp, yp, color);
+                		
+                	}
 
 //                    texinfo.texels[xp + yp * width] = ImageUtils.getARGB(alpha[0], pal.r[value], pal.g[value], pal.b[value]);
 //                    pal.r[value];

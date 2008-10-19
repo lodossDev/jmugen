@@ -332,7 +332,7 @@ public class LwjgGameWindow implements GameWindow {
 		
 		while (gameRunning) {
 
-			if (!isFinishInit || !LMugenDrawer.isConverImageToBufferFinish()) {
+			if (!isFinishInit) {// || !LMugenDrawer.isConverImageToBufferFinish()) {
 //			if (!LMugenDrawer.isConverImageToBufferFinish()) {
 				callback.displayPendingScreeen();
 			} else {
