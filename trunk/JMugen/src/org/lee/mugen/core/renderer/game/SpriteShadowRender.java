@@ -1,10 +1,10 @@
 package org.lee.mugen.core.renderer.game;
 
 import org.lee.mugen.core.StateMachine;
-import org.lee.mugen.input.MugenDrawer;
 import org.lee.mugen.renderer.DrawProperties;
 import org.lee.mugen.renderer.GraphicsWrapper;
 import org.lee.mugen.renderer.ImageContainer;
+import org.lee.mugen.renderer.MugenDrawer;
 import org.lee.mugen.renderer.PalFxSub;
 import org.lee.mugen.renderer.RGB;
 import org.lee.mugen.renderer.Renderable;

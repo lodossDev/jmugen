@@ -15,6 +15,6 @@ public class IsAssertSpecial extends SpriteCnsTriggerFunction {
 	public Object getValue(String spriteId, Valueable... params) {
 		String key = params[0].getValue(spriteId).toString();
 		Assertspecial.Flag flag = Assertspecial.Flag.valueOf(key.toLowerCase());
-		return StateMachine.getInstance().getGlobalEvents().isAssertSpecial(flag)? 1: 0;
+		return StateMachine.getInstance().getGlobalEvents().isAssertSpecial(spriteId, flag)? 1: 0;
 	}
 }

@@ -1,13 +1,13 @@
 package org.lee.mugen.core.renderer.game;
 
 import org.lee.mugen.core.StateMachine;
-import org.lee.mugen.input.MugenDrawer;
 import org.lee.mugen.parser.air.AirData;
 import org.lee.mugen.parser.air.AirData.TypeBlit;
 import org.lee.mugen.renderer.AngleDrawProperties;
 import org.lee.mugen.renderer.DrawProperties;
 import org.lee.mugen.renderer.GraphicsWrapper;
 import org.lee.mugen.renderer.ImageContainer;
+import org.lee.mugen.renderer.MugenDrawer;
 import org.lee.mugen.renderer.Renderable;
 import org.lee.mugen.renderer.Trans;
 import org.lee.mugen.sprite.background.Stage;

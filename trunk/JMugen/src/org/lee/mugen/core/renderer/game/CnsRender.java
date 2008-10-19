@@ -4,8 +4,8 @@ import java.awt.Color;
 import java.awt.Rectangle;
 
 import org.lee.mugen.core.StateMachine;
-import org.lee.mugen.input.MugenDrawer;
 import org.lee.mugen.renderer.GraphicsWrapper;
+import org.lee.mugen.renderer.MugenDrawer;
 import org.lee.mugen.renderer.Renderable;
 import org.lee.mugen.sprite.background.Stage;
 import org.lee.mugen.sprite.base.AbstractSprite;

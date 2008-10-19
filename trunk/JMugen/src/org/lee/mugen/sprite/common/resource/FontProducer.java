@@ -5,9 +5,9 @@ import java.awt.Dimension;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.lee.mugen.input.MugenDrawer;
 import org.lee.mugen.renderer.DrawProperties;
 import org.lee.mugen.renderer.ImageContainer;
+import org.lee.mugen.renderer.MugenDrawer;
 
 public class FontProducer {
 

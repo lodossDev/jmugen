@@ -419,8 +419,6 @@ public class StateMachine implements Game {
 			addRender(cnsRenderList.get(0));
 			addRender(cnsRenderList.get(1));
 			
-			
-			
 			if (gameState.getGameType() == 1)
 				addRender(new LifeBarRenderNormal());
 
@@ -439,8 +437,6 @@ public class StateMachine implements Game {
 				spriteCmdProcessMap.put(s.getSpriteId(), scp);
 				((GameWindow)container).addSpriteKeyProcessor(scp);
 			}
-			s.getInfo().init();
-			s.process();
 		}
 		
 		initRound();
@@ -454,10 +450,6 @@ public class StateMachine implements Game {
 	public void update(int delta) throws Exception {
 		if (systemPause && !forceUpdate)
 			return;
-
-		int prevstate1 = Integer.parseInt(getSpriteInstance("1").getSpriteState().getPrevstateno());
-		int prevstate2 = Integer.parseInt(getSpriteInstance("2").getSpriteState().getPrevstateno());
-		
 		if (getGlobalEvents().isAssertSpecial("1", Flag.intro))
 			stateSpr1 = Roundstate.INTRO;
 		if (getGlobalEvents().isAssertSpecial("2", Flag.intro))
@@ -470,16 +462,12 @@ public class StateMachine implements Game {
 			
 		if (stateSpr1 == stateSpr2) {
 			getGameState().setRoundState(stateSpr1);
-			
-			
 			if (getGameState().getRoundState() == Roundstate.COMBAT 
 					&& getGameState().getRoundsExisted() == 0) {
 				getSpriteInstance("1").getInfo().setCtrl(1);
 				getSpriteInstance("2").getInfo().setCtrl(1);
 				getGameState().setRoundsExisted(1);
 			}
-
-				
 		}
 
 		

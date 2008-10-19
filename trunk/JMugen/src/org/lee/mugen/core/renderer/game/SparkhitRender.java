@@ -85,7 +85,7 @@ public class SparkhitRender extends SpriteRender {
 //		drawProperties.getPalmul().setB(256);
 //		
 		
-		org.lee.mugen.input.MugenDrawer md = GraphicsWrapper.getInstance();
+		org.lee.mugen.renderer.MugenDrawer md = GraphicsWrapper.getInstance();
 		
 		md.draw(drawProperties);
 

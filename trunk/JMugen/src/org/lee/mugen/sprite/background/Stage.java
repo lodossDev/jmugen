@@ -352,10 +352,10 @@ public class Stage {
 			int left = getBound().getScreenleft();
 			int right = getBound().getScreenright();
 
-			int leftLimit = left + getCamera().getBoundleft()+80
+			int leftLimit = left + getCamera().getBoundleft()
 					+ getCamera().getTension();
 
-			int rightLimit = -right + getCamera().getBoundright()+150
+			int rightLimit = -right + getCamera().getBoundright()
 					- getCamera().getTension();
 			
 			int diff = xCam + xSpr;
