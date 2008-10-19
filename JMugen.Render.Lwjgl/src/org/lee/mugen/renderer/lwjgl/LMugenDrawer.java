@@ -1,7 +1,5 @@
 package org.lee.mugen.renderer.lwjgl;
 
-import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
@@ -12,19 +10,25 @@ import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
+import java.io.InputStream;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Hashtable;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import org.lee.mugen.imageIO.ImageUtils;
 import org.lee.mugen.imageIO.PCXLoader;
+import org.lee.mugen.imageIO.PCXPalette;
 import org.lee.mugen.imageIO.RawPCXImage;
 import org.lee.mugen.imageIO.PCXLoader.PCXHeader;
-import org.lee.mugen.input.MugenDrawer;
 import org.lee.mugen.renderer.AngleDrawProperties;
 import org.lee.mugen.renderer.DrawProperties;
 import org.lee.mugen.renderer.GameWindow;
 import org.lee.mugen.renderer.ImageContainer;
+import org.lee.mugen.renderer.MugenDrawer;
 import org.lee.mugen.renderer.RGB;
 import org.lee.mugen.renderer.Trans;
 import org.lee.mugen.renderer.lwjgl.shader.AfterImageShader;
@@ -312,60 +316,115 @@ public class LMugenDrawer extends MugenDrawer {
 	static ColorModel glAlphaColorModel = new ComponentColorModel(ColorSpace
 			.getInstance(ColorSpace.CS_sRGB), new int[] { 8, 8, 8, 8 }, true,
 			false, ComponentColorModel.TRANSLUCENT, DataBuffer.TYPE_BYTE);
+    static ColorModel glColorModel = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB),
+            new int[] {8,8,8,0},
+            false,
+            false,
+            ComponentColorModel.OPAQUE,
+            DataBuffer.TYPE_BYTE);
 
-
-	private class ImageContainerText extends ImageContainer {
+	public class ImageContainerText extends ImageContainer {
 
 		public ImageContainerText(Object img, int width, int height) {
 			super(img, width, height);
-			RawPCXImage pcx = (RawPCXImage) img;
-			try {
-				this.img = (BufferedImage) PCXLoader.loadImage(new ByteArrayInputStream(
-							pcx.getData()), pcx.getPalette(), false, true);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
 		}
-		Texture text = null;
-		AtomicBoolean isTextSet = new AtomicBoolean(false);
+		
+		
+		private static final int RAW_PCX = 0;
+		private static final int BYTE = 1;
+		private static final int TEXTURE = 2;
+		
+		AtomicInteger imageStatus = new AtomicInteger(0);
 		@Override
 		public Object getImg() {
-			if (isTextSet.get()) {
-				return text;
+			synchronized (this) {
+				if (imageStatus.get() == TEXTURE) {
+					return img;
+				} else if (imageStatus.get() == BYTE) {
+					try {
+						img = TextureLoader.getTextureLoader().getTexture((byte[]) img, width, height);
+						imageStatus.set(TEXTURE);
+						return img;
+					} catch (Exception e) {
+						throw new IllegalStateException("Ca ne devrait pas arrive", e);
+					}
+				} else if (imageStatus.get() == RAW_PCX) {
+					RawPCXImage pcx = (RawPCXImage) img;
+					try {
+						BufferedImage image = (BufferedImage) PCXLoader.loadImage(new ByteArrayInputStream(
+									pcx.getData()), pcx.getPalette(), false, true);
+						img = TextureLoader.getTextureLoader().getTexture(image);
+						imageStatus.set(TEXTURE);
+						return img;
+					} catch (IOException e) {
+						throw new IllegalStateException("Ca ne devrait pas arrive");
+					}
+				}
 			}
-			try {
-				text = TextureLoader.getTextureLoader().getTexture((BufferedImage) img);
-				isTextSet.set(true);
-			} catch (IOException e) {
-				throw new Error();
-			}
-			img = null;
-			return text;
+			throw new IllegalStateException();
 		}
 
 		public void free() {
-			if (text != null)
-				TextureLoader.getTextureLoader().free(text);
+			synchronized (this) {
+				if (imageStatus.get() == TEXTURE && img != null)
+					TextureLoader.getTextureLoader().free((Texture) img);
+			}
 		}
 		
 		@Override
 		public void reload(ImageContainer img) {
-			ImageContainerText imgText = (ImageContainerText) img;
-			Texture textTemp = text;
-			this.img = imgText.img;
-			if (text != null && isTextSet.get())
-				TextureLoader.getTextureLoader().free(textTemp);
-			isTextSet.set(false);
-			this.width = img.getWidth();
-			this.height = img.getHeight();
+			synchronized (this) {
+				ImageContainerText imgText = (ImageContainerText) img;
+				this.img = imgText.img;
+				this.width = img.getWidth();
+				this.height = img.getHeight();
+				imageStatus.set(imgText.imageStatus.get());
+			}
 
+		}
+		
 
+		
+		public void prepareImageToTexture() {
+			synchronized (this) {
+				if (imageStatus.get() == RAW_PCX) {
+					RawPCXImage pcx = (RawPCXImage) img;
+					
+					try {
+						img = pcxToRawRGBA(pcx.getData());
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					imageStatus.set(BYTE);
+					
+
+				}
+			}
 		}
 	}
 	
+	private static final int LIST_IMG_TO_PROCESS_COUNT = 10;
+	private static List<ImageContainerText>[] IMAGE_TO_PROCESS_LIST = null;
+	private static boolean[] jobFinish = new boolean[LIST_IMG_TO_PROCESS_COUNT];
+	private static int currentListToAdd = 0;
 	
+	
+	private static void addToImageToProcess(ImageContainerText img) {
+		if (IMAGE_TO_PROCESS_LIST == null) {
+			IMAGE_TO_PROCESS_LIST = new List[LIST_IMG_TO_PROCESS_COUNT];
+			for (int i = 0; i < LIST_IMG_TO_PROCESS_COUNT; i++) {
+				IMAGE_TO_PROCESS_LIST[i] = new LinkedList<ImageContainerText>();
+			}
+		}
+		if (currentListToAdd > IMAGE_TO_PROCESS_LIST.length - 1) {
+			currentListToAdd = 0;
+		}
+		IMAGE_TO_PROCESS_LIST[currentListToAdd].add(img);
+		currentListToAdd++;
+	}
+
 	@Override
 	public ImageContainer getImageContainer(Object imageData) {
 		RawPCXImage pcx = (RawPCXImage) imageData;
@@ -383,61 +442,157 @@ public class LMugenDrawer extends MugenDrawer {
         int width = header.xmax - header.xmin + 1;
         int height = header.ymax - header.ymin + 1;
         
-        ImageContainer result = new ImageContainerText(pcx , width, height);
-        
+        ImageContainerText result = new ImageContainerText(pcx , width, height);
+        addToImageToProcess(result);
 		return result;
 			
 			
 	}
 
-	private ByteBuffer convertImageData(BufferedImage bufferedImage, int[] wh) {
-        ByteBuffer imageBuffer = null; 
-        WritableRaster raster;
-        BufferedImage texImage;
-        
-        int texWidth = 2;
-        int texHeight = 2;
-        
-        // find the closest power of 2 for the width and height
-        // of the produced texture
-        while (texWidth < bufferedImage.getWidth()) {
-            texWidth *= 2;
-        }
-        while (texHeight < bufferedImage.getHeight()) {
-            texHeight *= 2;
-        }
-        
-        wh[1] = texHeight;
-        wh[0] = texWidth;
-        
-        // create a raster that can be used by OpenGL as a source
-        // for a texture
-        raster = Raster.createInterleavedRaster(DataBuffer.TYPE_BYTE,texWidth,texHeight,4,null);
-        texImage = new BufferedImage(glAlphaColorModel,raster,false,new Hashtable());
-            
-        // copy the source image into the produced image
-        Graphics g = texImage.getGraphics();
-        g.setColor(new Color(0f,0f,0f,0f));
-        g.fillRect(0,0,texWidth,texHeight);
-        g.drawImage(bufferedImage,0,0,null);
-        
-        // build a byte buffer from the temporary image 
-        // that be used by OpenGL to produce a texture.
-        byte[] data = ((DataBufferByte) texImage.getRaster().getDataBuffer()).getData(); 
 
-        imageBuffer = ByteBuffer.allocateDirect(data.length); 
-        imageBuffer.order(ByteOrder.nativeOrder()); 
-        imageBuffer.put(data, 0, data.length); 
-        imageBuffer.flip();
-        
-        return imageBuffer; 
-    }
-
+	
 	private LwjgGameWindow gameWindow = new LwjgGameWindow();
 
 	@Override
 	public GameWindow getInstanceOfGameWindow() {
 		return gameWindow;
 	}
+
+	private static void prepareImageToProcess(List<ImageContainerText> list) {
+		Collections.sort(list, IMAGE_CONTAINER_COMPARATOR);
+		for (Iterator<LMugenDrawer.ImageContainerText> iter = list.iterator(); iter.hasNext();) {
+			iter.next().prepareImageToTexture();
+			iter.remove();
+		}
+	}
+	private static Comparator<ImageContainerText> IMAGE_CONTAINER_COMPARATOR = new Comparator<ImageContainerText>() {
+
+		@Override
+		public int compare(ImageContainerText o1, ImageContainerText o2) {
+			return -(o1.getWidth() * o1.getHeight()) + (o2.getWidth() * o2.getHeight());
+		}};
+	public static void createImageToTextPreparer() {
+		
+		for (int i = 0; i < IMAGE_TO_PROCESS_LIST.length; ++i) {
+			final int pos = i;
+			new Thread() {
+				@Override
+				public void run() {
+					prepareImageToProcess(IMAGE_TO_PROCESS_LIST[pos]);
+					jobFinish[pos] = true;
+				}
+			}.start();
+			
+		}
+	}
+	
+	public static void newThreadJob() {
+		jobFinish = new boolean[LIST_IMG_TO_PROCESS_COUNT];
+	}
+	
+	public static boolean isConverImageToBufferFinish() {
+		boolean result = true;
+		for (boolean b: jobFinish) {
+			result = result && b;
+		}
+		return result;
+	}
+	public static byte[] pcxToRawRGBA(byte[] data) throws IOException {
+    	BufferedImage image;
+
+    	PCXPalette pal = new PCXPalette();
+    	PCXHeader header = new PCXHeader(data);
+       	pal.load(new ByteArrayInputStream(data));
+        
+        InputStream in = new ByteArrayInputStream(data);
+        
+        in.skip(128);
+        int width = header.xmax - header.xmin + 1;
+        int height = header.ymax - header.ymin + 1;
+        
+        int xp = 0;
+        int yp = 0;
+        int value;
+        int count;
+        
+        int texWidth = 2;
+        int texHeight = 2;
+        
+        // find the closest power of 2 for the width and height
+        // of the produced texture
+        while (texWidth < width) {
+            texWidth *= 2;
+        }
+        while (texHeight < height) {
+            texHeight *= 2;
+        }
+
+        WritableRaster raster = Raster.createInterleavedRaster(DataBuffer.TYPE_BYTE, texWidth, texHeight, 4, null);
+        image = new BufferedImage(glAlphaColorModel, raster, false, new Hashtable());
+        
+        while (yp < height) {
+            value = in.read();
+            // if the byte has the top two bits set
+            if (value >= 192) {
+                count = (value - 192);
+                value = in.read();
+            } else {
+                count = 1;
+            }
+            
+            // update data
+            for (int i = 0; i < count; i++) {
+                if (xp < width) {
+                	int[] alpha = new int[] {255};
+
+                     if (true)
+                         isAboutTheSameColor(
+                             pal.r[value],
+                             pal.g[value],
+                             pal.b[value], 
+                             pal.r[0], 
+                             pal.g[0], 
+                             pal.b[0], 
+                             alpha);
+                     int color = ImageUtils.getARGB(
+                             alpha[0],
+                             pal.r[value],
+                             pal.g[value],
+                             pal.b[value]);
+                    image.setRGB(xp, yp, color);
+
+//                    texinfo.texels[xp + yp * width] = ImageUtils.getARGB(alpha[0], pal.r[value], pal.g[value], pal.b[value]);
+//                    pal.r[value];
+//                    texinfo.texels[xp * 4 + yp * width + 1] = pal.g[value];
+//                    texinfo.texels[xp * 4 + yp * width + 2] = pal.b[value];
+//                    texinfo.texels[xp * 4 + yp * width + 3] = alpha[0];
+
+                    
+                    // TODO Find a way to load it directly in a byte
+                }
+                xp++;
+                if (xp == header.bytesPerLine) {
+                    xp = 0;
+                    yp ++;
+                    break;
+                }
+            }
+        }
+        in.close();
+        return ((DataBufferByte) image.getRaster().getDataBuffer()).getData(); 
+	}
+	
+	private static boolean isAboutTheSameColor(int r1, int g1, int b1, int r2, int g2, int b2, int[] alpha) {
+        alpha[0] = 255;
+        if (r1 == r2 && b1 == b2 && g1 == g2) {
+            alpha[0] = 0;
+            return true;
+        } else
+            return false;
+    }	
+	
+	
+   
+    
 
 }

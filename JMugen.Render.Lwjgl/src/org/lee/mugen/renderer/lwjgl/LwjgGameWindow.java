@@ -1,6 +1,5 @@
 package org.lee.mugen.renderer.lwjgl;
 
-import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -189,18 +188,19 @@ public class LwjgGameWindow implements GameWindow {
 		}
 	}
 	
-	
+	boolean isFinishInit = false;
 	Thread loadingThread = new Thread() {
 		@Override
 		public void run() {
-			if (callback != null) {
-				try {
-					callback.init(LwjgGameWindow.this);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+			try {
+				callback.init(LwjgGameWindow.this);
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
+
+			
+			LMugenDrawer.createImageToTextPreparer();
+			isFinishInit = true;
 		}
 	};
 
@@ -332,9 +332,9 @@ public class LwjgGameWindow implements GameWindow {
 		
 		while (gameRunning) {
 
-			if (loadingThread.isAlive()) {
+			if (!isFinishInit || !LMugenDrawer.isConverImageToBufferFinish()) {
+//			if (!LMugenDrawer.isConverImageToBufferFinish()) {
 				callback.displayPendingScreeen();
-				getTimer().sleep(500);
 			} else {
 				if (callback != null) {
 					keyManagementExecute();

@@ -102,14 +102,19 @@ public class TextureLoader {
                 GL11.GL_RGBA,     // dst pixel format
                 GL11.GL_NEAREST, // min filter (unused)
                 GL11.GL_NEAREST);
-//        Texture tex = getTexture(img,
-//                GL11.GL_TEXTURE_2D, // target
-//                GL11.GL_RGBA,     // dst pixel format
-//                GL11.GL_LINEAR, // min filter (unused)
-//                GL11.GL_LINEAR);
-        
         return tex;
     }
+    
+    public Texture getTexture(byte[] img, int width, int height) throws IOException {
+        Texture tex = getTexture(img, width, height, 
+        		GL11.GL_RGBA, 
+                GL11.GL_TEXTURE_2D, // target
+                GL11.GL_RGBA,     // dst pixel format
+                GL11.GL_NEAREST, // min filter (unused)
+                GL11.GL_NEAREST);
+        return tex;
+    }
+    
     public Texture loadTextureFromPCX(RawPCXImage pcx) throws IOException {
     	
 		return loadTexture(new ByteArrayInputStream(pcx.getData()), false, IL.IL_PCX);
@@ -230,28 +235,81 @@ public class TextureLoader {
             GL11.glTexParameteri(target, GL11.GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE);
         } 
  
-        // produce a texture from the byte buffer
-//        Logger.log("glTexImage2D to ByteBuffer");
-//        GL11.glTexImage2D(target, 
-//        				0, 
-//        				ARBTextureCompression.GL_COMPRESSED_RGBA_ARB, 
-//        				get2Fold(bufferedImage.getWidth()), 
-//        				get2Fold(bufferedImage.getHeight()), 
-//        				0, 
-//        				srcPixelFormat, 
-//        				GL11.GL_UNSIGNED_BYTE, 
-//        				textureBuffer);
-        
         GL11.glTexImage2D(target, 
                       0, 
 //                    dstPixelFormat, 
-                      GL11.GL_RGBA8,
-                      get2Fold(bufferedImage.getWidth()), 
-                      get2Fold(bufferedImage.getHeight()), 
+                      GL11.GL_RGBA,
+                      texture.getTexWidth(), 
+                      texture.getTexHeight(), 
                       0, 
                       srcPixelFormat, 
                       GL11.GL_UNSIGNED_BYTE, 
                       textureBuffer ); 
+//        Logger.log("end glTexImage2D to ByteBuffer");
+        return texture; 
+    } 
+    
+    
+    
+    /**
+     * Load a texture into OpenGL from a image reference on
+     * disk.
+     *
+     * @param resourceName The location of the resource to load
+     * @param target The GL target to load the texture against
+     * @param dstPixelFormat The pixel format of the screen
+     * @param minFilter The minimising filter
+     * @param magFilter The magnification filter
+     * @return The loaded texture
+     * @throws IOException Indicates a failure to access the resource
+     */
+    public Texture getTexture(byte[] data, int width, int height, int srcPixelFormat,
+                              int target, 
+                              int dstPixelFormat, 
+                              int minFilter, 
+                              int magFilter) throws IOException 
+    { 
+        // create the texture ID for this texture 
+        int textureID = createTextureID(); 
+        Texture texture = new Texture(target,textureID); 
+        
+        // bind this texture 
+        GL11.glBindTexture(target, textureID); 
+ 
+
+        
+        int texWidth = get2Fold(width);
+        int texHeight = get2Fold(height);
+        texture.setTextureWidth(texWidth);
+        texture.setTexHeight(texHeight);
+        
+    	ByteBuffer textureBuffer = ByteBuffer.allocateDirect(data.length); 
+    	textureBuffer.order(ByteOrder.nativeOrder()); 
+    	textureBuffer.put(data, 0, data.length); 
+    	textureBuffer.flip();
+        
+
+        texture.setWidth(width);
+        texture.setHeight(height);
+    	
+//        Logger.log("End Transform to ByteBuffer");
+        if (target == GL11.GL_TEXTURE_2D) 
+        { 
+            GL11.glTexParameteri(target, GL11.GL_TEXTURE_MIN_FILTER, minFilter); 
+            GL11.glTexParameteri(target, GL11.GL_TEXTURE_MAG_FILTER, magFilter);
+            GL11.glTexParameteri(target, GL11.GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE);
+            GL11.glTexParameteri(target, GL11.GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE);
+        } 
+        GL11.glTexImage2D(target, 
+                      0, 
+//                    dstPixelFormat, 
+                      GL11.GL_RGBA,
+                      texWidth, 
+                      texHeight, 
+                      0, 
+                      srcPixelFormat, 
+                      GL11.GL_UNSIGNED_BYTE, 
+                      textureBuffer); 
 //        Logger.log("end glTexImage2D to ByteBuffer");
         return texture; 
     } 
@@ -310,7 +368,7 @@ public class TextureLoader {
         // copy the source image into the produced image
         Graphics g = texImage.getGraphics();
         g.setColor(new Color(0f,0f,0f,0f));
-        g.fillRect(0,0,texWidth,texHeight);
+//        g.fillRect(0,0,texWidth,texHeight);
         g.drawImage(bufferedImage,0,0,null);
         
         // build a byte buffer from the temporary image 
