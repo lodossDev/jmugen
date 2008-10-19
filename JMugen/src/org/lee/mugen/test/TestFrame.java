@@ -17,7 +17,7 @@ import org.lee.mugen.util.debugger.SpriteDebugerUI;
 public class TestFrame {
 
 
-	public static void main(String[] args) throws Exception {
+	public static void main2(String[] args) throws Exception {
 
 		final StateMachine statemachine = StateMachine.getInstance();
 
@@ -139,32 +139,50 @@ public class TestFrame {
 		debugerUI.setVisible(true);
 		gameWindow.start();
 		
-
-
 	}
 
-	public static void main2(String[] args) throws Exception {
-		final StateMachine statemachine = StateMachine.getInstance();
-		if (args.length < 5) {
-			System.out
-					.println("set character like this:\n javaw [all the classpath] [kind => java ou lwgl] org.lee.mugen.test.TestFrame kfm 0 kfm 1 stage.def [music in sound dir]");
+	public static void main(String[] args) throws Exception {
+
+		if (true) {
+			main2(null);
 			return;
 		}
+		
+	    String nativeLF = UIManager.getSystemLookAndFeelClassName();
+	    
+	    // Install the look and feel
+	    try {
+	        UIManager.setLookAndFeel(nativeLF);
+	    } catch (InstantiationException e) {
+	    } catch (ClassNotFoundException e) {
+	    } catch (UnsupportedLookAndFeelException e) {
+	    } catch (IllegalAccessException e) {
+	    }
+	    
+	    
+		String[] args2 = new String[] {
+			"kfm", "0", 
+			"kfm", "0",
+			"stage0.def",
+			"ADX_S060.wav"
+		};
+		args = args2;
+		
+		
+		final StateMachine statemachine = StateMachine.getInstance();
 		statemachine.getGameState().setGameType(1);
-		statemachine.preloadSprite(StateMachine.TEAMSIDE_ONE, "1",
-				"resource/chars/" + args[0] + "/" + args[1] + ".def", Integer
-						.parseInt(args[1]));
-		statemachine.preloadSprite(StateMachine.TEAMSIDE_TWO, "2",
-				"resource/chars/" + args[2] + "/" + args[3] + ".def", Integer
-						.parseInt(args[3]));
-		statemachine.preloadStage("resource/stages/" + args[3]);
-		if (args.length > 5)
-			SoundSystem.SoundBackGround.playMusic("resource/sound/ " + args[5]);
+		statemachine.preloadSprite(StateMachine.TEAMSIDE_ONE, "1", "resource/chars/" + args[0] + "/" + args[0] + ".def", Integer.parseInt(args[1]));
+		statemachine.preloadSprite(StateMachine.TEAMSIDE_TWO, "2", "resource/chars/" + args[2] + "/" + args[2] + ".def", Integer.parseInt(args[3]));
+		statemachine.preloadStage("resource/stages/" + args[4]);
+//		if (args.length > 5)
+//			SoundSystem.SoundBackGround.playMusic("resource/sound/" + args[5]);
 
-		GameWindow gameWindow = GraphicsWrapper.getInstance()
-				.getInstanceOfGameWindow();
-
+		
+		GraphicsWrapper.init();
+		final GameWindow gameWindow = GraphicsWrapper.getInstance().getInstanceOfGameWindow();
 		gameWindow.setGameWindowCallback(statemachine);
+		SpriteDebugerUI debugerUI = new SpriteDebugerUI();
+		debugerUI.setVisible(true);
 		gameWindow.start();
 
 	}
