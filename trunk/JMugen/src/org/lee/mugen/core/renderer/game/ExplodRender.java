@@ -1,5 +1,8 @@
 package org.lee.mugen.core.renderer.game;
 
+import java.awt.Dimension;
+import java.awt.Rectangle;
+
 import org.lee.mugen.core.StateMachine;
 import org.lee.mugen.parser.air.AirData;
 import org.lee.mugen.parser.air.AirData.TypeBlit;
@@ -9,9 +12,11 @@ import org.lee.mugen.renderer.GraphicsWrapper;
 import org.lee.mugen.renderer.ImageContainer;
 import org.lee.mugen.renderer.Renderable;
 import org.lee.mugen.renderer.Trans;
+import org.lee.mugen.renderer.GameWindow.MouseCtrl;
 import org.lee.mugen.sprite.background.Stage;
 import org.lee.mugen.sprite.base.AbstractAnimManager.SpriteDrawProperties;
 import org.lee.mugen.sprite.baseForParse.ImageSpriteSFF;
+import org.lee.mugen.sprite.common.resource.FontParser;
 import org.lee.mugen.sprite.entity.ExplodSprite;
 import org.lee.mugen.sprite.entity.PointF;
 import org.lee.mugen.sprite.entity.Postype;
@@ -24,6 +29,10 @@ public class ExplodRender implements Renderable {
 	}
 	
 	public void render() {
+		
+		MouseCtrl mouse = GraphicsWrapper.getInstance().getInstanceOfGameWindow().getMouseStatus();
+		
+		
 		float xScale = sprite.getExplod().getScale().getX();
 		float yScale = sprite.getExplod().getScale().getY();
 		
@@ -49,6 +58,9 @@ public class ExplodRender implements Renderable {
 			xOffset = 0;//imgSprite.getXAxis();
 			yOffset = 0;//imgSprite.getYAxis();
 			
+		}
+		if (sprite.getExplod().getPostype() == Postype.back || sprite.getExplod().getPostype() == Postype.front) {
+			y = 0;
 		}
 		boolean isFlipH = air.isMirrorH;
 		if (sprite.getExplod().getPostype() == Postype.p1 || sprite.getExplod().getPostype() == Postype.p2
@@ -104,7 +116,18 @@ public class ExplodRender implements Renderable {
 			sprite.getPalfx().setDrawProperties(drawProperties);
 		}
 		GraphicsWrapper.getInstance().draw(drawProperties);
-
+		
+//		Dimension d = new Dimension((int)(drawProperties.getXRightDst() - drawProperties.getXLeftDst()), 
+//				(int)(drawProperties.getXRightDst() - drawProperties.getXLeftDst()));
+//		Rectangle r = new Rectangle((int)(drawProperties.getXLeftDst()), (int)(drawProperties.getXLeftDst()), d.width, d.height);
+//		try {
+//			GraphicsWrapper.getInstance().draw(r);
+		
+//			FontParser.getFontProducer().draw(100, 100, GraphicsWrapper.getInstance(), mouse.getX() + " " + mouse.getY() + "  " + r);
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 	public int getPriority() {
 		return sprite.getPriority() - 1;

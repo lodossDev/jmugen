@@ -15,7 +15,7 @@ public class Teamside extends SpriteCnsTriggerFunction {
 	}
 	@Override
 	public Object getValue(String spriteId, Valueable... params) {
-		return StateMachine.getInstance().getTeamOne().containsKey(spriteId) ? 1 : 2;
+		return StateMachine.getInstance().getTeamOne().containsKey(StateMachine.getInstance().getRoot(spriteId).getSpriteId()) ? 1 : 2;
 	}
 	public Valueable[] parseValue(String name, String value) {
 		return null;

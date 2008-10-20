@@ -2,8 +2,10 @@ package org.lee.mugen.sff;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -129,6 +131,8 @@ public class SffReader {
             bytes = subFileHead.pcxFile.pcxStream.toByteArray();
            	System.arraycopy(bytes, (int) (bytes.length - PCXPalette.PALETTE_SIZE), prevPalette, 0, PCXPalette.PALETTE_SIZE);
         }
+        if (useThisPal == null)
+        	useThisPal = prevPalette.clone();
 
         int next = subFileHead.nextPosition;
         boolean enter = false;
@@ -137,7 +141,9 @@ public class SffReader {
             SubFileList.add(subFileHead);
             seek(br, next);
             subFileHead = new SubFileHeader(br);
-
+//            if (subFileHead.grpNumber == 7000 && subFileHead.imgNumber == 0) {
+//            	System.out.println();
+//            }
             if (subFileHead.subFileLen > 0) {
                 //int iRead = subFileHead.subFileLen - PcxReader.HEADER_SIZE - rewindPalette;
                 int iRead = (int)(subFileHead.nextPosition - getPosition(len, br.available()));
@@ -152,8 +158,8 @@ public class SffReader {
                 } else {
                 	if (isForceUSeDefPal)
                 		System.arraycopy(prevPalette, 0, bytes, (int) (bytes.length - PCXPalette.PALETTE_SIZE), PCXPalette.PALETTE_SIZE);
-                	else if (subFileHead.grpNumber != 9000)
-                		System.arraycopy(bytes, (int) (bytes.length - PCXPalette.PALETTE_SIZE), prevPalette, 0, PCXPalette.PALETTE_SIZE);
+//                	else if (subFileHead.grpNumber != 9000)
+//                		System.arraycopy(bytes, (int) (bytes.length - PCXPalette.PALETTE_SIZE), prevPalette, 0, PCXPalette.PALETTE_SIZE);
                     subFileHead.pcxFile.pcxStream.write(bytes);
 //                    if (!isForceUSeDefPal) {
 //                        bytes = subFileHead.pcxFile.pcxStream.toByteArray();
@@ -167,7 +173,7 @@ public class SffReader {
             next = subFileHead.nextPosition;
         
             
-//            if (subFileHead.grpNumber == 6100 && subFileHead.imgNumber == 0) {
+//            if (subFileHead.grpNumber == 7000 && subFileHead.imgNumber == 0) {
 //            	new File("ryu2").mkdir();
 //				FileOutputStream fos = new FileOutputStream("ryu2/" + subFileHead.grpNumber + "_" + subFileHead.imgNumber + ".pcx");
 //				

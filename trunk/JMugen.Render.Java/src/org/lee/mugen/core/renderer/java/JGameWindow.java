@@ -325,4 +325,10 @@ public class JGameWindow extends Canvas implements GameWindow {
 
 		
 	}
+
+	@Override
+	public MouseCtrl getMouseStatus() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

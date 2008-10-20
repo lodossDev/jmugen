@@ -93,7 +93,7 @@ public class ExplodSprite extends AbstractSprite {
 		}
 		explod.decreaseSuperPauseMoveTime();
 		explod.decreasePauseMoveTime();
-		process = true;
+//		process = true;
 	}
 
 	@Override
@@ -218,9 +218,14 @@ public class ExplodSprite extends AbstractSprite {
 	public void setExplod(ExplodSub explod) {
 		this.explod = explod;
 	}
-	boolean process = false;
+	boolean process = true;
 	public boolean isProcess() {
 		return process;
+	}
+
+	public void setProcess(boolean b) {
+		process = b;
+		
 	}
 
 }

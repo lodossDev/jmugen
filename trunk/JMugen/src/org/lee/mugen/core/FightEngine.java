@@ -1096,7 +1096,7 @@ public class FightEngine {
 			}
 		}
 		for (Sprite s: StateMachine.getInstance().getSprites()) {
-			if (!s.equals(sprite) && s.getInfo().getLastHitdef().getSpriteHitter().equals(sprite))
+			if (s.getInfo().getLastHitdef() != null && !s.equals(sprite) && s.getInfo().getLastHitdef().getSpriteHitter().equals(sprite))
 				return s;
 		}
 		return null;

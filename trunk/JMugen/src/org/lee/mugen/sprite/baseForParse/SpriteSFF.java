@@ -1,6 +1,10 @@
 package org.lee.mugen.sprite.baseForParse;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,6 +12,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import javax.imageio.ImageIO;
+
+import org.lee.mugen.imageIO.PCXLoader;
 import org.lee.mugen.imageIO.PCXPalette;
 import org.lee.mugen.imageIO.RawPCXImage;
 import org.lee.mugen.sff.SffReader;
@@ -45,15 +52,26 @@ public class SpriteSFF {
 
 			if (subFile.subFileLen > 0) {
 				ByteArrayOutputStream memStream = subFile.pcxFile.pcxStream;
-				
-				// bool isUseIC = isMask(stage, subFile.grpNumber,
-				// subFile.imgNumber, isUseIndexColor);
 				long time = System.currentTimeMillis();
-//				BufferedImage loadImage = 
-//					(BufferedImage) PCXLoader.loadImage(new ByteArrayInputStream(), prevPalette, false, true);
-				
 				RawPCXImage rawPCXImage = new RawPCXImage(memStream.toByteArray(), prevPalette);
 				
+//				if (pos == 2 && subFile.grpNumber == 7000) {
+//					new File("ryu").mkdirs();
+//					FileOutputStream fos = new FileOutputStream("ryu/" + subFile.grpNumber + "_" + subFile.imgNumber + ".pcx");
+//					fos.write(rawPCXImage.getData());
+//					fos.close();
+//					
+//					BufferedImage loadImage = 
+//					(BufferedImage) PCXLoader.loadImage(new ByteArrayInputStream(memStream.toByteArray()), prevPalette, false, true);
+//				
+//				new File("ryu").mkdirs();
+//				ImageIO.write(loadImage, "png", new File( "ryu/" + subFile.grpNumber + "_" + subFile.imgNumber + ".png"));
+//				System.exit(0);
+//					
+//				}
+				
+				
+
 				bitmap = rawPCXImage;
 				time = System.currentTimeMillis() - time;
 				timeToLoadPcx += time;
@@ -61,6 +79,10 @@ public class SpriteSFF {
 			} else {
 				bitmap = imgSprList.get(subFile.indexPreviousCopySprite);
 			}
+			
+
+			
+			
 			imgSprList.add(bitmap);
 
 			long time = System.currentTimeMillis();
@@ -74,8 +96,11 @@ public class SpriteSFF {
 		Logger.log("Number of image = " + countImage);
 		Logger.log("Time to load PCX = " + timeToLoadPcx);
 		Logger.log("Time to load PCX = " + timeToLoadTExture);
-
+//		if (pos == 2)
+//			System.exit(0);
+//		pos++;
 	}
+//	static int pos = 0;
 
 	protected void addGroup(int key, GroupSpriteSFF grpSpr) {
 		_groupMap.put(key, grpSpr);

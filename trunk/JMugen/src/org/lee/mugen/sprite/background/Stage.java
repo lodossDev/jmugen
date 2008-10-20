@@ -398,7 +398,7 @@ public class Stage {
 			if (yDiff < 0)
 				getCamera().setY((int) (yCam + highestSpr.getInfo().getVelset().getY()));
 			
-			if (yDiff > 0)
+			if (yDiff >= 0)
 				getCamera().setY((int) (yCam - highestSpr.getInfo().getVelset().getY()));
 			
 			if (getCamera().getXNoShaKe() < leftLimit)
