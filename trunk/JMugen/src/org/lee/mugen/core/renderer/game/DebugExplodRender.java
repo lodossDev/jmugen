@@ -64,7 +64,7 @@ public class DebugExplodRender implements Renderable {
 				"Parent " + 
 				(sprite.getExplod().getSprite() instanceof SpriteHelper? 
 						"Helper name=" + ((SpriteHelper)sprite.getExplod().getSprite()).getHelperSub().getName() + " id=" + ((SpriteHelper)sprite.getExplod().getSprite()).getHelperSub().getId(): "") + 
-				" - " +
+						" " + sprite.getExplod().getSprite().getSpriteState().getCurrentState().getId() + " - " +
 				"Spr " + (sprite.getExplod().getSprite() instanceof SpriteHelper? StateMachine.getInstance().getRootId(sprite.getExplod().getSprite()): sprite.getExplod().getSprite().getSpriteId())
 				+ " - " + "IsProcess " + sprite.isProcess();
 
