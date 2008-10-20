@@ -40,7 +40,8 @@ public class Modifyexplod extends StateCtrlFunction {
     	Collection<ExplodSprite> explodSprites = StateMachine.getInstance().getExplodeSprites(id);
     	
     	for (ExplodSprite explodSpr: explodSprites) {
-        	fillBean(spriteId, explodSpr.getExplod());
+    		if (explodSpr.getExplod().getSprite().getSpriteId().equals(spriteId))
+    			fillBean(spriteId, explodSpr.getExplod());
         	// TODO MAKE REMOVE SPRITE SHADOW RENDERER
     	}
     	return null;

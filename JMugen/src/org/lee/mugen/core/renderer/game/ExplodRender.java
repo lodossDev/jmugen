@@ -29,6 +29,8 @@ public class ExplodRender implements Renderable {
 	}
 	
 	public void render() {
+		if (sprite.getExplod().getId() == 6111)
+			System.out.println();
 		
 		MouseCtrl mouse = GraphicsWrapper.getInstance().getInstanceOfGameWindow().getMouseStatus();
 		
@@ -73,6 +75,7 @@ public class ExplodRender implements Renderable {
 
 		PointF pos = sprite.getPosToDraw();
 		
+
 
 		// rotate if
 		SpriteDrawProperties dp = sprite.getSprAnimMng().getSpriteDrawProperties();
