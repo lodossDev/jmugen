@@ -18,6 +18,7 @@ import org.lee.mugen.core.command.SpriteCmdProcess;
 import org.lee.mugen.core.renderer.game.AfterimageRender;
 import org.lee.mugen.core.renderer.game.BackgroundRender;
 import org.lee.mugen.core.renderer.game.CnsRender;
+import org.lee.mugen.core.renderer.game.DebugExplodRender;
 import org.lee.mugen.core.renderer.game.DebugRender;
 import org.lee.mugen.core.renderer.game.LifeBarRenderNormal;
 import org.lee.mugen.core.renderer.game.MakedustRender;
@@ -994,6 +995,9 @@ public class StateMachine implements Game {
 		case DEBUG_PAUSE:
 			systemPause = !systemPause;
 			break;
+		case EXPLOD_DEBUG_INFO:
+			DebugExplodRender.debugRender.setDisplay(!DebugExplodRender.debugRender.isDisplay());
+			break;
 		case PAUSE_PLUS_ONE_FRAME:
 			if (systemPause) {
 				try {
@@ -1025,6 +1029,7 @@ public class StateMachine implements Game {
 	}
 	public void renderDebugInfo() {
 		DebugRender.debugRender.render();
+		DebugExplodRender.debugRender.render();
 	}
 	
 	String loadingText = "";

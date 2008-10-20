@@ -61,7 +61,7 @@ public interface Game {
 		
 		INIT_PLAYER, 
 		START_OVER, RELOAD_STAGE, RELOAD_PLAYERS, 
-		DISPLAY_HELP
+		DISPLAY_HELP, EXPLOD_DEBUG_INFO
 	}
 	public void onDebugAction(DebugAction action);
 

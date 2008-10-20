@@ -41,7 +41,7 @@ public class TestFrame {
 				"JMugen : This version is an alpha version" + "\n" + 
 				"* Memory is not optimized :" + "\n" + 
 				"    - Loading : Low Res Characters with Low Res Stage => 100 Mo" + "\n" + 
-				"    - Loading : Hi res Characters with Hi Res Stage => 1 000 Mo !!! " +
+				"    - Loading : Hi res Characters with Hi Res Stage => 1 000 Mo !!! " + "\n" +
 				"                (I have to find a way to load Compressed Image (pcx) directly to the GPU)" + "\n" + 
 				"* There are two version of this JMugen (Default is Opengl)" + "\n" + 
 				"    - OpenGL (For now Shader 2 is requiered)" + "\n" + 
@@ -171,8 +171,8 @@ public class TestFrame {
 		
 	}
 	public static void main(String[] args) throws Exception {
-//		launchDirect();
-		launchUI();
+		launchDirect();
+//		launchUI();
 	}
 	
 	public static void launchDirect() throws Exception {
@@ -191,7 +191,7 @@ public class TestFrame {
 	    
 	    
 		String[] args = new String[] {
-			"kfm", "0", 
+			"cvsryu", "0", 
 			"kfm", "0",
 			"stage0.def",
 			"ADX_S060.wav"

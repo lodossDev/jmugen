@@ -13,12 +13,12 @@ public enum Postype {
 
 	public PointF computePos(Sprite p1, Sprite p2, Point offset, int facing) {
 		return computePos(p1, p2, new PointF(offset), facing);
-	}
+	} 
 	
 	public PointF computePos(Sprite p1, Sprite p2, PointF offset, int facing) {
 		Postype postype = this;
 		offset = new PointF(offset);
-
+ 
 		PointF pos = new PointF();
 		Stage stage = StateMachine.getInstance().getInstanceOfStage();
 		switch (postype) {

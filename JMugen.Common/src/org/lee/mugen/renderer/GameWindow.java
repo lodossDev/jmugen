@@ -44,5 +44,47 @@ public interface GameWindow {
 	
 	public void addSpriteKeyProcessor(ISpriteCmdProcess scp);
 	
+	public MouseCtrl getMouseStatus();
+	
+	public static class MouseCtrl {
+		int x;
+		int y;
+		public void setX(int x) {
+			this.x = x;
+		}
+		public void setY(int y) {
+			this.y = y;
+		}
+		public void setLeftPress(boolean isLeftPress) {
+			this.isLeftPress = isLeftPress;
+		}
+		public void setRightClick(boolean isRightClick) {
+			this.isRightClick = isRightClick;
+		}
+		boolean isLeftPress;
+		boolean isLeftRelease;
+		public boolean isLeftRelease() {
+			return isLeftRelease;
+		}
+		public void setLeftRelease(boolean isLeftRelease) {
+			this.isLeftRelease = isLeftRelease;
+		}
+		boolean isRightClick;
+		public int getX() {
+			return x;
+		}
+		public int getY() {
+			return y;
+		}
+		public boolean isLeftClick() {
+			return isLeftPress;
+		}
+		public boolean isRightClick() {
+			return isRightClick;
+		}
+		
+		
+	}
+	
 	// TODO : add getTimer and add Timer interface
 }

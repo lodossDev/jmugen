@@ -15,6 +15,7 @@ import org.lee.mugen.renderer.GameWindow;
 import org.lee.mugen.renderer.MugenTimer;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
@@ -182,6 +183,7 @@ public class LwjgGameWindow implements GameWindow {
 			GL11.glScaled((float) width / 320, (float) height / 240, 0);
 			initKeys();
 			
+			Mouse.create();
 			
 
 		} catch (LWJGLException le) {
@@ -259,6 +261,7 @@ public class LwjgGameWindow implements GameWindow {
 		
 		public DebugEventManager() {
 			addAction(DebugAction.SWICTH_PLAYER_DEBUG_INFO, new int[] {Keyboard.KEY_LCONTROL, Keyboard.KEY_D});
+			addAction(DebugAction.EXPLOD_DEBUG_INFO, new int[] {Keyboard.KEY_LCONTROL, Keyboard.KEY_E});
 			addAction(DebugAction.INIT_PLAYER, new int[] {Keyboard.KEY_SPACE});
 			addAction(DebugAction.SHOW_HIDE_CNS, new int[] {Keyboard.KEY_LCONTROL, Keyboard.KEY_C});
 			addAction(DebugAction.SHOW_HIDE_ATTACK_CNS, new int[] {Keyboard.KEY_LCONTROL, Keyboard.KEY_X});
@@ -331,7 +334,11 @@ public class LwjgGameWindow implements GameWindow {
 	public void gameLoop() throws Exception {
 		
 		while (gameRunning) {
-
+			if (mouse.isLeftClick() && !Mouse.isButtonDown(0)) {
+				mouse.setLeftRelease(true);
+			} else {
+				mouse.setLeftRelease(false);
+			}
 			if (!isFinishInit) {// || !LMugenDrawer.isConverImageToBufferFinish()) {
 //			if (!LMugenDrawer.isConverImageToBufferFinish()) {
 				callback.displayPendingScreeen();
@@ -340,6 +347,7 @@ public class LwjgGameWindow implements GameWindow {
 					keyManagementExecute();
 					if (getTimer().getFramerate() == 0) {
 						getTimer().sleep(1000 / 60);
+						callback.render();
 						Display.update();
 						continue;
 					}
@@ -373,6 +381,21 @@ public class LwjgGameWindow implements GameWindow {
 
 	public MugenTimer getTimer() {
 		return timer;
+	}
+
+	
+	MouseCtrl mouse = new MouseCtrl();
+	boolean isLeftRelease = false;
+	
+	@Override
+	public MouseCtrl getMouseStatus() {
+		Mouse.next();
+		mouse.setX(Mouse.getX()/2);
+		mouse.setY(240 - Mouse.getY()/2);
+
+		mouse.setLeftPress(Mouse.isButtonDown(0));
+		isLeftRelease = !Mouse.isButtonDown(0);
+		return mouse;
 	}
 
 }
