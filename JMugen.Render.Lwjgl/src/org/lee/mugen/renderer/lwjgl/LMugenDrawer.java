@@ -423,39 +423,7 @@ public class LMugenDrawer extends MugenDrawer {
 		IMAGE_TO_PROCESS_LIST[currentListToAdd].add(img);
 		currentListToAdd++;
 	}
-
-	@Override
-	public ImageContainer getImageContainer(Object imageData) {
-		RawPCXImage pcx = (RawPCXImage) imageData;
-		
-		PCXHeader header = null;
-
-    	byte[] data = pcx.getData();
-        
-        try {
-			header = new PCXHeader(data);
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-        int width = header.xmax - header.xmin + 1;
-        int height = header.ymax - header.ymin + 1;
-        
-        ImageContainerText result = new ImageContainerText(pcx , width, height);
-        addToImageToProcess(result);
-		return result;
-			
-			
-	}
-
-
 	
-	private LwjgGameWindow gameWindow = new LwjgGameWindow();
-
-	@Override
-	public GameWindow getInstanceOfGameWindow() {
-		return gameWindow;
-	}
 
 	private static void prepareImageToProcess(List<ImageContainerText> list) {
 		Collections.sort(list, IMAGE_CONTAINER_COMPARATOR);
@@ -502,6 +470,40 @@ public class LMugenDrawer extends MugenDrawer {
 		}
 		return result;
 	}
+
+	@Override
+	public ImageContainer getImageContainer(Object imageData) {
+		RawPCXImage pcx = (RawPCXImage) imageData;
+		
+		PCXHeader header = null;
+
+    	byte[] data = pcx.getData();
+        
+        try {
+			header = new PCXHeader(data);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+        int width = header.xmax - header.xmin + 1;
+        int height = header.ymax - header.ymin + 1;
+        
+        ImageContainerText result = new ImageContainerText(pcx , width, height);
+        addToImageToProcess(result);
+		return result;
+			
+			
+	}
+
+
+	
+	private LwjgGameWindow gameWindow = new LwjgGameWindow();
+
+	@Override
+	public GameWindow getInstanceOfGameWindow() {
+		return gameWindow;
+	}
+
 	
 	
 	

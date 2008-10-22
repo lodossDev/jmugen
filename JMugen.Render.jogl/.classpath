@@ -2,11 +2,8 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lwjgl/jinput.jar"/>
-	<classpathentry kind="lib" path="lwjgl/lwjgl_util.jar"/>
-	<classpathentry kind="lib" path="lwjgl/lwjgl.jar" sourcepath="lwjgl-source-2.0rc2.zip"/>
-	<classpathentry kind="lib" path="lib/timer.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JMugen.Common"/>
-	<classpathentry kind="lib" path="dll"/>
+	<classpathentry kind="lib" path="lib/gluegen-rt.jar"/>
+	<classpathentry kind="lib" path="lib/jogl.jar" sourcepath="jogl-1.1.1-src.zip"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
