@@ -196,15 +196,20 @@ public abstract class StateCtrlFunction extends AbstractCnsFunction {
 		return objectValues;
 		
 	}
-	protected void fillBeanChild(String spriteId, String name, Object bean)
-			throws Exception {
-		Object[] objectValues = getValueFromName(spriteId, name);
-		if (objectValues.length == 1) {
-			BeanTools.setObject(bean, name,
-					objectValues[0]);
-		} else if (objectValues.length > 0) {
-			BeanTools.setObject(bean, name,
-						objectValues);
+	protected void fillBeanChild(String spriteId, String name, Object bean) {
+		try {
+			Object[] objectValues = getValueFromName(spriteId, name);
+			if (objectValues.length == 1) {
+				BeanTools.setObject(bean, name,
+						objectValues[0]);
+			} else if (objectValues.length > 0) {
+				BeanTools.setObject(bean, name,
+							objectValues);
+			}
+			
+		} catch (Exception e) {
+			System.err.println(getClass().getName() + " error in build : " + name);
+			e.printStackTrace();
 		}
 	}
 
