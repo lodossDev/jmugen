@@ -11,9 +11,7 @@ import java.awt.image.DataBufferByte;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -22,15 +20,12 @@ import java.util.Hashtable;
 
 import javax.imageio.ImageIO;
 
-import org.lee.mugen.imageIO.RawPCXImage;
 import org.lee.mugen.util.Logger;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.devil.IL;
-import org.lwjgl.devil.ILU;
-import org.lwjgl.opengl.EXTTextureCompressionS3TC;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
-import org.lwjgl.opengl.glu.GLU;
+import org.lwjgl.opengl.GLContext;
+import org.lwjgl.util.glu.GLU;
 
 
 /**
@@ -116,77 +111,6 @@ public class TextureLoader {
         return tex;
     }
     
-    public Texture loadTextureFromPCX(RawPCXImage pcx) throws IOException {
-    	
-		return loadTexture(new ByteArrayInputStream(pcx.getData()), false, IL.IL_PCX);
-    }
-    public Texture loadTexture(InputStream in, boolean flip, int type) throws IOException {
-    	  Texture texture = null;
-    	  ByteBuffer imageData = null;
-    	  int ilImageHandle;
-    	  int oglImageHandle;
-    	  IntBuffer scratch = BufferUtils.createIntBuffer(1);
-    	 
-    	  // create image in DevIL and bind it
-    	  IL.ilGenImages(scratch);
-    	  IL.ilBindImage(scratch.get(0));
-    	  ilImageHandle = scratch.get(0);
-    	 
-    	  // load the image
-    	  if(!IL.ilLoadFromStream(in, type)) {
-    	    return null;
-    	  }
-    	 
-    	  // convert image to RGBA
-    	  IL.ilConvertImage(IL.IL_RGBA, IL.IL_BYTE);
-    	 
-    	  // flip if needed
-    	  if(flip) {
-    	    ILU.iluFlipImage();
-    	  }
-    	 
-    	  // get image attributes
-    	  int width = IL.ilGetInteger(IL.IL_IMAGE_WIDTH);
-    	  int height = IL.ilGetInteger(IL.IL_IMAGE_HEIGHT);
-    	  int textureWidthSize = get2Fold(width);
-    	  int textureHeightSize = get2Fold(height);
-    	 
-    	  // resize image according to poweroftwo
-    	  if (textureWidthSize != width || textureHeightSize != height) {
-    	    imageData = BufferUtils.createByteBuffer(textureWidthSize * textureHeightSize * 4);
-    	    IL.ilCopyPixels(0, 0, 0, textureWidthSize, textureHeightSize, 1, IL.IL_RGBA, IL.IL_BYTE, imageData);
-    	  } else {
-    	    imageData = IL.ilGetData();
-    	  }
-    	 
-    	  // create OpenGL counterpart
-    	  GL11.glGenTextures(scratch);
-    	  GL11.glBindTexture(GL11.GL_TEXTURE_2D, scratch.get(0));
-    	  oglImageHandle = scratch.get(0);
-    	 
-    	  GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-    	  GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
-    	  GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, textureWidthSize, textureHeightSize, 
-    	                    0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, imageData);
-    	 
-    	  // Create image (either resized by copying, else directly from IL)
-    	  if (textureWidthSize != width || textureHeightSize != height) {
-    	    texture = new Texture(oglImageHandle, width, height, (width / (float) textureWidthSize), 
-    	                         (height / (float) textureHeightSize), textureWidthSize, textureHeightSize);
-    	  } else {
-    	    texture = new Texture(oglImageHandle, width, height);
-    	  }
-    	 
-    	  // delete Image in DevIL
-    	  scratch.put(0, ilImageHandle);
-    	  IL.ilDeleteImages(scratch);
-    	 
-    	  // revert the gl state back to the default so that accidental texture binding doesn't occur
-    	  GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
-    	 
-    	  // return OpenGL texture handle
-    	  return texture;
-    	}
     /**
      * Load a texture into OpenGL from a image reference on
      * disk.
@@ -236,6 +160,7 @@ public class TextureLoader {
             GL11.glTexParameteri(target, GL11.GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE);
         } 
  
+        
         GL11.glTexImage2D(target, 
                       0, 
 //                    dstPixelFormat, 
@@ -289,9 +214,10 @@ public class TextureLoader {
     	textureBuffer.put(data, 0, data.length); 
     	textureBuffer.flip();
         
-
         texture.setWidth(width);
         texture.setHeight(height);
+        
+        
     	
 //        Logger.log("End Transform to ByteBuffer");
         if (target == GL11.GL_TEXTURE_2D) 
@@ -312,6 +238,8 @@ public class TextureLoader {
                       srcPixelFormat, 
                       GL11.GL_UNSIGNED_BYTE, 
                       textureBuffer); 
+        
+        
 //        Logger.log("end glTexImage2D to ByteBuffer");
         return texture; 
     } 

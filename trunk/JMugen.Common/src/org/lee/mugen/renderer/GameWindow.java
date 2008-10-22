@@ -58,9 +58,23 @@ public interface GameWindow {
 		public void setLeftPress(boolean isLeftPress) {
 			this.isLeftPress = isLeftPress;
 		}
-		public void setRightClick(boolean isRightClick) {
-			this.isRightClick = isRightClick;
+
+		public boolean isRightPress() {
+			return isRightPress;
 		}
+		public void setRightPress(boolean isRightPress) {
+			this.isRightPress = isRightPress;
+		}
+		public boolean isRightRelease() {
+			return isRightRelease;
+		}
+		public void setRightRelease(boolean isRightRelease) {
+			this.isRightRelease = isRightRelease;
+		}
+		public boolean isLeftPress() {
+			return isLeftPress;
+		}
+
 		boolean isLeftPress;
 		boolean isLeftRelease;
 		public boolean isLeftRelease() {
@@ -69,7 +83,8 @@ public interface GameWindow {
 		public void setLeftRelease(boolean isLeftRelease) {
 			this.isLeftRelease = isLeftRelease;
 		}
-		boolean isRightClick;
+		boolean isRightPress;
+		boolean isRightRelease;
 		public int getX() {
 			return x;
 		}
@@ -79,9 +94,7 @@ public interface GameWindow {
 		public boolean isLeftClick() {
 			return isLeftPress;
 		}
-		public boolean isRightClick() {
-			return isRightClick;
-		}
+
 		
 		
 	}
