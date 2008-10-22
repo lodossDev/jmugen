@@ -191,10 +191,10 @@ public class TestFrame {
 	    
 	    
 		String[] args = new String[] {
-			"cvsryu", "0", 
-			"kfm", "0",
-			"stage0.def",
-			"ADX_S060.wav"
+			"gokuHR", "0", 
+			"KENSHIROU", "0",
+			"ggxx_verdent.def",
+			"Awe Of She.mp3"
 		};
 		
 		final StateMachine statemachine = StateMachine.getInstance();
@@ -202,8 +202,8 @@ public class TestFrame {
 		statemachine.preloadSprite(StateMachine.TEAMSIDE_ONE, "1", "resource/chars/" + args[0] + "/" + args[0] + ".def", Integer.parseInt(args[1]));
 		statemachine.preloadSprite(StateMachine.TEAMSIDE_TWO, "2", "resource/chars/" + args[2] + "/" + args[2] + ".def", Integer.parseInt(args[3]));
 		statemachine.preloadStage("resource/stages/" + args[4]);
-//		if (args.length > 5)
-//			SoundSystem.SoundBackGround.playMusic("resource/sound/" + args[5]);
+		if (args.length > 5)
+			SoundSystem.SoundBackGround.playMusic("resource/sound/" + args[5]);
 
 		
 		GraphicsWrapper.init();

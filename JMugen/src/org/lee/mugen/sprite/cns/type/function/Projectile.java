@@ -35,49 +35,46 @@ public class Projectile extends Hitdef {
 	}
 	@Override
 	public void fillBean(String spriteId, Object hitDef) {
-		String error = null;
-		try {
-			for (String paramName : getParamNames()) {
-				error = paramName;
-				super.fillBeanChild(spriteId, paramName, hitDef);
-			}
-			
-		} catch (Exception e) {
-			System.err.println("Projectile error in build : " + error);
-			e.printStackTrace();
-//			throw new IllegalStateException("This state musn't be reached !!  " + getClass());
+		for (String paramName : getParamNames()) {
+			super.fillBeanChild(spriteId, paramName, hitDef);
 		}
+			
 	}
 	@Override
-	protected void fillBeanChild(String spriteId, String name, Object hitDef)
-		throws Exception {
-		int nameIndex = getParamIndex(name);
-		Valueable[] values = valueableParams[nameIndex];
+	protected void fillBeanChild(String spriteId, String name, Object hitDef) {
+		try {
+			int nameIndex = getParamIndex(name);
+			Valueable[] values = valueableParams[nameIndex];
 
-		Object[] objectValues = new Object[values == null ? 0 : values.length];
-		Object[] defaultValues = getDefaultValues(name);
-		if ((objectValues == null || objectValues.length == 0) && (defaultValues != null && defaultValues.length > 0)) {
-			objectValues = new Object[defaultValues.length];
-		}
-		for (int i = 0; i < objectValues.length; ++i) {
-			if (values != null && values[i] != null)
-				objectValues[i] = values[i].getValue(spriteId);
-			if (objectValues[i] == null) {
-				if (defaultValues[i] != null && defaultValues[i] instanceof Valueable) {
-					objectValues[i] = ((Valueable)defaultValues[i]).getValue(spriteId);
-				} else {
-					objectValues[i] = defaultValues[i];
-					
+			Object[] objectValues = new Object[values == null ? 0 : values.length];
+			Object[] defaultValues = getDefaultValues(name);
+			if ((objectValues == null || objectValues.length == 0) && (defaultValues != null && defaultValues.length > 0)) {
+				objectValues = new Object[defaultValues.length];
+			}
+			for (int i = 0; i < objectValues.length; ++i) {
+				if (values != null && values[i] != null)
+					objectValues[i] = values[i].getValue(spriteId);
+				if (objectValues[i] == null) {
+					if (defaultValues[i] != null && defaultValues[i] instanceof Valueable) {
+						objectValues[i] = ((Valueable)defaultValues[i]).getValue(spriteId);
+					} else {
+						objectValues[i] = defaultValues[i];
+						
+					}
 				}
 			}
+			if (objectValues.length == 1) {
+				BeanTools.setObject(hitDef, name,
+						objectValues[0]);
+			} else if (objectValues.length > 0) {
+				BeanTools.setObject(hitDef, name,
+							objectValues);
+			}
+		} catch (Exception e) {
+			System.err.println(getClass().getName() + " error in build : " + name);
+			e.printStackTrace();
 		}
-		if (objectValues.length == 1) {
-			BeanTools.setObject(hitDef, name,
-					objectValues[0]);
-		} else if (objectValues.length > 0) {
-			BeanTools.setObject(hitDef, name,
-						objectValues);
-		}
+		
 	}
 
 	

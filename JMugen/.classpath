@@ -10,5 +10,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/JMugen.Properties"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JMugen.Render.Java"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JMugen.Render.Lwjgl"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/JMugen.Render.jogl"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
