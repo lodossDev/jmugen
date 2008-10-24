@@ -3,6 +3,7 @@ package org.lee.mugen.core;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -795,20 +796,30 @@ public class FightEngine {
 	// process position
 	// ///////////////////////////////////
 
-	private static void processPosition() {
-		Sprite one = null;
-		Sprite two = null;
-		for (Sprite s : StateMachine.getInstance().getSprites()) {
+	public static Sprite getNearestEnnemies(Sprite spr) {
+		Collection<Sprite> sprites = StateMachine.getInstance().getEnnmies(spr);
+		Sprite theNearest = null;
+		float dist = 0;
+		for (Sprite s: sprites) {
 			if (s instanceof SpriteHelper)
 				continue;
-			if (one == null) {
-				one = s;
-			} else {
-				two = s;
-				break;
+			if (theNearest == null) {
+				theNearest = s;
+				dist = Math.abs(spr.getInfo().getXPos() - theNearest.getInfo().getXPos());
 			}
+			
+			float distToCmp = Math.abs(spr.getInfo().getXPos() - s.getInfo().getXPos());
+			if (distToCmp < dist)
+				theNearest = s;
+			
 		}
-
+		assert theNearest != null;
+		if (theNearest instanceof SpriteHelper)
+			System.out.println("1");
+		return theNearest;
+	}
+	
+	private static void processPosition(Sprite one, Sprite two) {
 		boolean isTempFlip = one.getInfo().getXPos() > two.getInfo().getXPos();
 		if (!StateMachine.getInstance().getGlobalEvents().isAssertSpecial(one.getSpriteId(), Assertspecial.Flag.noautoturn))
 		if (
@@ -859,6 +870,23 @@ public class FightEngine {
 					two.getInfo().setFlip(!isTempFlip);
 			}
 		}
+	}
+		
+	
+	public void processPosition() {
+		Sprite one = null;
+		Sprite two = null;
+		for (Sprite s : StateMachine.getInstance().getSprites()) {
+			if (s instanceof SpriteHelper)
+				continue;
+			if (one == null) {
+				one = s;
+				two = getNearestEnnemies(one);
+				processPosition(one, two);
+			}
+		}
+
+		
 	}
 
 	// /////////////////////////////////////////////
