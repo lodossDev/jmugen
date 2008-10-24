@@ -421,7 +421,7 @@ public class LMugenDrawer extends MugenDrawer {
 	
 	
 	private static final int LIST_IMG_TO_PROCESS_COUNT = 2;
-	private static final int LIST_IMG_TO_PROCESS_THREAD_YELD_TIME = 100;
+	private static final int LIST_IMG_TO_PROCESS_THREAD_YELD_TIME = 50;
 	private static List<ImageContainerText>[] IMAGE_TO_PROCESS_LIST = null;
 	private static boolean[] jobFinish = new boolean[LIST_IMG_TO_PROCESS_COUNT];
 	private static int currentListToAdd = 0;
