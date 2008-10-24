@@ -25,6 +25,10 @@ public class ProjectileRender implements Renderable {
 		
 	}
 	
+	public ProjectileSprite getSprite() {
+		return sprite;
+	}
+
 	public void render() {
 		Stage stage = StateMachine.getInstance().getInstanceOfStage();
 		int _mvX = stage.getCamera().getX();

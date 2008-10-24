@@ -10,6 +10,8 @@ import org.lee.mugen.input.MugenCommands;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.SpriteCns;
 
+import com.sun.corba.se.pept.transport.ContactInfo;
+
 /**
  * This class process command recognition
  * TODO : remove the interface KeyAdapter beause it's not genereic
@@ -53,6 +55,8 @@ public class SpriteCmdProcess implements org.lee.mugen.input.ISpriteCmdProcess {
 			List<MugenCommands> cmds = sprite.getCmds();
 
 			for (MugenCommands mc : cmds) {
+				if (dispatcher == null)
+					continue;
 				if (mc.find(dispatcher, stateMachine.getGameState().getGameTime(), sprInfo.isFlip())) {
 					sprInfo.addCommand(mc.getCommandName(), (int) mc.getBufferTime());
 					find = true;
@@ -87,6 +91,9 @@ public class SpriteCmdProcess implements org.lee.mugen.input.ISpriteCmdProcess {
 		for (String sid: spriteIds) {
 
 			Sprite sprite = StateMachine.getInstance().getSpriteInstance(sid);
+			if (dispatcher == null)
+				continue;
+				
 			dispatcher.press(keycode, stateMachine.getGameState().getGameTime(), sprite.isFlip());
 		}
 		
@@ -99,6 +106,8 @@ public class SpriteCmdProcess implements org.lee.mugen.input.ISpriteCmdProcess {
 	public void keyReleased(int keycode) {
 		for (String sid: spriteIds) {
 			Sprite sprite = StateMachine.getInstance().getSpriteInstance(sid);
+			if (dispatcher == null)
+				continue;
 			dispatcher.release(keycode, stateMachine.getGameState().getGameTime(), sprite.isFlip());
 		}
 		

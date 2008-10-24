@@ -163,4 +163,9 @@ public class SpriteShadowRender implements Renderable {
 	public void setPriority(int p) {
 	}
 
+	public AbstractSprite getSprite() {
+		// TODO Auto-generated method stub
+		return sprite;
+	}
+
 }

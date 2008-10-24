@@ -12,12 +12,14 @@ public class ProjectileSprite extends AbstractSprite {
 	
 	private ProjectileSub projectileSub;
 	private boolean isFlip;
+	private boolean isSprHitterFlip;
 	
 	public ProjectileSprite(ProjectileSub projectile) {
 		this.projectileSub = projectile;
 		StateMachine machine = StateMachine.getInstance();
 		Sprite sprHitter = machine.getSpriteInstance(projectile.getSpriteId());
 		isFlip = sprHitter.isFlip();
+		isSprHitterFlip = isFlip;
 		if (projectile.getVelocity().getX() < 0)
 			isFlip = !isFlip;
 		
@@ -113,7 +115,7 @@ x positif s'éloigne du centre de l'écran alors qu'un offset x négatif s'en ra
 	@Override
 	public void process() {
 		
-		if (!isProjHitSprite && !isHitAnim() 
+		if (isProjHitSprite && !isHitAnim() 
 				&& sprAnimMng.getAnimTime() == 0 
 				&& sprAnimMng.getAction() == projectileSub.getProjanim()
 				&& projectileSub.getProjremanim() != -1) {
@@ -134,9 +136,9 @@ x positif s'éloigne du centre de l'écran alors qu'un offset x négatif s'en ra
 		if (waitCancelAnim)
 			return;
 		if (isInHitAnim() || isInCancelAnim())
-			projectileSub.addHisRemoveVelocity(isFlip());
+			projectileSub.addHisRemoveVelocity(isSprHitterFlip);
 		else
-			projectileSub.addHisVelocity(isFlip());
+			projectileSub.addHisVelocity(isSprHitterFlip);
 		
 		// remove by removetime
 		remove = projectileSub.getProjremovetime() == 0;
@@ -166,6 +168,7 @@ x positif s'éloigne du centre de l'écran alors qu'un offset x négatif s'en ra
 		if (waitCancelAnim) {
 			return getSprAnimMng().getAnimTime() == 0;
 		} else {
+
 			return remove;
 		}
 	}

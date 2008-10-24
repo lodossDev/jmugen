@@ -89,7 +89,7 @@ public class StateCtrl implements Cloneable {
 							trigValue = getFloatValue(o);
 						if (trigValue != 0) {
 							isTriggered = true;
-							persistentCounter = persistentCounter == 0? 0: persistentCounter - 1;
+//							persistentCounter = persistentCounter == 0? 0: persistentCounter - 1;
 							break;
 						}
 					}
@@ -101,20 +101,29 @@ public class StateCtrl implements Cloneable {
 	}
 	
 	public boolean execute(String spriteId) {
-		if (getSprite(spriteId).isPause())
+ 		if (getSprite(spriteId).isPause())
 			return false;
+
 		if (testTriggered(spriteId)){
-			if (persistentCounter == 0) {
-				if (persistent == 0)
-					persistentCounter = -1;
-				else
-					persistentCounter = persistent;
+	 		if (id.startsWith("explo") && persistent == 5)
+  	 			System.out.println("+++++++++++++  " + id);
+			if (persistentCounter == 0 || (persistentCounter % persistent == 0 && persistentCounter != -1)) {
 				for (StateCtrlFunction f: executors) {
 					f.getValue(spriteId);
 				}
+				
+			} 
+			if (persistent == 0)
+				persistentCounter = -1;
+			else {
+				persistentCounter--;
+				if (persistentCounter <= 0)
+					persistentCounter = persistent;
 			}
+	
 			return true;
 		}
+
 		return false;
 	}
 	private Sprite getSprite(String spriteId) {

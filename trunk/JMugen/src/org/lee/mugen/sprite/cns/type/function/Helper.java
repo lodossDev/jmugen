@@ -25,7 +25,7 @@ public class Helper extends StateCtrlFunction {
         		,"size.ground.front","size.air.back"
         		,"size.air.front","size.height"
         		,"size.proj.doscale","size.head.pos"
-        		,"size.mid.pos","size.shadowoffset"        		
+        		,"size.mid.pos","size.shadowoffset", "bindtime"      		
         });
     }
 
@@ -48,7 +48,6 @@ public class Helper extends StateCtrlFunction {
     @Override
     public Object getValue(String spriteId, Valueable... params) {
 		Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);
-		Sprite firstEnnemy = StateMachine.getInstance().getFirstEnnmy(spriteId);
 		HelperSub helperSub = new HelperSub();
 		fillBean(spriteId, helperSub);
 		helperSub.setSpriteFrom(sprite);
@@ -61,15 +60,7 @@ public class Helper extends StateCtrlFunction {
 		fillBeanSize(spriteId, helperSpr.getInfo());
 //		Logger.log("Create helper " + helperSub.getId());
 		
-		
-		if (helperSpr.getHelperSub().getFacing() == -1)
-			helperSpr.getInfo().setFlip(!helperSpr.getHelperSub().getSpriteFrom().isFlip());
-		
-		PointF pos = helperSpr.getHelperSub().getPostype().computePos(sprite, firstEnnemy, helperSpr.getHelperSub().getPos(), helperSub.getFacing());
-		
-		helperSpr.getSprAnimMng().setAction(-1);
-		helperSpr.getInfo().setXPos(pos.getX());
-		helperSpr.getInfo().setYPos(pos.getY());
+		helperSpr.initSpriteHelper();
 		StateMachine.getInstance().addSpriteHelper(helperSpr);
 		
 		

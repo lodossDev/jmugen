@@ -1,6 +1,8 @@
 package org.lee.mugen.sprite.cns.type.function;
 
+import org.lee.mugen.core.FightEngine;
 import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.physics.PhysicsEngime;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.SpriteCns;
@@ -24,7 +26,7 @@ public class Posadd extends StateCtrlFunction {
 				sprInfo.moveXPos(fx);
 				
 
-//				PhysicsEngime.processSpriteCommonPhysicsSubBetter(sprite, StateMachine.getInstance().getFightEngine().getEnemynear(sprite, -1), false);
+//				PhysicsEngime.processSpriteCollision(sprite, FightEngine.getNearestEnnemies(sprite));
 			}
 			
 		}

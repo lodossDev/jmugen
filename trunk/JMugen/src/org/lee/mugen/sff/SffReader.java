@@ -103,7 +103,6 @@ public class SffReader {
     	LittleEndianDataInputStream br = new LittleEndianDataInputStream(fs);
     	baos.close();
     	baos = null;
-    	
     	long len = fs.available();
     	
         sffHeader = new SffHeader(br);
@@ -136,14 +135,15 @@ public class SffReader {
 
         int next = subFileHead.nextPosition;
         boolean enter = false;
+
         while (next != 0 && next < len) {
         	enter = true;
             SubFileList.add(subFileHead);
             seek(br, next);
             subFileHead = new SubFileHeader(br);
-//            if (subFileHead.grpNumber == 7000 && subFileHead.imgNumber == 0) {
-//            	System.out.println();
-//            }
+            if (subFileHead.grpNumber == 72 && subFileHead.imgNumber == 1) {
+            	System.out.println();
+            }
             if (subFileHead.subFileLen > 0) {
                 //int iRead = subFileHead.subFileLen - PcxReader.HEADER_SIZE - rewindPalette;
                 int iRead = (int)(subFileHead.nextPosition - getPosition(len, br.available()));
@@ -158,8 +158,8 @@ public class SffReader {
                 } else {
                 	if (isForceUSeDefPal)
                 		System.arraycopy(prevPalette, 0, bytes, (int) (bytes.length - PCXPalette.PALETTE_SIZE), PCXPalette.PALETTE_SIZE);
-//                	else if (subFileHead.grpNumber != 9000)
-//                		System.arraycopy(bytes, (int) (bytes.length - PCXPalette.PALETTE_SIZE), prevPalette, 0, PCXPalette.PALETTE_SIZE);
+                	else if (subFileHead.grpNumber != 9000)
+                		System.arraycopy(bytes, (int) (bytes.length - PCXPalette.PALETTE_SIZE), prevPalette, 0, PCXPalette.PALETTE_SIZE);
                     subFileHead.pcxFile.pcxStream.write(bytes);
 //                    if (!isForceUSeDefPal) {
 //                        bytes = subFileHead.pcxFile.pcxStream.toByteArray();
@@ -173,14 +173,16 @@ public class SffReader {
             next = subFileHead.nextPosition;
         
             
-//            if (subFileHead.grpNumber == 7000 && subFileHead.imgNumber == 0) {
-//            	new File("ryu2").mkdir();
-//				FileOutputStream fos = new FileOutputStream("ryu2/" + subFileHead.grpNumber + "_" + subFileHead.imgNumber + ".pcx");
+//            if (subFileHead.grpNumber == 72) {
+//            	new File("ryu").mkdir();
+//				FileOutputStream fos = new FileOutputStream("ryu/" + subFileHead.grpNumber + "_" + subFileHead.imgNumber + ".pcx");
 //				
 //				fos.write(subFileHead.pcxFile.pcxStream.toByteArray());
 //				fos.flush();
 //				fos.close();
-//				System.exit(0);
+//        	System.exit(0);
+
+//
 //            }
         }
         if (enter)

@@ -1,8 +1,6 @@
 package org.lee.mugen.core.renderer.game;
 
-import java.awt.Dimension;
-import java.awt.Rectangle;
-
+import org.lee.mugen.core.FightEngine;
 import org.lee.mugen.core.StateMachine;
 import org.lee.mugen.parser.air.AirData;
 import org.lee.mugen.parser.air.AirData.TypeBlit;
@@ -16,7 +14,6 @@ import org.lee.mugen.renderer.GameWindow.MouseCtrl;
 import org.lee.mugen.sprite.background.Stage;
 import org.lee.mugen.sprite.base.AbstractAnimManager.SpriteDrawProperties;
 import org.lee.mugen.sprite.baseForParse.ImageSpriteSFF;
-import org.lee.mugen.sprite.common.resource.FontParser;
 import org.lee.mugen.sprite.entity.ExplodSprite;
 import org.lee.mugen.sprite.entity.PointF;
 import org.lee.mugen.sprite.entity.Postype;
@@ -28,22 +25,15 @@ public class ExplodRender implements Renderable {
 		this.sprite = sprite;
 	}
 	
+	public ExplodSprite getSprite() {
+		return sprite;
+	}
+
 	public void render() {
-		if (sprite.getExplod().getId() == 6111)
-			System.out.println();
-		
+
 		MouseCtrl mouse = GraphicsWrapper.getInstance().getInstanceOfGameWindow().getMouseStatus();
-		
-		
 		float xScale = sprite.getExplod().getScale().getX();
 		float yScale = sprite.getExplod().getScale().getY();
-		
-		Stage stage = StateMachine.getInstance().getInstanceOfStage();
-		int _mvX = stage.getCamera().getX();
-		int _mvY = stage.getCamera().getY();
-		float x = _mvX + stage.getCamera().getWidth()/2f;
-		int y = stage.getStageinfo().getZoffset() + _mvY;
-
 		final ImageContainer ic = sprite.getCurrentImage();
 		if (ic == null)
 			return;
@@ -51,28 +41,22 @@ public class ExplodRender implements Renderable {
 
 		AirData air = sprite.getSprAnimMng().getCurrentImageSprite().getAirData();
 		ImageSpriteSFF imgSprite = sprite.getCurrentImageSpriteSFF();
-		float xOffset = (imgSprite.getXAxis()) * xScale;
-		float yOffset = (imgSprite.getYAxis()) * yScale;
-		if (sprite.getExplod().getPostype() == Postype.left || sprite.getExplod().getPostype() == Postype.right) {
-			x = 0;
-			y = 0;
-		} else {
-			xOffset = 0;//imgSprite.getXAxis();
-			yOffset = 0;//imgSprite.getYAxis();
-			
-		}
-		if (sprite.getExplod().getPostype() == Postype.back || sprite.getExplod().getPostype() == Postype.front) {
-			y = 0;
-		}
+
 		boolean isFlipH = air.isMirrorH;
-		if (sprite.getExplod().getPostype() == Postype.p1 || sprite.getExplod().getPostype() == Postype.p2
-				|| sprite.getExplod().getPostype() == Postype.back || sprite.getExplod().getPostype() == Postype.front) {
-			isFlipH = sprite.isFlip() ^ isFlipH;
-		}
+
 		boolean isFlipV = air.isMirrorV ^ sprite.getExplod().getVfacing() == -1;
 
-		isFlipH = isFlipH ^ sprite.getExplod().getFacing() == -1;
 
+		if (sprite.getExplod().getPostype() == Postype.back)
+			isFlipH = isFlipH ^ sprite.isFlip();
+		
+		if (sprite.getExplod().getPostype() == Postype.p1)
+			isFlipH = air.isMirrorH ^ getSprite().isFlip();
+		if (sprite.getExplod().getPostype() == Postype.p2) 
+			isFlipH = air.isMirrorH ^ getSprite().isFlip();
+		
+		if (sprite.getExplod().getFacing() == -1)
+			isFlipH = !isFlipH;
 		PointF pos = sprite.getPosToDraw();
 		
 
@@ -80,15 +64,15 @@ public class ExplodRender implements Renderable {
 		// rotate if
 		SpriteDrawProperties dp = sprite.getSprAnimMng().getSpriteDrawProperties();
 
-		float xPos = pos.getX() + x - xOffset;
-		float yPos = pos.getY() + y - yOffset;
+		float xPos = pos.getX();
+		float yPos = pos.getY();
 		
 		DrawProperties drawProperties = new DrawProperties(xPos, yPos, isFlipH, isFlipV, ic);
 		if (dp.isActive()) {
 			AngleDrawProperties angle = new AngleDrawProperties();
 			angle.setAngleset(-dp.getAngleset());
-			angle.setXAnchor(pos.getX() + x + (imgSprite.getXAxis()) * dp.getXScale());
-			angle.setXAnchor(pos.getY() + y + (imgSprite.getYAxis()) * dp.getYScale());
+			angle.setXAnchor(pos.getX() + (imgSprite.getXAxis()) * dp.getXScale());
+			angle.setXAnchor(pos.getY() + (imgSprite.getYAxis()) * dp.getYScale());
 			angle.setXScale(dp.getXScale());
 			angle.setYScale(dp.getYScale());
 			
@@ -105,7 +89,7 @@ public class ExplodRender implements Renderable {
 			}
 			drawProperties.setTrans(Trans.ADD1);
 		} else if (TypeBlit.A == air.type) {
-			drawProperties.setTrans(Trans.ADD1);
+			drawProperties.setTrans(Trans.ADD);
 		} else {
 			
 		}
@@ -119,21 +103,10 @@ public class ExplodRender implements Renderable {
 			sprite.getPalfx().setDrawProperties(drawProperties);
 		}
 		GraphicsWrapper.getInstance().draw(drawProperties);
-		
-//		Dimension d = new Dimension((int)(drawProperties.getXRightDst() - drawProperties.getXLeftDst()), 
-//				(int)(drawProperties.getXRightDst() - drawProperties.getXLeftDst()));
-//		Rectangle r = new Rectangle((int)(drawProperties.getXLeftDst()), (int)(drawProperties.getXLeftDst()), d.width, d.height);
-//		try {
-//			GraphicsWrapper.getInstance().draw(r);
-		
-//			FontParser.getFontProducer().draw(100, 100, GraphicsWrapper.getInstance(), mouse.getX() + " " + mouse.getY() + "  " + r);
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+
 	}
 	public int getPriority() {
-		return sprite.getPriority() - 1;
+		return sprite.getPriority() - 1 + (sprite.getExplod().isOntop()? -1000: 0);
 	}
 
 	public boolean isProcess() {
@@ -142,6 +115,8 @@ public class ExplodRender implements Renderable {
 
 
 	public boolean remove() {
+		if (sprite.remove() || sprite.isForceRemove())
+			System.out.println();
 		return sprite.remove() || sprite.isForceRemove();
 	}
 	public void setPriority(int p) {

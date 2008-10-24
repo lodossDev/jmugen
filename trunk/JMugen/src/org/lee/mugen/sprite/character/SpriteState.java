@@ -12,7 +12,6 @@ import org.lee.mugen.core.StateMachine;
 import org.lee.mugen.parser.type.FloatValueable;
 import org.lee.mugen.parser.type.IntValueable;
 import org.lee.mugen.parser.type.Valueable;
-import org.lee.mugen.sprite.character.SpriteCns.MoveType;
 import org.lee.mugen.sprite.cns.StateCtrl;
 import org.lee.mugen.sprite.cns.StateDef;
 import org.lee.mugen.sprite.parser.Parser;

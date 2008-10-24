@@ -7,6 +7,7 @@ import java.util.Comparator;
 import org.lee.mugen.core.StateMachine;
 import org.lee.mugen.renderer.GraphicsWrapper;
 import org.lee.mugen.renderer.Renderable;
+import org.lee.mugen.renderer.GameWindow.MouseCtrl;
 import org.lee.mugen.sprite.background.Stage;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.SpriteCns;
@@ -91,9 +92,9 @@ public class DebugRender implements Renderable {
 			String[] strSpriteInfos = {
 				"Author : " + sprite.getDefinition().getInfo().getAuthor()
 				,"Name : " + sprite.getDefinition().getInfo().getName()
-				,"SpriteID : " + sprite.getSpriteId() + " - IsFlip : " + sprite.isFlip()
+				,"SpriteID : " + sprite.getSpriteId() + " - IsFlip : " + sprite.isFlip() + " " + "Debug " + sprite.isDebugRender()
 				,"Game Fps = " + StateMachine.getInstance().getWindow().getTimer().getFps() 
-				+ " - Stage Width " + leftLimit+ " - " + rightLimit
+				+ " - Camera : " + stage.getCamera().getXNoShaKe() + ", " + stage.getCamera().getYNoShake()
 			};
 			String[] strSpriteInfos2 = {
 				"Life = " + sprInfo.getLife()
@@ -125,7 +126,15 @@ public class DebugRender implements Renderable {
 			};
 			FontProducer fp = FontParser.getFontProducer();
 			int addX = 0;
+			MouseCtrl mouse = GraphicsWrapper.getInstance().getInstanceOfGameWindow().getMouseStatus();
 			for (String s: strSpriteInfos) {
+				if (mouse.getY() >= y && mouse.getY() < y+fp.getSize().height
+						&& 
+						mouse.getX() >= x && mouse.getX() < x+fp.getSize().width * s.length() 
+						&& mouse.isLeftPress() && s.startsWith("SpriteID")
+				) {
+					sprite.setDebugRender(!sprite.isDebugRender());
+				}
 				fp.draw(x, y+=fp.getSize().height, GraphicsWrapper.getInstance(), s);
 				addX = Math.max(addX, s.length());
 				

@@ -29,7 +29,7 @@ public class AfterImageShader extends Shader {
 	
 	private int mulUniPos;
 	private int addUniPos;
-	
+	private int typeUniPos;
 
 	public AfterImageShader() {
 		this.fshFile = "afterimage";
@@ -50,7 +50,6 @@ public class AfterImageShader extends Shader {
 		// Initialize the shader program.
 		programID = ARBShaderObjects.glCreateProgramObjectARB();
 
-//		ARBShaderObjects.glAttachObjectARB(programID, vshID);
 		ARBShaderObjects.glAttachObjectARB(programID, fshID);
 
 		ARBShaderObjects.glLinkProgramARB(programID);
@@ -67,9 +66,10 @@ public class AfterImageShader extends Shader {
 		
 		mulUniPos = getUniformLocation(programID, "mul");
 		addUniPos = getUniformLocation(programID, "add");
+		typeUniPos = getUniformLocation(programID, "type");
 	}
 
-	public void render(RGB palbright, RGB palcontrast, RGB palpostbright, RGB add, RGB mul) {
+	public void render(RGB palbright, RGB palcontrast, RGB palpostbright, RGB add, RGB mul, float type) {
 		ARBShaderObjects.glUseProgramObjectARB(programID);
 		
 		ARBShaderObjects.glUniform4fARB(palbrightUniPos, palbright.getR(), palbright.getG(), palbright.getB(), palbright.getA());
@@ -78,18 +78,15 @@ public class AfterImageShader extends Shader {
 
 		ARBShaderObjects.glUniform4fARB(addUniPos, add.getR(), add.getG(), add.getB(), add.getA());
 		ARBShaderObjects.glUniform4fARB(mulUniPos, mul.getR(), mul.getG(), mul.getB(), mul.getA());
+		ARBShaderObjects.glUniform1fARB(typeUniPos, type);
 	}
 	public void render() {
 		ARBShaderObjects.glUseProgramObjectARB(programID);
 
 	}
 	public void cleanup() {
-//		ARBShaderObjects.glDetachObjectARB(programID, vshID);
 		ARBShaderObjects.glDetachObjectARB(programID, fshID);
-
-//		ARBShaderObjects.glDeleteObjectARB(vshID);
 		ARBShaderObjects.glDeleteObjectARB(fshID);
-
 		ARBShaderObjects.glDeleteObjectARB(programID);
 	}
 

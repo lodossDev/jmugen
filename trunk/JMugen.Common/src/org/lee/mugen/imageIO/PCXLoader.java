@@ -44,7 +44,8 @@ public class PCXLoader {
         
         IndexColorModel icm = new IndexColorModel(8, 256, convertToByteArray(pal.r), convertToByteArray(pal.g), convertToByteArray(pal.b), 0);
         
-        image = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_INDEXED, icm);
+      image = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_INDEXED, icm);
+      
         
 //        BufferedImage.TYPE_INT_RGB
 
@@ -98,12 +99,11 @@ public class PCXLoader {
             }
         }
         in.close();
+       
         return image;
     }
 
-//    public static int[] decode(InputStream file, PCXPalette pal, boolean isPalUse, boolean isUseColorKey, WrapInt width, WrapInt height) throws IOException {
-//    	
-//    }
+
     private static final ColorModel glAlphaColorModel = 
 		new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB),
             new int[] {8,8,8,8},

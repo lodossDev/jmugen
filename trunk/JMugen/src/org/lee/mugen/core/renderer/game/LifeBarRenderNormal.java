@@ -20,6 +20,7 @@ import org.lee.mugen.renderer.Renderable;
 import org.lee.mugen.sprite.base.AbstractAnimManager.SpriteDrawProperties;
 import org.lee.mugen.sprite.baseForParse.ImageSpriteSFF;
 import org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns.Roundstate;
+import org.lee.mugen.sprite.cns.type.function.Assertspecial.Flag;
 
 public class LifeBarRenderNormal implements Renderable {
 
@@ -128,6 +129,9 @@ public class LifeBarRenderNormal implements Renderable {
 
 	
 	public void render() {
+		if (StateMachine.getInstance().getGlobalEvents().isAssertSpecial(Flag.nobardisplay))
+			return;
+		
 		if (StateMachine.getInstance().getGameState().getRoundState() != Roundstate.COMBAT) {
 			thisCustompalFx.getMul().setA(0f);
 //			thisCustompalFx.getMul().setR(0f);

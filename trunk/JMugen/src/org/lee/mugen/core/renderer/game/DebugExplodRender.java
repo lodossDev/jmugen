@@ -1,9 +1,6 @@
 package org.lee.mugen.core.renderer.game;
 
-import java.beans.Statement;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -11,10 +8,7 @@ import org.lee.mugen.core.StateMachine;
 import org.lee.mugen.renderer.GraphicsWrapper;
 import org.lee.mugen.renderer.Renderable;
 import org.lee.mugen.renderer.GameWindow.MouseCtrl;
-import org.lee.mugen.sprite.background.Stage;
 import org.lee.mugen.sprite.base.AbstractSprite;
-import org.lee.mugen.sprite.character.Sprite;
-import org.lee.mugen.sprite.character.SpriteCns;
 import org.lee.mugen.sprite.character.SpriteHelper;
 import org.lee.mugen.sprite.common.resource.FontParser;
 import org.lee.mugen.sprite.common.resource.FontProducer;
@@ -51,7 +45,9 @@ public class DebugExplodRender implements Renderable {
 			List<ExplodSprite> explods = new ArrayList<ExplodSprite>();
 			for (AbstractSprite s: StateMachine.getInstance().getOtherSprites()) {
 				if (s instanceof ExplodSprite) {
-					explods.add((ExplodSprite) s);
+					ExplodSprite es = (ExplodSprite) s;
+//					if (!es.remove())
+						explods.add(es);
 				}
 			}
 
@@ -81,7 +77,7 @@ public class DebugExplodRender implements Renderable {
 				if (mouse.getY() >= y && mouse.getY() < y+fp.getSize().height
 						&& 
 						mouse.getX() >= x && mouse.getX() < x+fp.getSize().width * s.length() 
-						&& mouse.isLeftRelease()
+						&& mouse.isLeftPress()
 				) {
 					explods.get(i).setProcess(!explods.get(i).isProcess());
 				}
