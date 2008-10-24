@@ -412,7 +412,18 @@ public class FightEngine {
 //		Wrapper<Rectangle> wrap = new Wrapper<Rectangle>();
 
 		if (isHitdefHitAttackRec(hitdef, sprite)) {
-			// TODO
+			// TODO Projectile Life
+			if (hitdef.getProjremove() != 0) {
+				removes.add(hitdef);
+				hitdef.getSpriteHitter().setProjHitSprite();
+
+			}
+			hitdef.addProjhits(-1);
+			if (hitdef.getProjhits() <= 0) {
+				removes.add(hitdef);
+			}
+
+		
 		}
 	}
 
