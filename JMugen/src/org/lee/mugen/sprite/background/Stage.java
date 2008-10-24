@@ -395,11 +395,14 @@ public class Stage {
 				ySpr = (int) Math.min(ySpr, spr.getInfo().getYPos());
 			}
 			int yDiff = yCam - ySpr;
+			float yAdd = highestSpr.getInfo().getVelset().getY()/2;
+			if (ySpr == 0 && highestSpr.getInfo().getVelset().getY() == 0 && yCam != 0)
+				yAdd = highestSpr.getInfo().getVelset().getY()/2 + 1;
 			if (yDiff < 0)
-				getCamera().setY((int) (yCam + highestSpr.getInfo().getVelset().getY()));
+				getCamera().setY((int) (yCam + yAdd));
 			
 			if (yDiff >= 0)
-				getCamera().setY((int) (yCam - highestSpr.getInfo().getVelset().getY()));
+				getCamera().setY((int) (yCam - yAdd));
 			
 			if (getCamera().getXNoShaKe() < leftLimit)
 				getCamera().setX(leftLimit);

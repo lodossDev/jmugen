@@ -439,5 +439,7 @@ public class Sprite extends AbstractSprite implements Cloneable {
 	public Integer getTempPause() {
 		return tempPause;
 	}
+	
+
 
 }

@@ -4,69 +4,75 @@ import java.awt.Point;
 
 import org.lee.mugen.core.StateMachine;
 import org.lee.mugen.sprite.background.Stage;
-import org.lee.mugen.sprite.character.Sprite;
+import org.lee.mugen.sprite.base.AbstractSprite;
 import org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns.Backedgebodydist;
 import org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns.Frontedgebodydist;
 
 public enum Postype {
 	p1, p2, front, back, left, right;
 
-	public PointF computePos(Sprite p1, Sprite p2, Point offset, int facing) {
+	public PointF computePos(AbstractSprite p1, AbstractSprite p2, Point offset, int facing) {
 		return computePos(p1, p2, new PointF(offset), facing);
 	} 
 	
-	public PointF computePos(Sprite p1, Sprite p2, PointF offset, int facing) {
+	public PointF computePos(AbstractSprite p1, AbstractSprite p2, PointF offset, int facing) {
 		Postype postype = this;
 		offset = new PointF(offset);
+		Stage stage = StateMachine.getInstance().getInstanceOfStage();
+		int _mvX = stage.getCamera().getX();
+		int _mvY = stage.getCamera().getY();
+		float x = _mvX + stage.getCamera().getWidth()/2f;
+		int y = stage.getStageinfo().getZoffset() + _mvY;
  
 		PointF pos = new PointF();
-		Stage stage = StateMachine.getInstance().getInstanceOfStage();
+
 		switch (postype) {
 		case back:
-//			pos.setX(p1.getInfo().getXPos() + 
-//					(p1.isFlip()? -Backedgebodydist.compute(p1) + offset.getX(): 
-//			Backedgebodydist.compute(p1) - offset.getX()));
-//			
-//			pos.setY(offset.getY() - stage.getStageinfo().getZoffset());
-			int _mvX = stage.getCamera().getX();
-			float x = -_mvX + stage.getCamera().getWidth()/2;
-			if (!p1.isFlip()) {
-				pos.setX(p1.getInfo().getXPos() + 
-						(-Backedgebodydist.compute(p1) + offset.getX()));
-				pos.setY(offset.getY() - stage.getStageinfo().getZoffset());
-						
-//				pos.setX(offset.getX() - stage.getCamera().getX() - stage.getCamera().getWidth()/2);
-//				pos.setY(-offset.getY() - stage.getStageinfo().getZoffset());
+			if (p1.isFlip()) {
+				pos.setX(p1.getRealXPos() + Backedgebodydist.compute(p1) - offset.getX());
 			} else {
-				pos.setX(p1.getInfo().getXPos() + 
-				(Backedgebodydist.compute(p1) - offset.getX()));
-				pos.setY(offset.getY() - stage.getStageinfo().getZoffset());
+				pos.setX(p1.getRealXPos() - Backedgebodydist.compute(p1) + offset.getX());
 			}
-
+			pos.setY(offset.getY());
 			break;
 		case front:
-			pos.setX(p1.getInfo().getXPos() + 
-					(p1.isFlip()? -Frontedgebodydist.compute(p1):Frontedgebodydist.compute(p1)) - 
-					(p1.isFlip()? -offset.getX() : offset.getX()));
-			pos.setY(offset.getY() - stage.getStageinfo().getZoffset());
+			if (p1.isFlip()) {
+				pos.setX(p1.getRealXPos() - Frontedgebodydist.compute(p1) + offset.getX());
+			} else {
+				pos.setX(p1.getRealXPos() + Frontedgebodydist.compute(p1) + offset.getX());
+			}
+			pos.setY(offset.getY());
 			break;
 		case left:
-			pos.setX(offset.getX());
+			if (p1.isFlip()) {
+				pos.setX(p1.getRealXPos() - Frontedgebodydist.compute(p1) + offset.getX());
+			} else {
+				pos.setX(p1.getRealXPos() - Backedgebodydist.compute(p1) + offset.getX());
+			}
 			pos.setY(offset.getY());
 			break;
 		case right:
-			pos.setX(stage.getCamera().getWidth()/2 - facing * offset.getX());
+			if (p1.isFlip()) {
+				pos.setX(p1.getRealXPos() + Backedgebodydist.compute(p1) + offset.getX());
+
+			} else {
+				pos.setX(p1.getRealXPos() + Frontedgebodydist.compute(p1) + offset.getX());
+			}
 			pos.setY(offset.getY());
 			break;
 		case p1:
-			pos.setX(p1.getInfo().getXPos()
-					+ (p1.isFlip()? -offset.getX() : offset.getX()));
-			pos.setY(p1.getInfo().getYPos() + offset.getY());
+			int mul = 1;
+			if (p1.isFlip())
+				mul = -1;
+			pos.setX(p1.getRealXPos() + offset.getX() * mul);
+			pos.setY(p1.getRealYPos() + offset.getY());
 			break;
 		case p2:
-			pos.setX(p2.getInfo().getXPos()
-				+ (p2.isFlip() ? offset.getX() : -offset.getX()));
-			pos.setY(p2.getInfo().getYPos() + offset.getY());
+			int mul2 = 1;
+			if (p2.isFlip())
+				mul2 = -1;
+			pos.setX(p2.getRealXPos() + offset.getX() * mul2);
+			pos.setY(p2.getRealYPos() + offset.getY());
 			break;
 
 		}

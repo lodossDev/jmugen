@@ -103,7 +103,7 @@ public class SpriteRender implements Renderable {
 	}
 
 	public boolean isProcess() {
-		return true;
+		return sprite.isDebugRender();
 	}
 
 	public boolean remove() {

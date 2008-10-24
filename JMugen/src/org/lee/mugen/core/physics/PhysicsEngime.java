@@ -6,8 +6,8 @@ import org.lee.mugen.core.StateMachine;
 import org.lee.mugen.sprite.background.Stage;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.SpriteHelper;
+import org.lee.mugen.sprite.character.SpriteCns.MoveType;
 import org.lee.mugen.sprite.character.SpriteCns.Physics;
-import org.lee.mugen.sprite.character.SpriteCns.Type;
 import org.lee.mugen.sprite.cns.type.function.Assertspecial.Flag;
 
 /**
@@ -166,9 +166,10 @@ public class PhysicsEngime {
 			boolean isIntersect = r1.intersects(r2);
 			if (isIntersect) {
 				int mul = 1;
-				if (sprOne.isFlip() ^ sprTwo.isFlip())
-					mul = mul * (-1);
-				sprTwo.getInfo().moveXPos(r1.intersection(r2).width * mul);
+
+				if (r1.x > r2.x && sprOne.getRealXPos() > sprTwo.getRealXPos())
+					mul = -mul;
+				sprTwo.getInfo().addXPos(r1.intersection(r2).width * mul);
 				checkGoodPositionInScreen(sprTwo);
 			}
 			r1 = getGlobalClsn2ect(sprOne);
@@ -211,9 +212,11 @@ public class PhysicsEngime {
 			boolean isIntersect = r1.intersects(r2);
 			if (isIntersect) {
 				int mul = 1;
-				if (sprOne.isFlip() ^ sprTwo.isFlip())
-					mul = mul * (-1);
-				sprTwo.getInfo().moveXPos(r1.intersection(r2).width * mul);
+
+				if (r1.x > r2.x && sprOne.getRealXPos() > sprTwo.getRealXPos())
+					mul = -mul;
+				System.out.println();
+				sprTwo.getInfo().addXPos(r1.intersection(r2).width * mul);
 				checkGoodPositionInScreen(sprTwo);
 			}
 			r1 = getGlobalWidthRect(sprOne);
@@ -232,7 +235,7 @@ public class PhysicsEngime {
 			}
 			isIntersect = r1.intersects(r2);
 			if (isIntersect) { // P2 is collision with back
-				sprOne.getInfo().moveXPos(-r1.intersection(r2).width);
+				sprOne.getInfo().moveXPos(-r1.intersection(r2).width );
 			}
 			checkGoodPositionInScreen(sprOne);
 			
@@ -272,7 +275,8 @@ public class PhysicsEngime {
 	}
 
 	public static void checkGoodPositionInScreen(Sprite sprOne) {
-		if (sprOne.getInfo().isScreenbound()) {
+		if (sprOne.getInfo().isScreenbound() ||
+				sprOne.getCns2().size() == 0) {
 			return;
 		}
 		Rectangle r1 = getRectEdge(sprOne);

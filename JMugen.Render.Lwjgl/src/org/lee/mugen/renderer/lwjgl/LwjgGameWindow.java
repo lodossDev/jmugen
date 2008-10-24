@@ -335,12 +335,11 @@ public class LwjgGameWindow implements GameWindow {
 		
 		while (gameRunning) {
 			if (mouse.isLeftClick() && !Mouse.isButtonDown(0)) {
-				mouse.setLeftRelease(true);
+				mouse.setLeftPress(false);
 			} else {
-				mouse.setLeftRelease(false);
+				mouse.setLeftPress(true);
 			}
-			if (!isFinishInit) {// || !LMugenDrawer.isConverImageToBufferFinish()) {
-//			if (!LMugenDrawer.isConverImageToBufferFinish()) {
+			if (!isFinishInit) {
 				callback.displayPendingScreeen();
 			} else {
 				if (callback != null) {
@@ -360,6 +359,7 @@ public class LwjgGameWindow implements GameWindow {
 					callback.update(1);
 					callback.render();
 					callback.renderDebugInfo();
+					
 				}
 			}
 			
@@ -394,7 +394,7 @@ public class LwjgGameWindow implements GameWindow {
 		mouse.setY(240 - Mouse.getY()/2);
 
 		mouse.setLeftPress(Mouse.isButtonDown(0));
-		isLeftRelease = !Mouse.isButtonDown(0);
+		mouse.setLeftRelease(!Mouse.isButtonDown(0));
 		return mouse;
 	}
 

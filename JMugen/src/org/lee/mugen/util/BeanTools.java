@@ -230,11 +230,11 @@ public class BeanTools {
 				Object[] objects = (Object[]) o;
 				int pos = 0;
 
-				rgb.setR(((Number)objects[pos++]).intValue());
-				rgb.setG(((Number)objects[pos++]).intValue());
-				rgb.setB(((Number)objects[pos++]).intValue());
+				rgb.setR(((Number)objects[pos++]).floatValue());
+				rgb.setG(((Number)objects[pos++]).floatValue());
+				rgb.setB(((Number)objects[pos++]).floatValue());
 				if (objects.length == 4) {
-					rgb.setA(((Number)objects[pos++]).intValue());
+					rgb.setA(((Number)objects[pos++]).floatValue());
 				}
 				return rgb;
 			} else if (o.getClass() == String.class) {

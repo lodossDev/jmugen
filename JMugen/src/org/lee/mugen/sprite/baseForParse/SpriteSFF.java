@@ -55,18 +55,18 @@ public class SpriteSFF {
 				long time = System.currentTimeMillis();
 				RawPCXImage rawPCXImage = new RawPCXImage(memStream.toByteArray(), prevPalette);
 				
-//				if (pos == 2 && subFile.grpNumber == 7000) {
+//				if (pos == 1) {
 //					new File("ryu").mkdirs();
 //					FileOutputStream fos = new FileOutputStream("ryu/" + subFile.grpNumber + "_" + subFile.imgNumber + ".pcx");
 //					fos.write(rawPCXImage.getData());
 //					fos.close();
 //					
-//					BufferedImage loadImage = 
-//					(BufferedImage) PCXLoader.loadImage(new ByteArrayInputStream(memStream.toByteArray()), prevPalette, false, true);
-//				
-//				new File("ryu").mkdirs();
-//				ImageIO.write(loadImage, "png", new File( "ryu/" + subFile.grpNumber + "_" + subFile.imgNumber + ".png"));
-//				System.exit(0);
+////					BufferedImage loadImage = 
+////					(BufferedImage) PCXLoader.loadImage(new ByteArrayInputStream(memStream.toByteArray()), prevPalette, false, true);
+////				
+////				new File("ryu").mkdirs();
+////				ImageIO.write(loadImage, "png", new File( "ryu/" + subFile.grpNumber + "_" + subFile.imgNumber + ".png"));
+////				System.exit(0);
 //					
 //				}
 				
@@ -96,7 +96,7 @@ public class SpriteSFF {
 		Logger.log("Number of image = " + countImage);
 		Logger.log("Time to load PCX = " + timeToLoadPcx);
 		Logger.log("Time to load PCX = " + timeToLoadTExture);
-//		if (pos == 2)
+//		if (pos == 1)
 //			System.exit(0);
 //		pos++;
 	}

@@ -287,5 +287,12 @@ public abstract class AbstractSprite {
 	public void setSpriteSFF(SpriteSFF spriteSFF) {
 		this.spriteSFF = spriteSFF;
 	}
+	private boolean debugRender = true;
+	public boolean isDebugRender() {
+		return debugRender;
+	}
 
+	public void setDebugRender(boolean debugRender) {
+		this.debugRender = debugRender;
+	}
 }

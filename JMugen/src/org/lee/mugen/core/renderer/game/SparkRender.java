@@ -83,7 +83,7 @@ public class SparkRender {
 			
 			if (hitdef.getSpriteHitter() instanceof ProjectileSprite) {
 				yReal = hitdef.getSpriteHitter().getRealYPos() + hitdef.getSparkxy().getSpark_y();
-				
+//				yReal = spriteHitted.getRealYPos() + hitdef.getSparkxy().getSpark_y();
 			} else {
 				yReal = spriteHitted.getRealYPos() + hitdef.getSparkxy().getSpark_y();
 			}

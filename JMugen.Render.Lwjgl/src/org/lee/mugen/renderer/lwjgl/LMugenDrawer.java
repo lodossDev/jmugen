@@ -188,13 +188,30 @@ public class LMugenDrawer extends MugenDrawer {
 			// shader.cleanup();
 
 		} else if (dp.getImageProperties() != null) {
+			float type = 0;
+			if (dp.getImageProperties().getTrans() == Trans.ADD) {
+				GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
+				GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_DST_ALPHA);
+				type = 1;
+			} else if (dp.getImageProperties().getTrans() == Trans.ADD1) {
+				GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
+				GL11.glBlendFunc(GL11.GL_ONE_MINUS_DST_COLOR, GL11.GL_ONE_MINUS_SRC_ALPHA);
+				type = 2;
+			} else if (dp.getImageProperties().getTrans() == Trans.SUB) {
+				GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
+				GL11.glBlendFunc(GL11.GL_ONE_MINUS_DST_COLOR, GL11.GL_ONE_MINUS_SRC_ALPHA);
+				GL11.glBlendFunc(GL11.GL_ONE_MINUS_DST_ALPHA, GL11.GL_ONE_MINUS_SRC_COLOR);
+				GL11.glBlendFunc(GL11.GL_DST_COLOR, GL11.GL_ONE);
+				type = 3;
+			}
 			RGB bits = new RGB(1f/255f, 1f/255f, 1f/255f, 1f/255f);
 			getAfterImageShader().render(
 					dp.getImageProperties().getPalbright().mul(bits), 
 					dp.getImageProperties().getPalcontrast().mul(bits), 
 					dp.getImageProperties().getPalpostbright().mul(bits),
 					dp.getImageProperties().getPaladd().mul(bits),
-					dp.getImageProperties().getPalmul()
+					dp.getImageProperties().getPalmul(),
+					type
 			
 				);
 			drawImage(xlDst, xrDst, ytDst, ybDst, xlSrc, xrSrc, ytSrc, ybSrc,

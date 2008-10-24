@@ -73,6 +73,13 @@ public class HelperSub {
 	private boolean ownpal;
 	private int supermovetime;
 	private int pausemovetime;
+	private int bindtime;
+	public int getBindtime() {
+		return bindtime;
+	}
+	public void setBindtime(int bindtime) {
+		this.bindtime = bindtime;
+	}
 	private Size size = new Size();
 	
 	private Sprite spriteFrom;
