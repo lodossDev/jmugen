@@ -134,17 +134,10 @@ public class LifeBarRenderNormal implements Renderable {
 		
 		if (StateMachine.getInstance().getGameState().getRoundState() != Roundstate.COMBAT) {
 			thisCustompalFx.getMul().setA(0f);
-//			thisCustompalFx.getMul().setR(0f);
-//			thisCustompalFx.getMul().setG(0f);
-//			thisCustompalFx.getMul().setB(0f);
 			return;
 		} else if (thisCustompalFx.getMul().getA() < 255) {
 			thisCustompalFx.getMul().setA(thisCustompalFx.getMul().getA() + 1f);
-//			thisCustompalFx.getMul().setR(thisCustompalFx.getMul().getR() + 1f);
-//			thisCustompalFx.getMul().setG(thisCustompalFx.getMul().getG() + 1f);
-//			thisCustompalFx.getMul().setB(thisCustompalFx.getMul().getB() + 1f);
 		}
-//		GraphicsWrapper.getInstance().scale(0.5f, 0.5f);
 		render(StateMachine.getInstance().getFightDef().getLifebar().getP1());
 		render(StateMachine.getInstance().getFightDef().getLifebar().getP2());
 		
