@@ -1,7 +1,10 @@
 package org.lee.mugen.sprite.cns.type.function;
 
+import org.lee.mugen.core.StateMachine;
 import org.lee.mugen.parser.type.Valueable;
+import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.cns.eval.function.StateCtrlFunction;
+import org.lee.mugen.sprite.entity.HitOverrideSub;
 
 public class Hitoverride extends StateCtrlFunction {
 /*
@@ -29,10 +32,12 @@ forceair = value (boolean)
     }
     
     @Override
-    public Valueable[] parse(String name, String value) {
-        return null;
-    }
-    public void addParam(String name, Valueable[] param) {
-
-    }
+   	public Object getValue(String spriteId, Valueable... params) {
+    	Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);
+    	HitOverrideSub hitOverrideSub = new HitOverrideSub();
+    	fillBean(spriteId, hitOverrideSub);
+    	
+    	sprite.getInfo().setHitOverride(hitOverrideSub);
+    	return null;
+   	}
 }

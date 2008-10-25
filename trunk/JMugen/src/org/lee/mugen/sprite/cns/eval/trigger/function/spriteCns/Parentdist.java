@@ -37,7 +37,7 @@ public class Parentdist extends SpriteCnsTriggerFunction {
 			return helperInfo.isFlip()? getXDiff(helper, parent): -getXDiff(helper, parent);
 		} else if ("y".equals(p)) {
 			return -getYDiff(helper, parent);		
-		} 
+		}
 		throw new IllegalArgumentException("arg must be x or y");
 	}
 

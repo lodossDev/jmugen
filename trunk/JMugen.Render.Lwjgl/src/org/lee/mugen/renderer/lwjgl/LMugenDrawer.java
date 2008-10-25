@@ -33,6 +33,7 @@ import org.lee.mugen.renderer.RGB;
 import org.lee.mugen.renderer.Trans;
 import org.lee.mugen.renderer.lwjgl.shader.AfterImageShader;
 import org.lee.mugen.renderer.lwjgl.shader.PalFxShader;
+import org.lee.mugen.util.Logger;
 import org.lwjgl.opengl.GL11;
 
 public class LMugenDrawer extends MugenDrawer {

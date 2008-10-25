@@ -533,7 +533,7 @@ public class StateMachine implements Game {
 		for (Sprite s : getSprites()) {
 			ISpriteCmdProcess sprCmdProc = spriteCmdProcessMap.get(s.getSpriteId());
 			if (sprCmdProc != null) {
-				sprCmdProc.process();
+				sprCmdProc.process(s.getSpriteId());
 			}
 
 			

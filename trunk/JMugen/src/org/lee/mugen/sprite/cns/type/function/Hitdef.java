@@ -437,8 +437,7 @@ public class Hitdef extends StateCtrlFunction {
 						if (valueableParams[nameIndex] != null) {
 							if (valueableParams[nameIndex].length > 0) {
 								AttrClass attrClass = (AttrClass) valueableParams[nameIndex][0].getValue(spriteId, params);
-								Type attr = attrClass.getType();
-								if (attr == Type.A) {
+								if (attrClass.getType() == Type.A.getBit()) {
 									return 0;
 								} else {
 									final String name = "guard.velocity";

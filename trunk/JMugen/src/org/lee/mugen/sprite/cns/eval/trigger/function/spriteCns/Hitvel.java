@@ -23,14 +23,14 @@ public class Hitvel extends SpriteCnsTriggerFunction {
 		if (hitdefFrom == null || hitdefFrom.getHittime() <= 0)
 			return 0;
 		if ("x".equals(p)) {
-			if (hitdefFrom.getAttr().getType() == Type.A) {
+			if (hitdefFrom.getAttr().getType() == Type.A.getBit()) {
 				return hitdefFrom.getGround().getVelocity().getX();
 			} else {
 				return hitdefFrom.getAir().getVelocity().getX();
 			}
 			
 		} else if ("y".equals(p)) {
-			if (hitdefFrom.getAttr().getType() == Type.A) {
+			if (hitdefFrom.getAttr().getType() == Type.A.getBit()) {
 				return hitdefFrom.getGround().getVelocity().getY();
 			} else {
 				return hitdefFrom.getAir().getVelocity().getY();

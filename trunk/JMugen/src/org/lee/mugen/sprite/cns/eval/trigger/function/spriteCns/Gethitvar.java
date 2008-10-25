@@ -182,8 +182,8 @@ public class Gethitvar extends SpriteCnsTriggerFunction {
 				if (FightEngine.isBlockState(sprOne.getSpriteState().getCurrentState().getIntId())) {
 					return hitdefFrom.getGuard().getHittime();
 				} else {
-
-					switch (hitdefFrom.getAttr().getType()) {
+					Type type = Type.getType(hitdefFrom.getAttr().getType());
+					switch (type) {
 					case A:
 						return hitdefFrom.getAir().getHittime();
 					case I:
@@ -223,7 +223,8 @@ public class Gethitvar extends SpriteCnsTriggerFunction {
 				if (hitdefFrom == null)
 					return null;
 				if (FightEngine.isBlockState(sprOne.getSpriteState().getCurrentState().getIntId())) {
-					switch (hitdefFrom.getAttr().getType()) {
+					Type type = Type.getType(hitdefFrom.getAttr().getType());
+					switch (type) {
 					case A:
 						return hitdefFrom.getAirguard().getCtrltime();
 					case I:
@@ -262,7 +263,8 @@ public class Gethitvar extends SpriteCnsTriggerFunction {
 				if (hitdefFrom == null)
 					return null;
 				if (FightEngine.isBlockState(sprOne.getSpriteState().getCurrentState().getIntId())) {
-					switch (hitdefFrom.getAttr().getType()) {
+					Type type = Type.getType(hitdefFrom.getAttr().getType());
+					switch (type) {
 					case A:
 						return hitdefFrom.getAirguard().getCtrltime();
 					case I:

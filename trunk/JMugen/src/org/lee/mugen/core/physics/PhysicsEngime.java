@@ -60,8 +60,8 @@ public class PhysicsEngime {
 			
 		} else {
 			try {
-				for (Sprite s : StateMachine.getInstance().getEnnmies(sprite)) {
-					if (!s.equals(sprite) && !(s instanceof SpriteHelper)) {
+				for (Sprite s : StateMachine.getInstance().getSprites()) {
+					if (!s.equals(sprite) && !(s instanceof SpriteHelper) && s != sprite) {
 						processSpriteCollision(sprite, s);
 					}
 				}
@@ -317,15 +317,11 @@ public class PhysicsEngime {
 				sprOne.getInfo().addYPos(yVel);
 			}
 		} else {
-			for (Sprite s : StateMachine.getInstance().getEnnmies(sprite)) {
-				if (!s.equals(sprOne) && !(s instanceof SpriteHelper)) {
-					float xVel = sprOne.getInfo().getVelset().getX();
-					float yVel = sprOne.getInfo().getVelset().getY();
+			float xVel = sprOne.getInfo().getVelset().getX();
+			float yVel = sprOne.getInfo().getVelset().getY();
 
-					sprOne.getInfo().addYPos(yVel);
-					sprOne.getInfo().moveXPos(xVel);
-				}
-			}
+			sprOne.getInfo().addYPos(yVel);
+			sprOne.getInfo().moveXPos(xVel);
 		}
 	}
 

@@ -1,11 +1,12 @@
 package org.lee.mugen.sprite.character.spiteCnsSubClass;
 
+import org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub.AttrClass;
 import org.lee.mugen.sprite.character.spiteCnsSubClass.ReversaldefSub.ReversalAttrClass;
 
 public class HitBySub implements Cloneable {
 
-	private ReversalAttrClass value;
-	private ReversalAttrClass value2;
+	private AttrClass value;
+	private AttrClass value2;
 	
 	
 	private int time;
@@ -14,16 +15,16 @@ public class HitBySub implements Cloneable {
 	public Object clone() throws CloneNotSupportedException {
 		return super.clone();
 	}
-	public ReversalAttrClass getValue() {
+	public AttrClass getValue() {
 		return value;
 	}
-	public void setValue(ReversalAttrClass value) {
+	public void setValue(AttrClass value) {
 		this.value = value;
 	}
-	public ReversalAttrClass getValue2() {
+	public AttrClass getValue2() {
 		return value2;
 	}
-	public void setValue2(ReversalAttrClass value2) {
+	public void setValue2(AttrClass value2) {
 		this.value2 = value2;
 	}
 	public int getTime() {

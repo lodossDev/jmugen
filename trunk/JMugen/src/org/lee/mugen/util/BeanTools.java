@@ -94,15 +94,42 @@ public class BeanTools {
 			if (o instanceof String) {
 				String str = o.toString().replaceAll(" ", "").toUpperCase();
 				AttrClass attrClass = new AttrClass();
-				StringTokenizer tokens = new StringTokenizer(str, ",");
-				
-				String first = tokens.nextToken();
-				attrClass.setType(Type.valueOf(first));
-				while (tokens.hasMoreElements()) {
-					char[] chars = tokens.nextToken().toString().toCharArray();
-					AttrLevel lvl = AttrLevel.valueOf(String.valueOf(chars[0]));
-					AttrType type = AttrType.valueOf(String.valueOf(chars[1]));
-					attrClass.addAttrTypeAndLevel(type, lvl);
+				String[] tokens = str.split(",");
+				int i = 0;
+				String first = tokens[i++];
+				int typeFirst = 0;
+				for (char c: first.toUpperCase().toCharArray()) {
+					typeFirst = typeFirst | Type.valueOf(c + "").getBit();
+				}
+				attrClass.setType(typeFirst);
+				while (i < tokens.length) {
+					char[] chars = tokens[i++].toCharArray();
+					String slvl = String.valueOf(chars[0]);
+					String stype = String.valueOf(chars[1]);
+					AttrType typeToSet = null;
+					AttrLevel lvlToSet = null;
+					
+					if (AttrLevel.isAttrLevel(slvl)) {
+						lvlToSet = AttrLevel.valueOf(slvl);
+						
+					}
+					if (AttrType.isAttrType(stype)) {
+						typeToSet = AttrType.valueOf(stype);
+						
+					}
+					if (AttrType.isAttrType(slvl)) {
+						typeToSet = AttrType.valueOf(slvl);
+						
+					}
+					if (AttrLevel.isAttrLevel(stype)) {
+						lvlToSet = AttrLevel.valueOf(stype);
+						
+					}
+					if (lvlToSet == null)
+						lvlToSet = AttrLevel.N;
+					if (typeToSet == null)
+						typeToSet = AttrType.A;
+					attrClass.addAttrTypeAndLevel(typeToSet, lvlToSet);
 				}
 				return attrClass;
 			} else if (o.getClass() == AttrClass.class) {
@@ -113,44 +140,44 @@ public class BeanTools {
 		
 	};
 	
-	private static Converter<ReversalAttrClass> reversalAttrClassConverter = new Converter<ReversalAttrClass>() {
-
-		public ReversalAttrClass convert(Object o) {
-			if (o instanceof String) {
-				String str = o.toString().replaceAll(" ", "").toUpperCase();
-				ReversalAttrClass attrClass = new ReversalAttrClass();
-				String[] tokens = str.split(",");
-				
-				if (tokens.length > 0) {
-					String first = tokens[0];
-					for (char c: first.toCharArray())
-						attrClass.addType(Type.valueOf(String.valueOf(c)));
-				}
-				for (int i = 1; i < tokens.length; i++) {
-					char[] chars = tokens[i].toCharArray();
-					AttrLevel lvl = null;
-					AttrType type = null;
-					if (AttrLevel.isAttrLevel(String.valueOf(chars[0]))) {
-						lvl = AttrLevel.valueOf(String.valueOf(chars[0]));
-					} else if (AttrType.isAttrType(String.valueOf(chars[0]))) {
-						type = AttrType.valueOf(String.valueOf(chars[0]));
-					}
-					
-					if (AttrLevel.isAttrLevel(String.valueOf(chars[1]))) {
-						lvl = AttrLevel.valueOf(String.valueOf(chars[1]));
-					} else if (AttrType.isAttrType(String.valueOf(chars[1]))) {
-						type = AttrType.valueOf(String.valueOf(chars[1]));
-					}
-					attrClass.addAttrTypeAndLevel(type, lvl);
-				}
-				return attrClass;
-			} else if (o.getClass() == ReversalAttrClass.class) {
-				return (ReversalAttrClass) o;
-			}
-			throw new IllegalArgumentException();
-		}
-		
-	};
+//	private static Converter<ReversalAttrClass> reversalAttrClassConverter = new Converter<ReversalAttrClass>() {
+//
+//		public ReversalAttrClass convert(Object o) {
+//			if (o instanceof String) {
+//				String str = o.toString().replaceAll(" ", "").toUpperCase();
+//				ReversalAttrClass attrClass = new ReversalAttrClass();
+//				String[] tokens = str.split(",");
+//				
+//				if (tokens.length > 0) {
+//					String first = tokens[0];
+//					for (char c: first.toCharArray())
+//						attrClass.addType(Type.valueOf(String.valueOf(c)));
+//				}
+//				for (int i = 1; i < tokens.length; i++) {
+//					char[] chars = tokens[i].toCharArray();
+//					AttrLevel lvl = null;
+//					AttrType type = null;
+//					if (AttrLevel.isAttrLevel(String.valueOf(chars[0]))) {
+//						lvl = AttrLevel.valueOf(String.valueOf(chars[0]));
+//					} else if (AttrType.isAttrType(String.valueOf(chars[0]))) {
+//						type = AttrType.valueOf(String.valueOf(chars[0]));
+//					}
+//					
+//					if (AttrLevel.isAttrLevel(String.valueOf(chars[1]))) {
+//						lvl = AttrLevel.valueOf(String.valueOf(chars[1]));
+//					} else if (AttrType.isAttrType(String.valueOf(chars[1]))) {
+//						type = AttrType.valueOf(String.valueOf(chars[1]));
+//					}
+//					attrClass.addAttrTypeAndLevel(type, lvl);
+//				}
+//				return attrClass;
+//			} else if (o.getClass() == ReversalAttrClass.class) {
+//				return (ReversalAttrClass) o;
+//			}
+//			throw new IllegalArgumentException();
+//		}
+//		
+//	};
 	
 	private static Converter<AffectTeam> affectTeamConverter = new Converter<AffectTeam>() {
 
@@ -738,7 +765,7 @@ public class BeanTools {
 		
 		convertersMap.put(Sinadd.class, sinaddClassConverter);
 		convertersMap.put(BG.Type.class, bg$TypeClassConverter);
-		convertersMap.put(ReversalAttrClass.class, reversalAttrClassConverter);
+//		convertersMap.put(ReversalAttrClass.class, reversalAttrClassConverter);
 		convertersMap.put(Spr.class, sprConverter);
 		convertersMap.put(AttrClass.class, attrClassConverter);
 		convertersMap.put(AffectTeam.class, affectTeamConverter);

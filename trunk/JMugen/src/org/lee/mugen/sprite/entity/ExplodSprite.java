@@ -164,7 +164,7 @@ public class ExplodSprite extends AbstractSprite {
 				System.out.println();
 			float xRes = xCam + xOffSet
 			- (
-					this.isFlip() ^ isFilpForRealH? 
+					isFilpForRealH? 
 							(isFilpForRealH?w:0) - xAxis * getXScale() + (xoffset * (this.isFlip()? -1: 1))
 							: xAxis * getXScale() + (xoffset * (this.isFlip()? 1: -1)));
 				
@@ -214,8 +214,8 @@ public class ExplodSprite extends AbstractSprite {
 			boolean isFilpForRealH = sprAnimMng.getCurrentImageSprite().isMirrorH() ^ facing == -1;
 			float xRes = xCam + xOffSet
 			- (
-					this.isFlip() ^ isFilpForRealH? 
-							(isFilpForRealH?w:0) - xAxis * getXScale() + (xoffset * (this.isFlip()? -1: 1))
+					isFilpForRealH? 
+							w - xAxis * getXScale() + (xoffset * (this.isFlip()? -1: 1))
 							: xAxis * getXScale() + (xoffset * (this.isFlip()? 1: -1)));
 			
 				
