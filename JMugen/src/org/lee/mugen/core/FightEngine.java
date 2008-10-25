@@ -407,7 +407,11 @@ public class FightEngine {
 				//
 				//				
 			}
-
+			for (HitDefSub h: hitdefs)
+				if (h.getSpriteHitter() == sprite) {
+					removes.add(h);
+					notProcess.add(h);
+				}
 			// TODO
 		}
 	}
@@ -621,6 +625,7 @@ public class FightEngine {
 				if (ho.getForceair() != 0) {
 					sprite.getInfo().setType(Type.A);
 				}
+				sprite.getInfo().setCtrl(0);
 				sprite.getSpriteState().changeStateDef(stateno);
 			}
 			
@@ -629,20 +634,26 @@ public class FightEngine {
 			if (sprite.getInfo().getType() == Type.S) {
 				if (hitdef.getGround().getType() == org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub.Type.TRIP) {
 					sprite.getSpriteState().changeStateDef(5070);
+					sprite.getInfo().setCtrl(0);
 				} else {
 					sprite.getSpriteState().changeStateDef(5000);
+					sprite.getInfo().setCtrl(0);
 				}
 			} else if (sprite.getInfo().getType() == Type.C) {
 				if (hitdef.getGround().getType() == org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub.Type.TRIP) {
 					sprite.getSpriteState().changeStateDef(5070);
+					sprite.getInfo().setCtrl(0);
 				} else {
-					sprite.getSpriteState().changeStateDef(5010);					
+					sprite.getSpriteState().changeStateDef(5010);	
+					sprite.getInfo().setCtrl(0);
 				}
 			} else if (sprite.getInfo().getType().getBit() == Type.A.getBit()) {
 				if (hitdef.getGround().getType() == org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub.Type.TRIP) {
 					sprite.getSpriteState().changeStateDef(5070);
+					sprite.getInfo().setCtrl(0);
 				} else {
-					sprite.getSpriteState().changeStateDef(5020);					
+					sprite.getSpriteState().changeStateDef(5020);	
+					sprite.getInfo().setCtrl(0);
 				}
 			}
 		}
