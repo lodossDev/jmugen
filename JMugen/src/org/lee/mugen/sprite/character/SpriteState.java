@@ -162,6 +162,8 @@ public class SpriteState {
 		previousStateDef = currentStateDef;
 
 		currentStateDef = stateDefMap.get(state);
+		if (currentStateDef == null) // TODO Delete it is just for debug
+			return;
 		currentStateDef.reset(spriteId);
 		lastStateTime = StateMachine.getInstance().getGameState().getGameTime();
 		timeInState = -1;
@@ -205,6 +207,8 @@ public class SpriteState {
 		isJustChangeState = false;
 		if (currentStateDef == null)
 			changeStateDef(0);
+		if (currentStateDef == null) // TODO Delete it is just for debug
+			return;
 		String old = currentStateDef.getId();
 		if (!(getSprite() instanceof SpriteHelper))// && !getSprite().isPause())
 			synchronized (negativeStateSef) {

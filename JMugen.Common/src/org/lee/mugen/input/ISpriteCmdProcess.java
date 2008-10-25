@@ -7,6 +7,7 @@ public interface ISpriteCmdProcess {
 	public abstract void remove(String spriteId);
 
 	public abstract void process();
+	public abstract void process(String SpriteId);
 
 	public abstract void keyPressed(int keycode);
 

@@ -32,6 +32,7 @@ import org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub.AttrType;
 import org.lee.mugen.sprite.character.spiteCnsSubClass.ReversaldefSub.ReversalAttrClass;
 import org.lee.mugen.sprite.cns.type.function.Assertspecial;
 import org.lee.mugen.sprite.cns.type.function.Projectile;
+import org.lee.mugen.sprite.entity.HitOverrideSub;
 import org.lee.mugen.sprite.entity.ProjectileSprite;
 import org.lee.mugen.sprite.entity.ProjectileSub;
 
@@ -163,19 +164,19 @@ public class FightEngine {
 		if (info.getHitby().getTime() > 0) {
 			isHitByActive = true;
 			HitBySub hitby = info.getHitby();
-			ReversalAttrClass otherAttr = hitby.getValue();
+			AttrClass otherAttr = hitby.getValue();
 			if (otherAttr == null)
 				otherAttr = hitby.getValue2();
-			isHitBy = otherAttr.isType(attr.getType()) && attr.isAttrTypesAndLevels(otherAttr.getCouples());
+			isHitBy = otherAttr.containsType(attr.getType()) && attr.isAttrTypesAndLevels(otherAttr.getCouples());
 			
 		}
 		if (info.getNothitby().getTime() > 0) {
 			isNotHitByActive = true;
 			NotHitBySub notHitby = info.getNothitby();
-			ReversalAttrClass otherAttr = notHitby.getValue();
+			AttrClass otherAttr = notHitby.getValue();
 			if (otherAttr == null)
 				otherAttr = notHitby.getValue2();
-			isNotHitByActive = otherAttr.isType(attr.getType()) && attr.isAttrTypesAndLevels(otherAttr.getCouples());
+			isNotHitByActive = otherAttr.containsType(attr.getType()) && attr.isAttrTypesAndLevels(otherAttr.getCouples());
 		}
 		return (!isHitByActive || !isHitBy) && (!isNotHitByActive || !isNotHitBy);
 	}
@@ -299,8 +300,10 @@ public class FightEngine {
 
 		boolean isHitdefHitAttackRec = isHitdefHitAttackRec(hitdef, sprite);
 		if (hitdef instanceof ReversaldefSub 
-				&& isHitdefHitAttackRec && 
-				((ReversaldefSub)hitdef).canBlockAttack(getFirstHitdefBySpriteHitter(sprite.getSpriteId()))) {
+				&& isHitdefHitAttackRec) {
+//			&& 
+//		}
+//				((ReversaldefSub)hitdef).canBlockAttack(getFirstHitdefBySpriteHitter(sprite.getSpriteId()))) {
 
 			hitdef.setTargetId(sprite.getSpriteId());
 
@@ -336,6 +339,11 @@ public class FightEngine {
 			drawSparkHit(hitdef, sprite);
 
 			removes.add(hitdef);
+			for (HitDefSub h: hitdefs)
+				if (h.getSpriteHitter() == sprite) {
+					removes.add(h);
+					notProcess.add(h);
+				}
 		
 		} else if (isHitdefHitAttackRec) {
 			int onePrio = hitdef.getPriority().getHit_prior();
@@ -422,6 +430,22 @@ public class FightEngine {
 			if (hitdef.getProjhits() <= 0) {
 				removes.add(hitdef);
 			}
+			
+			for (HitDefSub hi : hitdefs)
+				if (hi.getSpriteHitter() == sprite) {
+					ProjectileSub h = (ProjectileSub) hi;
+					if (h.getProjremove() != 0) {
+						removes.add(h);
+						sprite.setProjHitSprite();
+
+					}
+					h.addProjhits(-1);
+					if (h.getProjhits() <= 0) {
+						removes.add(h);
+					}
+					sprite.setProjHitSprite();
+					notProcess.add(h);
+				}
 
 		
 		}
@@ -587,37 +611,40 @@ public class FightEngine {
 		}
 		
 		if (hitdef.getP2stateno() != null) {
-//			sprite.getSprAnimMng().setChangeAnim2(true, sprHitter.getSpriteId());
 			sprite.getSpriteState().targetState(sprHitter.getSpriteId(),
 					hitdef.getP2stateno() + "");
 
+		} else if (sprite.getInfo().isHitOverride(hitdef.getAttr())) {
+			HitOverrideSub ho = sprite.getInfo().getHitOverride(hitdef.getAttr());
+			int stateno = ho.getStateno();
+			if (stateno != -1) {
+				if (ho.getForceair() != 0) {
+					sprite.getInfo().setType(Type.A);
+				}
+				sprite.getSpriteState().changeStateDef(stateno);
+			}
+			
+			
 		} else if (!hitdef.getAttr().isAttrType(AttrType.T) || hitdef.getP2stateno() == null) {
-//			hitdef.setInitialType(sprite.getInfo().getType());
 			if (sprite.getInfo().getType() == Type.S) {
 				if (hitdef.getGround().getType() == org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub.Type.TRIP) {
 					sprite.getSpriteState().changeStateDef(5070);
-					
 				} else {
 					sprite.getSpriteState().changeStateDef(5000);
-					
 				}
 			} else if (sprite.getInfo().getType() == Type.C) {
 				if (hitdef.getGround().getType() == org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub.Type.TRIP) {
 					sprite.getSpriteState().changeStateDef(5070);
-					
 				} else {
 					sprite.getSpriteState().changeStateDef(5010);					
 				}
-				
 			} else if (sprite.getInfo().getType().getBit() == Type.A.getBit()) {
 				if (hitdef.getGround().getType() == org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub.Type.TRIP) {
 					sprite.getSpriteState().changeStateDef(5070);
-					
 				} else {
 					sprite.getSpriteState().changeStateDef(5020);					
 				}
 			}
-
 		}
 		if (hitdef.getP1stateno() != null) {
 			sprHitter.getSpriteState().changeStateDef(hitdef.getP1stateno());
@@ -630,15 +657,6 @@ public class FightEngine {
 		if (hitdef.getP1facing() == -1) {
 			sprHitter.getInfo().setFlip(!sprHitter.getInfo().isFlip());
 		} 
-//		if (hitdef.getP2facing() == 1) {
-//			sprite.getInfo().setFlip(sprHitter.getInfo().isFlip());
-//		}
-//		if (hitdef.getP2facing() == -1) {
-//			sprite.getInfo().setFlip(!sprHitter.getInfo().isFlip());
-//		}
-		
-		
-		// TODO other facing
 	}
 
 	/**

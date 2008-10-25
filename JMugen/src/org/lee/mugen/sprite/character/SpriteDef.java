@@ -171,7 +171,7 @@ public class SpriteDef {
 			Collections.sort(pal);
 			List<String> result = new ArrayList<String>();
 			
-			for (String s: st) {
+			for (String s: pal) {
 				String[] token = s.split(",");
 				if (token.length == 2) {
 					result.add(token[1]);

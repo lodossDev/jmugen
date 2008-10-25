@@ -65,7 +65,23 @@ public class SpriteCmdProcess implements org.lee.mugen.input.ISpriteCmdProcess {
 		}
 
 	}
+	public void process(String spriteId) {
+		Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);
+		
+		boolean find = false;
+		SpriteCns sprInfo = sprite.getInfo();
+		List<MugenCommands> cmds = sprite.getCmds();
 
+		for (MugenCommands mc : cmds) {
+			if (dispatcher == null)
+				continue;
+			if (mc.find(dispatcher, stateMachine.getGameState().getGameTime(), sprInfo.isFlip())) {
+				sprInfo.addCommand(mc.getCommandName(), (int) mc.getBufferTime());
+				find = true;
+			}
+		}
+
+	}
 
 	public void keyPressed(KeyEvent e) {
 		for (String sid: spriteIds) {

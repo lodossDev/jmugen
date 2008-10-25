@@ -149,17 +149,21 @@ Le second caractère doit être soit
 		
 
 		
-		private org.lee.mugen.sprite.character.SpriteCns.Type type = org.lee.mugen.sprite.character.SpriteCns.Type.S;
+		private int type = org.lee.mugen.sprite.character.SpriteCns.Type.S.getBit();
 		private List<CoupleOfAttrTypeAndLevel> couples = new ArrayList<CoupleOfAttrTypeAndLevel>();
 
-		public boolean isType(org.lee.mugen.sprite.character.SpriteCns.Type type) {
-			return this.type.equals(type);
+		public boolean containsType(org.lee.mugen.sprite.character.SpriteCns.Type type) {
+			return (type.getBit() | this.type) == type.getBit();
 		}
 		
-		public org.lee.mugen.sprite.character.SpriteCns.Type getType() {
+		public boolean containsType(int type) {
+			return (type & this.type) != 0;
+		}
+		
+		public int getType() {
 			return type;
 		}
-		public void setType(org.lee.mugen.sprite.character.SpriteCns.Type type) {
+		public void setType(int type) {
 			this.type = type;
 		}
 
@@ -202,6 +206,18 @@ Le second caractère doit être soit
 		}
 		public List<CoupleOfAttrTypeAndLevel> getCouples() {
 			return couples;
+		}
+
+		public boolean match(AttrClass attr) {
+			if ((attr.getType() & getType()) != 0) {
+				if (attr.getCouples().size() == 0)
+					return true;
+				for (CoupleOfAttrTypeAndLevel tl : attr.getCouples()) {
+					if (isAttrTypeAndLevel(tl.getAttrType(), tl.getAttrLevel()))
+						return true;
+				}
+			}
+			return false;
 		}
 		
 	}

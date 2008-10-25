@@ -15,6 +15,7 @@ import org.lee.mugen.sprite.character.spiteCnsSubClass.HitBySub;
 import org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub;
 import org.lee.mugen.sprite.character.spiteCnsSubClass.NotHitBySub;
 import org.lee.mugen.sprite.character.spiteCnsSubClass.VelSetSub;
+import org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub.AttrClass;
 import org.lee.mugen.sprite.character.spiteCnsSubClass.constante.Data;
 import org.lee.mugen.sprite.character.spiteCnsSubClass.constante.Movement;
 import org.lee.mugen.sprite.character.spiteCnsSubClass.constante.Size;
@@ -23,6 +24,7 @@ import org.lee.mugen.sprite.character.spiteCnsSubClass.constante.Movement.AirJum
 import org.lee.mugen.sprite.character.spiteCnsSubClass.constante.Size.Ground;
 import org.lee.mugen.sprite.cns.type.function.Playsnd;
 import org.lee.mugen.sprite.entity.BindToSub;
+import org.lee.mugen.sprite.entity.HitOverrideSub;
 import org.lee.mugen.sprite.entity.PointF;
 import org.lee.mugen.sprite.entity.Shake;
 import org.lee.mugen.sprite.parser.Parser;
@@ -56,6 +58,14 @@ public class SpriteCns implements Cloneable, Serializable {
 
 		public void setDescription(String description) {
 			this.description = description;
+		}
+
+		public static Type getType(int type) {
+			for (Type t: Type.values()) {
+				if (type == t.getBit())
+					return t;
+			}
+			return null;
 		}
 	}
 
@@ -617,6 +627,11 @@ public class SpriteCns implements Cloneable, Serializable {
 		if (nothitby != null && nothitby.getTime() > 0)
 			nothitby.setTime(nothitby.getTime() - 1);
 		
+		for (HitOverrideSub h: hitoverrides.values()) {
+			if (h.getTime() > 0) {
+				h.decreaseTime();
+			}
+		}
 	}
 	
 	// ----- ========= Build from parsing ======== --------
@@ -932,7 +947,7 @@ public class SpriteCns implements Cloneable, Serializable {
 			yPos = hitdef.getSpriteHitter().getRealYPos() + hitdef.getSnap().y;
 		}
 		hitdef.setSprHittedTypeWhenHit(getType());
-		if (hitdef.getAttr().getType() == Type.A) {
+		if (hitdef.getAttr().containsType(Type.A)) {
 			hitdef.setHittime(hitdef.getAir().getHittime());
 		} else {
 			hitdef.setHittime(hitdef.getGround().getHittime());
@@ -1037,5 +1052,27 @@ public class SpriteCns implements Cloneable, Serializable {
 
 	public void deactivateScreenbound() {
 		screenbound = 0;
+	}
+	
+	
+	private Map<Integer, HitOverrideSub> hitoverrides = new HashMap<Integer, HitOverrideSub>();
+	
+	public void setHitOverride(HitOverrideSub hitOverride) {
+		hitoverrides.put(hitOverride.getSlot(), hitOverride);
+	}
+	public boolean isHitOverride(AttrClass attr) {
+		for (HitOverrideSub h: hitoverrides.values()) {
+			if ((h.getTime() == -1 || h.getTime() > 0) && attr.match(h.getAttr()))
+				return true;
+		}
+		return false;
+	}
+	
+	public HitOverrideSub getHitOverride(AttrClass attr) {
+		for (HitOverrideSub h: hitoverrides.values()) {
+			if ((h.getTime() == -1 || h.getTime() > 0) && attr.match(h.getAttr()))
+				return h;
+		}
+		return null;
 	}
 }

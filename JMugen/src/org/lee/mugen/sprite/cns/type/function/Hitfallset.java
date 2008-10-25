@@ -40,7 +40,7 @@ public class Hitfallset extends StateCtrlFunction {
 			if (x == null || Parser.getFloatValue(x.getValue(spriteId)) == 0) {
 				
 			} else if (Parser.getFloatValue(x.getValue(spriteId)) != 0) {
-				if (hitdefFrom.getAttr().getType() == Type.A || hitdefFrom.getAttr().getType() == Type.I) {
+				if (hitdefFrom.getAttr().getType() == Type.A.getBit()) {
 					xVel = hitdefFrom.getAir().getVelocity().getX();
 					
 				} else {
@@ -63,7 +63,7 @@ public class Hitfallset extends StateCtrlFunction {
 			if (y == null || Parser.getFloatValue(y.getValue(spriteId)) == 0) {
 				
 			} else if (Parser.getFloatValue(y.getValue(spriteId)) != 0) {
-				if (hitdefFrom.getAttr().getType() == Type.A || hitdefFrom.getAttr().getType() == Type.I) {
+				if (hitdefFrom.getAttr().getType() == Type.A.getBit()) {
 					yVel = hitdefFrom.getAir().getVelocity().getY();
 					
 				} else {
