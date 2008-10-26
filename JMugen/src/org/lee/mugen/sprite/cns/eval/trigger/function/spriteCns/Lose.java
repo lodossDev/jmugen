@@ -15,6 +15,6 @@ public class Lose extends SpriteCnsTriggerFunction {
 	}
 
 	public static boolean isLose(String spriteId) {
-		return Loseko.getResult(spriteId) || Losetime.getResult(spriteId);
+		return Loseko.isLoseKo(spriteId) || Losetime.getResult(spriteId);
 	}
 }

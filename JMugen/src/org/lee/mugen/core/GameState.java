@@ -35,15 +35,7 @@ public class GameState {
 	private int drawRound;
 
 	private int totalRound = 3;
-	private int gameType;
 
-	
-	public int getGameType() {
-		return gameType;
-	}
-	public void setGameType(int gameType) {
-		this.gameType = gameType;
-	}
 
 	public int getTotalRound() {
 		return totalRound;

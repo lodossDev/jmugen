@@ -36,10 +36,9 @@ public class Screenpos extends SpriteCnsTriggerFunction {
 	}
 	
 	private static PointF getPosRelativeToScreen(Stage stage, float xRealPos, float yRealPos) {
-
 		// TODO SCALE if 
-		int _mvX = stage.getCamera().getX();
-		int _mvY = stage.getCamera().getY();
+		int _mvX = stage.getCamera().getXNoShaKe();
+		int _mvY = stage.getCamera().getYNoShake();
 		int x = _mvX + stage.getCamera().getWidth()/2;
 		int y = stage.getStageinfo().getZoffset() + _mvY;
 		

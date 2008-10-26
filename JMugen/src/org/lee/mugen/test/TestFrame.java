@@ -12,6 +12,7 @@ import org.lee.mugen.core.StateMachine;
 import org.lee.mugen.core.sound.SoundSystem;
 import org.lee.mugen.renderer.GameWindow;
 import org.lee.mugen.renderer.GraphicsWrapper;
+import org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns.Teammode.TeamMode;
 import org.lee.mugen.util.debugger.SpriteDebugerUI;
 
 public class TestFrame {
@@ -150,7 +151,10 @@ public class TestFrame {
 		
 		
 		
-		statemachine.getGameState().setGameType(1);
+//		statemachine.getGameState().setGameType(TeamMode.SINGLE); // TODO
+		statemachine.setTeamOneMode(TeamMode.SINGLE);
+		statemachine.setTeamTwoMode(TeamMode.SINGLE);
+		
 		statemachine.preloadSprite(StateMachine.TEAMSIDE_ONE, "1", p1, 0);
 		statemachine.preloadSprite(StateMachine.TEAMSIDE_TWO, "2", p2, 0);
 		
@@ -198,7 +202,9 @@ public class TestFrame {
 		};
 		
 		final StateMachine statemachine = StateMachine.getInstance();
-		statemachine.getGameState().setGameType(1);
+//		statemachine.getGameState().setGameType(TeamMode.SINGLE); // TODO
+		statemachine.setTeamOneMode(TeamMode.SINGLE);
+		statemachine.setTeamTwoMode(TeamMode.SINGLE);
 		statemachine.preloadSprite(StateMachine.TEAMSIDE_ONE, "1", "resource/chars/" + args[0] + "/" + args[0] + ".def", Integer.parseInt(args[1]));
 		statemachine.preloadSprite(StateMachine.TEAMSIDE_TWO, "2", "resource/chars/" + args[2] + "/" + args[2] + ".def", Integer.parseInt(args[3]));
 
