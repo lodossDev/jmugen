@@ -1,20 +1,33 @@
 package org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns;
 
+import org.lee.mugen.core.StateMachine;
 import org.lee.mugen.parser.type.Valueable;
+import org.lee.mugen.sprite.character.Sprite;
+import org.lee.mugen.sprite.character.SpriteHelper;
 import org.lee.mugen.sprite.cns.eval.function.SpriteCnsTriggerFunction;
 
 public class Winko extends SpriteCnsTriggerFunction {
-
-	// TODO : Winko
 	public Winko() {
 		super("winko", new String[] {});
 	}
-	public void addParam(String name, Valueable[] param) {
-		
-	}
 
-	public Valueable[] parseValue(String name, String value) {
-		return null;
+	@Override
+	public Object getValue(String spriteId, Valueable... params) {
+		return isWinKo(spriteId)? 1: 0;
+	}
+	
+	public static boolean isWinKo(String spriteId) {
+		boolean allLoose = true;
+		for (Sprite s: StateMachine.getInstance().getSprites()) {
+			if (s instanceof SpriteHelper)
+				continue;
+			if (s.getSpriteId().equals(spriteId))
+				continue;
+			allLoose = allLoose && Loseko.isLoseKo(s.getSpriteId());
+		}
+		
+		
+		return allLoose;
 	}
 
 }

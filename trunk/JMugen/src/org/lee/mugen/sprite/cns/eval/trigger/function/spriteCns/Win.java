@@ -7,8 +7,6 @@ import org.lee.mugen.sprite.character.SpriteHelper;
 import org.lee.mugen.sprite.cns.eval.function.SpriteCnsTriggerFunction;
 
 public class Win extends SpriteCnsTriggerFunction {
-
-	// TODO : Win
 	public Win() {
 		super("win", new String[] {});
 	}

@@ -42,6 +42,7 @@ import org.lee.mugen.sprite.cns.StateDef;
 import org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns.Lose;
 import org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns.Roundstate;
 import org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns.Win;
+import org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns.Teammode.TeamMode;
 import org.lee.mugen.sprite.cns.type.function.Assertspecial;
 import org.lee.mugen.sprite.cns.type.function.Assertspecial.Flag;
 import org.lee.mugen.sprite.common.resource.FontParser;
@@ -62,7 +63,23 @@ public class StateMachine implements Game {
 	// TeamMate
 	public static final int TEAMSIDE_ONE = 1;
 	public static final int TEAMSIDE_TWO = 2;
+	private TeamMode teamOneMode;
+	private TeamMode teamTwoMode;
+
 	private Map<String, Sprite> _teamOne = new HashMap<String, Sprite>();
+	public TeamMode getTeamOneMode() {
+		return teamOneMode;
+	}
+	public void setTeamOneMode(TeamMode teamOneMode) {
+		this.teamOneMode = teamOneMode;
+	}
+	public TeamMode getTeamTwoMode() {
+		return teamTwoMode;
+	}
+	public void setTeamTwoMode(TeamMode teamTwoMode) {
+		this.teamTwoMode = teamTwoMode;
+	}
+
 	private Map<String, Sprite> _teamTwo = new HashMap<String, Sprite>();
 	
 	public Map<String, Sprite> getTeamOne() {
@@ -470,7 +487,7 @@ public class StateMachine implements Game {
 			addRender(cnsRenderList.get(0));
 			addRender(cnsRenderList.get(1));
 			
-			if (gameState.getGameType() == 1)
+//			if (gameState.getGameType() == TeamMode.SINGLE) // TODO Lifebar
 				addRender(new LifeBarRenderNormal());
 
 		

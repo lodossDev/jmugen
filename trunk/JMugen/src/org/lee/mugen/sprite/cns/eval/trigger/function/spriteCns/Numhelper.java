@@ -14,15 +14,25 @@ public class Numhelper extends SpriteCnsTriggerFunction {
 
 	@Override
 	public Object getValue(String spriteId, Valueable... params) {
-		int val = 0;
+		int val = -1;
 		int count = 0;
 		if (params.length > 0) {
 			val = Parser.getIntValue(params[0].getValue(spriteId));
 		}
-		for (Sprite s: StateMachine.getInstance().getPartners(StateMachine.getInstance().getSpriteInstance(spriteId))) {
+		Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);
+		for (Sprite s: StateMachine.getInstance().getPartners(sprite)) {
 			if (s instanceof SpriteHelper) {
-				if (((SpriteHelper)s).getHelperSub().getId() == val)
-					count++;
+				SpriteHelper helper = (SpriteHelper) s;
+				if (helper.getHelperSub().getSpriteFrom() == sprite) {
+					if (val != -1) {
+						if (helper.getHelperSub().getId() == val)
+							count++;
+						
+					} else {
+						count++;
+					}
+					
+				}
 			}
 		}
 		return count;

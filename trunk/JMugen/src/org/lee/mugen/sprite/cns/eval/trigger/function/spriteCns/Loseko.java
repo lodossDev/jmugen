@@ -18,11 +18,11 @@ public class Loseko extends SpriteCnsTriggerFunction {
 	}
 	@Override
 	public Object getValue(String spriteId, Valueable... params) {
-		return getResult(spriteId)? 1: 0;
+		return isLoseKo(spriteId)? 1: 0;
 			
 	}
 	
-	public static boolean getResult(String spriteId) {
+	public static boolean isLoseKo(String spriteId) {
 		StateMachine stateMachine = StateMachine.getInstance();
 		Sprite sprite = stateMachine.getSpriteInstance(spriteId);
 		return sprite.getInfo().getLife() <= 0;	
