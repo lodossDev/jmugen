@@ -39,7 +39,9 @@ import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.SpriteDef;
 import org.lee.mugen.sprite.character.SpriteHelper;
 import org.lee.mugen.sprite.cns.StateDef;
+import org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns.Lose;
 import org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns.Roundstate;
+import org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns.Win;
 import org.lee.mugen.sprite.cns.type.function.Assertspecial;
 import org.lee.mugen.sprite.cns.type.function.Assertspecial.Flag;
 import org.lee.mugen.sprite.common.resource.FontParser;
@@ -48,6 +50,7 @@ import org.lee.mugen.sprite.entity.AfterImageSprite;
 import org.lee.mugen.sprite.entity.ExplodSprite;
 import org.lee.mugen.sprite.entity.MakeDustSpriteManager;
 import org.lee.mugen.sprite.entity.ProjectileSprite;
+import org.lee.mugen.util.MugenRandom;
 
 /**
  * 
@@ -367,6 +370,8 @@ public class StateMachine implements Game {
 					renderableList.add(r);
 			}
 		}
+//		renderableList.addAll(renderableListTemp);
+//		renderableListTemp.clear();
 	}
 	private void removeBackgroundRender() {
 		backgroundRenderList.clear();
@@ -524,6 +529,7 @@ public class StateMachine implements Game {
 				getSpriteInstance("1").getInfo().setCtrl(1);
 				getSpriteInstance("2").getInfo().setCtrl(1);
 				getGameState().setRoundsExisted(1);
+				getGameState().init();
 			}
 		}
 
@@ -590,6 +596,50 @@ public class StateMachine implements Game {
 		helperManagement();
 		fightDef.process();
 		flipRender();
+		
+		/////////////
+
+//		Sprite winner = null;
+//		if (getGameState().getGameType() == 1) {
+//			for (Sprite s: getSprites()) {
+//				if (s instanceof SpriteHelper)
+//					continue;
+//				
+//				if (Win.isWin(s.getSpriteId())) {
+//					winner = s;
+//					break;
+//				}
+//			}
+//			if (winner != null) {
+//				for (Sprite s: getSprites()) {
+//					if (s instanceof SpriteHelper)
+//						continue;
+//					s.getInfo().setCtrl(0);
+//					if (winner == s && (winner.getSprAnimMng().getAction() < 180 || winner.getSprAnimMng().getAction() >= 190)) {
+//						List<Integer> list = new ArrayList<Integer>();
+//						for (int i = 181; i < 190; i++) {
+//							if (winner.getSprAnimMng().isAnimExist(i)) {
+//								list.add(i);
+//							}
+//						}
+//						int size = list.size();
+//						if (size > 0) {
+//							
+//							int r = MugenRandom.getRandomNumber(0, size);
+//							s.getSprAnimMng().setAction(list.get(r));
+//							s.getSpriteState().setProcess(false);
+//							break;
+//						}
+//						
+//						
+//						
+//						
+//					}
+//				}
+//			}
+//		}
+		
+
 	}
 
 
@@ -1004,7 +1054,8 @@ public class StateMachine implements Game {
 		}
   		processPosition();
   		for (Sprite s: getSprites()) {
-
+  			s.getSpriteState().setProcess(true);
+  			s.getInfo().setCtrl(1);
 			s.getSpriteState().selfstate(5900);
 			s.getInfo().init();
   		}
@@ -1015,6 +1066,7 @@ public class StateMachine implements Game {
 		
 		stateSpr1 = Roundstate.PRE_INTRO;
 		stateSpr2 = Roundstate.PRE_INTRO;
+		getGameState().init();
 	}
 	
 	private void processPosition() {

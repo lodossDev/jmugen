@@ -12,7 +12,7 @@ public class GameState {
 	}
 	private int gameTime;
 	
-	private int roundTime;
+	private int roundTime = 99 * 60;
 	private int roundno;
 	private int roundState = 0; // PRE_INTRO
 	private int roundsExisted = 0; 
@@ -106,5 +106,9 @@ public class GameState {
 
 	public void setRoundTime(int roundTime) {
 		this.roundTime = roundTime;
+	}
+	public void init() {
+		roundTime = 99 * 60; // TODO
+		
 	}
 }

@@ -10,7 +10,9 @@ import org.lee.mugen.core.StateMachine;
 import org.lee.mugen.fight.Face.PlayerFace;
 import org.lee.mugen.fight.Lifebar.Bg;
 import org.lee.mugen.fight.Lifebar.PlayerLifeBar;
+import org.lee.mugen.fight.Name.NameInner;
 import org.lee.mugen.fight.Name.PlayerName;
+import org.lee.mugen.fight.Time.Counter;
 import org.lee.mugen.renderer.DrawProperties;
 import org.lee.mugen.renderer.GraphicsWrapper;
 import org.lee.mugen.renderer.MugenDrawer;
@@ -150,8 +152,25 @@ public class LifeBarRenderNormal implements Renderable {
 		render(StateMachine.getInstance().getFightDef().getName().getP1(), "1");
 		render(StateMachine.getInstance().getFightDef().getName().getP2(), "2");
 		
+		renderTime();
+		
 	}
 
+	private void renderTime() {
+		int time = StateMachine.getInstance().getGameState().getRoundTime();
+		MugenDrawer md = GraphicsWrapper.getInstance();
+		Counter p = StateMachine.getInstance().getFightDef().getTime().getCounter();
+		int framepersec = StateMachine.getInstance().getFightDef().getTime().getFramespercount();
+		Point pos = StateMachine.getInstance().getFightDef().getTime().getPos();
+		Integer fontIdx = p.getFont()[0];
+		
+		Integer fontSens = 1;
+		if (p.getFont().length > 2)
+			fontSens = p.getFont()[2];
+		
+		StateMachine.getInstance().getFightDef().getFiles().getFont().get(fontIdx).draw(pos.x, pos.y, md, (time/framepersec) + "", fontSens);
+		
+	}
 	public int getPriority() {
 		return 10;
 	}
