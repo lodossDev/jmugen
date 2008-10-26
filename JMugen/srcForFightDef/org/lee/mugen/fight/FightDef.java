@@ -18,7 +18,14 @@ public class FightDef implements AccessorParser {
 	private Powerbar powerbar = new Powerbar();
 	private Face face = new Face();
 	private Name name = new Name();
+	private Time time = new Time();
 	
+	public Time getTime() {
+		return time;
+	}
+	public void setTime(Time time) {
+		this.time = time;
+	}
 	private SpriteAnimManager anim;
 
 
@@ -41,6 +48,8 @@ public class FightDef implements AccessorParser {
 			face.parse(grp);
 		} else if ("name".equalsIgnoreCase(grp.getSection())) {
 			name.parse(grp);
+		} else if ("time".equalsIgnoreCase(grp.getSection())) {
+			time.parse(grp);
 		}
 		
 	}

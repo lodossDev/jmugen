@@ -23,7 +23,15 @@ public class SpriteState {
 	private String spriteIdToBind;
 	private long lastStateTime = 0;
 	private boolean isJustChangeState = false;
+	
+	private boolean process = true;
 
+	public boolean isProcess() {
+		return process;
+	}
+	public void setProcess(boolean process) {
+		this.process = process;
+	}
 	private Map<String, StateDef> stateDefMap = new HashMap<String, StateDef>();
 	private Map<String, StateDef> originalStateDefMap = new HashMap<String, StateDef>();
 	private List<StateDef> negativeStateSef = new ArrayList<StateDef>();
@@ -162,8 +170,6 @@ public class SpriteState {
 		previousStateDef = currentStateDef;
 
 		currentStateDef = stateDefMap.get(state);
-		if (currentStateDef == null) // TODO Delete it is just for debug
-			return;
 		currentStateDef.reset(spriteId);
 		lastStateTime = StateMachine.getInstance().getGameState().getGameTime();
 		timeInState = -1;
@@ -204,11 +210,12 @@ public class SpriteState {
 		return currentStateDef;
 	}
 	public void process() {
+		if (!isProcess()) {
+			return;
+		}
 		isJustChangeState = false;
 		if (currentStateDef == null)
 			changeStateDef(0);
-		if (currentStateDef == null) // TODO Delete it is just for debug
-			return;
 		String old = currentStateDef.getId();
 		if (!(getSprite() instanceof SpriteHelper))// && !getSprite().isPause())
 			synchronized (negativeStateSef) {
