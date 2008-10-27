@@ -115,8 +115,6 @@ public class ExplodRender implements Renderable {
 
 
 	public boolean remove() {
-		if (sprite.remove() || sprite.isForceRemove())
-			System.out.println();
 		return sprite.remove() || sprite.isForceRemove();
 	}
 	public void setPriority(int p) {

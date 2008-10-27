@@ -92,165 +92,32 @@ public class StateMachine implements Game {
 		return (_teamOne.containsKey(id) && _teamOne.containsKey(id2)) || (_teamTwo.containsKey(id) && _teamTwo.containsKey(id2));
 	}
 
-	// frame rate
 
 
 
 //	 Core
-
+	private static StateMachine stateMachine = null;
 	private GameWindow gameWindows;
 	private FightEngine _fightEngine = new FightEngine();
 	private GameState gameState = new GameState();
-
-	public GameWindow getWindow() {
-		return gameWindows;
-	}
-	public void setWindow(GameWindow gameWindows) {
-		this.gameWindows = gameWindows;
-	}
-
-	public FightEngine getFightEngine() {
-		return _fightEngine;
-	}
-	public GameState getGameState() {
-		return gameState;
-	}
-	
-	// Singleton
-	private StateMachine() {
-	}
-	private static StateMachine stateMachine = null;
-	public static StateMachine getInstance() {
-		if (stateMachine == null) {
-			stateMachine = new StateMachine();
-		}
-		return stateMachine;
-	}
-	
-	// global events Events 
 	private GameGlobalEvents globalEvents;
-	public GameGlobalEvents getGlobalEvents() {
-		return globalEvents;
-	}
-	
-	
-	
-	// Stage
 	private Stage instanceOfStage;
+	private FightDef fightDef = new FightDef();
+	
+// Preload	
 	private String stage;
-	public void preloadStage(String fileDef) throws FileNotFoundException,
-			IOException {
-		stage = fileDef;
-	}
-
-	private void loadStage() throws Exception {
-		removeBackgroundRender();
-		instanceOfStage = Stage.buildStage(stage);
-		addRender(new BackgroundRender());
-
-	}
-
-	public Stage getInstanceOfStage() {
-		return instanceOfStage;
-	}
+	
 	
 	// Sprite Player Management
-	// Main Sprite
-	private Map<String, Sprite> _spriteMap = new HashMap<String, Sprite>();
-	private Map<String, SpriteCmdProcess> spriteCmdProcessMap = new HashMap<String, SpriteCmdProcess>();
-	private Map<String, Renderable> spriteMapRenderable = new HashMap<String, Renderable>();
 	private Map<String, SpriteDef> spriteDefs = new HashMap<String, SpriteDef>();
+	private Map<String, SpriteCmdProcess> spriteCmdProcessMap = new HashMap<String, SpriteCmdProcess>();
+	private Map<String, Sprite> _spriteMap = new HashMap<String, Sprite>();
+	private List<AbstractSprite> _otherSprites = new LinkedList<AbstractSprite>();
 	
-	public SpriteDef getSpriteDef(String spriteId) {
-		return spriteDefs.get(spriteId);
-	}
-	public Collection<Sprite> getSprites() {
-		List<Sprite> sprites = new LinkedList<Sprite>();
-		sprites.addAll(_spriteMap.values());
-		return sprites;
-	}
-	public Collection<String> getPlayersIds() {
-		return _spriteMap.keySet();
-	}
-	public Sprite getSpriteInstance(String spriteId) {
-		Sprite spr = _spriteMap.get(spriteId);
-		return spr;
-	}
-	public Renderable getSpriteRenderInstance(String spriteId) {
-		return spriteMapRenderable.get(spriteId);
-	}
-	
-	
-	// Helper Sprite
+	// Helper Sprite Temp List
 	private List<SpriteHelper> _spriteHelperAddList = new LinkedList<SpriteHelper>();
 	private List<String> _spriteHelperRemoveList = new ArrayList<String>();
-	
-	public synchronized void addSpriteHelper(SpriteHelper sprClone) {
-		_spriteHelperAddList.add(sprClone);
-		
-		_spriteMap.put(sprClone.getSpriteId(), sprClone);
-		spriteMapRenderable.put(sprClone.getSpriteId(), new SpriteRender(sprClone));
-		addRender(spriteMapRenderable.get(sprClone.getSpriteId()));
-		ISpriteCmdProcess scp = getSpriteCmdProcessMap().get(sprClone.getHelperSub().getSpriteFrom().getSpriteId());
-//		if (scp != null)
-//			scp.addSprite(sprClone.getSpriteId());
-
-
-		addPartner(sprClone, sprClone.getHelperSub().getSpriteFrom());
-		sprClone.getSpriteState().changeStateDef(sprClone.getHelperSub().getStateno());
-//		helperManagement();
-	}
-	public void removeSpriteHelper(String sprCloneId) {
-		_spriteHelperRemoveList.add(sprCloneId);
-//		helperManagement();
-	}
-	
-	private void helperManagement() {
-		if (!_spriteHelperAddList.isEmpty()) {
-			
-			SpriteHelper[] helpers = _spriteHelperAddList.toArray(new SpriteHelper[0]);
-			_spriteHelperAddList.clear();
-			for (SpriteHelper sprClone: helpers) {
-				_spriteMap.put(sprClone.getSpriteId(), sprClone);
-				spriteMapRenderable.put(sprClone.getSpriteId(), new SpriteRender(sprClone));
-				addRender(spriteMapRenderable.get(sprClone.getSpriteId()));
-				ISpriteCmdProcess scp = getSpriteCmdProcessMap().get(sprClone.getHelperSub().getSpriteFrom().getSpriteId());
-//				if (scp != null)
-//					scp.addSprite(sprClone.getSpriteId());
-
-
-				sprClone.getSpriteState().changeStateDef(sprClone.getHelperSub().getStateno());
-				addPartner(sprClone, sprClone.getHelperSub().getSpriteFrom());
-			}
-			
-		}
-
-		if (!_spriteHelperRemoveList.isEmpty()) {
-			for (String spriteId: _spriteHelperRemoveList) {
-				Sprite spr = getSpriteInstance(spriteId);
-				removePartner(spr);
-				
-				renderableList.remove(spriteMapRenderable.get(spriteId));
-				spriteMapRenderable.remove(spriteId);
-				_spriteMap.remove(spriteId);
-				
-				if (spr instanceof SpriteHelper) {
-//					log("destroy " + spriteId);
-					SpriteHelper sprH = (SpriteHelper) spr;
-					ISpriteCmdProcess scp = getSpriteCmdProcessMap().get(sprH.getHelperSub().getSpriteFrom().getSpriteId());
-					if (scp != null)
-						scp.remove(sprH.getSpriteId());
-				}
-			}
-			_spriteHelperRemoveList.clear();
-		}
-	}
-	
-	// Sprite Loader
-	
-	// Later
-	//	private Map<String, Sprite> _cachingSprite = new HashMap<String, Sprite>();
-	
+	private List<SpriteLoader> spriteLoader = new ArrayList<SpriteLoader>();
 	
 	protected static class SpriteLoader {
 
@@ -292,7 +159,155 @@ public class StateMachine implements Game {
 		}
 		
 	}
-	private List<SpriteLoader> spriteLoader = new ArrayList<SpriteLoader>();
+	
+	// Renderer Sprite
+	private Map<String, Renderable> spriteMapRenderable = new HashMap<String, Renderable>();
+	private List<Renderable> renderableList = new ArrayList<Renderable>();
+	private List<Renderable> backgroundRenderList = new ArrayList<Renderable>();
+	private LinkedList<Renderable> renderableListTemp = new LinkedList<Renderable>();
+
+
+	
+	
+	// System MAnagement
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	public GameWindow getWindow() {
+		return gameWindows;
+	}
+	public void setWindow(GameWindow gameWindows) {
+		this.gameWindows = gameWindows;
+	}
+
+	public FightEngine getFightEngine() {
+		return _fightEngine;
+	}
+	public GameState getGameState() {
+		return gameState;
+	}
+	
+	// Singleton
+	private StateMachine() {
+	}
+
+	public static StateMachine getInstance() {
+		if (stateMachine == null) {
+			stateMachine = new StateMachine();
+		}
+		return stateMachine;
+	}
+	
+	// global events Events 
+
+	public GameGlobalEvents getGlobalEvents() {
+		return globalEvents;
+	}
+	
+	
+	
+	// Stage
+
+	public void preloadStage(String fileDef) throws FileNotFoundException,
+			IOException {
+		stage = fileDef;
+	}
+
+	private void loadStage() throws Exception {
+		removeBackgroundRender();
+		instanceOfStage = Stage.buildStage(stage);
+		addRender(new BackgroundRender());
+
+	}
+
+	public Stage getInstanceOfStage() {
+		return instanceOfStage;
+	}
+	
+
+	
+	public SpriteDef getSpriteDef(String spriteId) {
+		return spriteDefs.get(spriteId);
+	}
+	public Collection<Sprite> getSprites() {
+		List<Sprite> sprites = new LinkedList<Sprite>();
+		sprites.addAll(_spriteMap.values());
+		return sprites;
+	}
+	public Collection<String> getPlayersIds() {
+		return _spriteMap.keySet();
+	}
+	public Sprite getSpriteInstance(String spriteId) {
+		Sprite spr = _spriteMap.get(spriteId);
+		return spr;
+	}
+	public Renderable getSpriteRenderInstance(String spriteId) {
+		return spriteMapRenderable.get(spriteId);
+	}
+	
+	
+
+	
+	public synchronized void addSpriteHelper(SpriteHelper sprClone) {
+		_spriteHelperAddList.add(sprClone);
+		
+		_spriteMap.put(sprClone.getSpriteId(), sprClone);
+		spriteMapRenderable.put(sprClone.getSpriteId(), new SpriteRender(sprClone));
+		addRender(spriteMapRenderable.get(sprClone.getSpriteId()));
+		ISpriteCmdProcess scp = getSpriteCmdProcessMap().get(sprClone.getHelperSub().getSpriteFrom().getSpriteId());
+		addPartner(sprClone, sprClone.getHelperSub().getSpriteFrom());
+		sprClone.getSpriteState().changeStateDef(sprClone.getHelperSub().getStateno());
+	}
+	public void removeSpriteHelper(String sprCloneId) {
+		_spriteHelperRemoveList.add(sprCloneId);
+	}
+	
+	private void helperManagement() {
+		if (!_spriteHelperAddList.isEmpty()) {
+			
+			SpriteHelper[] helpers = _spriteHelperAddList.toArray(new SpriteHelper[0]);
+			_spriteHelperAddList.clear();
+			for (SpriteHelper sprClone: helpers) {
+				_spriteMap.put(sprClone.getSpriteId(), sprClone);
+				spriteMapRenderable.put(sprClone.getSpriteId(), new SpriteRender(sprClone));
+				addRender(spriteMapRenderable.get(sprClone.getSpriteId()));
+				ISpriteCmdProcess scp = getSpriteCmdProcessMap().get(sprClone.getHelperSub().getSpriteFrom().getSpriteId());
+				sprClone.getSpriteState().changeStateDef(sprClone.getHelperSub().getStateno());
+				addPartner(sprClone, sprClone.getHelperSub().getSpriteFrom());
+			}
+			
+		}
+
+		if (!_spriteHelperRemoveList.isEmpty()) {
+			for (String spriteId: _spriteHelperRemoveList) {
+				Sprite spr = getSpriteInstance(spriteId);
+				removePartner(spr);
+				
+				renderableList.remove(spriteMapRenderable.get(spriteId));
+				spriteMapRenderable.remove(spriteId);
+				_spriteMap.remove(spriteId);
+				
+				if (spr instanceof SpriteHelper) {
+//					log("destroy " + spriteId);
+					SpriteHelper sprH = (SpriteHelper) spr;
+					ISpriteCmdProcess scp = getSpriteCmdProcessMap().get(sprH.getHelperSub().getSpriteFrom().getSpriteId());
+					if (scp != null)
+						scp.remove(sprH.getSpriteId());
+				}
+			}
+			_spriteHelperRemoveList.clear();
+		}
+	}
+	
+
+
 	public void preloadSprite(int teamSide, String spriteId, String def, int pal) {
 		SpriteLoader sl = new SpriteLoader(spriteId, def, pal, teamSide);
 		spriteLoader.add(sl);
@@ -358,7 +373,7 @@ public class StateMachine implements Game {
 	
 	// Others Sprite
 	
-	private List<AbstractSprite> _otherSprites = new LinkedList<AbstractSprite>();
+
 	public List<AbstractSprite> getOtherSprites() {
 		return _otherSprites;
 	}
@@ -366,10 +381,7 @@ public class StateMachine implements Game {
 
 
 	
-	List<Renderable> renderableList = new ArrayList<Renderable>();
-	List<Renderable> backgroundRenderList = new ArrayList<Renderable>();
-	
-	LinkedList<Renderable> renderableListTemp = new LinkedList<Renderable>();
+
 	
 	public void addRender(Renderable r) {
 		renderableListTemp.add(r);
@@ -442,7 +454,6 @@ public class StateMachine implements Game {
 			return o1.getPriority() - o2.getPriority();
 		}
 	};
-	private boolean qPress;
 
 	public void orderRenderList() {
 		Collections.sort(renderableList, _DEFAULT_COMPARATOR_FOR_RENDERER);
@@ -452,7 +463,7 @@ public class StateMachine implements Game {
 
 
 	
-	private FightDef fightDef = new FightDef();
+
 	
 	public FightDef getFightDef() {
 		return fightDef;
@@ -511,47 +522,23 @@ public class StateMachine implements Game {
 	}
 
 	
-	int stateSpr1 = Roundstate.PRE_INTRO;
-	int stateSpr2 = Roundstate.PRE_INTRO;
+
 
 
 	public void update(int delta) throws Exception {
-		if (systemPause && !forceUpdate)
+		if (!getGlobalEvents().canUpdate())
 			return;
 		
 		for (Iterator<AbstractSprite> iter = getOtherSprites().iterator(); iter.hasNext();) {
 			AbstractSprite spr = iter.next();
-
 			if (spr.remove()) {
 				removeRender(spr);
 				iter.remove();
-				
 			}
 		}
 		
-		if (getGlobalEvents().isAssertSpecial("1", Flag.intro))
-			stateSpr1 = Roundstate.INTRO;
-		if (getGlobalEvents().isAssertSpecial("2", Flag.intro))
-			stateSpr2 = Roundstate.INTRO;
-		
-		if (stateSpr1 == Roundstate.INTRO && !getGlobalEvents().isAssertSpecial("1", Flag.intro))
-			stateSpr1 = Roundstate.COMBAT;
-		if (stateSpr2 == Roundstate.INTRO && !getGlobalEvents().isAssertSpecial("2", Flag.intro))
-			stateSpr2 = Roundstate.COMBAT;
-			
-		if (stateSpr1 == stateSpr2) {
-			getGameState().setRoundState(stateSpr1);
-			if (getGameState().getRoundState() == Roundstate.COMBAT 
-					&& getGameState().getRoundsExisted() == 0) {
-				getSpriteInstance("1").getInfo().setCtrl(1);
-				getSpriteInstance("2").getInfo().setCtrl(1);
-				getGameState().setRoundsExisted(1);
-				getGameState().init();
-			}
-		}
-
-		
-		globalEvents.enter();
+		getGlobalEvents().enter();
+		getGameState().enter(this);
 
 		for (Sprite s : getSprites()) {
 			ISpriteCmdProcess sprCmdProc = spriteCmdProcessMap.get(s.getSpriteId());
@@ -559,11 +546,8 @@ public class StateMachine implements Game {
 				sprCmdProc.process(s.getSpriteId());
 			}
 
-			
 			if (globalEvents.canGameProcessWithPause(s)) {
 				s.process();
-			} else {
-//				s.processPause();
 			}
 		}
 
@@ -605,7 +589,7 @@ public class StateMachine implements Game {
 			instanceOfStage.process();
 			
 		}
-		getGameState().process();
+		getGameState().leave(this);
 		// 
 		globalEvents.leave();
 		
@@ -616,46 +600,6 @@ public class StateMachine implements Game {
 		
 		/////////////
 
-//		Sprite winner = null;
-//		if (getGameState().getGameType() == 1) {
-//			for (Sprite s: getSprites()) {
-//				if (s instanceof SpriteHelper)
-//					continue;
-//				
-//				if (Win.isWin(s.getSpriteId())) {
-//					winner = s;
-//					break;
-//				}
-//			}
-//			if (winner != null) {
-//				for (Sprite s: getSprites()) {
-//					if (s instanceof SpriteHelper)
-//						continue;
-//					s.getInfo().setCtrl(0);
-//					if (winner == s && (winner.getSprAnimMng().getAction() < 180 || winner.getSprAnimMng().getAction() >= 190)) {
-//						List<Integer> list = new ArrayList<Integer>();
-//						for (int i = 181; i < 190; i++) {
-//							if (winner.getSprAnimMng().isAnimExist(i)) {
-//								list.add(i);
-//							}
-//						}
-//						int size = list.size();
-//						if (size > 0) {
-//							
-//							int r = MugenRandom.getRandomNumber(0, size);
-//							s.getSprAnimMng().setAction(list.get(r));
-//							s.getSpriteState().setProcess(false);
-//							break;
-//						}
-//						
-//						
-//						
-//						
-//					}
-//				}
-//			}
-//		}
-		
 
 	}
 
@@ -841,22 +785,6 @@ public class StateMachine implements Game {
 		Sprite spr = getSpriteInstance(spriteId);
 		return getHelperIdWithID(spr, id);
 	}
-//	Target : Redirige le trigger vers la première cible trouvée. La target est la cible, c'est-à-dire le personnage adverse qui vient d'être touché par le personnage.
-
-//	Target(ID) : ID doit être une expression correcte qui donne un entier non négatif. Le trigger est alors redirigé vers une cible avec le targetID correspondant.
-//
-//	Partner : Redirige le trigger vers le partenaire du personnage. Les helpers normaux et les personnages neutres ne sont pas considérés comme adversaires. Voir le trigger associé "numpartner" dans la documentation des triggers.
-//
-//	Enemy : Redirige le trigger vers le premier adversaire trouvé. Les helpers normaux et les personnages neutres ne sont pas pris comme des adversaires. Voir le trigger associé "numenemy" dans la documentation des triggers.
-//
-//	Enemy(n) : n doit être une expression correcte donnant un entier non négatif. Le trigger est redirigé vers le n-ième adversaire.
-//
-//	EnemyNear : Redirige le trigger vers l'adversaire le plus proche.
-//
-//	EnemyNear(n) : n doit être une expression correcte donnant un entier non négatif. Le trigger est redirigé vers le n-ième plus proche adversaire.
-//
-//	PlayerID(ID) : ID doit être une expression correcte donnant un entier non négatif. Le trigger est redirigé vers le personnage dont l'ID unique est égal à ID. Voir les triggers "ID" et "PlayerExistID" dans la documentation des triggers.
-//
 
 // Ennemies
 	public Sprite getFirstEnnmy(String spriteId) {
@@ -1046,8 +974,7 @@ public class StateMachine implements Game {
 		
 		return sprites;
 	}
-	private boolean systemPause = false;
-	private boolean forceUpdate = false;
+
 	
 	private void initRound() {
 		getInstanceOfStage().getCamera().init();
@@ -1076,14 +1003,7 @@ public class StateMachine implements Game {
 			s.getSpriteState().selfstate(5900);
 			s.getInfo().init();
   		}
-		
-	
-		getGameState().setRoundState(0);
-		getGameState().setRoundsExisted(0);
-		
-		stateSpr1 = Roundstate.PRE_INTRO;
-		stateSpr2 = Roundstate.PRE_INTRO;
-		getGameState().init();
+		getGameState().init(stateMachine);
 	}
 	
 	private void processPosition() {
@@ -1136,19 +1056,19 @@ public class StateMachine implements Game {
 			DebugRender.debugRender.setDisplayHelp(!DebugRender.debugRender.isDisplayHelp());
 			break;
 		case DEBUG_PAUSE:
-			systemPause = !systemPause;
+			getGlobalEvents().pauseUnpause();
+
 			break;
 		case EXPLOD_DEBUG_INFO:
 			DebugExplodRender.debugRender.setDisplay(!DebugExplodRender.debugRender.isDisplay());
 			break;
 		case PAUSE_PLUS_ONE_FRAME:
-			if (systemPause) {
+			if (getGlobalEvents().isSystemPause()) {
 				try {
-					forceUpdate = true;
+					getGlobalEvents().setForceUpdate(true);
 					update(1);
-					forceUpdate = false;
+					getGlobalEvents().setForceUpdate(false);
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -1174,6 +1094,10 @@ public class StateMachine implements Game {
 		DebugRender.debugRender.render();
 		DebugExplodRender.debugRender.render();
 	}
+
+	
+	
+	
 	
 	String loadingText = "";
 	long aTime = System.currentTimeMillis();

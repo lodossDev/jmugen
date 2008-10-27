@@ -30,20 +30,21 @@ public class Numprojid extends SpriteCnsTriggerFunction {
 		Collection<HitDefSub> hitdefs = engine.getHitdefBySpriteHitter(spriteId);
 		Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);
 		for (HitDefSub hitdef : hitdefs) {
-			if (hitdef instanceof ProjectileSub && hitdef.getSpriteHitter() == sprite) {
+			if (hitdef instanceof ProjectileSub 
+					&& StateMachine.getInstance().getRoot((Sprite) hitdef.getSpriteHitter()) == sprite) {
 				ProjectileSub proj = (ProjectileSub) hitdef;
 				if (proj.getProjid().intValue() == id)
 					count++;
 			}
 		}
-//		for (AbstractSprite spr: StateMachine.getInstance().getOtherSprites()) {
-//			if (spr instanceof ProjectileSprite) {
-//				ProjectileSprite proj = (ProjectileSprite) spr;
-//				if (proj.getProjectileSub().getProjid().intValue() == id
-//						&& proj.getProjectileSub().getSpriteParent() == sprite)
-//					count++;
-//			}
-//		}
+		for (AbstractSprite spr: StateMachine.getInstance().getOtherSprites()) {
+			if (spr instanceof ProjectileSprite) {
+				ProjectileSprite proj = (ProjectileSprite) spr;
+				if (proj.getProjectileSub().getProjid().intValue() == id
+						&& StateMachine.getInstance().getRoot(proj.getProjectileSub().getSpriteParent()) == sprite)
+					count++;
+			}
+		}
 		return count;
 	}
 }

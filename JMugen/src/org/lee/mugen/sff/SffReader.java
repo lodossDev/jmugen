@@ -141,9 +141,6 @@ public class SffReader {
             SubFileList.add(subFileHead);
             seek(br, next);
             subFileHead = new SubFileHeader(br);
-            if (subFileHead.grpNumber == 72 && subFileHead.imgNumber == 1) {
-            	System.out.println();
-            }
             if (subFileHead.subFileLen > 0) {
                 //int iRead = subFileHead.subFileLen - PcxReader.HEADER_SIZE - rewindPalette;
                 int iRead = (int)(subFileHead.nextPosition - getPosition(len, br.available()));

@@ -476,6 +476,15 @@ public class Gethitvar extends SpriteCnsTriggerFunction {
 				return hitdefFrom.getFall().getEnvshake().getPhase();
 			}});	
 
+		// xoff
+		
+		// yoff
+		
+		//zoff
+		
+		// isbound
+		
+		
 		return map;
 	}
 	
