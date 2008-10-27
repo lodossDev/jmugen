@@ -160,8 +160,6 @@ public class ExplodSprite extends AbstractSprite {
 			int w = (int) (sprWidth * xScale);
 
 			boolean isFilpForRealH = sprAnimMng.getCurrentImageSprite().isMirrorH() ^ facing == -1;
-			if (this.isFlip() ^ isFilpForRealH)
-				System.out.println();
 			float xRes = xCam + xOffSet
 			- (
 					isFilpForRealH? 

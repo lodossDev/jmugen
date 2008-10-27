@@ -215,7 +215,6 @@ public class PhysicsEngime {
 
 				if (r1.x > r2.x && sprOne.getRealXPos() > sprTwo.getRealXPos())
 					mul = -mul;
-				System.out.println();
 				sprTwo.getInfo().addXPos(r1.intersection(r2).width * mul);
 				checkGoodPositionInScreen(sprTwo);
 			}

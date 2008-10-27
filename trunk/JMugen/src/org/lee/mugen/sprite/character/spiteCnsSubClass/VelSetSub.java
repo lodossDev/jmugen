@@ -55,7 +55,6 @@ public class VelSetSub implements Cloneable {
 			this.z = 0;
 	}
 	public void setX(float x) {
-
 		this.x = x;
 
 	}

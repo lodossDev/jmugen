@@ -24,7 +24,7 @@ public class Numproj extends SpriteCnsTriggerFunction {
 		Collection<HitDefSub> hitdefs = engine.getHitdefBySpriteHitter(spriteId);
 		Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);
 		for (HitDefSub hitdef : hitdefs) {
-			if ((hitdef instanceof ProjectileSub) && hitdef.getSpriteHitter() == sprite)
+			if ((hitdef instanceof ProjectileSub) && StateMachine.getInstance().getRoot((Sprite) hitdef.getSpriteHitter()) == sprite)
 				count++;
 		}
 		

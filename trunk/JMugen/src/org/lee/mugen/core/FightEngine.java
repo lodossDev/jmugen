@@ -52,13 +52,6 @@ public class FightEngine {
 
 	public void add(HitDefSub hitdef) {
 		hitdefs.add(hitdef);
-		if (hitdef instanceof ProjectileSub) {
-			ProjectileSub projHitdef = (ProjectileSub) hitdef;
-			ProjectileRender projRender = new ProjectileRender(projHitdef);
-			StateMachine.getInstance().addRender(projRender);
-			StateMachine.getInstance().getOtherSprites().add(
-					projHitdef.getSpriteHitter());
-		}
 	}
 
 	public void process() {
@@ -602,13 +595,11 @@ public class FightEngine {
 		if (hitdef instanceof ProjectileSub)
 			throw new IllegalArgumentException("Only Hitdef");
 		Sprite sprHitter = (Sprite) hitdef.getSpriteHitter();
+
+	
+
+
 		
-		if (hitdef.getP2facing() == -1) {
-			sprite.getInfo().setFlip(sprHitter.isFlip());
-		}
-		if (hitdef.getP2facing() == 1) {
-			sprite.getInfo().setFlip(!sprHitter.isFlip());
-		}
 		if (hitdef.getSnap() != null) {
 			sprite.getInfo().setXPos((float) (hitdef.getSpriteHitter().getRealXPos() + hitdef.getSnap().getX()));
 			sprite.getInfo().setYPos((float) (hitdef.getSpriteHitter().getRealYPos() + hitdef.getSnap().getY()));
@@ -668,6 +659,13 @@ public class FightEngine {
 		if (hitdef.getP1facing() == -1) {
 			sprHitter.getInfo().setFlip(!sprHitter.getInfo().isFlip());
 		} 
+		if (hitdef.getP2facing() == -1) {
+			sprite.getInfo().setFlip(sprHitter.isFlip());
+		}
+		if (hitdef.getP2facing() == 1) {
+			sprite.getInfo().setFlip(!sprHitter.isFlip());
+		}
+
 	}
 
 	/**

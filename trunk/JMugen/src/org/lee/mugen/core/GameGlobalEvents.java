@@ -40,6 +40,25 @@ public class GameGlobalEvents {
 	private EnvcolorSub envcolor = new EnvcolorSub();
 	private EnvcolorRender _envcolorRender = new EnvcolorRender();
 	
+	private boolean systemPause = false;
+	private boolean forceUpdate = false;
+	
+	public boolean canUpdate() {
+		return !systemPause || forceUpdate;
+	}
+	
+	public boolean isSystemPause() {
+		return systemPause;
+	}
+	public void setSystemPause(boolean systemPause) {
+		this.systemPause = systemPause;
+	}
+	public boolean isForceUpdate() {
+		return forceUpdate;
+	}
+	public void setForceUpdate(boolean forceUpdate) {
+		this.forceUpdate = forceUpdate;
+	}
 	public PalFxSub getBgpalfx() {
 		return bGPalFX;
 	}
@@ -114,21 +133,18 @@ public class GameGlobalEvents {
 	
 	public boolean isAssertSpecial(String spriteId, Assertspecial.Flag flag) {
 		for (AssertSpecialEval as: assertSpecials) {
-			if (as.getSpriteId().equals(spriteId) || spriteId == null) {
-				if (as.getAssertspecial().isValid()) {
-					if (as.getAssertspecial().getFlag() == flag
-							||
-							as.getAssertspecial().getFlag2() == flag
-							||
-							as.getAssertspecial().getFlag3() == flag
-							) {
-						return true;
-					}
-					
+			if ((as.getSpriteId().equals(spriteId) || spriteId == null) 
+					&& as.getAssertspecial().isValid()) {
+				if (as.getAssertspecial().getFlag() == flag
+						||
+						as.getAssertspecial().getFlag2() == flag
+						||
+						as.getAssertspecial().getFlag3() == flag
+						) {
+					return true;
 				}
 			}
 		}
-			
 		return false;
 	}
 	
@@ -144,7 +160,6 @@ public class GameGlobalEvents {
 	}
 	
 	public void leave() {
-
 		if (isSuperPause()) {
 			if (superpause != null)
 				superpause.decreaseTime();
@@ -153,7 +168,6 @@ public class GameGlobalEvents {
 				pause.decreasePause();
 		} else {
 			getBgpalfx().decreaseTime();
-			
 		}
 		if (superpauseToActivate != null) {
 			superpause = superpauseToActivate;
@@ -173,5 +187,10 @@ public class GameGlobalEvents {
 		if (!isSuperPause())
 			return true;
 		return false;
+	}
+
+	public void pauseUnpause() {
+		systemPause = !systemPause;
+		
 	}
 }

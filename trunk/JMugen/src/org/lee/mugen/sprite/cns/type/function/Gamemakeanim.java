@@ -5,7 +5,7 @@ import org.lee.mugen.sprite.cns.eval.function.StateCtrlFunction;
 
 public class Gamemakeanim extends StateCtrlFunction {
 
-	// TODO : gamemakeanim
+	
 	public Gamemakeanim() {
 		super("gamemakeanim", new String[] {"value", "under", "pos", "random"});
 	}

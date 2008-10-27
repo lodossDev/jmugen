@@ -139,9 +139,6 @@ public class Explod extends StateCtrlFunction {
     public Object getValue(String spriteId, Valueable... params) {
     	ExplodSub explodSub = new ExplodSub();
     	fillBean(spriteId, explodSub);
-		if (explodSub.getId() == 1997)
-			System.out.println();
-		fillBean(spriteId, explodSub);
     	explodSub.setSprite(StateMachine.getInstance().getSpriteInstance(spriteId));
     	
     	

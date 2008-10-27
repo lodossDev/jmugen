@@ -15,6 +15,7 @@ import org.lee.mugen.sprite.base.AbstractSprite;
 import org.lee.mugen.sprite.base.AbstractAnimManager.SpriteDrawProperties;
 import org.lee.mugen.sprite.baseForParse.ImageSpriteSFF;
 import org.lee.mugen.sprite.character.Sprite;
+import org.lee.mugen.sprite.character.SpriteHelper;
 import org.lee.mugen.sprite.entity.PointF;
 
 
@@ -80,6 +81,8 @@ public class SpriteRender implements Renderable {
 
 	}
 	public void render() {
+//		if (sprite instanceof SpriteHelper && sprite.getSprAnimMng().getAction() == 7000)
+//			System.out.println();
 		ImageContainer imageContainer = null;
 		try {
 			imageContainer = sprite.getCurrentImage();
