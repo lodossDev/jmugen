@@ -250,6 +250,14 @@ public class LMugenDrawer extends MugenDrawer {
 	}
 
 	public void draw(DrawProperties dp) {
+//		GL11.glDisable(GL11.GL_DEPTH_TEST);
+//		GL11.glEnable(GL11.GL_BLEND);
+//		GL11.glDisable(GL11.GL_LIGHTING);
+//		GL11.glMatrixMode(GL11.GL_PROJECTION);
+//		GL11.glLoadIdentity();
+//		GL11.glOrtho(0, gameWindow.getWidth(), gameWindow.getHeight(), 0, -1, 1);
+//		GL11.glScaled((float) gameWindow.getWidth() / 320, (float) gameWindow.getHeight() / 240, 0);
+//		
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 
 		GL11.glColorMask(true, true, true, true);
@@ -422,7 +430,7 @@ public class LMugenDrawer extends MugenDrawer {
 	
 	
 	private static final int LIST_IMG_TO_PROCESS_COUNT = 2;
-	private static final int LIST_IMG_TO_PROCESS_THREAD_YELD_TIME = 50;
+	private static final int LIST_IMG_TO_PROCESS_THREAD_YELD_TIME = 10;
 	private static List<ImageContainerText>[] IMAGE_TO_PROCESS_LIST = null;
 	private static boolean[] jobFinish = new boolean[LIST_IMG_TO_PROCESS_COUNT];
 	private static int currentListToAdd = 0;
@@ -448,6 +456,7 @@ public class LMugenDrawer extends MugenDrawer {
 		for (Iterator<LMugenDrawer.ImageContainerText> iter = list.iterator(); iter.hasNext();) {
 			iter.next().prepareImageToTexture();
 			iter.remove();
+			Logger.log("load");
 			try {
 				Thread.sleep(LIST_IMG_TO_PROCESS_THREAD_YELD_TIME);
 			} catch (InterruptedException e) {
@@ -460,7 +469,7 @@ public class LMugenDrawer extends MugenDrawer {
 
 		@Override
 		public int compare(ImageContainerText o1, ImageContainerText o2) {
-			return -(o1.getWidth() * o1.getHeight()) + (o2.getWidth() * o2.getHeight());
+			return (o1.getWidth() * o1.getHeight()) - (o2.getWidth() * o2.getHeight());
 		}};
 	public static void createImageToTextPreparer() {
 		
@@ -486,6 +495,8 @@ public class LMugenDrawer extends MugenDrawer {
 		for (boolean b: jobFinish) {
 			result = result && b;
 		}
+		if (result)
+			Logger.log("All Textures are loaded.");
 		return result;
 	}
 
