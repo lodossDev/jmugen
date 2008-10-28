@@ -13,6 +13,7 @@ trigger1 = prevstateno = 140 || prevstateno = 130
 trigger1 = stateno = 140 && animtime = 0
 trigger1 = ctrl
 value = 0
+trigger1 = hitover
 				
 [State -1,]
 type = changestate
@@ -22,6 +23,7 @@ trigger1 = time > 1 && movetype = I && statetype = S && physics = S
 trigger1 = animtime = 0 || 20 = stateno
 trigger1 = ctrl
 value = 0
+trigger1 = hitover
 
 [state 20, 4]
 type = changestate
@@ -31,6 +33,7 @@ trigger1 = vel x > 0
 trigger2 = ceil(vel x) =0
 trigger2 = vel x < 0
 value = 0
+trigger1 = hitover
 
 [State -1,]
 type = changestate
@@ -42,6 +45,7 @@ trigger1 = stateno < 120 || stateno > 155
 trigger1 = statetype = S || statetype = C
 trigger1 = stateno != 100 && stateno != 105 && stateno != 106 && stateno != 110 && stateno != 115
 ;trigger1 = stateno = 0
+trigger1 = hitover
 
 [State -1,]
 type = changestate
@@ -53,6 +57,7 @@ trigger1 = movetype = I
 trigger1 = statetype = S || statetype = C
 trigger1 = stateno != 100 && stateno != 105 && stateno != 106 && stateno != 110 && stateno != 115
 ;trigger1 = stateno = 0
+trigger1 = hitover
 
 [State -1,]
 type = changestate
@@ -60,6 +65,7 @@ value = 10
 triggerall = command = "holddown"
 trigger1 = ctrl
 trigger1 = statetype = S
+trigger1 = hitover
 
 
 [State -1,]
@@ -68,6 +74,7 @@ value = 12
 triggerall = command != "holddown"
 trigger1 = ctrl
 trigger1 = stateno = 11
+trigger1 = hitover
 
 
 
@@ -78,6 +85,7 @@ type = spritebeanset
 bean = info.airjump.num
 value = const(movement.airjump.num)
 trigger1 = stateno = 40
+trigger1 = hitover
 
 [state -1,]
 type = changestate
@@ -88,6 +96,7 @@ triggerall = physics != A
 triggerall = command != "holddown"
 trigger1 = ctrl
 trigger1 = stateno != 50
+trigger1 = hitover
 
 [state -1,]
 type = spritebeanset
@@ -100,6 +109,7 @@ triggerall = command != "holddown"
 trigger1 = pos y < -const(movement.airjump.height)
 trigger1 = stateno != 45
 ;trigger1 = beaninfo(info.airjump.num)  > 0
+trigger1 = hitover
 
 [state -1,]
 type = changestate
@@ -111,3 +121,4 @@ triggerall = command != "holddown"
 trigger1 = pos y < -const(movement.airjump.height)
 trigger1 = stateno != 45
 trigger1 = beaninfo(info.airjump.num)  >= 0
+trigger1 = hitover
