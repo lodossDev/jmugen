@@ -9,8 +9,13 @@ import java.awt.image.DataBufferByte;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel.MapMode;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Hashtable;
@@ -360,7 +365,7 @@ public class LMugenDrawer extends MugenDrawer {
 					return img;
 				} else if (imageStatus.get() == BYTE) {
 					try {
-						img = TextureLoader.getTextureLoader().getTexture((byte[]) img, width, height);
+						img = TextureLoader.getTextureLoader().getTexture((ByteBuffer) img, width, height);
 						imageStatus.set(TEXTURE);
 						return img;
 					} catch (Exception e) {
@@ -369,13 +374,19 @@ public class LMugenDrawer extends MugenDrawer {
 				} else if (imageStatus.get() == RAW_PCX) {
 					RawPCXImage pcx = (RawPCXImage) img;
 					try {
-						BufferedImage image = (BufferedImage) PCXLoader.loadImageColorIndexed(new ByteArrayInputStream(
-								pcx.getData()), pcx.getPalette(), false, true);
-
-//						BufferedImage image = (BufferedImage) PCXLoader.loadImage(new ByteArrayInputStream(
-//								pcx.getData()), pcx.getPalette(), false, true);
-
-						img = TextureLoader.getTextureLoader().getTexture(image);
+						img = pcxToRawRGBA(pcx.getData());
+						float len = (((byte[])img).length / (1024f * 1024f));
+						Logger.log(width + " x " + height + " > " + len);
+						if (len >= MINIMUN_TO_SWAP) {
+							long[] result = writeToSwap((byte[]) img);
+							isFile = true;
+							position = result[0];
+							size = result[1];
+							img = getTempSwap().getChannel().map(MapMode.READ_ONLY, position, size);
+						} else {
+							img = ByteBuffer.wrap((byte[]) img);
+						}
+						img = TextureLoader.getTextureLoader().getTexture((ByteBuffer) img, width, height);
 						imageStatus.set(TEXTURE);
 						return img;
 					} catch (IOException e) {
@@ -404,7 +415,9 @@ public class LMugenDrawer extends MugenDrawer {
 			}
 
 		}
-		
+		private long position;
+		private long size;
+		private boolean isFile = false;
 		public void prepareImageToTexture() {
 			synchronized (this) {
 				if (imageStatus.get() == RAW_PCX) {
@@ -412,12 +425,24 @@ public class LMugenDrawer extends MugenDrawer {
 					
 					try {
 						img = pcxToRawRGBA(pcx.getData());
+						float len = (((byte[])img).length / (1024f * 1024f));
+						Logger.log(width + " x " + height + " > " + len);
+						if (len >= MINIMUN_TO_SWAP) {
+							long[] result = writeToSwap((byte[]) img);
+							isFile = true;
+							position = result[0];
+							size = result[1];
+							img = getTempSwap().getChannel().map(MapMode.READ_ONLY, position, size);
+						} else {
+							img = ByteBuffer.wrap((byte[]) img);
+						}
+						imageStatus.set(BYTE);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					
-					imageStatus.set(BYTE);
+					
 					
 
 				}
@@ -425,7 +450,36 @@ public class LMugenDrawer extends MugenDrawer {
 		}
 		
 	}
+	private static float MINIMUN_TO_SWAP = 2f;
+	private static RandomAccessFile tempFile;
 	
+	private static RandomAccessFile getTempSwap() {
+		if (tempFile == null) {
+			try {
+				tempFile = new RandomAccessFile(File.createTempFile("JMugen", "Temp"), "rw");
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return tempFile;
+	}
+	
+	private static long[] writeToSwap(byte[] data) throws IOException {
+		getTempSwap();
+		synchronized (tempFile) {
+			long position = 0;
+			long size = 0;
+			position = getTempSwap().getFilePointer();
+			size = data.length;
+			getTempSwap().write(data);
+			return new long[] {position, size};
+		}
+
+	}
 	private static long memoryusage = 0;
 	
 	
@@ -456,7 +510,6 @@ public class LMugenDrawer extends MugenDrawer {
 		for (Iterator<LMugenDrawer.ImageContainerText> iter = list.iterator(); iter.hasNext();) {
 			iter.next().prepareImageToTexture();
 			iter.remove();
-			Logger.log("load");
 			try {
 				Thread.sleep(LIST_IMG_TO_PROCESS_THREAD_YELD_TIME);
 			} catch (InterruptedException e) {
@@ -469,7 +522,7 @@ public class LMugenDrawer extends MugenDrawer {
 
 		@Override
 		public int compare(ImageContainerText o1, ImageContainerText o2) {
-			return (o1.getWidth() * o1.getHeight()) - (o2.getWidth() * o2.getHeight());
+			return -(o1.getWidth() * o1.getHeight()) + (o2.getWidth() * o2.getHeight());
 		}};
 	public static void createImageToTextPreparer() {
 		

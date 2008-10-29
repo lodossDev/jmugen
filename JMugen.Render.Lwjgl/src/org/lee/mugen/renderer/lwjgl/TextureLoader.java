@@ -100,7 +100,7 @@ public class TextureLoader {
         return tex;
     }
     
-    public Texture getTexture(byte[] img, int width, int height) throws IOException {
+    public Texture getTexture(ByteBuffer img, int width, int height) throws IOException {
         Texture tex = getTexture(img, width, height, 
         		GL11.GL_RGBA, 
                 GL11.GL_TEXTURE_2D, // target
@@ -188,7 +188,7 @@ public class TextureLoader {
      * @return The loaded texture
      * @throws IOException Indicates a failure to access the resource
      */
-    public Texture getTexture(byte[] data, int width, int height, int srcPixelFormat,
+    public Texture getTexture(ByteBuffer data, int width, int height, int srcPixelFormat,
                               int target, 
                               int dstPixelFormat, 
                               int minFilter, 
@@ -208,10 +208,11 @@ public class TextureLoader {
         texture.setTextureWidth(texWidth);
         texture.setTexHeight(texHeight);
         
-    	ByteBuffer textureBuffer = ByteBuffer.allocateDirect(data.length); 
-    	textureBuffer.order(ByteOrder.nativeOrder()); 
-    	textureBuffer.put(data, 0, data.length); 
-    	textureBuffer.flip();
+//    	ByteBuffer textureBuffer = ByteBuffer.allocateDirect(data.length); 
+//    	textureBuffer.order(ByteOrder.nativeOrder()); 
+//    	textureBuffer.put(data, 0, data.length); 
+        ByteBuffer textureBuffer = data;
+    	textureBuffer.rewind();
         
         texture.setWidth(width);
         texture.setHeight(height);
