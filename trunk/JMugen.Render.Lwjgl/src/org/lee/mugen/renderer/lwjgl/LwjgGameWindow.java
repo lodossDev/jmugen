@@ -338,10 +338,34 @@ public class LwjgGameWindow implements GameWindow {
 		}
 		
 	}
-	
-	
-	private void keyManagementExecute() {
+	private void keyManagementExecute2() {
+        while ( Keyboard.next() )  {
+            // pass key event to handler
+            if (Keyboard.getEventKeyState()) {
+                keyDown(Keyboard.getEventKey());
+            }
+            else {
+                keyUp(Keyboard.getEventKey());
+            }
+        }
+	}
+    private void keyUp(int eventKey) {
+		for (SprCmdProcessListenerAction sa : spriteCmdProcess) {
+			ISpriteCmdProcess scp = sa.getScp();
+			scp.keyReleased(eventKey);
+		}
+		
+	}
 
+	private void keyDown(int eventKey) {
+		for (SprCmdProcessListenerAction sa : spriteCmdProcess) {
+			ISpriteCmdProcess scp = sa.getScp();
+			scp.keyPressed(eventKey);
+		}
+		
+	}
+
+	private void keyManagementExecute() {
 		debugEventManager.process(callback);
 		
 		for (SprCmdProcessListenerAction sa : spriteCmdProcess) {
@@ -367,6 +391,9 @@ public class LwjgGameWindow implements GameWindow {
 	public void gameLoop() throws Exception {
 		
 		while (gameRunning) {
+			GL11.glEnable(GL11.GL_TEXTURE_2D);
+
+			// disable the OpenGL depth test since we're rendering 2D graphics
 			if (mouse.isLeftClick() && !Mouse.isButtonDown(0)) {
 				mouse.setLeftPress(false);
 			} else {
