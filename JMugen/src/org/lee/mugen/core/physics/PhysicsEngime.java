@@ -6,7 +6,6 @@ import org.lee.mugen.core.StateMachine;
 import org.lee.mugen.sprite.background.Stage;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.SpriteHelper;
-import org.lee.mugen.sprite.character.SpriteCns.MoveType;
 import org.lee.mugen.sprite.character.SpriteCns.Physics;
 import org.lee.mugen.sprite.cns.type.function.Assertspecial.Flag;
 
@@ -30,8 +29,7 @@ public class PhysicsEngime {
 
 		Physics p = sprite.getInfo().getPhysics();
 		processSpriteCommonPhysics(sprite);
-		if (StateMachine.getInstance().getGlobalEvents().isAssertSpecial(sprite.getSpriteId(), Flag.intro))
-			return;
+
 		switch (p) {
 			// Stand
 			case S:
@@ -56,6 +54,8 @@ public class PhysicsEngime {
 			throw new IllegalStateException("This state musn't be reached : "
 					+ PhysicsEngime.class.getName());
 		}
+		if (StateMachine.getInstance().getGlobalEvents().isAssertSpecial(sprite.getSpriteId(), Flag.intro))
+			return;
 		if (sprite instanceof SpriteHelper) {
 			
 		} else {
@@ -274,7 +274,8 @@ public class PhysicsEngime {
 	}
 
 	public static void checkGoodPositionInScreen(Sprite sprOne) {
-		if (sprOne.getInfo().isScreenbound() ||
+		if (sprOne.getInfo().isScreenbound()
+			||
 				sprOne.getCns2().size() == 0) {
 			return;
 		}

@@ -14,6 +14,8 @@ import org.lee.mugen.sprite.baseForParse.ImageSpriteSFF;
 import org.lee.mugen.sprite.baseForParse.SpriteSFF;
 import org.lee.mugen.sprite.entity.SuperpauseSub;
 
+import temp.LBackgroundRender;
+
 public class BackgroundRender implements IBackgroundRenderer {
 
 
@@ -85,6 +87,8 @@ public class BackgroundRender implements IBackgroundRenderer {
 
 
 	public void render() {
+
+		
 		Stage stage = StateMachine.getInstance().getInstanceOfStage();
 		int xStartForAll = stage.getCamera().getWidth() / 2;
 		
@@ -230,7 +234,6 @@ public class BackgroundRender implements IBackgroundRenderer {
 			}
 		}
 		GraphicsWrapper.getInstance().scale(1f/stage.getScaling().getXscale(), 1f/stage.getScaling().getYscale());
-
 	}
 
 	private void drawImage(ImageContainer img, float xl, float yt, float xr,

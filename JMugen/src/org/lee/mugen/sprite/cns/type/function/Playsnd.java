@@ -56,12 +56,15 @@ public Playsnd() {
 				GroupSnd grpSnd = commonSnd.getGroup(grp);
 				if (grpSnd == null) {
 					errorMsg = "This sound " + grp + ", " + id + " for FigthFx do not exist.";
-					throw new NullPointerException();
+					return null;
+					//					throw new NullPointerException();
 				}
 				byte[] dataSnd = grpSnd.getSound(id);//, isPlaying);
 				if (dataSnd == null) {
 					errorMsg = "This sound " + grp + ", " + id + " for FigthFx do not exist.";
-					throw new NullPointerException();
+					return null;
+
+//					throw new NullPointerException();
 				}
 				SoundSystem.Sfx.playSnd(dataSnd, isPlaying);
 
@@ -77,12 +80,16 @@ public Playsnd() {
 				GroupSnd grpSnd = sprite.getSpriteSnd().getGroup(grp);
 				if (grpSnd == null) {
 					errorMsg = "This sound " + grp + ", " + id + " for sprite " + spriteId + " do not exist.";
-					throw new NullPointerException();
+					return null;
+
+//					throw new NullPointerException();
 				}
 				byte[] dataSnd = grpSnd.getSound(id);//, isPlaying);
 				if (dataSnd == null) {
 					errorMsg = "This sound " + grp + ", " + id + " for sprite " + spriteId + " do not exist.";
-					throw new NullPointerException();
+					return null;
+
+//					throw new NullPointerException();
 				}
 				SoundSystem.Sfx.playSnd(dataSnd, isPlaying);
 			}

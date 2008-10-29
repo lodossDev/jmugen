@@ -15,6 +15,8 @@ public class AfterImageShader extends Shader {
 	private int mulUniPos;
 	private int addUniPos;
 	
+	private int typeUniPos;
+	
 	
 	public AfterImageShader() {
 		super("afterimage");
@@ -23,8 +25,8 @@ public class AfterImageShader extends Shader {
 	public void compileShader(GL gl) {
 		super.compileShader(gl);
 		
-
-		gl.glGetObjectParameterivARB(programID, GL.GL_OBJECT_LINK_STATUS_ARB, programBuffer);
+		gl.glGetObjectParameterivARB(programID,
+				GL.GL_OBJECT_LINK_STATUS_ARB, programBuffer);
 		if (programBuffer.get(0) == GL.GL_FALSE)
 			System.err.println("A linking error occured in a shader program.");
 		palbrightUniPos = getUniformLocation(gl, programID, "palbright");
@@ -33,9 +35,10 @@ public class AfterImageShader extends Shader {
 		
 		mulUniPos = getUniformLocation(gl, programID, "mul");
 		addUniPos = getUniformLocation(gl, programID, "add");
+		typeUniPos = getUniformLocation(gl, programID, "type");
 	}
 
-	public void render(GL gl, RGB palbright, RGB palcontrast, RGB palpostbright, RGB add, RGB mul) {
+	public void render(GL gl, RGB palbright, RGB palcontrast, RGB palpostbright, RGB add, RGB mul, float type) {
 		gl.glUseProgramObjectARB(programID);
 		
 		gl.glUniform4fARB(palbrightUniPos, palbright.getR(), palbright.getG(), palbright.getB(), palbright.getA());
@@ -44,6 +47,8 @@ public class AfterImageShader extends Shader {
 
 		gl.glUniform4fARB(addUniPos, add.getR(), add.getG(), add.getB(), add.getA());
 		gl.glUniform4fARB(mulUniPos, mul.getR(), mul.getG(), mul.getB(), mul.getA());
+		
+		gl.glUniform1fARB(typeUniPos, type);
 	}
 
 

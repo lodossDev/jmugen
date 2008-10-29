@@ -103,7 +103,6 @@ x positif s'éloigne du centre de l'écran alors qu'un offset x négatif s'en ra
 		return projectileSub.getProjhitanim() != -1 && projectileSub.getProjhitanim() == sprAnimMng.getAction();
 	}
 	private boolean isHitAnimFinish() {
-		System.out.println(sprAnimMng.getAnimTime());
 		return isHitAnim() && sprAnimMng.getAnimTime() == 0;
 	}
 	private boolean isInHitAnim() {

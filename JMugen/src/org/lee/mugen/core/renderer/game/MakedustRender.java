@@ -27,14 +27,6 @@ public class MakedustRender implements IMakedustRender {
 		int y = stage.getStageinfo().getZoffset() + _mvY;
 
 		for (AbstractSprite sprite: manager.getSparkSpritesToProcess()) {
-			try {
-				sprite.getCurrentImage().getImg();
-
-			} catch (Exception e) {
-				continue;
-				// TODO: handle exception
-			}
-			
 			ImageContainer ic = sprite.getCurrentImage();
 
 			AirData air = sprite.getSprAnimMng().getCurrentImageSprite()

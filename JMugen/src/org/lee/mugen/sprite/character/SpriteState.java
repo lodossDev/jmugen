@@ -217,25 +217,28 @@ public class SpriteState {
 		if (currentStateDef == null)
 			changeStateDef(0);
 		String old = currentStateDef.getId();
-		if (!(getSprite() instanceof SpriteHelper))// && !getSprite().isPause())
-			synchronized (negativeStateSef) {
-				for (StateDef stdef: negativeStateSef) {
-					// TODO : find a solution
-					int id = stdef.getIntId();
-					if (id == -10)
-						continue;
-//					if ((id == -3 && !isBindToOhterSprState()) || (id == -2) || (id == -1 && getSprite().getInfo().getMovetype() != MoveType.H)) {
-//						stdef.execute(spriteId);
-//						
-//					}
-					
-					if ((id == -3 && !isBindToOhterSprState()) || (id == -2 && !isBindToOhterSprState()) || (id == -1)) {
+		synchronized (negativeStateSef) {
+			for (StateDef stdef: negativeStateSef) {
+				int id = stdef.getIntId();
+				
+				if (getSprite() instanceof SpriteHelper) {
+					SpriteHelper spriteHelper = (SpriteHelper) getSprite();
+					if (id == -1 && spriteHelper.getHelperSub().isKeyctrl())
+						stdef.execute(spriteId);
+				} else {
+					if ((id == -3 && !isBindToOhterSprState()) 
+							|| (id == -2 && !isBindToOhterSprState()) 
+							|| (id == -1 && !isBindToOhterSprState())
+							|| (id == -1)) {
+						
 						stdef.execute(spriteId);
 						
 					}
 					
 				}
+				
 			}
+		}
 		if (old.equals(currentStateDef.getId())) {
 			execute();
 		}
@@ -377,6 +380,10 @@ public class SpriteState {
 		
 		
 		
+	}
+	public boolean isStateExist(int i) {
+		
+		return getStateDef(i) != null;
 	}
 
 }

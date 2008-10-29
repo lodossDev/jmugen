@@ -11,9 +11,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.lee.mugen.core.StateMachine;
 import org.lee.mugen.core.physics.PhysicsEngime;
@@ -29,55 +26,11 @@ import org.lee.mugen.sprite.cns.StateDef;
 import org.lee.mugen.sprite.entity.PointF;
 import org.lee.mugen.sprite.parser.CmdParser;
 import org.lee.mugen.sprite.parser.CnsParse;
-import org.lee.mugen.sprite.parser.Parser;
-import org.lee.mugen.sprite.parser.Parser.GroupText;
-import org.lee.mugen.util.BeanTools;
 import org.lee.mugen.util.MugenRandom;
 
 
 public class Sprite extends AbstractSprite implements Cloneable {
-	public static SpriteDef parseSpriteDef(String def, String spriteId)
-			throws Exception {
 
-		SpriteDef spriteDef = new SpriteDef();
-		String parentPath = new File(def).getParentFile().getAbsolutePath();
-		spriteDef.setParentPath(parentPath);
-		List<GroupText> groups = Parser
-				.getGroupTextMap(org.apache.commons.io.IOUtils
-						.toString(new FileInputStream(def)));
-
-		for (GroupText grp : groups) {
-			String section = grp.getSection();
-			Map<String, String> kvs = grp.getKeyValues();
-			for (String key : kvs.keySet()) {
-				String value = kvs.get(key);
-
-				Matcher m = Pattern.compile("(^.*pal|^.*st)([0-9]*)$").matcher(
-						key);
-				if (m.find()) {
-					value = m.group(2) + "," + value;
-					key = m.group(1);
-					
-				}
-				// String[] tokens = ExpressionFactory.expression2Tokens(value);
-				// Valueable[] vals = ExpressionFactory.evalExpression(tokens);
-				// Object[] obs = ValueableUtils.convert(vals);
-				try {
-					BeanTools.setObject(spriteDef, section + "." + key, value);
-				} catch (Exception e) {
-					System.err.println(section + "." + key + " is on error with value " + value);
-//					e.printStackTrace();
-				}
-
-
-			}
-		}
-		List<GroupText> grps = CnsParse.getCnsGroup(parentPath, spriteDef.getFiles()
-				.getCns(), spriteDef.getFiles().getStcommon(), spriteDef
-				.getFiles().getSt());
-		spriteDef.setCnsGroups(grps);
-		return spriteDef;
-	}
 	
 	public void nextPal() {
 		SpriteDef oneDef = StateMachine.getInstance().getSpriteDef(spriteId);
@@ -97,23 +50,7 @@ public class Sprite extends AbstractSprite implements Cloneable {
 		else
 			changePal(0);
 	}
-	
 
-//	private String[] getSuitablePalPath() {
-//		String[] pals = definition.getFiles().getPal();
-//		String[] result = new String[pals.length];
-//		
-//		for (int i = 0; i < pals.length; i++) {
-//			StringTokenizer token = new StringTokenizer(pals[i], ",");
-//			int id = Integer.parseInt(token.nextToken());
-//			String palPath = token.nextToken();
-//			
-//			result[id-1] = palPath;
-//		}
-//		
-//		return result;
-//	}
-	
 	private void buildSpriteSff(int pal, boolean isReload) throws FileNotFoundException,
 			IOException {
 
@@ -188,13 +125,21 @@ public class Sprite extends AbstractSprite implements Cloneable {
 	
 	@Override
 	public float getXScale() {
-		return getInfo().getSize().getXscale();
+		float moreX = 1;
+		if (getSprAnimMng().getSpriteDrawProperties() != null 
+				&& getSprAnimMng().getSpriteDrawProperties().isActive())
+			moreX = getSprAnimMng().getSpriteDrawProperties().getXScale();
+		return getInfo().getSize().getXscale() * moreX;
 	}
 	
 	
 	@Override
 	public float getYScale() {
-		return getInfo().getSize().getYscale();
+		float moreY = 1;
+		if (getSprAnimMng().getSpriteDrawProperties() != null 
+				&& getSprAnimMng().getSpriteDrawProperties().isActive())
+			moreY = getSprAnimMng().getSpriteDrawProperties().getXScale();
+		return getInfo().getSize().getYscale() * moreY;
 	}
 	protected List<MugenCommands> cmds;
 
@@ -303,20 +248,13 @@ public class Sprite extends AbstractSprite implements Cloneable {
 		return cmds;
 	}
 
-	/*
-	 * ___|____
-	 * 
-	 * ________
-	 * 
-	 * 
-	 */
 	@Override
 	public List<Rectangle> getCns1() {
 		AnimElement imgSpr = getSprAnimMng().getCurrentImageSprite();
 		if (imgSpr == null) {
 			
 			System.err.println("Action " + getSprAnimMng().getAction() + " n'existe pas ");
-			return Collections.EMPTY_LIST;
+			return Collections.emptyList();
 		}
 		return getCns(imgSpr.getAtacksRec());
 
@@ -326,7 +264,7 @@ public class Sprite extends AbstractSprite implements Cloneable {
 	public List<Rectangle> getCns2() {
 		AnimElement imgSpr = getSprAnimMng().getCurrentImageSprite();
 		if (imgSpr == null)
-			return Collections.EMPTY_LIST;
+			return Collections.emptyList();
 		return getCns(imgSpr.getCollisionsRec());
 
 	}
@@ -355,13 +293,7 @@ public class Sprite extends AbstractSprite implements Cloneable {
 		pt.setY(pt.getY() + info.getSize().getDraw().getOffset().getY());
 		return pt;
 	}
-	//	private long timeHitter;
-//	public void setTimeHitter() {
-//		timeHitter = linearTime;
-//	}
-//	public boolean canHit() {
-//		return timeHitter != linearTime;
-//	}
+
 	@Override
 	public int getPriority() {
 		return getInfo().getSprpriority();
@@ -416,10 +348,7 @@ public class Sprite extends AbstractSprite implements Cloneable {
 		}
 		if (isPause()) {
 			processPause();
-//			return;
 		}
-
-		
 	}
 
 	public void setInfo(SpriteCns info) {

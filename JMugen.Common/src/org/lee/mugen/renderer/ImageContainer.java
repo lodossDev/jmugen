@@ -29,7 +29,7 @@ public class ImageContainer {
 	}
 
 	public void reload(ImageContainer img) {
-		this.img = img.getImg();
+		this.img = img.img;
 		this.width = img.getWidth();
 		this.height = img.getHeight();
 		

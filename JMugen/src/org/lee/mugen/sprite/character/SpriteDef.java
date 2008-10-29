@@ -1,11 +1,19 @@
 package org.lee.mugen.sprite.character;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.lee.mugen.sprite.parser.CnsParse;
+import org.lee.mugen.sprite.parser.Parser;
 import org.lee.mugen.sprite.parser.Parser.GroupText;
+import org.lee.mugen.util.BeanTools;
 
 public class SpriteDef {
 	private String parentPath;
@@ -14,16 +22,56 @@ public class SpriteDef {
 	private Arcade arcade = new Arcade();
 	private List<GroupText> cnsGroups;
 
-	
+	public static SpriteDef parseSpriteDef(String def, String spriteId)
+			throws Exception {
+
+		SpriteDef spriteDef = new SpriteDef();
+		String parentPath = new File(def).getParentFile().getAbsolutePath();
+		spriteDef.setParentPath(parentPath);
+		List<GroupText> groups = Parser
+				.getGroupTextMap(org.apache.commons.io.IOUtils
+						.toString(new FileInputStream(def)));
+
+		for (GroupText grp : groups) {
+			String section = grp.getSection();
+			Map<String, String> kvs = grp.getKeyValues();
+			for (String key : kvs.keySet()) {
+				String value = kvs.get(key);
+
+				Matcher m = Pattern.compile("(^.*pal|^.*st)([0-9]*)$").matcher(
+						key);
+				if (m.find()) {
+					value = m.group(2) + "," + value;
+					key = m.group(1);
+
+				}
+				try {
+					BeanTools.setObject(spriteDef, section + "." + key, value);
+				} catch (Exception e) {
+					System.err.println(section + "." + key
+							+ " is on error with value " + value);
+				}
+
+			}
+		}
+		List<GroupText> grps = CnsParse.getCnsGroup(parentPath, spriteDef
+				.getFiles().getCns(), spriteDef.getFiles().getStcommon(),
+				spriteDef.getFiles().getSt());
+		spriteDef.setCnsGroups(grps);
+		return spriteDef;
+	}
+
 	public static class Arcade {
 		private StoryBoard intro = new StoryBoard();
 		private StoryBoard ending = new StoryBoard();
-		
+
 		public static class StoryBoard {
 			private String storyboard;
+
 			public String getStoryboard() {
 				return storyboard;
 			}
+
 			public void setStoryboard(String storyboard) {
 				this.storyboard = storyboard;
 			}
@@ -37,31 +85,34 @@ public class SpriteDef {
 			return intro;
 		}
 	}
-	
+
 	public static class Pal {
 		List<Integer> defaults = new ArrayList<Integer>();
-		
-		public void setDefaults(int...params) {
-			for (int p: params)
+
+		public void setDefaults(int... params) {
+			for (int p : params)
 				defaults.add(p);
 		}
-		public void setDefaults(Object...params) {
-			for (Object p: params)
+
+		public void setDefaults(Object... params) {
+			for (Object p : params)
 				defaults.add(new Float(p.toString()).intValue());
 		}
-		public void setDefaults(String...params) {
+
+		public void setDefaults(String... params) {
 			if (params != null && params.length == 1) {
 				if (params[0].indexOf(',') != -1)
 					setDefaults(params[0]);
 				return;
 			}
-			for (String p: params)
+			for (String p : params)
 				defaults.add(new Float(p).intValue());
 		}
 
 		public Integer[] getDefaults() {
 			return defaults.toArray(new Integer[0]);
 		}
+
 		public void setDefaults(String params) {
 			params = params.trim();
 			String[] ps = params.split(",");
@@ -78,8 +129,6 @@ public class SpriteDef {
 		private String author;
 		private Pal pal = new Pal();
 
-		
-		
 		public String getAuthor() {
 			return author.substring(1, author.length() - 1);
 		}
@@ -170,21 +219,22 @@ public class SpriteDef {
 		public String[] getPal() {
 			Collections.sort(pal);
 			List<String> result = new ArrayList<String>();
-			
-			for (String s: pal) {
+
+			for (String s : pal) {
 				String[] token = s.split(",");
 				if (token.length == 2) {
 					result.add(token[1]);
 				}
 			}
-			
+
 			return result.toArray(new String[0]);
 		}
 
-		public void setPal(String...pal) {
+		public void setPal(String... pal) {
 			addPal(pal);
 		}
-		public void addPal(String...pal) {
+
+		public void addPal(String... pal) {
 			this.pal.addAll(Arrays.asList(pal));
 		}
 
@@ -207,21 +257,22 @@ public class SpriteDef {
 		public String[] getSt() {
 			Collections.sort(st);
 			List<String> result = new ArrayList<String>();
-			
-			for (String s: st) {
+
+			for (String s : st) {
 				String[] token = s.split(",");
 				if (token.length == 2) {
 					result.add(token[1]);
 				}
 			}
-			
+
 			return result.toArray(new String[0]);
 		}
 
-		public void addSt(String...st) {
+		public void addSt(String... st) {
 			this.st.addAll(Arrays.asList(st));
 		}
-		public void setSt(String...st) {
+
+		public void setSt(String... st) {
 			addSt(st);
 		}
 
@@ -232,8 +283,6 @@ public class SpriteDef {
 		public void setStcommon(String stcommon) {
 			this.stcommon = stcommon;
 		}
-		
-		
 
 	}
 

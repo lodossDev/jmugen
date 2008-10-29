@@ -154,7 +154,7 @@ public class SpriteCns implements Cloneable, Serializable {
 		power = getData().getPower();
 		ctrl = 1;
 		getSprite().getSpriteState().selfstate(190);
-		
+		hitoverrides.clear();
 		
 	}
 
@@ -968,7 +968,7 @@ public class SpriteCns implements Cloneable, Serializable {
 //		hitdef.addHittime(-1);
 
 		hitdefs.add(hitdef);
-		
+		this.sprpriority = hitdef.getSprpriority();
 
 	}
 
@@ -994,6 +994,7 @@ public class SpriteCns implements Cloneable, Serializable {
 		scns.velocity = (Velocity) velocity.clone();
 		scns.velset = (VelSetSub) velset.clone();
 		scns.hitdefs = new LinkedList<HitDefSub>();
+		scns.hitoverrides = new HashMap<Integer, HitOverrideSub>();
 		return scns;
 	}
 

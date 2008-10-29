@@ -14,6 +14,9 @@ import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.cns.eval.function.MathFunction;
 import org.lee.mugen.sprite.cns.eval.function.StateCtrlFunction;
 import org.lee.mugen.sprite.cns.eval.operator.CnsOperatorsDef;
+import org.lee.mugen.sprite.cns.type.function.Changestate;
+import org.lee.mugen.sprite.cns.type.function.Selfstate;
+import org.lee.mugen.sprite.cns.type.function.Targetstate;
 
 public class StateCtrl implements Cloneable {
     protected String stateDefId;
@@ -105,10 +108,19 @@ public class StateCtrl implements Cloneable {
 			return false;
 
 		if (testTriggered(spriteId)){
-	 		if (id.startsWith("explo") && persistent == 5)
-  	 			System.out.println("+++++++++++++  " + id);
 			if (persistentCounter == 0 || (persistentCounter % persistent == 0 && persistentCounter != -1)) {
 				for (StateCtrlFunction f: executors) {
+					if (
+							(Integer.parseInt(stateDefId) < -1)
+						&&	
+							(f.getClass() == Changestate.class
+									||
+									f.getClass() == Targetstate.class
+									||
+									f.getClass() == Selfstate.class
+							))
+					continue;
+						
 					f.getValue(spriteId);
 				}
 				

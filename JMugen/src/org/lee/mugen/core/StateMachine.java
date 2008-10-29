@@ -39,19 +39,14 @@ import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.SpriteDef;
 import org.lee.mugen.sprite.character.SpriteHelper;
 import org.lee.mugen.sprite.cns.StateDef;
-import org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns.Lose;
-import org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns.Roundstate;
-import org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns.Win;
 import org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns.Teammode.TeamMode;
 import org.lee.mugen.sprite.cns.type.function.Assertspecial;
-import org.lee.mugen.sprite.cns.type.function.Assertspecial.Flag;
 import org.lee.mugen.sprite.common.resource.FontParser;
 import org.lee.mugen.sprite.common.resource.FontProducer;
 import org.lee.mugen.sprite.entity.AfterImageSprite;
 import org.lee.mugen.sprite.entity.ExplodSprite;
 import org.lee.mugen.sprite.entity.MakeDustSpriteManager;
 import org.lee.mugen.sprite.entity.ProjectileSprite;
-import org.lee.mugen.util.MugenRandom;
 
 /**
  * 
@@ -288,6 +283,8 @@ public class StateMachine implements Game {
 		if (!_spriteHelperRemoveList.isEmpty()) {
 			for (String spriteId: _spriteHelperRemoveList) {
 				Sprite spr = getSpriteInstance(spriteId);
+				if (spr == null || spr.getClass() == Sprite.class)
+					continue;
 				removePartner(spr);
 				
 				renderableList.remove(spriteMapRenderable.get(spriteId));
@@ -329,7 +326,7 @@ public class StateMachine implements Game {
 		Sprite spr = _spriteMap.get(sprLoader.getSpriteId());
 		if (spr == null) {
 			log("Load Sprite def");
-			SpriteDef sprDef = Sprite.parseSpriteDef(sprLoader.getDef(), sprLoader.getSpriteId());
+			SpriteDef sprDef = SpriteDef.parseSpriteDef(sprLoader.getDef(), sprLoader.getSpriteId());
 			log("End Load Sprite def");
 
 			spriteDefs.put(sprLoader.getSpriteId(), sprDef);
@@ -354,7 +351,7 @@ public class StateMachine implements Game {
 				teamSide = TEAMSIDE_TWO;
 			}
 			
-			SpriteDef sprDef = Sprite.parseSpriteDef(sprLoader.getDef(), sprLoader.getSpriteId());
+			SpriteDef sprDef = SpriteDef.parseSpriteDef(sprLoader.getDef(), sprLoader.getSpriteId());
 			spriteDefs.put(sprLoader.getSpriteId(), sprDef);
 			spr = new Sprite(sprLoader.getSpriteId(), sprDef, sprLoader.getPal());
 			
@@ -644,7 +641,7 @@ public class StateMachine implements Game {
 		br.setLayerDisplay(1);
 		if (!globalEvents.getEnvcolor().isUse()) {
 			if (!globalEvents.isAssertSpecial(Assertspecial.Flag.nobg)) {
-				render(backgroundRenderList);
+//				render(backgroundRenderList);
 			}
 		} else {
 			
@@ -985,6 +982,10 @@ public class StateMachine implements Game {
 		getOtherSprites().clear();
 		
   		for (Sprite s: getSprites()) {
+  			if (s instanceof SpriteHelper) {
+  				_spriteHelperRemoveList.add(s.getSpriteId());
+  				continue;
+  			}
 
 			_spriteHelperRemoveList.addAll(getHelpersIds(getSpriteInstance(s.getSpriteId())));
 			helperManagement();
@@ -996,6 +997,8 @@ public class StateMachine implements Game {
 			s.getSpriteState().clearVars();
 
 		}
+		helperManagement();
+
   		processPosition();
   		for (Sprite s: getSprites()) {
   			s.getSpriteState().setProcess(true);

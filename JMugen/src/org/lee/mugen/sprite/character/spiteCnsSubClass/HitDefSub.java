@@ -8,6 +8,7 @@ import java.util.List;
 import org.lee.mugen.renderer.PalFxSub;
 import org.lee.mugen.sprite.base.AbstractSprite;
 import org.lee.mugen.sprite.entity.CoupleOfAttrTypeAndLevel;
+import org.lee.mugen.sprite.entity.Priority;
 import org.lee.mugen.sprite.entity.Shake;
 import org.lee.mugen.sprite.entity.Sparkno;
 import org.lee.mugen.sprite.entity.Velocity;
@@ -20,6 +21,9 @@ public class HitDefSub {
 	protected AbstractSprite spriteHitter;
 	protected String spriteId;
 	protected String targetId;
+
+
+
 
 	private long timeCreated = -1;
 	
@@ -587,7 +591,7 @@ Le second caractère doit être soit
 		this.p2stateno = p2stateno;
 	}
 //	  p2getp1state = value (int)
-	private int p2getp1state;
+	private int p2getp1state = 1;
 	public int getP2getp1state() {
 		return p2getp1state;
 	}
@@ -654,12 +658,12 @@ Le second caractère doit être soit
 		this.numhits = numhits;
 	}
 //	  hitonce = hitonce_flag (boolean)
-	private boolean hitonce;
-	public boolean isHitonce() {
+	private int hitonce;
+	public int getHitonce() {
 		return hitonce;
 	}
 	public void setHitonce(int hitonce) {
-		this.hitonce = hitonce != 0;
+		this.hitonce = hitonce;
 	}
 	
 
@@ -789,30 +793,7 @@ Le second caractère doit être soit
 //	  priority = hit_prior (int), hit_type (string)
 	private Priority priority = new Priority();
 	
-	public static class Priority {
-		private int hit_prior;
-		private HitType hit_type;
-		
-		public static enum HitType {
-			DODGE, HIT, MISS;
-		}
 
-		public int getHit_prior() {
-			return hit_prior;
-		}
-
-		public void setHit_prior(int hit_prior) {
-			this.hit_prior = hit_prior;
-		}
-
-		public HitType getHit_type() {
-			return hit_type;
-		}
-
-		public void setHit_type(HitType hit_type) {
-			this.hit_type = hit_type;
-		}
-	}
 
 // PauseTime Class
 	public static class Pausetime {

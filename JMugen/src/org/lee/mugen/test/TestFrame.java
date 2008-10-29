@@ -195,9 +195,9 @@ public class TestFrame {
 	    
 	    
 		String[] args = new String[] {
-				"cvsterry", "0", 
-				"ccixiangfei", "0",
-				"ggxx_verdent.def",
+				"gokuHR", "0",
+				"bridget2", "0", 
+				"ggxx_grove.def",
 				"ADX_S060.wav"
 		};
 		

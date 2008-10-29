@@ -229,6 +229,17 @@ public class ProjectileSub extends HitDefSub {
 	 */
 	private int pausemovetime = 0;
 
+	
+	
+	private int removeongethit = 0;
+	public int getRemoveongethit() {
+		return removeongethit;
+	}
+
+	public void setRemoveongethit(int removeongethit) {
+		this.removeongethit = removeongethit;
+	}
+
 	// /////////////////////////////////////////
 	public Velocity getAccel() {
 		return accel;
@@ -493,6 +504,7 @@ public class ProjectileSub extends HitDefSub {
 		return lastTimeCancelByProjectile;
 	}
 
+	// TODO : set it in Fightengine
 	public void setLastTimeCancelByProjectile(long lastTimeCancelByProjectile) {
 		this.lastTimeCancelByProjectile = lastTimeCancelByProjectile;
 	}

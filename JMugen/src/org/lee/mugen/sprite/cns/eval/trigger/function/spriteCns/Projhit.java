@@ -70,37 +70,36 @@ public class Projhit extends SpriteCnsTriggerFunction {
 
 				projectiles = fightEngine.getProjectiles(projid);
 		
-				int projCount = projectiles.size();
+				int projCount = 0;
 				int projDefineCount = Parser.getIntValue(value1.getValue().getValue(spriteId));
 //				if (projDefineCount == 0 && projDefineCount == projCount) {
 //					
 //				} else 
-				if (projDefineCount == projCount) {
-					long delay = 1;
-					MathFunction func = null;
-					if (value2.getValue() != null) {
-						delay = Parser.getIntValue(value2.getValue().getValue(spriteId));
-						func = compareOp.getValue();
-					} else {
-						func = CnsOperatorsDef.getOperator("=");
-					}
-					long currentTime = StateMachine.getInstance().getGameState().getGameTime();
-					for (ProjectileSub projectile: projectiles) {
-						if (projectile.getLastTimeHitSomething() == -1)
-							continue;
+				
+				long delay = 1;
+				MathFunction func = null;
+				if (value2.getValue() != null) {
+					delay = Parser.getIntValue(value2.getValue().getValue(spriteId));
+					func = compareOp.getValue();
+				} else {
+					func = CnsOperatorsDef.getOperator("=");
+				}
+				long currentTime = StateMachine.getInstance().getGameState().getGameTime();
+				for (ProjectileSub projectile: projectiles) {
+					if (projectile.getLastTimeHitSomething() == -1)
+						continue;
 
-						long deltaContact = currentTime - projectile.getLastTimeHitSomething();
-						long deltaBlock = currentTime - projectile.getLastTimeBlockBySomething();
-						if (projectile.getLastTimeBlockBySomething() == -1 || deltaBlock < deltaContact) {
-							int res = Parser.getIntValue(func.getFunctionResult(spriteId, delay, deltaContact));
-							if (res != 0) {
-								return 1;
-							}
-							
+					long deltaContact = currentTime - projectile.getLastTimeHitSomething();
+					long deltaBlock = currentTime - projectile.getLastTimeBlockBySomething();
+					if (projectile.getLastTimeBlockBySomething() == -1 || deltaBlock < deltaContact) {
+						int res = Parser.getIntValue(func.getFunctionResult(spriteId, delay, deltaContact));
+						if (res != 0) {
+							projCount++;
 						}
+						
 					}
 				}
-				return 0;
+				return projDefineCount == projCount?1 :0;
 			}
 			
 		};
