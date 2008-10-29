@@ -146,17 +146,11 @@ public class SpriteShadowRender implements Renderable {
         drawProperties.setTrans(Trans.SUB);
         
         PalFxSub fx = new PalFxSub();
-//        fx.setAdd(new RGB(255,0,112,122));
         fx.setMul(new RGB(0,0,0,50));
         fx.setColor(0);
         drawProperties.setPalfx(fx);
-        
-//        drawProperties.setPaladd(new RGB(0, 0, 0, 0));
-//        drawProperties.setPalmul(new RGB(0, 0, 0, 128));
-     
-//    	drawProperties.getRightBottomOffset().x = -25;
-        
-        
+        if (drawProperties.getYTopDst() < stage.getStageinfo().getZoffset())
+        	return;
         g.draw(drawProperties);
 	}
 

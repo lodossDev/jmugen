@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.lee.mugen.core.renderer.game.ProjectileRender;
 import org.lee.mugen.core.renderer.game.SparkRender;
 import org.lee.mugen.core.renderer.game.SparkhitRender;
 import org.lee.mugen.core.sound.SoundSystem;
@@ -27,14 +26,16 @@ import org.lee.mugen.sprite.character.spiteCnsSubClass.HitBySub;
 import org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub;
 import org.lee.mugen.sprite.character.spiteCnsSubClass.NotHitBySub;
 import org.lee.mugen.sprite.character.spiteCnsSubClass.ReversaldefSub;
+import org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub.AffectTeam;
 import org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub.AttrClass;
 import org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub.AttrType;
-import org.lee.mugen.sprite.character.spiteCnsSubClass.ReversaldefSub.ReversalAttrClass;
 import org.lee.mugen.sprite.cns.type.function.Assertspecial;
 import org.lee.mugen.sprite.cns.type.function.Projectile;
 import org.lee.mugen.sprite.entity.HitOverrideSub;
+import org.lee.mugen.sprite.entity.Priority;
 import org.lee.mugen.sprite.entity.ProjectileSprite;
 import org.lee.mugen.sprite.entity.ProjectileSub;
+import org.lee.mugen.sprite.entity.Priority.HitType;
 
 /**
  * FightEngine groups hitdefs and decice what's rules for hit, protect, ...
@@ -43,9 +44,6 @@ import org.lee.mugen.sprite.entity.ProjectileSub;
  */
 public class FightEngine {
 
-	// hitdefs doit être dans cette liste et mis dans le spriteCns une fois
-	// qu'il a touche le sprite
-	// car un hitdef peut toucher plusieurs sprites
 	private List<HitDefSub> hitdefs = new LinkedList<HitDefSub>();
 	
 	private List<HitDefSub> hitdefsWhenClns1IsDefine = new LinkedList<HitDefSub>();
@@ -59,14 +57,13 @@ public class FightEngine {
 		Set<HitDefSub> removes = new HashSet<HitDefSub>();
 		Set<HitDefSub> notProcessThisTime = new HashSet<HitDefSub>();
 		for (HitDefSub hitdef : hitdefs.toArray(new HitDefSub[hitdefs.size()])) {
-			for (Sprite sprite : StateMachine.getInstance().getEnnmies(hitdef.getSpriteHitter())) {
+			Collection<Sprite> sprites = getSpriteAffected(hitdef.getAffectTeam(), hitdef.getSpriteHitter());
+			for (Sprite sprite : sprites) {
 				if (hitdef.getSpriteId().equals(sprite.getSpriteId())
 						|| notProcessThisTime.contains(hitdef))
 					continue;
 				if (hitdef.getSpriteHitter() != null && hitdef.getSpriteHitter().isPause())
 					continue;
-//				if (sprite != null && sprite.isPause())
-//					continue;
 				process(hitdef, sprite, removes, notProcessThisTime);
 			}
 			if (hitdef instanceof ProjectileSub) {
@@ -104,6 +101,20 @@ public class FightEngine {
 	}
 	
 
+	private Collection<Sprite> getSpriteAffected(AffectTeam affectTeam, AbstractSprite sprite) {
+		if (affectTeam == AffectTeam.E) {
+			return StateMachine.getInstance().getEnnmies(sprite);
+		} else if (affectTeam == AffectTeam.F) {
+			return StateMachine.getInstance().getPartners(sprite);
+		} else if (affectTeam == AffectTeam.B) {
+			Collection<Sprite> result = new LinkedList<Sprite>();
+			result.addAll(StateMachine.getInstance().getEnnmies(sprite));
+			result.addAll(StateMachine.getInstance().getPartners(sprite));
+			return result;
+		}
+		return null;
+	}
+
 	private void process(HitDefSub hitdef, AbstractSprite sprite,
 			Set<HitDefSub> removes, Set<HitDefSub> notProcess) {
 		if (sprite instanceof Sprite) {
@@ -122,9 +133,8 @@ public class FightEngine {
 				processHitdefVsProjectile(hitdef, (ProjectileSprite) sprite,
 						removes, notProcess);
 
-			} else if (sprite instanceof Sprite) {
-				processHitdefVsSprite(hitdef, (Sprite) sprite, removes,
-						notProcess);
+			} else if (!(sprite instanceof SpriteHelper) && (sprite instanceof Sprite)) {
+				processHitdefVsSprite(hitdef, (Sprite) sprite, removes, notProcess);
 			}
 		}
 	}
@@ -135,12 +145,11 @@ public class FightEngine {
 		if (sprite.getInfo().getNothitby().getTime() > 0)
 			return; // TODO
 		if (isBlockState(sprite)
-				&& !canOneHitsTwo(hitdef.getHitFlag(), hitdef.getGuardFlag(),
-						sprite) && canHitDefByPassHitByAndNotHitBy(hitdef.getAttr(), sprite)) {
+				&& !canOneHitsTwo(hitdef.getHitFlag(), hitdef.getGuardFlag(), sprite) 
+				&& canHitDefByPassHitByAndNotHitBy(hitdef.getAttr(), sprite)) {
 			processHitdefVsSpriteProtectedMode(hitdef, sprite, removes,
 					notProcess);
-		} else if (canOneHitsTwo(hitdef.getHitFlag(), hitdef.getGuardFlag(),
-				sprite)) {
+		} else if (canOneHitsTwo(hitdef.getHitFlag(), hitdef.getGuardFlag(), sprite)) {
 			processHitdefVsSpriteHittedMode(hitdef, sprite, removes, notProcess);
 		}
 	}
@@ -171,7 +180,7 @@ public class FightEngine {
 				otherAttr = notHitby.getValue2();
 			isNotHitByActive = otherAttr.containsType(attr.getType()) && attr.isAttrTypesAndLevels(otherAttr.getCouples());
 		}
-		return (!isHitByActive || !isHitBy) && (!isNotHitByActive || !isNotHitBy);
+		return (!isNotHitByActive || !isHitByActive) || ((isHitByActive && isHitBy) && (!isNotHitByActive || !isNotHitBy));
 	}
 
 	//
@@ -269,7 +278,7 @@ public class FightEngine {
 			
 			sprite.getInfo().setLastHitdef(hitdef);
 			sprite.getInfo().addLife(-hitdef.getDamage().getHit_damage());
-			setSpriteHitSpriteState(hitdef, sprite);
+			setSpriteHitSpriteState(hitdef, sprite, removes, notProcess);
 			
 			sprite.getInfo().getShake().setAmpl(2);
 			sprite.getInfo().getShake().setTime(
@@ -317,7 +326,7 @@ public class FightEngine {
 			sprite.getInfo().setLastHitdef(hitdef);
 			sprite.getInfo().addLife(-hitdef.getDamage().getGuard_damage());
 
-			setSpriteHitSpriteState(hitdef, sprite);
+			setSpriteHitSpriteState(hitdef, sprite, removes, notProcess);
 			
 			sprite.getInfo().getShake().setAmpl(2);
 			sprite.getInfo().getShake().setTime(
@@ -353,59 +362,35 @@ public class FightEngine {
 					hitdef.getSpriteId());
 			Sprite two = sprite;
 
-			removes.add(hitdefOne);
 
 			// One is hitted
-			if (onePrio <= twoPrio) {
-				processHitdefVsCollisionRec(hitdefTwo, one, removes,
-						notProcess, true);
-				// one.getInfo().setLastHitdef(hitdef);
-				// hitdefOne.setTargetId(two.getSpriteId());
-				//				
-				//				
-				// // TODO Make a class for shaking
-				//				
-				// playSoundHit(hitdefOne, one);
-				//
-				// one.getInfo().getShake().setAmpl(2);
-				// one.getInfo().getShake().setTime(hitdef.getPausetime().getP2_shaketime());
-				//				
-				// setSpriteHitSpriteState(hitdefOne, one);
-				// drawSparkHit(hitdefOne, one);
-				// StateMachine.getInstance().getSpriteRenderInstance(hitdefOne.getSpriteId()).setPriority(SpriteRender.DEF_PRIO
-				// + 10);
-				// StateMachine.getInstance().getSpriteRenderInstance(one.getSpriteId()).setPriority(SpriteRender.DEF_PRIO);
-			}
-			if (onePrio >= twoPrio) {
+			Priority priorityOne = hitdefOne.getPriority();
+			Priority priorityTwo = hitdefTwo.getPriority();
+			if (priorityOne.getHit_type() == HitType.HIT 
+					&& priorityTwo.getHit_type() == HitType.HIT
+			) {
+				if (onePrio <= twoPrio) {
+					processHitdefVsCollisionRec(hitdefTwo, one, removes,
+							notProcess, true);
+				}
+				if (onePrio >= twoPrio) {
+					processHitdefVsCollisionRec(hitdefOne, two, removes,
+							notProcess, true);
+				}
+				removes.add(hitdefTwo);
+				notProcess.add(hitdefTwo);
+				notProcess.add(hitdefTwo);
+			} else if (priorityOne.getHit_type() == HitType.HIT
+					&& priorityTwo.getHit_type() == HitType.MISS
+			) {
 				processHitdefVsCollisionRec(hitdefOne, two, removes,
 						notProcess, true);
-
-				// // Two is hit
-				// two.getInfo().setLastHitdef(hitdef);
-				// hitdefTwo.setTargetId(one.getSpriteId());
-				//				
-				//				
-				// // TODO Make a class for shaking
-				//				
-				// playSoundHit(hitdefTwo, two);
-				//
-				// two.getInfo().getShake().setAmpl(2);
-				// two.getInfo().getShake().setTime(hitdef.getPausetime().getP2_shaketime());
-				//				
-				// setSpriteHitSpriteState(hitdefTwo, two);
-				// drawSparkHit(hitdefTwo, two);
-				// StateMachine.getInstance().getSpriteRenderInstance(hitdefTwo.getSpriteId()).setPriority(SpriteRender.DEF_PRIO
-				// + 10);
-				// StateMachine.getInstance().getSpriteRenderInstance(two.getSpriteId()).setPriority(SpriteRender.DEF_PRIO);
-				//
-				//				
+				removes.add(hitdefTwo);
+				notProcess.add(hitdefTwo);
+			} else {
+				notProcess.add(hitdefTwo);
 			}
-			for (HitDefSub h: hitdefs)
-				if (h.getSpriteHitter() == sprite) {
-					removes.add(h);
-					notProcess.add(h);
-				}
-			// TODO
+
 		}
 	}
 
@@ -555,10 +540,10 @@ public class FightEngine {
 			}
 
 
-
+			sprite.getInfo().addLife(-hitdef.getDamage().getHit_damage());
 			sprite.getInfo().setLastHitdef(hitdef);
 			
-			setProjectileHitSpriteState(hitdef, sprite);
+			setProjectileHitSpriteState(hitdef, sprite, removes, notProcess);
 			// TODO Projectile Life
 			if (hitdef.getProjremove() != 0) {
 				removes.add(hitdef);
@@ -590,24 +575,35 @@ public class FightEngine {
 	/**
 	 * Set Sprite, Sprite state
 	 */
-	private void setSpriteHitSpriteState(HitDefSub hitdef, Sprite sprite) {
+	private void setSpriteHitSpriteState(HitDefSub hitdef, Sprite sprite, Set<HitDefSub> removes, Set<HitDefSub> notProcess) {
 
 		if (hitdef instanceof ProjectileSub)
 			throw new IllegalArgumentException("Only Hitdef");
 		Sprite sprHitter = (Sprite) hitdef.getSpriteHitter();
 
-	
-
-
-		
-		if (hitdef.getSnap() != null) {
-			sprite.getInfo().setXPos((float) (hitdef.getSpriteHitter().getRealXPos() + hitdef.getSnap().getX()));
-			sprite.getInfo().setYPos((float) (hitdef.getSpriteHitter().getRealYPos() + hitdef.getSnap().getY()));
+		if (hitdef.getHitonce() == 1) {
+			removes.add(hitdef);
+			notProcess.add(hitdef);
 		}
 		
+		if (hitdef.getSnap() != null) {
+			int mul = sprite.isFlip()? -1: 1;
+			sprite.getInfo().setXPos((float) (hitdef.getSpriteHitter().getRealXPos() - hitdef.getSnap().getX() * mul));
+			sprite.getInfo().setYPos((float) (hitdef.getSpriteHitter().getRealYPos() + hitdef.getSnap().getY()));
+		}
+		if (hitdef.getForcestand() == 1) {
+			sprite.getInfo().setType(Type.S);
+		}
 		if (hitdef.getP2stateno() != null) {
-			sprite.getSpriteState().targetState(sprHitter.getSpriteId(),
-					hitdef.getP2stateno() + "");
+			if (hitdef.getP2getp1state() == 1) {
+				sprite.getInfo().setCtrl(0);
+				sprite.getSpriteState().targetState(sprHitter.getSpriteId(),
+						hitdef.getP2stateno() + "");
+			} else {
+				sprite.getInfo().setCtrl(0);
+				sprite.getSpriteState().changeStateDef(hitdef.getP2stateno());
+				
+			}
 
 		} else if (sprite.getInfo().isHitOverride(hitdef.getAttr())) {
 			HitOverrideSub ho = sprite.getInfo().getHitOverride(hitdef.getAttr());
@@ -656,14 +652,26 @@ public class FightEngine {
 			sprite.getPalfx().init();
 			sprite.setPalfx(hitdef.getPalfx());
 		}
-		if (hitdef.getP1facing() == -1) {
-			sprHitter.getInfo().setFlip(!sprHitter.getInfo().isFlip());
-		} 
-		if (hitdef.getP2facing() == -1) {
-			sprite.getInfo().setFlip(sprHitter.isFlip());
-		}
-		if (hitdef.getP2facing() == 1) {
-			sprite.getInfo().setFlip(!sprHitter.isFlip());
+		if (hitdef.getP1getp2facing() != 0) {
+			if (hitdef.getP1getp2facing() == 1)
+				sprHitter.getInfo().setFlip(sprHitter.getInfo().isFlip());
+			else if (hitdef.getP1getp2facing() == -1)
+				sprHitter.getInfo().setFlip(!sprHitter.getInfo().isFlip());
+				
+		} else {
+			if (hitdef.getP1facing() == -1) {
+				sprHitter.getInfo().setFlip(!sprHitter.getInfo().isFlip());
+			} 
+			if (hitdef.getP2facing() == -1) {
+				sprite.getInfo().setFlip(sprHitter.isFlip());
+			}
+			if (hitdef.getP2facing() == 1) {
+				sprite.getInfo().setFlip(!sprHitter.isFlip());
+			}
+			if (hitdef.getP2facing() == -1) {
+				sprite.getInfo().setFlip(sprHitter.isFlip());
+			}
+			
 		}
 
 	}
@@ -708,19 +716,102 @@ public class FightEngine {
 	 * @param hitdef
 	 * @param sprite
 	 */
-	private void setProjectileHitSpriteState(ProjectileSub hitdef, Sprite sprite) {
+	private void setProjectileHitSpriteState(ProjectileSub hitdef, Sprite sprite, Set<HitDefSub> removes, Set<HitDefSub> notProcess) {
+
+		if (hitdef.getClass() != ProjectileSub.class)
+			throw new IllegalArgumentException("Only Hitdef");
+		Sprite sprHitter = (Sprite) hitdef.getSpriteParent();
+
+		if (hitdef.getHitonce() == 1) {
+			removes.add(hitdef);
+			notProcess.add(hitdef);
+		}
+		
+		if (hitdef.getSnap() != null) {
+			sprite.getInfo().setXPos((float) (hitdef.getSpriteHitter().getRealXPos() + hitdef.getSnap().getX()));
+			sprite.getInfo().setYPos((float) (hitdef.getSpriteHitter().getRealYPos() + hitdef.getSnap().getY()));
+		}
+		if (hitdef.getForcestand() == 1) {
+			sprite.getInfo().setType(Type.S);
+		}
 		if (hitdef.getP2stateno() != null) {
-			sprite.getSpriteState().targetState(hitdef.getSpriteId(),
-					hitdef.getP2stateno() + "");
+			if (hitdef.getP2getp1state() == 1) {
+				sprite.getInfo().setCtrl(0);
+				sprite.getSpriteState().targetState(sprHitter.getSpriteId(),
+						hitdef.getP2stateno() + "");
+			} else {
+				sprite.getInfo().setCtrl(0);
+				sprite.getSpriteState().changeStateDef(hitdef.getP2stateno());
+				
+			}
 
-		} else if (!hitdef.getAttr().isAttrType(AttrType.T)) {
-			if (sprite.getInfo().getType() == Type.S)
-				sprite.getSpriteState().changeStateDef(5000);
-			else if (sprite.getInfo().getType() == Type.C)
-				sprite.getSpriteState().changeStateDef(5010);
-			else if (sprite.getInfo().getType() == Type.A)
-				sprite.getSpriteState().changeStateDef(5020);
+		} else if (sprite.getInfo().isHitOverride(hitdef.getAttr())) {
+			HitOverrideSub ho = sprite.getInfo().getHitOverride(hitdef.getAttr());
+			int stateno = ho.getStateno();
+			if (stateno != -1) {
+				if (ho.getForceair() != 0) {
+					sprite.getInfo().setType(Type.A);
+				}
+				sprite.getInfo().setCtrl(0);
+				sprite.getSpriteState().changeStateDef(stateno);
+			}
+			
+			
+		} else if (!hitdef.getAttr().isAttrType(AttrType.T) || hitdef.getP2stateno() == null) {
+			if (sprite.getInfo().getType() == Type.S) {
+				if (hitdef.getGround().getType() == org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub.Type.TRIP) {
+					sprite.getSpriteState().changeStateDef(5070);
+					sprite.getInfo().setCtrl(0);
+				} else {
+					sprite.getSpriteState().changeStateDef(5000);
+					sprite.getInfo().setCtrl(0);
+				}
+			} else if (sprite.getInfo().getType() == Type.C) {
+				if (hitdef.getGround().getType() == org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub.Type.TRIP) {
+					sprite.getSpriteState().changeStateDef(5070);
+					sprite.getInfo().setCtrl(0);
+				} else {
+					sprite.getSpriteState().changeStateDef(5010);	
+					sprite.getInfo().setCtrl(0);
+				}
+			} else if (sprite.getInfo().getType().getBit() == Type.A.getBit()) {
+				if (hitdef.getGround().getType() == org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub.Type.TRIP) {
+					sprite.getSpriteState().changeStateDef(5070);
+					sprite.getInfo().setCtrl(0);
+				} else {
+					sprite.getSpriteState().changeStateDef(5020);	
+					sprite.getInfo().setCtrl(0);
+				}
+			}
+		}
+		if (hitdef.getP1stateno() != null) {
+			sprHitter.getSpriteState().changeStateDef(hitdef.getP1stateno());
 
+		}
+		if (hitdef.getPalfx().getTime() > 0) {
+			sprite.getPalfx().init();
+			sprite.setPalfx(hitdef.getPalfx());
+		}
+		if (hitdef.getP1getp2facing() != 0) {
+			if (hitdef.getP1getp2facing() == 1)
+				sprHitter.getInfo().setFlip(sprHitter.getInfo().isFlip());
+			else if (hitdef.getP1getp2facing() == -1)
+				sprHitter.getInfo().setFlip(!sprHitter.getInfo().isFlip());
+				
+		} else {
+			if (hitdef.getP1facing() == -1) {
+				sprHitter.getInfo().setFlip(!sprHitter.getInfo().isFlip());
+			} 
+			if (hitdef.getP2facing() == -1) {
+				sprite.getInfo().setFlip(sprHitter.isFlip());
+			}
+			if (hitdef.getP2facing() == 1) {
+				sprite.getInfo().setFlip(!sprHitter.isFlip());
+			}
+			if (hitdef.getP2facing() == -1) {
+				sprite.getInfo().setFlip(sprHitter.isFlip());
+			}
+			
 		}
 
 	}
@@ -852,8 +943,6 @@ public class FightEngine {
 			
 		}
 		assert theNearest != null;
-		if (theNearest instanceof SpriteHelper)
-			System.out.println("1");
 		return theNearest;
 	}
 	
@@ -956,7 +1045,9 @@ public class FightEngine {
 				 {
 
 				if (hasAttackRect(hitdef.getSpriteHitter())) {
-					if (sprTwo.getInfo().getCommand("\"holdback\"") == 1
+					if (sprTwo.getInfo().getCommand("\"holdback\"") == 1 
+							&& sprTwo.getInfo().getCtrl() == 1
+							&& sprTwo.getInfo().getLastHitdef().getHittime() <= 0
 							&& (stateTwo < 120 || stateTwo > 155)
 							&& sprTwo.getInfo().getMovetype() != MoveType.A) 
 //							&& sprTwo.getInfo().getMovetype() != MoveType.H
@@ -989,6 +1080,7 @@ public class FightEngine {
 			AbstractSprite sprite, Wrap<Rectangle> outUnion) {
 		boolean isTouch = false;
 		List<Rectangle> rectangles = hitdef.getSpriteHitter().getCns1();
+//		System.out.println(hitdef.getSpriteHitter().getCns1().size());
 		for (Rectangle rAttack : rectangles) {
 			for (Rectangle rCln2 : sprite.getCns2()) {
 				if (rAttack.intersects(rCln2)) {
@@ -1037,8 +1129,7 @@ public class FightEngine {
 			Sprite hitted) {
 
 		if (isMatch(HitDefSub.HitFlag.M.bit, hittedType)
-				&& (hitted.getInfo().getType() == Type.S || hitted.getInfo()
-						.getType() == Type.C)) {
+				&& (hitted.getInfo().getType() == Type.S || hitted.getInfo().getType() == Type.C)) {
 			return canOneHitsTwo(hittedGuard, hitted);
 		} else if (isMatch(HitDefSub.HitFlag.H.bit, hittedType)
 				&& hitted.getInfo().getType() == Type.S) {
@@ -1286,5 +1377,71 @@ public class FightEngine {
 		return projectiles;
 	}
 	
+	public HitDefSub getTheLastHitDef(String spriteId) {
+		Sprite one = StateMachine.getInstance().getSpriteInstance(spriteId);
+		HitDefSub lastHitdef = null;
+		if (one.getInfo().getMovetype() == MoveType.A) {
+			LinkedList<HitDefSub> hitdefs = StateMachine.getInstance().getFightEngine().getHitdefBySpriteHitter(spriteId);
 
+
+			// I want the last not reversal
+			for (HitDefSub h: hitdefs) {
+				if (h instanceof ProjectileSub)
+					continue;
+				if (lastHitdef == null) {
+					lastHitdef = h;
+				}
+				if (lastHitdef.getTimeCreated() < h.getTimeCreated())
+					lastHitdef = h;
+				
+			}
+
+			for (Sprite s: StateMachine.getInstance().getSprites()) {
+				
+				if (s == one || (s instanceof SpriteHelper))
+					continue;
+				if (s.getInfo().getLastHitdef() == null || !spriteId.equals(s.getInfo().getLastHitdef().getSpriteId()))
+					continue;
+				if (s.getInfo().getLastHitdef() instanceof ProjectileSub)
+					continue;
+				if (lastHitdef != null && lastHitdef.getTimeCreated() < s.getInfo().getLastHitdef().getTimeCreated())
+					lastHitdef = s.getInfo().getLastHitdef();
+			}
+		}
+		return lastHitdef;
+	}
+	
+	public HitDefSub getTheLastProjectile(String spriteHitterId) {
+		Sprite one = StateMachine.getInstance().getSpriteInstance(spriteHitterId);
+		HitDefSub lastHitdef = null;
+		if (one.getInfo().getMovetype() == MoveType.A) {
+			LinkedList<HitDefSub> hitdefs = StateMachine.getInstance().getFightEngine().getHitdefBySpriteHitter(spriteHitterId);
+
+
+			// I want the last not reversal
+			for (HitDefSub h: hitdefs) {
+				if (!(h instanceof ProjectileSub))
+					continue;
+				if (lastHitdef == null) {
+					lastHitdef = h;
+				}
+				if (lastHitdef.getTimeCreated() < h.getTimeCreated())
+					lastHitdef = h;
+				
+			}
+
+			for (Sprite s: StateMachine.getInstance().getSprites()) {
+				
+				if (s == one || (s instanceof SpriteHelper))
+					continue;
+				if (s.getInfo().getLastHitdef() == null || !spriteHitterId.equals(s.getInfo().getLastHitdef().getSpriteId()))
+					continue;
+				if (!(s.getInfo().getLastHitdef() instanceof ProjectileSub))
+					continue;
+				if (lastHitdef.getTimeCreated() < s.getInfo().getLastHitdef().getTimeCreated())
+					lastHitdef = s.getInfo().getLastHitdef();
+			}
+		}
+		return lastHitdef;
+	}
 }

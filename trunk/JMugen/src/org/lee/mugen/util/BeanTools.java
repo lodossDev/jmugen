@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,17 +27,16 @@ import org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub.AffectTeam;
 import org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub.AttrClass;
 import org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub.AttrLevel;
 import org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub.AttrType;
-import org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub.Priority;
 import org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub.Sound;
-import org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub.Priority.HitType;
-import org.lee.mugen.sprite.character.spiteCnsSubClass.ReversaldefSub.ReversalAttrClass;
 import org.lee.mugen.sprite.entity.Anim;
 import org.lee.mugen.sprite.entity.BindToTargetSub;
 import org.lee.mugen.sprite.entity.PointF;
 import org.lee.mugen.sprite.entity.Postype;
+import org.lee.mugen.sprite.entity.Priority;
 import org.lee.mugen.sprite.entity.Sparkno;
 import org.lee.mugen.sprite.entity.Velocity;
 import org.lee.mugen.sprite.entity.BindToTargetSub.Pos;
+import org.lee.mugen.sprite.entity.Priority.HitType;
 import org.lee.mugen.sprite.parser.Parser;
 
 
@@ -91,10 +89,19 @@ public class BeanTools {
 	private static Converter<AttrClass> attrClassConverter = new Converter<AttrClass>() {
 
 		public AttrClass convert(Object o) {
-			if (o instanceof String) {
-				String str = o.toString().replaceAll(" ", "").toUpperCase();
+			if (o instanceof String || o instanceof Object[]) {
+				String[] tokens = null;
+				if (o instanceof String) {
+					String str = o.toString().replaceAll(" ", "").toUpperCase();
+					
+					tokens = str.split(",");
+				} else {
+					Object[] objects = (Object[]) o;
+					tokens = new String[objects.length];
+					for (int i = 0; i < objects.length; i++)
+						tokens[i] = objects[i].toString();
+				}
 				AttrClass attrClass = new AttrClass();
-				String[] tokens = str.split(",");
 				int i = 0;
 				String first = tokens[i++];
 				int typeFirst = 0;
@@ -786,7 +793,7 @@ public class BeanTools {
 		convertersMap.put(Postype.class, postypeConverter);
 		convertersMap.put(Trans.class, afterImage$transConverter);
 		
-		convertersMap.put(HitDefSub.Priority.class, hitdef$priorityConverter);
+		convertersMap.put(Priority.class, hitdef$priorityConverter);
 		convertersMap.put(HitDefSub.Type.class, hitdef$typeConverter);
 		convertersMap.put(HitDefSub.AnimType.class, hitdef$animTypeConverter);
 		convertersMap.put(HitDefSub.Pausetime.class, hitdef$pausetimeConverter);

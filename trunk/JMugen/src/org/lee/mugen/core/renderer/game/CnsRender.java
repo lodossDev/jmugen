@@ -93,6 +93,7 @@ public class CnsRender implements Renderable {
 		
 		if (showAttackCns) {
 			g.setColor(Color.RED);
+			
 			for (java.awt.Rectangle r: sprite.getCns1()) {
 				r.setLocation(x + r.x, y + r.y);
 	            g.draw(r);

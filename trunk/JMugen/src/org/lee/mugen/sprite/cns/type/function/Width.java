@@ -39,6 +39,8 @@ public class Width extends StateCtrlFunction {
 					sprInfo.setWidth(iFront);
 
 				}
+			} else {
+				sprInfo.setWidth(0, 0);
 			}
 		}
 		{
@@ -57,6 +59,8 @@ public class Width extends StateCtrlFunction {
 					sprInfo.setEdge(iFront);
 
 				}
+			} else {
+				sprInfo.setWidth(0, 0);
 			}
 		}
 		{

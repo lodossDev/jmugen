@@ -10,8 +10,6 @@ import org.lee.mugen.input.MugenCommands;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.SpriteCns;
 
-import com.sun.corba.se.pept.transport.ContactInfo;
-
 /**
  * This class process command recognition
  * TODO : remove the interface KeyAdapter beause it's not genereic

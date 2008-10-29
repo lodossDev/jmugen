@@ -7,7 +7,6 @@ import org.lee.mugen.sprite.character.SpriteCns;
 import org.lee.mugen.sprite.character.SpriteHelper;
 import org.lee.mugen.sprite.cns.eval.function.StateCtrlFunction;
 import org.lee.mugen.sprite.entity.HelperSub;
-import org.lee.mugen.sprite.entity.PointF;
 import org.lee.mugen.sprite.parser.ExpressionFactory;
 
 public class Helper extends StateCtrlFunction {

@@ -1,7 +1,5 @@
 package org.lee.mugen.core.renderer.game;
 
-import org.lee.mugen.core.FightEngine;
-import org.lee.mugen.core.StateMachine;
 import org.lee.mugen.parser.air.AirData;
 import org.lee.mugen.parser.air.AirData.TypeBlit;
 import org.lee.mugen.renderer.AngleDrawProperties;
@@ -11,7 +9,6 @@ import org.lee.mugen.renderer.ImageContainer;
 import org.lee.mugen.renderer.Renderable;
 import org.lee.mugen.renderer.Trans;
 import org.lee.mugen.renderer.GameWindow.MouseCtrl;
-import org.lee.mugen.sprite.background.Stage;
 import org.lee.mugen.sprite.base.AbstractAnimManager.SpriteDrawProperties;
 import org.lee.mugen.sprite.baseForParse.ImageSpriteSFF;
 import org.lee.mugen.sprite.entity.ExplodSprite;

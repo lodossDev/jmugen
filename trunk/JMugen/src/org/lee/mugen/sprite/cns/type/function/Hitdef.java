@@ -17,6 +17,7 @@ import org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub.AttrType;
 import org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub.GuardFlag;
 import org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub.HitFlag;
 import org.lee.mugen.sprite.cns.eval.function.StateCtrlFunction;
+import org.lee.mugen.sprite.entity.Priority;
 import org.lee.mugen.sprite.parser.ExpressionFactory;
 import org.lee.mugen.util.BeanTools;
 
@@ -157,7 +158,7 @@ public class Hitdef extends StateCtrlFunction {
 					}}, 
 				new Valueable() {
 					public Object getValue(String spriteId, Valueable... params) {
-						return HitDefSub.Priority.HitType.HIT;
+						return Priority.HitType.HIT;
 					}}, 
 		});
 
@@ -1047,7 +1048,7 @@ public class Hitdef extends StateCtrlFunction {
 					new Valueable() {
 
 						public Object getValue(String spriteId, Valueable... params) {
-							return HitDefSub.Priority.HitType.HIT;
+							return Priority.HitType.HIT;
 						}}
 			};
 			return result;
@@ -1061,7 +1062,7 @@ public class Hitdef extends StateCtrlFunction {
 					new Valueable() {
 
 						public Object getValue(String spriteId, Valueable... params) {
-							return HitDefSub.Priority.HitType.valueOf(vals[1].getValue(spriteId, params).toString().toUpperCase());
+							return Priority.HitType.valueOf(vals[1].getValue(spriteId, params).toString().toUpperCase());
 						}}
 			};
 			return result;

@@ -25,6 +25,13 @@ public class Loseko extends SpriteCnsTriggerFunction {
 	public static boolean isLoseKo(String spriteId) {
 		StateMachine stateMachine = StateMachine.getInstance();
 		Sprite sprite = stateMachine.getSpriteInstance(spriteId);
-		return sprite.getInfo().getLife() <= 0;	
+		int lifeOne = 0;
+		
+		for (Sprite s: stateMachine.getPartners(sprite)) {
+			if (s.getClass() == Sprite.class)
+				lifeOne += s.getInfo().getLife();
+		}
+		
+		return lifeOne <= 0;
 	}
 }

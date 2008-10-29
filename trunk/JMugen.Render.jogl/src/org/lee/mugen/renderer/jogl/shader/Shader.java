@@ -48,6 +48,9 @@ public class Shader {
 		gl.glAttachShader(programID, fshID);
 		gl.glLinkProgram(programID);
 		gl.glValidateProgram(programID);
+		
+
+
 	}
 	
 	

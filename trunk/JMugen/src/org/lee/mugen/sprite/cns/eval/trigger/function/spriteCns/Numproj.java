@@ -5,9 +5,11 @@ import java.util.Collection;
 import org.lee.mugen.core.FightEngine;
 import org.lee.mugen.core.StateMachine;
 import org.lee.mugen.parser.type.Valueable;
+import org.lee.mugen.sprite.base.AbstractSprite;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub;
 import org.lee.mugen.sprite.cns.eval.function.SpriteCnsTriggerFunction;
+import org.lee.mugen.sprite.entity.ProjectileSprite;
 import org.lee.mugen.sprite.entity.ProjectileSub;
 
 public class Numproj extends SpriteCnsTriggerFunction {
@@ -27,7 +29,13 @@ public class Numproj extends SpriteCnsTriggerFunction {
 			if ((hitdef instanceof ProjectileSub) && StateMachine.getInstance().getRoot((Sprite) hitdef.getSpriteHitter()) == sprite)
 				count++;
 		}
-		
+		for (AbstractSprite spr: StateMachine.getInstance().getOtherSprites()) {
+			if (spr instanceof ProjectileSprite) {
+				ProjectileSprite proj = (ProjectileSprite) spr;
+				if (StateMachine.getInstance().getRoot(proj.getProjectileSub().getSpriteParent()) == sprite)
+					count++;
+			}
+		}
 		return count;
 	}
 }

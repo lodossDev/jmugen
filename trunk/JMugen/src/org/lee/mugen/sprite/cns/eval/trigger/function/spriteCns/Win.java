@@ -18,7 +18,8 @@ public class Win extends SpriteCnsTriggerFunction {
 	
 	public static boolean isWin(String spriteId) {
 		boolean allLoose = true;
-		for (Sprite s: StateMachine.getInstance().getSprites()) {
+		Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);
+		for (Sprite s: StateMachine.getInstance().getEnnmies(sprite)) {
 			if (s instanceof SpriteHelper)
 				continue;
 			if (s.getSpriteId().equals(spriteId))

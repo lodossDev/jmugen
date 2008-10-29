@@ -387,6 +387,10 @@ public class Parser {
 		try {
 			if (o == null)
 				return 0;
+			if (o instanceof String)
+				return new Float(o.toString());
+			else if (o instanceof Boolean)
+				return ((Boolean)o).booleanValue()? 1: 0;
 			return ((Number)o).floatValue();
 		} catch (Exception e) {
 			throw new IllegalArgumentException("Valueable can be evaluate to String or Float only");

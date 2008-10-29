@@ -5,7 +5,6 @@ import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.spiteCnsSubClass.ReversaldefSub;
 import org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub.AttrClass;
-import org.lee.mugen.sprite.character.spiteCnsSubClass.ReversaldefSub.ReversalAttrClass;
 import org.lee.mugen.sprite.cns.eval.function.StateCtrlFunction;
 import org.lee.mugen.util.BeanTools;
 

@@ -26,9 +26,12 @@ public class Movehit extends SpriteCnsTriggerFunction {
 
 			HitDefSub strictHitdef = null;
 			// I want the last not reversal
-			for (HitDefSub h: hitdefs)
-				if (h.getClass() != ReversaldefSub.class)
+			for (HitDefSub h: hitdefs) {
+				if (h.getSpriteId().equals(spriteId))
 					strictHitdef = h;
+			
+				
+			}
 
 			for (Sprite s: StateMachine.getInstance().getSprites()) {
 				

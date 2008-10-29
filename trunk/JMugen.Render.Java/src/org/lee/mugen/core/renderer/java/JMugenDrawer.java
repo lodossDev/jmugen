@@ -134,9 +134,12 @@ public class JMugenDrawer extends MugenDrawer {
 		
 	}
 
+	private float xScale = 1;
+	private float yScale = 1;
 	@Override
 	public void scale(float x, float y) {
-		// TODO Auto-generated method stub
+		xScale = x;
+		yScale = y;
 		
 	}
 

@@ -26,6 +26,7 @@ import org.lee.mugen.core.Game.DebugAction;
 import org.lee.mugen.input.CmdProcDispatcher;
 import org.lee.mugen.input.ISpriteCmdProcess;
 import org.lee.mugen.renderer.GameWindow;
+import org.lee.mugen.renderer.GraphicsWrapper;
 import org.lee.mugen.renderer.MugenTimer;
 
 public class JoglGameWindow implements GameWindow, GLEventListener {
@@ -75,6 +76,8 @@ public class JoglGameWindow implements GameWindow, GLEventListener {
 
 			@Override
 			public void keyPressed(KeyEvent e) {
+				if (scp == null)
+					return;
 				scp.keyPressed(e.getKeyCode());
 				keyMapPress.put(e.getKeyCode(), true);
 				
@@ -82,7 +85,8 @@ public class JoglGameWindow implements GameWindow, GLEventListener {
 
 			@Override
 			public void keyReleased(KeyEvent e) {
-
+				if (scp == null)
+					return;
 				scp.keyReleased(e.getKeyCode());
 				keyMapPress.put(e.getKeyCode(), false);
 			}
@@ -171,6 +175,7 @@ public class JoglGameWindow implements GameWindow, GLEventListener {
 				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P1.ABC").toUpperCase()).getInt(null),
 				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P1.XYZ").toUpperCase()).getInt(null));	
 		
+		
 		CmdProcDispatcher.getSpriteDispatcherMap().put("1", cd1);
 		
 		
@@ -189,6 +194,39 @@ public class JoglGameWindow implements GameWindow, GLEventListener {
 				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P2.XYZ").toUpperCase()).getInt(null));	
 		
 		CmdProcDispatcher.getSpriteDispatcherMap().put("2", cd2);
+		
+		CmdProcDispatcher cd3 = new CmdProcDispatcher(
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P3.UP").toUpperCase()).getInt(null), 
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P3.DOWN").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P3.LEFT").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P3.RIGHT").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P3.A").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P3.B").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P3.C").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P3.X").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P3.Y").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P3.Z").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P3.ABC").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P3.XYZ").toUpperCase()).getInt(null));	
+		
+		
+		CmdProcDispatcher.getSpriteDispatcherMap().put("3", cd3);
+		
+		
+		CmdProcDispatcher cd4 = new CmdProcDispatcher(
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P4.UP").toUpperCase()).getInt(null), 
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P4.DOWN").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P4.LEFT").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P4.RIGHT").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P4.A").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P4.B").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P4.C").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P4.X").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P4.Y").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P4.Z").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P4.ABC").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P4.XYZ").toUpperCase()).getInt(null));	
+		CmdProcDispatcher.getSpriteDispatcherMap().put("4", cd4);
 	}
 	
 
@@ -197,7 +235,7 @@ public class JoglGameWindow implements GameWindow, GLEventListener {
 		return mouse;
 	}
 
-	MugenTimer joglTimer = new MugenTimer() {
+	MugenTimer joglMugenTimer = new MugenTimer() {
 
 		@Override
 		public int getFps() {
@@ -232,7 +270,7 @@ public class JoglGameWindow implements GameWindow, GLEventListener {
 	@Override
 	public MugenTimer getTimer() {
 		
-		return null;
+		return joglMugenTimer;
 	}
 
 	
@@ -301,7 +339,7 @@ public class JoglGameWindow implements GameWindow, GLEventListener {
 		_gl.glMatrixMode(GL.GL_PROJECTION);
 		_gl.glLoadIdentity();
 
-		_gl.glOrtho(0, width, height, 0, -1, 1);
+		_gl.glOrtho(0, width, height, 0, -10000, 10000);
 
 		_gl.glScaled((float) width / 320, (float) height / 240, 0);
 		
@@ -339,16 +377,24 @@ public class JoglGameWindow implements GameWindow, GLEventListener {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				mouse.setLeftPress(SwingUtilities.isLeftMouseButton(e));
-				mouse.setRightPress(SwingUtilities.isLeftMouseButton(e));
+				mouse.setRightPress(SwingUtilities.isRightMouseButton(e));
+				mouse.setLeftRelease(!SwingUtilities.isLeftMouseButton(e));
+				mouse.setRightRelease(!SwingUtilities.isRightMouseButton(e));
 				mouse.setX((int) (e.getX()/2f));
 				mouse.setY((int) (e.getY()/2f));
+				
+				if (SwingUtilities.isRightMouseButton(e))
+					((JoglMugenDrawer)GraphicsWrapper.getInstance()).setScaleByForMeDebug(!((JoglMugenDrawer)GraphicsWrapper.getInstance()).isScaleByForMeDebug());
 				
 			}
 
 			@Override
 			public void mouseReleased(MouseEvent e) {
+				mouse.setLeftPress(!SwingUtilities.isLeftMouseButton(e));
+				mouse.setRightPress(!SwingUtilities.isRightMouseButton(e));
 				mouse.setLeftRelease(SwingUtilities.isLeftMouseButton(e));
-				mouse.setRightRelease(SwingUtilities.isLeftMouseButton(e));
+				mouse.setRightRelease(SwingUtilities.isRightMouseButton(e));
+
 				mouse.setX((int) (e.getX()/2f));
 				mouse.setY((int) (e.getY()/2f));
 				
@@ -385,8 +431,19 @@ public class JoglGameWindow implements GameWindow, GLEventListener {
 				_gl.glMatrixMode(GL.GL_MODELVIEW);
 				_gl.glLoadIdentity();
 				callback.update(1);
+				
+				_gl.glPushMatrix();
 				callback.render();
+				
+				_gl.glPopMatrix();
+				
+				_gl.glPushMatrix();
 				callback.renderDebugInfo();
+				_gl.glPopMatrix();
+				mouse.setLeftPress(false);
+				mouse.setRightPress(false);
+				mouse.setLeftRelease(false);
+				mouse.setRightRelease(false);
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
@@ -394,7 +451,7 @@ public class JoglGameWindow implements GameWindow, GLEventListener {
 		}
 
 	}
-
+	float rot = 0;
 	@Override
 	public void displayChanged(GLAutoDrawable drawable, boolean modeChanged,
 			boolean deviceChanged) {

@@ -34,16 +34,7 @@ public class Projguardedtime extends SpriteCnsTriggerFunction {
 			"\\b(" + "projguardedtime(\\d*)" + ")\\b");
 	@Override
 	public int parseValue(String[] tokens, int pos, List<Valueable> result) {
-		final Wrap<String[]> key = new Wrapper<String[]>();;
-		final Wrap<MathFunction> firstOp = new Wrapper<MathFunction>();
-		final Wrap<Valueable> value1 = new Wrapper<Valueable>();;
-
-		Wrap<MathFunction> compareOp = new Wrapper<MathFunction>();;
-		Wrap<Valueable> value2 = new Wrapper<Valueable>();
-		
-		int position = Parser.getValueForSpecialOpAndReturnPos(tokens, pos, key, firstOp, value1, compareOp, value2);
-		
-		String keyStr = key.getValue()[0];
+		String keyStr = tokens[pos];
 
 		Matcher m = PROJ_GUARDED_TIME_SPEC_REG.matcher(keyStr);
 		final Integer projid;
@@ -63,34 +54,27 @@ public class Projguardedtime extends SpriteCnsTriggerFunction {
 			projid = null;
 		}
 
+
 		Valueable value = new Valueable() {
 
 			public Object getValue(String spriteId, Valueable... params) {
 				List<ProjectileSub> projectiles;
 				FightEngine fightEngine = StateMachine.getInstance().getFightEngine();
-
 				projectiles = fightEngine.getProjectiles(projid);
-		
-				long delay = Parser.getIntValue(value1.getValue().getValue(spriteId));
-				MathFunction func = firstOp.getValue();
-
 				long currentTime = StateMachine.getInstance().getGameState().getGameTime();
 				for (ProjectileSub projectile: projectiles) {
-					if (projectile.getLastTimeBlockBySomething() == -1)
+					if (projectile.getLastTimeHitSomething() == -1)
 						continue;
 
-					long deltaBlock = currentTime - projectile.getLastTimeBlockBySomething();
-					int res = Parser.getIntValue(func.getFunctionResult(spriteId, delay, deltaBlock));
-					if (res != 0) {
-						return 1;
-					}
+					long deltaContact = currentTime - projectile.getLastTimeCancelByProjectile();
+					return deltaContact;
 				}
-				return 0;
+				return -1;
 			}
 		};
 		
 		result.add(value);
-		return position;
+		return pos;
 		
 	
 	

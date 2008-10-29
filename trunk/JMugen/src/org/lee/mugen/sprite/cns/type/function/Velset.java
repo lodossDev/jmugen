@@ -26,6 +26,8 @@ public class Velset extends StateCtrlFunction {
 			Valueable x = valueableParams[xIndex][0];
 			if (x != null) {
 				float fx = Parser.getFloatValue(x.getValue(spriteId));
+				if (fx != 0)
+					System.out.println();
 				sprInfo.getVelset().setX(fx);
 			}
 			

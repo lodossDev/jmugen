@@ -1,12 +1,19 @@
 package org.lee.mugen.core;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.SpriteHelper;
+import org.lee.mugen.sprite.character.SpriteCns.Type;
 import org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns.Roundstate;
+import org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns.Win;
 import org.lee.mugen.sprite.cns.type.function.Assertspecial.Flag;
+import org.lee.mugen.util.MugenRandom;
 
 
 /**
@@ -110,11 +117,122 @@ public class GameState {
 	
 	public void leave(StateMachine sm) {
 		gameTime++;
-		if (roundTime > 0)
+		if (roundTime > 0 && getRoundState() != Roundstate.PRE_END)
 			roundTime--;
+		
+		if (roundState == Roundstate.COMBAT) {
+			boolean isOneWin = false;
+			Sprite winner = null;
+			for (String spriteId: spriteIdStateMap.keySet()) {
+				if (Win.isWin(spriteId)) {
+					isOneWin = true;
+					winner = StateMachine.getInstance().getSpriteInstance(spriteId);
+				}
+			}
+			if (isOneWin) {
+				roundState = Roundstate.PRE_END;
+				for (String spriteId: spriteIdStateMap.keySet()) {
+					spriteIdStateMap.put(spriteId, Roundstate.PRE_END);
+					StateMachine.getInstance().getSpriteInstance(spriteId).getInfo().setCtrl(0);
+				}
+			}
+			if (roundTime <= 0) {
+				roundState = Roundstate.PRE_END;
+				for (String spriteId: spriteIdStateMap.keySet()) {
+					spriteIdStateMap.put(spriteId, Roundstate.PRE_END);
+					StateMachine.getInstance().getSpriteInstance(spriteId).getInfo().setCtrl(0);
+				}
+			}
+			
+		} else if (roundState == Roundstate.PRE_END) {
+			boolean isAllSpriteInactive = true;
+			for (String spriteId: spriteIdStateMap.keySet()) {
+				Sprite s = StateMachine.getInstance().getSpriteInstance(spriteId);
+				if (s.getInfo().getType() == Type.L && s.getInfo().getLife() <= 0) {
+					continue;
+				}
+				isAllSpriteInactive = isAllSpriteInactive && s.getSpriteState().getCurrentState().getIntId() == 0 && s.getInfo().getType() == Type.S;
+			}
+			if (isAllSpriteInactive) {
+				roundState = Roundstate.VICTORY;
+			}
+		} else if (roundState == Roundstate.VICTORY) {
+			
+			Sprite winner = null;
+			for (String spriteId: spriteIdStateMap.keySet()) {
+				if (Win.isWin(spriteId)) {
+					winner = StateMachine.getInstance().getSpriteInstance(spriteId);
+				}
+			}
+			if (winner != null) {
+				Collection<Sprite> winners = new LinkedList<Sprite>();
+				Collection<Sprite> loser = new LinkedList<Sprite>();
+				if (StateMachine.getInstance().getTeamOne().containsKey(winner.getSpriteId())) {
+					winners.addAll(StateMachine.getInstance().getTeamOne().values());
+					loser.addAll(StateMachine.getInstance().getTeamTwo().values());
+				} else {
+					winners.addAll(StateMachine.getInstance().getTeamTwo().values());
+					loser.addAll(StateMachine.getInstance().getTeamOne().values());
+				}
+				for (Sprite s: winners) {
+					if (s instanceof SpriteHelper)
+						continue;
+					if (s.getInfo().getType() == Type.L)
+						continue;
+					if (spriteIdStateMap.get(s.getSpriteId()) != Roundstate.VICTORY) {
+						List<Integer> validNumber = new ArrayList<Integer>();
+						
+						for (int i = 180; i < 190; i++) {
+							if (s.getSpriteState().isStateExist(i)) {
+								validNumber.add(i);
+							}
+						}
+						int size = validNumber.size();
+						if (size > 0) {
+							int state = MugenRandom.getRandomNumber(0, size - 1);
+							s.getSpriteState().changeStateDef(validNumber.get(state));
+							spriteIdStateMap.put(s.getSpriteId(), Roundstate.VICTORY);
+						}
+					}
+				}
+				for (Sprite s: loser) {
+					if (s instanceof SpriteHelper)
+						continue;
+					if (s.getInfo().getType() == Type.L)
+						continue;
+					if (spriteIdStateMap.get(s.getSpriteId()) != Roundstate.VICTORY) {
+						List<Integer> validNumber = new ArrayList<Integer>();
+						
+						if (s.getSpriteState().isStateExist(170)) {
+							validNumber.add(170);
+						}
+						int size = validNumber.size();
+						if (size > 0) {
+							int state = MugenRandom.getRandomNumber(0, size - 1);
+							s.getSpriteState().changeStateDef(validNumber.get(state));
+							spriteIdStateMap.put(s.getSpriteId(), Roundstate.VICTORY);
+						}
+					}
+				}
+				
+			} else {
+				for (Sprite s: StateMachine.getInstance().getSprites()) {
+					if (s instanceof SpriteHelper)
+						continue;
+					if (s.getInfo().getType() == Type.L)
+						continue;
+					if (spriteIdStateMap.get(s.getSpriteId()) != Roundstate.VICTORY) {
+						s.getSpriteState().changeStateDef(175);
+						spriteIdStateMap.put(s.getSpriteId(), Roundstate.VICTORY);
+					}
+				}
+			}
+			
+		}
 		
 	}
 
+	
 	public void enter(StateMachine sm) {
 		for (String spriteId: spriteIdStateMap.keySet()) {
 			if (sm.getGlobalEvents().isAssertSpecial(spriteId, Flag.intro)) {
@@ -137,7 +255,7 @@ public class GameState {
 			lastId = spriteId;
 		}
 		
-		if (isAllSameState) {
+		if (isAllSameState && getRoundState() <= Roundstate.INTRO) {
 			setRoundState(state);
 			if (getRoundState() == Roundstate.COMBAT 
 					&& getRoundsExisted() == 0) {

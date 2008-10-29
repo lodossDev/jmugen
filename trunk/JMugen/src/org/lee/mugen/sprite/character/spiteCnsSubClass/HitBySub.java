@@ -1,7 +1,6 @@
 package org.lee.mugen.sprite.character.spiteCnsSubClass;
 
 import org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub.AttrClass;
-import org.lee.mugen.sprite.character.spiteCnsSubClass.ReversaldefSub.ReversalAttrClass;
 
 public class HitBySub implements Cloneable {
 

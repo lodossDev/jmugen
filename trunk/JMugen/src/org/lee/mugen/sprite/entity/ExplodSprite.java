@@ -221,7 +221,7 @@ public class ExplodSprite extends AbstractSprite {
 
 			float yoffset = sprAnimMng.getCurrentImageSprite().getYOffSet() * yScale;
 			boolean isFilpForRealV = sprAnimMng.getCurrentImageSprite().isMirrorV();
-			float yRes = _mvY + yOffSet - (
+			float yRes = _mvY  + yOffSet - (
 						isFilpForRealV?
 								h - yAxis * yScale + yoffset
 								:yAxis * yScale - yoffset);

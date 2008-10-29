@@ -31,12 +31,17 @@
 
 package org.lee.mugen.renderer.jogl;
 
-import static java.awt.Color.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.image.BufferedImage;
+import static java.awt.Color.BLUE;
+import static java.awt.Color.RED;
+import static java.awt.Color.YELLOW;
+
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.GradientPaint;
+import java.awt.Graphics2D;
+import java.awt.Paint;
+import java.awt.RenderingHints;
 import java.awt.geom.GeneralPath;
-import javax.swing.*;
 
 /**
  * Based on the version found in Java2Demo...

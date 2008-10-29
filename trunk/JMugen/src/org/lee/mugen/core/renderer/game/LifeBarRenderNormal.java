@@ -10,7 +10,6 @@ import org.lee.mugen.core.StateMachine;
 import org.lee.mugen.fight.Face.PlayerFace;
 import org.lee.mugen.fight.Lifebar.Bg;
 import org.lee.mugen.fight.Lifebar.PlayerLifeBar;
-import org.lee.mugen.fight.Name.NameInner;
 import org.lee.mugen.fight.Name.PlayerName;
 import org.lee.mugen.fight.Time.Counter;
 import org.lee.mugen.renderer.DrawProperties;

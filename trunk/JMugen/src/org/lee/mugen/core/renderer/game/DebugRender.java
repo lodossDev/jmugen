@@ -164,7 +164,7 @@ public class DebugRender implements Renderable {
 			}
 			
 		} catch (Exception e) {
-//			e.printStackTrace();
+			e.printStackTrace();
 			System.err.println("Info Err");
 		}
 

@@ -18,14 +18,17 @@ public class SpriteRedirect {
 	public static final String ROOT_GROUP_REGEX = "root";
 	public static final String PARENT_GROUP_REGEX = "parent";
 	public static final String ENEMY_GROUP_REGEX = "enemy";
+	public static final String PARTNER_GROUP_REGEX = "partner";
 	public static final String HELPER_WITH_ID_GROUP_REGEX = "helper";
 	public static final String PLAYER_WITH_ID_GROUP_REGEX = "playerid";
 	public static final String TARGET_WITH_ID_GROUP_REGEX = "target";
 	public static final String ENEMYNEAR_WITH_ID_GROUP_REGEX = "enemynear";
 	
 	
+	
 	public static final String SPRITE_REDIRECT_REG = "\\b(" + ROOT_GROUP_REGEX + ")\\b" + "|" +
 	"\\b(" + PARENT_GROUP_REGEX + ")\\b" + "|" +
+	"\\b(" + PARTNER_GROUP_REGEX + ")\\b" + "|" +
 	"\\b(" + ENEMYNEAR_WITH_ID_GROUP_REGEX + ")\\b" + "|" +
 	"\\b(" + HELPER_WITH_ID_GROUP_REGEX + ")\\b" + "|" +
 	"\\b(" + PLAYER_WITH_ID_GROUP_REGEX + ")\\b" + "|" +
@@ -61,14 +64,14 @@ public class SpriteRedirect {
 		map.put(ENEMYNEAR_WITH_ID_GROUP_REGEX, new MathsFunctionSpeRedirect("enemynear", 1000, 1, new Enemynear()));
 		map.put(ENEMY_GROUP_REGEX, new MathsFunctionSpeRedirect("enemy", 1000, 1, new Enemy()));
 
-		map.put("partner", new MathFunction("partner", 1000, 1, new Partner()));
+		map.put(PARTNER_GROUP_REGEX, new MathsFunctionSpeRedirect("partner", 1000, 1, new Partner()));
 
 //		map.put("playerid", new MathFunction("playerid", 1, 1, new Parent()));
 		
 		return map;
 	}
 	
-	private static class Partner implements Functionable {
+	private static class Partner extends SpecialPatternRedirect {
 		public Object getValue(String spriteId, Valueable... params) {
 			Collection<Sprite> partners = StateMachine.getInstance().getPartners(StateMachine.getInstance().getSpriteInstance(spriteId));
 			for (Sprite s: partners) {

@@ -11,6 +11,8 @@ public class P3name extends SpriteCnsTriggerFunction {
 	}
 	@Override
 	public Object getValue(String spriteId, Valueable... params) {
+		if (StateMachine.getInstance().getSpriteDef("3") == null)
+			return "";
 		return StateMachine.getInstance().getSpriteDef("3").getInfo().getDisplayname();
 	}
 

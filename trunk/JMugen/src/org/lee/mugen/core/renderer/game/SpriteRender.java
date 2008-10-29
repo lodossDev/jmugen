@@ -55,8 +55,8 @@ public class SpriteRender implements Renderable {
 			adp.setAngleset(-dp.getAngleset());
 			adp.setXAnchor(pos.getX() + x + imgSprite.getXAxis() * xScale);
 			adp.setYAnchor(pos.getY() + y + imgSprite.getYAxis() * yScale);
-			adp.setXScale(dp.getXScale());
-			adp.setYScale(dp.getYScale());
+//			adp.setXScale(dp.getXScale()); // This scale is now directly include in sprite.getXscale()
+//			adp.setYScale(dp.getYScale());
 			if (sprite.isFlip()) {
 				adp.setAngleset(adp.getAngleset() * -1);
 			}
@@ -81,8 +81,8 @@ public class SpriteRender implements Renderable {
 
 	}
 	public void render() {
-//		if (sprite instanceof SpriteHelper && sprite.getSprAnimMng().getAction() == 7000)
-//			System.out.println();
+		if (sprite instanceof SpriteHelper && sprite.getSprAnimMng().getAction() == 7000)
+			System.out.println();
 		ImageContainer imageContainer = null;
 		try {
 			imageContainer = sprite.getCurrentImage();
