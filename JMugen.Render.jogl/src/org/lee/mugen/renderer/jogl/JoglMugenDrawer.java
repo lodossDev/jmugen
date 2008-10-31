@@ -282,10 +282,8 @@ public class JoglMugenDrawer extends MugenDrawer {
 		if (gl == null)
 			return;
 		
-
-		
-		
 		Texture texture = (Texture) dp.getIc().getImg();
+
 
 		// store the current model matrix
 		gl.glPushMatrix();
