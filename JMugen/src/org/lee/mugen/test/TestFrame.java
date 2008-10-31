@@ -40,10 +40,7 @@ public class TestFrame {
 		
 		JOptionPane.showMessageDialog(null, 
 				"JMugen : This version is an alpha version" + "\n" + 
-				"* Memory is not optimized :" + "\n" + 
-				"    - Loading : Low Res Characters with Low Res Stage => 100 Mo" + "\n" + 
-				"    - Loading : Hi res Characters with Hi Res Stage => 1 000 Mo !!! " + "\n" +
-				"                (I have to find a way to load Compressed Image (pcx) directly to the GPU)" + "\n" + 
+				"* Memory is not optimized but now it is better with jogl" + "\n" + 
 				"* There are two version of this JMugen (Default is Opengl)" + "\n" + 
 				"    - OpenGL (For now Shader 2 is requiered)" + "\n" + 
 				"    - Software (no support for now palFx,proper rotation, ...)" + "\n" + 
@@ -195,9 +192,9 @@ public class TestFrame {
 	    
 	    
 		String[] args = new String[] {
-				"gokuHR", "0",
-				"bridget2", "0", 
-				"ggxx_grove.def",
+				"sf3gouki", "1", 
+				"cvsg_rugal", "0",
+				"d4_ggxxac_China.def",
 				"ADX_S060.wav"
 		};
 		
@@ -218,6 +215,8 @@ public class TestFrame {
 		gameWindow.setGameWindowCallback(statemachine);
 		SpriteDebugerUI debugerUI = new SpriteDebugerUI();
 		debugerUI.setVisible(true);
+		ExpressionTester.lanch();
+		
 		gameWindow.start();
 
 	}

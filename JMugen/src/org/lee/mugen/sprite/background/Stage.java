@@ -19,7 +19,6 @@ import org.lee.mugen.parser.air.AirParser;
 import org.lee.mugen.parser.type.StringValueable;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sff.SffReader;
-import org.lee.mugen.sprite.background.BG.Type;
 import org.lee.mugen.sprite.base.AbstractAnimManager;
 import org.lee.mugen.sprite.baseForParse.SpriteSFF;
 import org.lee.mugen.sprite.character.AnimGroup;
@@ -31,6 +30,7 @@ import org.lee.mugen.sprite.parser.Parser;
 import org.lee.mugen.sprite.parser.Parser.GroupText;
 import org.lee.mugen.util.BeanTools;
 import org.lee.mugen.util.Logger;
+import org.lee.mugen.util.MugenTools;
 
 public class Stage {
 	public static void main(String[] args) {
@@ -177,7 +177,8 @@ public class Stage {
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
-//					throw new IllegalStateException("setProperties doesn't cause problem ! >" + (parent == null || parent.trim().length() == 0? "": parent + ".") + key + " = " + objectValues);
+					System.err.println(bean.getClass() + " -> " + key + " : " + MugenTools.toString(objectValues));
+//					BeanTools.setObject(bean, (parent == null || parent.trim().length() == 0? "": parent + ".") + key, objectValues[0]);
 				}
 			}
 			if (bean != null && bean instanceof BG) {
@@ -191,10 +192,11 @@ public class Stage {
 					bg.setOrder(list.size());
 					list.add(bg);
 				}
-				if (((BG)bean).getType() == Type.ANIM) {
-					((BG)bean).getAnimManager().setAction(((BG)bean).getActionno());
-				}
-				((BG)bean).init();
+				
+//				if (((BG)bean).getType() == Type.ANIM) {
+//					((BG)bean).getAnimManager().setAction(((BG)bean).getActionno());
+//				}
+//				((BG)bean).init();
 			}
 		}
 		File parent = new File(filename).getParentFile();
@@ -325,7 +327,9 @@ public class Stage {
 			minMax[0] = (int) Math.min(s.getInfo().getYPos(), minMax[0]);
 			minMax[1] = (int) Math.max(s.getInfo().getYPos(), minMax[1]);
 		}
-		return new int[] {minMax[0], minMax[1]};}
+		return new int[] {minMax[0], minMax[1]};
+		
+	}
 
 
 
@@ -338,6 +342,14 @@ public class Stage {
 				bg.process();
 			}
 		}
+
+		boolean canMoveX = true;
+		boolean canMoveY = true;
+		for (Sprite s: StateMachine.getInstance().getSprites()) {
+			canMoveX &= s.getInfo().getScreenbound().isCamCanMoveX();
+			canMoveY &= s.getInfo().getScreenbound().isCamCanMoveY();
+		}
+
 		int xCam = getCamera().getXNoShaKe();
 		int xSpr = 0;
 
@@ -352,15 +364,15 @@ public class Stage {
 			int left = getBound().getScreenleft();
 			int right = getBound().getScreenright();
 
-			int leftLimit = left + getCamera().getBoundleft()
-					+ getCamera().getTension();
+			int leftLimit = left + getCamera().getBoundleft();
 
-			int rightLimit = -right + getCamera().getBoundright()
-					- getCamera().getTension();
+			int rightLimit = -right + getCamera().getBoundright();
 			
 			int diff = xCam + xSpr;
 			Sprite sprLeft = StateMachine.getInstance().getSpriteInstance("1");
 			Sprite sprRight = StateMachine.getInstance().getSpriteInstance("1");
+			
+			
 			
 			for (Sprite s: StateMachine.getInstance().getSprites()) {
 				if (s instanceof SpriteHelper)// && (((SpriteHelper)s).getHelperSub().getHelpertype().equals("normal")))
@@ -372,10 +384,10 @@ public class Stage {
 				
 			}
 			
-			if (diff < -5 && !PhysicsEngime.isOutOfScreeen(sprRight, 1))
+			if (diff < -5 && !PhysicsEngime.isOutOfScreeen(sprRight, 1) && canMoveX)
 				getCamera().addX(1);
 			
-			if (diff > 5 && !PhysicsEngime.isOutOfScreeen(sprLeft, -1))
+			if (diff > 5 && !PhysicsEngime.isOutOfScreeen(sprLeft, -1) && canMoveX)
 				getCamera().addX(-1);
 			
 			
@@ -398,15 +410,15 @@ public class Stage {
 			float yAdd = highestSpr.getInfo().getVelset().getY()/2;
 			if (ySpr == 0 && highestSpr.getInfo().getVelset().getY() == 0 && yCam != 0)
 				yAdd = highestSpr.getInfo().getVelset().getY()/2 + 1;
-			if (yDiff < 0)
+			if (yDiff < 0 && canMoveY)
 				getCamera().setY((int) (yCam + yAdd));
 			
-			if (yDiff >= 0)
+			if (yDiff >= 0 && canMoveY)
 				getCamera().setY((int) (yCam - yAdd));
 			
-			if (getCamera().getXNoShaKe() < leftLimit)
+			if (-getCamera().getXNoShaKe() > -leftLimit)
 				getCamera().setX(leftLimit);
-			if (getCamera().getXNoShaKe() > rightLimit)
+			if (-getCamera().getXNoShaKe() < -rightLimit)
 				getCamera().setX(rightLimit);
 			if (getCamera().getYNoShake() < getCamera().getBoundlow())
 				getCamera().setY(getCamera().getBoundlow());

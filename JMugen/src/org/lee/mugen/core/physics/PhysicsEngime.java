@@ -99,8 +99,8 @@ public class PhysicsEngime {
 		int x = 0;
 		int y = 0;
 		Stage stage = StateMachine.getInstance().getInstanceOfStage();
-		int _mvX = stage.getCamera().getX();
-		int _mvY = stage.getCamera().getY();
+		int _mvX = stage.getCamera().getXNoShaKe();
+		int _mvY = stage.getCamera().getYNoShake();
 		x = _mvX + stage.getCamera().getWidth()/2;
 		y = stage.getStageinfo().getZoffset() + _mvY;
 		rectangle.setLocation(x + rectangle.x, y + rectangle.y);
@@ -247,8 +247,8 @@ public class PhysicsEngime {
 
 		boolean isFlip = spr.isFlip();
 		Stage stage = StateMachine.getInstance().getInstanceOfStage();
-		float _mvX = stage.getCamera().getX();
-		float _mvY = stage.getCamera().getY();
+		float _mvX = stage.getCamera().getXNoShaKe();
+		float _mvY = stage.getCamera().getYNoShake();
 
 		float x = 0;
 		float y = 0;
@@ -274,7 +274,7 @@ public class PhysicsEngime {
 	}
 
 	public static void checkGoodPositionInScreen(Sprite sprOne) {
-		if (sprOne.getInfo().isScreenbound()
+		if (sprOne.getInfo().getScreenbound().isScreenbound()
 			||
 				sprOne.getCns2().size() == 0) {
 			return;
@@ -288,7 +288,7 @@ public class PhysicsEngime {
 	}
 
 	public static boolean isOutOfScreeen(Sprite sprOne, float xVelToAdd) {
-		if (sprOne.getInfo().isScreenbound())
+		if (sprOne.getInfo().getScreenbound().isScreenbound())
 			return false;
 		Rectangle r1 = getRectEdge(sprOne);
 		if (r1 == null)

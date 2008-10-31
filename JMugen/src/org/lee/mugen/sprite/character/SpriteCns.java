@@ -26,6 +26,7 @@ import org.lee.mugen.sprite.cns.type.function.Playsnd;
 import org.lee.mugen.sprite.entity.BindToSub;
 import org.lee.mugen.sprite.entity.HitOverrideSub;
 import org.lee.mugen.sprite.entity.PointF;
+import org.lee.mugen.sprite.entity.ScreenboundSub;
 import org.lee.mugen.sprite.entity.Shake;
 import org.lee.mugen.sprite.parser.Parser;
 
@@ -208,31 +209,19 @@ public class SpriteCns implements Cloneable, Serializable {
 	int number = 0;
 	
 	int ownpal = 1;
-	
-	int screenbound = 0;
+	ScreenboundSub screenbound = new ScreenboundSub();
 
-	AirJump airjump = new AirJump(); 
-	
-	public boolean isScreenbound() {
-		return screenbound > 0;
-	}
 
-	public int getScreenbound() {
+	public ScreenboundSub getScreenbound() {
 		return screenbound;
 	}
 
-	public void setScreenbound(int screenbound) {
+	public void setScreenbound(ScreenboundSub screenbound) {
 		this.screenbound = screenbound;
 	}
 
-	public void activateScreenboundDef() {
-		this.screenbound = 2;
-	}
+	AirJump airjump = new AirJump(); 
 	
-	public void decreaseScreenbound() {
-		if (screenbound > 0)
-			this.screenbound--;
-	}
 
 	public int getOwnpal() {
 		return ownpal;
@@ -1051,10 +1040,6 @@ public class SpriteCns implements Cloneable, Serializable {
 		return hitdefs;
 	}
 
-	public void deactivateScreenbound() {
-		screenbound = 0;
-	}
-	
 	
 	private Map<Integer, HitOverrideSub> hitoverrides = new HashMap<Integer, HitOverrideSub>();
 	

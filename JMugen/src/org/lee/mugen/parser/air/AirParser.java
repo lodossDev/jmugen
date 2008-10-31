@@ -16,9 +16,6 @@ import org.lee.mugen.sprite.parser.Parser;
 public class AirParser {
     private HashMap<Integer, AirGroup> airGroupMap = new HashMap<Integer, AirGroup>();
 
-
-
-    
     public static final String _COMMENT_OR_EMPTY_REGEX = "^;.*$|^ *$";
     private static final String _FLOAT_REGEX = "((?:\\+|-)?(?:(?:\\.\\d+)|(?:\\d+(?:\\.\\d*)?)))";//"[+-]*(?:\\d+\\.\\d+)|(?:\\d+)";
 
@@ -96,8 +93,6 @@ public class AirParser {
     }
     
 	private boolean parseGroup(String grp) throws IOException {
-    	
-
     	StringTokenizer strToken = new StringTokenizer(grp, "\r\n");
     	
     	String line = strToken.nextToken();
@@ -171,7 +166,6 @@ public class AirParser {
 	private boolean isArrayEmpty(Object[] array) {
 		return array == null || array.length == 0;
 	}
-	static int counter = 0;
     private void parseClsn(
     		String line, 
     		StringTokenizer strToken, 

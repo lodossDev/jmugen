@@ -9,8 +9,8 @@ import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.SpriteHelper;
 import org.lee.mugen.sprite.character.SpriteCns.MoveType;
 import org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub;
-import org.lee.mugen.sprite.character.spiteCnsSubClass.ReversaldefSub;
 import org.lee.mugen.sprite.cns.eval.function.SpriteCnsTriggerFunction;
+import org.lee.mugen.sprite.entity.ProjectileSub;
 
 public class Moveguarded extends SpriteCnsTriggerFunction {
 
@@ -26,16 +26,10 @@ public class Moveguarded extends SpriteCnsTriggerFunction {
 			LinkedList<HitDefSub> hitdefs = StateMachine.getInstance().getFightEngine().getHitdefBySpriteHitter(spriteId);
 			HitDefSub strictHitdef = null;
 			for (HitDefSub h: hitdefs)
-				if (h.getClass() != ReversaldefSub.class)
+				if (h.getClass() != ProjectileSub.class && spriteId.equals(h.getSpriteId()))
 					strictHitdef = h;
 			if (hitdefs.size() > 0 && (strictHitdef != null && strictHitdef.getTargetId() == null))
 				return 0;
-//			boolean isHitDefWithHitExist = false;
-//			for (HitDefSub h: hitdefs)
-//				if (h.getTargetId() == null)
-//					isHitDefWithHitExist = true;
-//			if (!isHitDefWithHitExist)
-//				return 0;
 			for (Sprite s: StateMachine.getInstance().getSprites()) {
 				if (s == one || (s instanceof SpriteHelper))
 					continue;

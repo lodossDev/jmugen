@@ -11,6 +11,7 @@ import org.lee.mugen.renderer.GameWindow.MouseCtrl;
 import org.lee.mugen.sprite.background.Stage;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.SpriteCns;
+import org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns.Backedgebodydist;
 import org.lee.mugen.sprite.common.resource.FontParser;
 import org.lee.mugen.sprite.common.resource.FontProducer;
 
@@ -90,11 +91,11 @@ public class DebugRender implements Renderable {
 					- stage.getCamera().getTension();
 			
 			String[] strSpriteInfos = {
-				"Author : " + sprite.getDefinition().getInfo().getAuthor()
+				"Author : " + sprite.getDefinition().getInfo().getAuthor() + " - " + "backedgebodydist : " + Backedgebodydist.compute(sprite)
 				,"Name : " + sprite.getDefinition().getInfo().getName()
 				,"SpriteID : " + sprite.getSpriteId() + " - IsFlip : " + sprite.isFlip() + " " + "Debug " + sprite.isDebugRender()
 				,"Game Fps = " + StateMachine.getInstance().getWindow().getTimer().getFps() 
-				+ " - Camera : " + stage.getCamera().getXNoShaKe() + ", " + stage.getCamera().getYNoShake()
+				+ " - Camera : " + (-stage.getCamera().getXNoShaKe()) + ", " + stage.getCamera().getYNoShake()
 			};
 			String[] strSpriteInfos2 = {
 				"Life = " + sprInfo.getLife()

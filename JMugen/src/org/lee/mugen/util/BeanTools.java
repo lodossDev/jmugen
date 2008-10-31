@@ -484,7 +484,7 @@ public class BeanTools {
 	private static Converter<HitDefSub.AnimType> hitdef$animTypeConverter = new Converter<HitDefSub.AnimType>() {
 
 		public HitDefSub.AnimType convert(Object o) {
-			return HitDefSub.AnimType.valueOf(o.toString().toUpperCase());
+			return HitDefSub.AnimType.getValueFromStr(o.toString().toUpperCase());
 		}
 
 	};

@@ -134,7 +134,7 @@ public class Camera {
 	}
 	
 	public int getX() {
-		return x + (envShake.getTime() > 0? r.nextInt(envShake.getAmpl() <= 0? 1: 2): 0);
+		return getXNoShaKe() + (envShake.getTime() > 0? r.nextInt(envShake.getAmpl() <= 0? 1: 2): 0);
 	}
 	
 	public int getXNoShaKe() {

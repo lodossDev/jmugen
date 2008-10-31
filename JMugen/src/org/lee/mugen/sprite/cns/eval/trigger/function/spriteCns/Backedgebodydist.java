@@ -14,13 +14,21 @@ public class Backedgebodydist extends SpriteCnsTriggerFunction {
 	}
 	public static float compute(AbstractSprite sprite) {
 		Stage stage = StateMachine.getInstance().getInstanceOfStage();
-		int _mvX = stage.getCamera().getX();
+		int _mvX = stage.getCamera().getXNoShaKe();
 		if (sprite.isFlip()) {
-			float x = -_mvX + stage.getCamera().getWidth()/2f - sprite.getRealXPos();
+			float x = stage.getCamera().getWidth()/2 -_mvX - sprite.getRealXPos();
+//			if (sprite instanceof Sprite) {
+//				Sprite s = (Sprite) sprite;
+//				x -= s.getInfo().getWidth().getBack();
+//			}
 			return x;
 			
 		} else {
-			float x = _mvX + stage.getCamera().getWidth()/2f + sprite.getRealXPos();
+			float x = stage.getCamera().getWidth()/2f + _mvX + sprite.getRealXPos();
+//			if (sprite instanceof Sprite) {
+//				Sprite s = (Sprite) sprite;
+//				x -= s.getInfo().getWidth().getBack();
+//			}
 			return x;
 			
 		}

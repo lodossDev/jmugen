@@ -269,15 +269,15 @@ public class ExplodSprite extends AbstractSprite {
 			if (postype == Postype.back) {
 				if (this.isFlip())
 					isFilpForRealH = !isFilpForRealH;
-//				xRes = xCam + xOffSet - (
-//								isFilpForRealH? 
-//										w - xAxis * xScale - xoffset
-//										: xAxis * xScale - xoffset);
-				xRes = xCam + xOffSet
-				- (
-						this.isFlip() ^ isFilpForRealH? 
-								(isFilpForRealH?w:0) - xAxis * getXScale() + (xoffset * (this.isFlip()? -1: 1))
-								: xAxis * getXScale() + (xoffset * (this.isFlip()? 1: -1)));
+				xRes = xCam + xOffSet - (
+								isFilpForRealH? 
+										w - xAxis * xScale - xoffset
+										: xAxis * xScale - xoffset);
+//				xRes = xCam + xOffSet
+//				- (
+//						isFilpForRealH? 
+//								(isFilpForRealH?w:0) - xAxis * getXScale() + (xoffset * (this.isFlip()? -1: 1))
+//								: (isFilpForRealH?w:0) - xAxis * getXScale() + (xoffset * (this.isFlip()? 1: -1)));
 				
 			} else if (postype == Postype.front) {
 				xRes = xCam + xOffSet - (

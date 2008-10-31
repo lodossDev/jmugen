@@ -1,5 +1,6 @@
 package org.lee.mugen.sprite.background;
 
+import java.awt.Point;
 import java.awt.Rectangle;
 
 import org.lee.mugen.fight.Lifebar.Spr;
@@ -20,12 +21,28 @@ public class BG implements Cloneable {
 	private String debugbg;
 	private boolean enable = true;
 	private boolean visible = true;
+	private Sin sin = new Sin();
 	
-	
+	public Sin getSin() {
+		return sin;
+	}
+
+	public class Sin {
+
+		public void setX(Point p) {
+			sinXAmp = p.x;
+			sinXTime = p.y;
+		}
+		public void setY(Point p) {
+			sinYAmp = p.x;
+			sinYTime = p.y;
+		}
+		
+	}
 	
 	private int sinYAmp = 0;
 	private int sinYTime = 0;
-	private int sinYTimeLine = 0;
+	private float sinYTimeLine = 0;
 	
 	private int sinXAmp = 0;
 	private int sinXTime = 0;
@@ -84,6 +101,7 @@ public class BG implements Cloneable {
 
 	public void init() {
 		pos = new PointF(start);
+		animManager.setAction(actionno);
 	}
 	
 	public PointF getPos() {
@@ -135,27 +153,41 @@ public class BG implements Cloneable {
 		return debugbg;
 	}
 	int time = 0;
+	float yMul = 1;
+	float xMul = 1;
+	boolean isInit = false;
 	public void process() {
+		if (!isInit)
+			init();
 		if (!enable)
 			return;
 		
 		float x = getVelocity().getX();
-		if (sinXAmp != 0 && (sinXTime == 0 || time % sinXTime == 0)) {
-			x += (sinXAmp * Math.sin(((float)sinXTimeLine++)));
-			
+		if (sinXTime != 0) {
+			xMul = (xMul>0? 1f: -1f) / (sinXTime/4f);
+			x += (sinYAmp * Math.sin(sinXTimeLine)) * xMul;
+			sinXTimeLine += yMul;
+			if (sinXTimeLine <= 0 || sinXTimeLine >= sinXTime)
+				xMul = -xMul;
 		}
 		getPos().addX(x);
 		
 		float y = getVelocity().getY();
-		if (sinYAmp != 0 && (sinYTime == 0 || time % sinYTime == 0)) {
-			y += (sinYAmp * Math.sin(((float)sinYTimeLine++)));
-			
+		if (sinYTime != 0) {
+			yMul = (yMul>0? 1f: -1f) / (sinYTime/4f);
+			y += (sinYAmp * Math.sin(sinYTimeLine)) * yMul;
+			sinYTimeLine += yMul;
+			if (sinYTimeLine <= 0 || sinYTimeLine >= sinYTime)
+				yMul = -yMul;
 		}
+
+
 		getPos().addY(y);
 		if (type == BG.Type.ANIM)
 			getAnimManager().process();
 		time++;
 	}
+	
 	
 	// This defines the drawing space, or "window" of the background. It's
 	// given in the form
@@ -215,9 +247,8 @@ public class BG implements Cloneable {
 
 	public void setActionno(int actionno) {
 		this.actionno = actionno;
-		animManager.setAction(actionno);
+//		animManager.setAction(actionno);
 	}
-
 	public void setAlpha(Object... params) {
 		p1Alpha = ((Number) params[0]).intValue();
 		p2Alpha = ((Number) params[1]).intValue();

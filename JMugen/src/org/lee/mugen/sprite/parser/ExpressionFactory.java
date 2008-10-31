@@ -1,5 +1,10 @@
 package org.lee.mugen.sprite.parser;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -8,6 +13,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.IOUtils;
 import org.lee.mugen.parser.type.FloatValueable;
 import org.lee.mugen.parser.type.Functionable;
 import org.lee.mugen.parser.type.IntValueable;
@@ -52,7 +58,6 @@ public class ExpressionFactory {
 
 	private static final String _CONST_STRING = "(\"[^\"\\\\]*(\\\\.^\"\\\\]*)*\")";
 	
-	// add parentdist because of helper parent regex, i solve later
 	public static final Pattern _TOKENIZE_CNS_REGEX = Pattern
 			.compile(_CONST_STRING + "|" + SpriteRedirect.SPRITE_REDIRECT_REG + "|" + _CONST_SPRITE_REGEX + "|" + _CONST_STRING_REG_EXP + "|" + _TRIGGER_MATHS_FUNCTION_REGEX + "|" + _TRIGGER_FUNCTION_SPRITE_REGEX + "|" + _TRIGGER_FUNCTION_BG_REGEX + "|"
 					+ _SPECIAL_OPERATOR_REGEX + "|" +  _OPERATOR_REGEX + "|" + _FLOAT_REGEX + "|"
@@ -123,12 +128,17 @@ public class ExpressionFactory {
 
 	/**
 	 * Tokenize an expression with given regex
+	 * @throws IOException 
+	 * @throws FileNotFoundException 
 	 */
 	public static String[] expression2Tokens(String exp, Pattern regex) {
+
 		Matcher matcher = regex.matcher(exp);
 		List<String> list = new ArrayList<String>();
-		while (matcher.find())
+		
+		while (matcher.find()) {
 			list.add(matcher.group());
+		}
 		return list.toArray(new String[list.size()]);
 	}
 	public static Valueable[] evalExpression(String str) {
@@ -164,8 +174,6 @@ public class ExpressionFactory {
 	
 	
 	public static Valueable[] evalExpression(String[] tokens, boolean isProcessSprite, boolean isProcessBg) {
-		
-		
 		final LinkedList<Valueable> values = new LinkedList<Valueable>();
 		final LinkedList<MathFunction> ops = new LinkedList<MathFunction>();
 		int i = 0;
@@ -253,7 +261,7 @@ public class ExpressionFactory {
 				final Functionable f = MathsFunctionDef.getFunction(tokens[i]);
 				i++;
 				String[] subTokens = {};
-				if (tokens[i].equals("(")) {
+				if (i < tokens.length && tokens[i].equals("(")) {
 					subTokens = getCloseInTokens(tokens, i, "(", ")");
 				}
 				 
