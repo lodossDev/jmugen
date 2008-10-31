@@ -576,16 +576,8 @@ public class StateMachine implements Game {
 				}
 
 			}
-//		}
-		if ( globalEvents.isPause()) {
-//			instanceOfStage.process();
-		} else if (globalEvents.isSuperPause()) {
-			instanceOfStage.process();
-			
-		} else {
-			instanceOfStage.process();
-			
-		}
+		instanceOfStage.process();
+
 		getGameState().leave(this);
 		// 
 		globalEvents.leave();
@@ -641,7 +633,7 @@ public class StateMachine implements Game {
 		br.setLayerDisplay(1);
 		if (!globalEvents.getEnvcolor().isUse()) {
 			if (!globalEvents.isAssertSpecial(Assertspecial.Flag.nobg)) {
-//				render(backgroundRenderList);
+				render(backgroundRenderList);
 			}
 		} else {
 			

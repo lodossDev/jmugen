@@ -1,6 +1,8 @@
 package org.lee.mugen.core.renderer.game;
 
 import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.parser.air.AirData;
+import org.lee.mugen.parser.air.AirData.TypeBlit;
 import org.lee.mugen.renderer.DrawProperties;
 import org.lee.mugen.renderer.GraphicsWrapper;
 import org.lee.mugen.renderer.ImageContainer;
@@ -13,8 +15,6 @@ import org.lee.mugen.sprite.base.AbstractAnimManager;
 import org.lee.mugen.sprite.baseForParse.ImageSpriteSFF;
 import org.lee.mugen.sprite.baseForParse.SpriteSFF;
 import org.lee.mugen.sprite.entity.SuperpauseSub;
-
-import temp.LBackgroundRender;
 
 public class BackgroundRender implements IBackgroundRenderer {
 
@@ -90,16 +90,8 @@ public class BackgroundRender implements IBackgroundRenderer {
 
 		
 		Stage stage = StateMachine.getInstance().getInstanceOfStage();
-		int xStartForAll = stage.getCamera().getWidth() / 2;
-		
-		int left = stage.getBound().getScreenleft();
-		int right = stage.getBound().getScreenright();
+		int xStartForAll = (int) (stage.getCamera().getWidth()/2 * 1f/stage.getScaling().getXscale());
 
-		int leftLimit = left + stage.getCamera().getBoundleft()
-				+ stage.getCamera().getTension();
-
-		int rightLimit = -right + stage.getCamera().getBoundright()
-				- stage.getCamera().getTension();
 		
 		int width = (Math.abs(stage.getCamera().getBoundleft()) + Math
 				.abs(stage.getCamera().getBoundright())) + stage.getCamera().getWidth();
@@ -119,7 +111,13 @@ public class BackgroundRender implements IBackgroundRenderer {
 			try {
 				if (bg.getBgType() == BG.Type.NORMAL
 						|| bg.getBgType() == BG.Type.NORM) {
-					int grpno = bg.getSpriteno().getGrp();
+					int grpno = 0;
+					try {
+						grpno = bg.getSpriteno().getGrp();
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 					int imgno = bg.getSpriteno().getImg();
 					ImageSpriteSFF imgSprSff = sffSprite.getGroupSpr(grpno)
 							.getImgSpr(imgno);
@@ -131,24 +129,17 @@ public class BackgroundRender implements IBackgroundRenderer {
 					float x =  (bg.getPos().getX() - imgSprSff.getXAxis());
 					float y =  bg.getPos().getY() - imgSprSff.getYAxis();
 
-					if (bg.getBgTrans() != Trans.NONE) {
-//						g.setComposite(AlphaComposite.getInstance(
-//								AlphaComposite.SRC_OVER, 0.5f));
-					}
-
 					drawTileXY(img, bg, x, y, width, moveX, moveY,
 							xStartForAll, bg.getBgTrans(), false, false);
-
-//					g.setComposite(AlphaComposite.getInstance(
-//							AlphaComposite.SRC_OVER, 1f));
 
 				} else if (bg.getBgType() == BG.Type.ANIM && bg.getId() == null) {
 
 					AbstractAnimManager animMng = bg.getAnimManager();
 					if (animMng.getCurrentImageSprite() == null)
 						continue;
-					int grpno = animMng.getCurrentImageSprite().getAirData().getGrpNum();
-					int imgno = animMng.getCurrentImageSprite().getAirData().getImgNum();
+					AirData air = animMng.getCurrentImageSprite().getAirData();
+					int grpno = air.getGrpNum();
+					int imgno = air.getImgNum();
 					if (sffSprite.getGroupSpr(grpno) == null)
 						continue;
 					ImageSpriteSFF imgSprSff = sffSprite.getGroupSpr(grpno)
@@ -158,16 +149,17 @@ public class BackgroundRender implements IBackgroundRenderer {
 					ImageContainer img = (ImageContainer) imgSprSff.getImage();
 					img = getImgProcessSuperpause(img);
 
-					boolean isVFlip = animMng.getCurrentImageSprite().getAirData().isMirrorV();
-					boolean isHFlip = animMng.getCurrentImageSprite().getAirData().isMirrorH();
+					boolean isVFlip = air.isMirrorV();
+					boolean isHFlip = air.isMirrorH();
 
-					float x =  (bg.getPos().getX() - imgSprSff.getXAxis() + animMng.getCurrentImageSprite().getAirData().getXOffSet());
-					float y =  bg.getPos().getY() - imgSprSff.getYAxis() + animMng.getCurrentImageSprite().getAirData().getYOffSet();
+					float x =  (bg.getPos().getX() - imgSprSff.getXAxis() + air.getXOffSet());
+					float y =  bg.getPos().getY() - imgSprSff.getYAxis() + air.getYOffSet();
 
-//					drawImage(bg.getBgTrans(), img,  (x + moveX * bg.getDelta().getX())
-//							+ xStartForAll,  (y + moveY * bg.getDelta().getY()));
+					Trans trans = bg.getBgTrans();
+					trans = air.type == TypeBlit.ASD ? Trans.ADD: trans;
+					
 					drawTileXY(img, bg, x, y, width, moveX, moveY,
-							xStartForAll, bg.getBgTrans(), isHFlip, isVFlip);
+							xStartForAll, trans, isHFlip, isVFlip);
 
 				} else if (bg.getBgType() == BG.Type.ANIM && bg.getId() != null) {
 					
@@ -177,8 +169,9 @@ public class BackgroundRender implements IBackgroundRenderer {
 					AbstractAnimManager animMng = bg.getAnimManager();
 					if (animMng.getCurrentImageSprite() == null)
 						continue;
-					int grpno = animMng.getCurrentImageSprite().getAirData().getGrpNum();
-					int imgno = animMng.getCurrentImageSprite().getAirData().getImgNum();
+					AirData air = animMng.getCurrentImageSprite().getAirData();
+					int grpno = air.getGrpNum();
+					int imgno = air.getImgNum();
 					if (sffSprite.getGroupSpr(grpno) == null || sffSprite.getGroupSpr(grpno).getImgSpr(imgno) == null)
 						continue;
 					
@@ -188,16 +181,17 @@ public class BackgroundRender implements IBackgroundRenderer {
 					img = getImgProcessSuperpause(img);
 
 					
-					float x =  (bg.getPos().getX() - imgSprSff.getXAxis() + animMng.getCurrentImageSprite().getAirData().getXOffSet());
-					float y =  bg.getPos().getY() - imgSprSff.getYAxis() + animMng.getCurrentImageSprite().getAirData().getYOffSet();
+					float x =  (bg.getPos().getX() - imgSprSff.getXAxis() + air.getXOffSet());
+					float y =  bg.getPos().getY() - imgSprSff.getYAxis() + air.getYOffSet();
 					
-					boolean isVFlip = animMng.getCurrentImageSprite().getAirData().isMirrorV();
-					boolean isHFlip = animMng.getCurrentImageSprite().getAirData().isMirrorH();
+					boolean isVFlip = air.isMirrorV();
+					boolean isHFlip = air.isMirrorH();
 					
-//					drawImage(bg.getBgTrans(), img,  (x + moveX * bg.getDelta().getX())
-//							+ xStartForAll,  (y + moveY * bg.getDelta().getY()));
+					Trans trans = bg.getBgTrans();
+					trans = air.type == TypeBlit.ASD ? Trans.ADD: trans;
+					
 					drawTileXY(img, bg, x, y, width, moveX, moveY,
-							xStartForAll, bg.getBgTrans(), isHFlip, isVFlip);
+							xStartForAll, trans, isHFlip, isVFlip);
 					
 
 				} else if (bg.getBgType() == BG.Type.PARALLAX) {
@@ -222,7 +216,7 @@ public class BackgroundRender implements IBackgroundRenderer {
 						float y2 = (y + moveY * bg.getDelta().getY()) + v;
 						if (!bg.isEnable())
 							continue;
-						drawImage(img, x1, y2, x1 + img.getWidth(), y2 + 1,
+						drawImage(bg.getTrans(), img, x1, y2, x1 + img.getWidth(), y2 + 1,
 								0, v, img.getWidth(), v + 1);
 					}
 				}
@@ -234,21 +228,21 @@ public class BackgroundRender implements IBackgroundRenderer {
 			}
 		}
 		GraphicsWrapper.getInstance().scale(1f/stage.getScaling().getXscale(), 1f/stage.getScaling().getYscale());
+
 	}
 
-	private void drawImage(ImageContainer img, float xl, float yt, float xr,
+	private void drawImage(Trans trans, ImageContainer img, float xl, float yt, float xr,
 			float yb, int xlSrc, int yTopSrc, int xrSrc, int yBottomSrc) {
 		PalFxSub palfx = StateMachine.getInstance().getGlobalEvents().getBgpalfx();
 
 		DrawProperties dp = 
 			new DrawProperties(xl, xr, yt,
 					yb, xlSrc, xrSrc, yTopSrc, yBottomSrc, false, false, img);
+		dp.setTrans(trans);
 		if (!palfx.isNoPalFx()) {
 			palfx.setDrawProperties(dp);
 		}
 		GraphicsWrapper.getInstance().draw(dp);
-//		GraphicsWrapper.getInstance().setColor(Color.RED);
-//		GraphicsWrapper.getInstance().drawLine((int)xl, (int)yt, (int)xr, (int)yb);
 		
 	}
 

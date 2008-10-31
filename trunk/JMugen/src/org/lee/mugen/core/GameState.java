@@ -117,7 +117,7 @@ public class GameState {
 	
 	public void leave(StateMachine sm) {
 		gameTime++;
-		if (roundTime > 0 && getRoundState() != Roundstate.PRE_END)
+		if (getRoundTime() > 0 && getRoundState() != Roundstate.PRE_END)
 			roundTime--;
 		
 		if (roundState == Roundstate.COMBAT) {
@@ -136,7 +136,7 @@ public class GameState {
 					StateMachine.getInstance().getSpriteInstance(spriteId).getInfo().setCtrl(0);
 				}
 			}
-			if (roundTime <= 0) {
+			if (getRoundTime() <= 0) {
 				roundState = Roundstate.PRE_END;
 				for (String spriteId: spriteIdStateMap.keySet()) {
 					spriteIdStateMap.put(spriteId, Roundstate.PRE_END);
@@ -269,7 +269,7 @@ public class GameState {
 	}
 	
 	public int getRoundTime() {
-		return roundTime;
+		return DEFAULT_TIME;//roundTime;
 	}
 
 	public void setRoundTime(int roundTime) {

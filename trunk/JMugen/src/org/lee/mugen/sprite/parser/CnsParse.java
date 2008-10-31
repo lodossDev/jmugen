@@ -34,50 +34,62 @@ public class CnsParse {
 	/*
 	 * Common Regex
 	 */
-	public static final String _END = "(?:(?: *;.*$)|(?: *$))";
-	public static final String _COMMENT_OR_EMPTY_REGEX = "^ *;.*$|^ *$";
-	public static final String _FLOAT_REGEX = "((?:\\+|-)?(?:(?:\\.\\d+)|(?:\\d+(?:\\.\\d*)?)))";//"[+-]*(?:\\d+\\.\\d+)|(?:\\d+)";
+	public static final String S_END = "(?:(?: *;.*$)|(?: *$))";
+	public static final String S_COMMENT_OR_EMPTY_REGEX = "^ *;.*$|^ *$";
+	public static final String S_FLOAT_REGEX = "((?:\\+|-)?(?:(?:\\.\\d+)|(?:\\d+(?:\\.\\d*)?)))";//"[+-]*(?:\\d+\\.\\d+)|(?:\\d+)";
 
 	/*
 	 * Data Regex
 	 */
-	private static final String _DATA_TITLE_REGEX = " *\\[ *data *\\]" + _END;
+	private static final String S_DATA_TITLE_REGEX = " *\\[ *data *\\]" + S_END;
 	/*
 	 * 
 	 */
-	private static final String _SIZE_TITLE_REGEX = " *\\[ *size *\\]" + _END;
-
+	private static final String S_SIZE_TITLE_REGEX = " *\\[ *size *\\]" + S_END;
 	/*
 	 * 
 	 */
-	private static final String _VELOCITY_TITLE_REGEX = " *\\[ *velocity *\\]"
-			+ _END;
-
+	private static final String S_VELOCITY_TITLE_REGEX = " *\\[ *velocity *\\]" + S_END;
 	/*
 	 * 
 	 */
-	private static final String _MOVEMENT_TITLE_REGEX = " *\\[ *movement *\\]"
-			+ _END;
+	private static final String S_MOVEMENT_TITLE_REGEX = " *\\[ *movement *\\]" + S_END;
 
 	/*
 	 * StateDef
 	 */
-	public static final String _STATE_DEF_TITLE_REGEX = "\\s*\\[ *statedef *"
-		+ _FLOAT_REGEX + " *\\]" + _END;
-	public static final String _STATE_CONTINUE_DEF_TITLE_REGEX = "\\s*\\[ *statedefcontinue *"
-		+ _FLOAT_REGEX + " *\\]" + _END;
+	public static final String S_STATE_DEF_TITLE_REGEX = "\\s*\\[ *statedef *" + S_FLOAT_REGEX + " *\\]" + S_END;
+	public static final String S_STATE_CONTINUE_DEF_TITLE_REGEX = "\\s*\\[ *statedefcontinue *" + S_FLOAT_REGEX + " *\\]" + S_END;
 	
 	/*
 	 * StateCtrl
 	 */
-	public static final String _STATE_CTRL_TITLE_REGEX = "\\s*\\[ *state *" + "([^\\]]*)" + "\\]" + _END;
+	public static final String S_STATE_CTRL_TITLE_REGEX = "\\s*\\[ *state *" + "([^\\]]*)" + "\\]" + S_END;
 //			+ _FLOAT_REGEX + " *,* *" + "([^\\]]*)" + "\\]" + _END;
 
 	
-	private static final String _TRIGGER_MAIN = "\\s*triggerall *=.*" + _END;
+	private static final String S_TRIGGER_MAIN = "\\s*triggerall *=.*" + S_END;
 
-	private static final String _TRIGGER = "\\s*trigger(\\d+) *=.*" + _END;
+	private static final String S_TRIGGER = "\\s*trigger(\\d+) *=.*" + S_END;
 
+	
+	private static final Pattern P_COMMENT_OR_EMPTY_REGEX = Pattern.compile(S_COMMENT_OR_EMPTY_REGEX);
+	private static final Pattern P_FLOAT_REGEX = Pattern.compile(S_FLOAT_REGEX);
+	private static final Pattern P_DATA_TITLE_REGEX = Pattern.compile(S_DATA_TITLE_REGEX);
+	private static final Pattern P_SIZE_TITLE_REGEX = Pattern.compile(S_SIZE_TITLE_REGEX);
+	private static final Pattern P_VELOCITY_TITLE_REGEX = Pattern.compile(S_VELOCITY_TITLE_REGEX);
+	private static final Pattern P_MOVEMENT_TITLE_REGEX = Pattern.compile(S_MOVEMENT_TITLE_REGEX);
+	private static final Pattern P_STATE_DEF_TITLE_REGEX = Pattern.compile(S_STATE_DEF_TITLE_REGEX);
+	private static final Pattern P_STATE_CONTINUE_DEF_TITLE_REGEX = Pattern.compile(S_STATE_CONTINUE_DEF_TITLE_REGEX);
+	private static final Pattern P_STATE_CTRL_TITLE_REGEX = Pattern.compile(S_STATE_CTRL_TITLE_REGEX);
+	private static final Pattern P_TRIGGER_MAIN = Pattern.compile(S_TRIGGER_MAIN);
+	private static final Pattern P_TRIGGER = Pattern.compile(S_TRIGGER);
+	
+	private static boolean isMatch(Pattern reg, String input) {
+		return reg.matcher(input).matches();
+	}
+	
+	
 	private static BufferedReader fileToReader(File f) throws UnsupportedEncodingException, FileNotFoundException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f), "utf-8"));
 		return br;
@@ -128,17 +140,17 @@ public class CnsParse {
 		boolean skip = false;
 		for (GroupText grp : groups) {
 
-				if (Pattern.matches(_DATA_TITLE_REGEX, grp.getSectionRaw())) {
+				if (isMatch(P_DATA_TITLE_REGEX, grp.getSectionRaw())) {
 					fillDirectSpriteInfoData(spriteInfo, spriteId, "data", grp);
-				} else if (Pattern.matches(_SIZE_TITLE_REGEX, grp.getSectionRaw())) {
+				} else if (isMatch(P_SIZE_TITLE_REGEX, grp.getSectionRaw())) {
 					fillDirectSpriteInfoData(spriteInfo, spriteId, "size", grp);
-				} else if (Pattern.matches(_VELOCITY_TITLE_REGEX, grp.getSectionRaw())) {
+				} else if (isMatch(P_VELOCITY_TITLE_REGEX, grp.getSectionRaw())) {
 					fillDirectSpriteInfoData(spriteInfo, spriteId, "velocity", grp);
-				} else if (Pattern.matches(_MOVEMENT_TITLE_REGEX, grp.getSectionRaw())) {
+				} else if (isMatch(P_MOVEMENT_TITLE_REGEX, grp.getSectionRaw())) {
 					fillDirectSpriteInfoData(spriteInfo, spriteId, "movement", grp);
-				} else if (Pattern.matches(_STATE_DEF_TITLE_REGEX, grp.getSectionRaw())) {
+				} else if (isMatch(P_STATE_DEF_TITLE_REGEX, grp.getSectionRaw())) {
 
-					Matcher m = Pattern.compile(_STATE_DEF_TITLE_REGEX).matcher(grp.getSectionRaw());
+					Matcher m = P_STATE_DEF_TITLE_REGEX.matcher(grp.getSectionRaw());
 					m.find();
 					String stateDefId = m.group(1);
 					if (spriteState.getStateDef(stateDefId) != null) {
@@ -153,14 +165,10 @@ public class CnsParse {
 					
 					SpriteDebuggerCns.addStatedef(sprite.getSpriteId(), stateDefId, grp.getSectionRaw() + "\n" + grp.getText().toString());
 					
-				} else if (Pattern.matches(_STATE_CONTINUE_DEF_TITLE_REGEX, grp.getSectionRaw())) {
-					Matcher m = Pattern.compile(_STATE_CONTINUE_DEF_TITLE_REGEX).matcher(grp.getSectionRaw());
+				} else if (isMatch(P_STATE_CONTINUE_DEF_TITLE_REGEX, grp.getSectionRaw())) {
+					Matcher m = P_STATE_CONTINUE_DEF_TITLE_REGEX.matcher(grp.getSectionRaw());
 					m.find();
 					String stateDefId = m.group(1);
-
-
-					
-					
 					precedentStateDef = stateDefId;
 					int id = Integer.parseInt(stateDefId);
 					
@@ -183,17 +191,16 @@ public class CnsParse {
 						SpriteDebuggerCns.addStatedef(sprite.getSpriteId(), stateDefId, grp.getSectionRaw() + "\n" + grp.getText().toString());
 					} else {
 					}
-				} else if (Pattern.matches(_STATE_CTRL_TITLE_REGEX, grp.getSectionRaw())) {
+				} else if (isMatch(P_STATE_CTRL_TITLE_REGEX, grp.getSectionRaw())) {
 					if (skip) {
 						continue;
 					}
-					Matcher m = Pattern.compile(_STATE_CTRL_TITLE_REGEX).matcher(grp.getSectionRaw());
+					Matcher m = P_STATE_CTRL_TITLE_REGEX.matcher(grp.getSectionRaw());
 					m.find();
 					String stateDefId = precedentStateDef;//;m.group(1);
 					SpriteDebuggerCns.addStateCtrl(spriteId, stateDefId, grp.getSectionRaw() + "\n" + grp.getText().toString());
 
 					String stateCtrlId = m.group(1);
-//					String stateCtrlId = m.group(2);
 					try {
 						parseStateCtrl(precedentStateDefObj, stateDefId, stateCtrlId, grp);
 						
@@ -204,14 +211,14 @@ public class CnsParse {
 					MugenCommands mugenCommands = CmdParser.interpretCmd(grp);
 					sprite.getCmds().add(mugenCommands);
 				}
-//				else if (Pattern.matches(_COMMENT_OR_EMPTY_REGEX, grp.getSectionRaw())) {
+//				else if (isMatch(P_COMMENT_OR_EMPTY_REGEX, grp.getSectionRaw())) {
 //
 //				}
 //			}
 		}
 		StateCtrlFunction.endOfParsing();
-		
 	}
+	
 //	static final String[] defaultNamesStateDef = {"type", "movetype", "physics", "facep2", "movehitpersist", "hitcountpersist"};
 //	static final String[] defaultValuesStateDef = {"S", "I", "N", "0", "0", "0"};
 	
@@ -231,7 +238,7 @@ public class CnsParse {
 		StringTokenizer strToken = new StringTokenizer(grp.getText().toString(), "\r\n");
 		while (strToken.hasMoreTokens()) {
 			String line = strToken.nextToken().toLowerCase();
-			if (Pattern.matches(_COMMENT_OR_EMPTY_REGEX, line)) {
+			if (isMatch(P_COMMENT_OR_EMPTY_REGEX, line)) {
 				continue;
 			}
 			String[] keyValue = getSeparateKeyValue(line, strToken);
@@ -324,7 +331,7 @@ public class CnsParse {
 		while (strToken.hasMoreTokens()) {
 			String f = strToken.nextToken();
 			String line =  Parser.toLowerCase(f);
-			if (Pattern.matches(_COMMENT_OR_EMPTY_REGEX, line.trim())) {
+			if (isMatch(P_COMMENT_OR_EMPTY_REGEX, line.trim())) {
 				continue;
 			}
 			String[] keyValue = getSeparateKeyValue(line, strToken);
@@ -332,7 +339,7 @@ public class CnsParse {
 			String value = keyValue[1];
 
 			
-			if (Pattern.matches(_TRIGGER_MAIN, line)) {
+			if (isMatch(P_TRIGGER_MAIN, line)) {
 				try {
 					
 					String[] tokens = ExpressionFactory.expression2Tokens(value);
@@ -346,9 +353,9 @@ public class CnsParse {
 				}
 
 
-			} else if (Pattern.matches(_TRIGGER, line)) {
+			} else if (isMatch(P_TRIGGER, line)) {
 				String[] tokens = ExpressionFactory.expression2Tokens(value);
-				Matcher m = Pattern.compile(_TRIGGER).matcher(line);
+				Matcher m = P_TRIGGER.matcher(line);
 				m.find();
 				int prio = Integer.parseInt(m.group(1));
 
@@ -425,7 +432,7 @@ public class CnsParse {
 		while (strToken.hasMoreTokens()) {
 			String line = Parser.toLowerCase(strToken.nextToken());
 			try {
-				if (Pattern.matches(_COMMENT_OR_EMPTY_REGEX, line)) {
+				if (isMatch(P_COMMENT_OR_EMPTY_REGEX, line)) {
 					continue;
 				}
 				String[] keyValue = getSeparateKeyValue(line, strToken);
@@ -441,10 +448,10 @@ public class CnsParse {
 	}
 
 
-	private static String[] getSeparateKeyValue(String line, StringTokenizer tokens) {
+	public static String[] getSeparateKeyValue(String line, StringTokenizer tokens) {
 		String[] keyValue = new String[2];
-		if (Pattern.matches(_COMMENT_OR_EMPTY_REGEX, line))
-			return null;
+//		if (isMatch(P_COMMENT_OR_EMPTY_REGEX, line))
+//			return null;
 //		line = Parser.toLowerCase(line.trim());
 		int indexEnd = line.indexOf(";"); // search comment
 		indexEnd = indexEnd == -1 ? line.length() - 1 : indexEnd - 1;
@@ -458,32 +465,30 @@ public class CnsParse {
 		keyValue[0] = line.substring(0, indexEqual).trim();
 		keyValue[1] = line.substring(indexEqual + 1,
 				indexEqual + 1 + indexEnd - indexEqual).trim();
-		keyValue[1].replaceAll(_END, "");
-		if (keyValue[1].endsWith("\\n")) {
-			int index = keyValue[1].indexOf("\\n");
-			keyValue[1] = keyValue[1].substring(0, index);
-			String addLine = "\\n";
-			while (tokens.hasMoreTokens() && addLine.endsWith("\\n")) {
-				addLine = tokens.nextToken();
-				addLine.replaceAll(_END, "");
-				keyValue[1] += addLine;
-				index = keyValue[1].indexOf("\\n");
-				if (index != -1)
-					keyValue[1] = keyValue[1].substring(0, index);
-			}
-		}
+//		keyValue[1].replaceAll(S_END, "");
+//		if (keyValue[1].endsWith("\\n") && tokens != null) {
+//			int index = keyValue[1].indexOf("\\n");
+//			keyValue[1] = keyValue[1].substring(0, index);
+//			String addLine = "\\n";
+//			while (tokens.hasMoreTokens() && addLine.endsWith("\\n")) {
+//				addLine = tokens.nextToken();
+//				addLine.replaceAll(S_END, "");
+//				keyValue[1] += addLine;
+//				index = keyValue[1].indexOf("\\n");
+//				if (index != -1)
+//					keyValue[1] = keyValue[1].substring(0, index);
+//			}
+//		}
 		return keyValue;
 	}
+	
 
 	private static void setSpriteInfoValue(String spriteId, SpriteCns sprInfo, String prefix, String property,
 			Valueable... values) throws Exception {
 		String realProperty = 
 				(prefix == null || prefix.trim().length() == 0? "": prefix + ".") 
 				+ property.toLowerCase();
-		
-
 			if (values.length > 0) {
-//				Class cls = values[0].getValue(spriteId).getClass();
 				Object[] objs = new Object[values.length];
 				for (int i = 0; i < objs.length; ++i) {
 					objs[i] = values[i].getValue(spriteId);
@@ -504,11 +509,11 @@ public class CnsParse {
 
 	public static void parseStateCtrl(GroupText grp, StateDef stateDef,
 			Sprite sprite) throws Exception {
-		if (!(Pattern.matches(STATECTRL, grp.getSection()))) {
+		if (!(isMatch(P_STATECTRL, grp.getSection()))) {
 			throw new IllegalArgumentException("this section : "
 					+ grp.getSection() + " is not [command] section");
 		}
-		Matcher m = Pattern.compile(STATECTRL).matcher(grp.getSection());
+		Matcher m = P_STATECTRL.matcher(grp.getSection());
 		m.find();
 		String id = m.group(1);
 		CnsParse.parseStateCtrl(stateDef, stateDef.getId(), id, grp);
@@ -523,8 +528,11 @@ public class CnsParse {
 	 * [Statedef -1] [State -1, command name]
 	 * 
 	 */
-	public static final String STATEDEF = " *statedef +([a-zA-Z0-9\\ \\-\\+\\_\\(\\)\\{\\}\\,]*,.*) *";
-	public static final String STATECTRL = " *state +([a-zA-Z0-9\\ \\-\\+\\_\\(\\)\\{\\}\\,]*,.*) *";
+	public static final String S_STATEDEF = " *statedef +([a-zA-Z0-9\\ \\-\\+\\_\\(\\)\\{\\}\\,]*,.*) *";
+	public static final String S_STATECTRL = " *state +([a-zA-Z0-9\\ \\-\\+\\_\\(\\)\\{\\}\\,]*,.*) *";
+	
+	public static final Pattern P_STATEDEF = Pattern.compile(S_STATEDEF);
+	public static final Pattern P_STATECTRL = Pattern.compile(S_STATECTRL);
 
 
 }

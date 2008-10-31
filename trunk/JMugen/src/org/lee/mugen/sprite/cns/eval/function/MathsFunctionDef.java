@@ -29,7 +29,7 @@ public class MathsFunctionDef {
 		map.put("ifelse", new MathFunction("ifelse", 100, 3, new Ifelse()));
 		map.put("ln", new MathFunction("ln", 100, 1, new Ln()));
 		map.put("log", new MathFunction("log", 100, 1, new Log()));
-		map.put("pi", new MathFunction("pi", 100, 1, new Pi()));
+		map.put("pi", new MathFunction("pi", 100, 0, new Pi()));
 		map.put("sin", new MathFunction("sin", 100, 1, new Sin()));
 		map.put("tan", new MathFunction("tan", 100, 1, new Tan()));
 

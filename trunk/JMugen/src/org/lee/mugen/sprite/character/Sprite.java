@@ -188,8 +188,7 @@ public class Sprite extends AbstractSprite implements Cloneable {
 			log("Load build state");
 			spriteState = new SpriteState(spriteId);
 			if (isLoadState)
-				CnsParse.buildSpriteInfo(spriteDef.getCnsGroups(), this, info,
-					spriteState);
+				CnsParse.buildSpriteInfo(spriteDef.getCnsGroups(), this, info, spriteState);
 			log("End Load build state");
 			
 			log("Load anim");
@@ -338,7 +337,7 @@ public class Sprite extends AbstractSprite implements Cloneable {
 		info.process();
 		spriteState.process();
 		PhysicsEngime.processSpritePhysics(this);
-		info.decreaseScreenbound();
+		info.getScreenbound().decrease();
 		
 		getPalfx().decreaseTime();
 		linearTime++;

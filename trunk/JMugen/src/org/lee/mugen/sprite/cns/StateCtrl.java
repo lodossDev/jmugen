@@ -111,7 +111,7 @@ public class StateCtrl implements Cloneable {
 			if (persistentCounter == 0 || (persistentCounter % persistent == 0 && persistentCounter != -1)) {
 				for (StateCtrlFunction f: executors) {
 					if (
-							(Integer.parseInt(stateDefId) < -1)
+							(Integer.parseInt(stateDefId) == -2)
 						&&	
 							(f.getClass() == Changestate.class
 									||

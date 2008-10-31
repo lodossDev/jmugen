@@ -16,10 +16,10 @@ public class Frontedgedist extends SpriteCnsTriggerFunction {
 		Stage stage = StateMachine.getInstance().getInstanceOfStage();
 		int _mvX = stage.getCamera().getX();
 		if (sprite.isFlip()) {
-			float x = _mvX + stage.getCamera().getWidth()/2f + sprite.getInfo().getXPos();
+			float x = _mvX + stage.getCamera().getWidth()/2f + (sprite.getInfo().getXPos() + sprite.getInfo().getWidth().getFront());
 			return x;
 		} else {
-			float x = -_mvX + stage.getCamera().getWidth()/2f - sprite.getInfo().getXPos();
+			float x = -_mvX + stage.getCamera().getWidth()/2f - (sprite.getInfo().getXPos() + sprite.getInfo().getWidth().getFront());
 			return x;
 		}
 	}

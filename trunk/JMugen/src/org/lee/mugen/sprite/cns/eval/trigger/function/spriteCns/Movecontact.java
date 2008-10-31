@@ -8,8 +8,8 @@ import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.SpriteHelper;
 import org.lee.mugen.sprite.character.SpriteCns.MoveType;
 import org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub;
-import org.lee.mugen.sprite.character.spiteCnsSubClass.ReversaldefSub;
 import org.lee.mugen.sprite.cns.eval.function.SpriteCnsTriggerFunction;
+import org.lee.mugen.sprite.entity.ProjectileSub;
 
 public class Movecontact extends SpriteCnsTriggerFunction {
 	// TODO : see movehit impl to do all move*
@@ -21,16 +21,9 @@ public class Movecontact extends SpriteCnsTriggerFunction {
 		Sprite one = StateMachine.getInstance().getSpriteInstance(spriteId);
 		if (one.getInfo().getMovetype() == MoveType.A) {
 			LinkedList<HitDefSub> hitdefs = StateMachine.getInstance().getFightEngine().getHitdefBySpriteHitter(spriteId);
-//			boolean isHitDefWithHitExist = false;
-//			for (HitDefSub h: hitdefs)
-//				if (h.getTargetId() == null)
-//					isHitDefWithHitExist = true;
-//			if (!isHitDefWithHitExist)
-//				return 0;
 			HitDefSub strictHitdef = null;
-			// I want the last not reversal
 			for (HitDefSub h: hitdefs)
-				if (h.getClass() != ReversaldefSub.class)
+				if (h.getClass() != ProjectileSub.class && spriteId.equals(h.getSpriteId()))
 					strictHitdef = h;
 
 			for (Sprite s: StateMachine.getInstance().getSprites()) {

@@ -17,6 +17,21 @@ public class StageInfo {
 	//Set the following to 1 to have the background be reset between
 	//rounds.
 	private int resetbg = 1;
+	
+	private int hires = 0;
+
+	public int getHires() {
+		return hires;
+	}
+
+	public void setHires(int hires) {
+		this.hires = hires;
+		if (this.hires == 1) {
+			parent.getScaling().setXscale(0.5f);
+			parent.getScaling().setYscale(0.5f);
+			
+		}
+	}
 
 	public int getAutoturn() {
 		return autoturn;

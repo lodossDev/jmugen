@@ -70,8 +70,7 @@ framespercount = 60
 			String accessor = key;
 			Object[] objectValues = null;
 
-			Valueable[] values = ExpressionFactory.evalExpression(grp
-					.getKeyValues().get(key));
+			Valueable[] values = ExpressionFactory.evalExpression(grp.getKeyValues().get(key));
 
 			objectValues = new Object[values.length];
 			for (int i = 0; i < objectValues.length; ++i) {

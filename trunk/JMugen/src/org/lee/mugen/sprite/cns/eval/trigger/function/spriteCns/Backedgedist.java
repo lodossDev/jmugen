@@ -15,11 +15,11 @@ public class Backedgedist extends SpriteCnsTriggerFunction {
 		Stage stage = StateMachine.getInstance().getInstanceOfStage();
 		int _mvX = stage.getCamera().getX();
 		if (sprite.isFlip()) {
-			float x = -_mvX + stage.getCamera().getWidth()/2 - sprite.getInfo().getXPos() - sprite.getInfo().getWidth().getBack();
+			float x = -_mvX + stage.getCamera().getWidth()/2 - (sprite.getInfo().getXPos() - sprite.getInfo().getWidth().getBack());
 			return x;
 			
 		} else {
-			float x = _mvX + stage.getCamera().getWidth()/2 + sprite.getInfo().getXPos() - sprite.getInfo().getWidth().getBack();
+			float x = _mvX + stage.getCamera().getWidth()/2 + (sprite.getInfo().getXPos() - sprite.getInfo().getWidth().getBack());
 			return x;
 			
 		}

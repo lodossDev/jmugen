@@ -762,7 +762,7 @@ Le second caractère doit être soit
 *///(0 pour light, 1 pour medium, 2 pour hard, 3 pour back, 4 pour up, 5 pour diag-up).
 
 	public static enum AnimType {
-		LIGHT(0), MEDIUM(1), MED(1), HARD(2), HEAVY(2), BACK(2), UP(4), DIAGUP(5), LOW(0), HIGH(2)
+		LIGHT(0), MEDIUM(1), MED(1), MID(1), HARD(2), HEAVY(2), BACK(2), UP(4), DIAGUP(5), LOW(0), HIGH(2)
 		,HITUP(2);
 		AnimType(int v) {
 			value = v;

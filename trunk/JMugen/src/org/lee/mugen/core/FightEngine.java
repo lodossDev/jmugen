@@ -1273,7 +1273,7 @@ public class FightEngine {
 						break;
 					}
 				} else {
-					if (hitdef.getSpriteId().equals(sprite.getSpriteId()) && hitdef.getId().equals(sid)) {
+					if (hitdef.getId() != null && hitdef.getSpriteId().equals(sprite.getSpriteId()) && hitdef.getId().equals(sid)) {
 						hit = hitdef;
 						break;
 					}
@@ -1377,71 +1377,4 @@ public class FightEngine {
 		return projectiles;
 	}
 	
-	public HitDefSub getTheLastHitDef(String spriteId) {
-		Sprite one = StateMachine.getInstance().getSpriteInstance(spriteId);
-		HitDefSub lastHitdef = null;
-		if (one.getInfo().getMovetype() == MoveType.A) {
-			LinkedList<HitDefSub> hitdefs = StateMachine.getInstance().getFightEngine().getHitdefBySpriteHitter(spriteId);
-
-
-			// I want the last not reversal
-			for (HitDefSub h: hitdefs) {
-				if (h instanceof ProjectileSub)
-					continue;
-				if (lastHitdef == null) {
-					lastHitdef = h;
-				}
-				if (lastHitdef.getTimeCreated() < h.getTimeCreated())
-					lastHitdef = h;
-				
-			}
-
-			for (Sprite s: StateMachine.getInstance().getSprites()) {
-				
-				if (s == one || (s instanceof SpriteHelper))
-					continue;
-				if (s.getInfo().getLastHitdef() == null || !spriteId.equals(s.getInfo().getLastHitdef().getSpriteId()))
-					continue;
-				if (s.getInfo().getLastHitdef() instanceof ProjectileSub)
-					continue;
-				if (lastHitdef != null && lastHitdef.getTimeCreated() < s.getInfo().getLastHitdef().getTimeCreated())
-					lastHitdef = s.getInfo().getLastHitdef();
-			}
-		}
-		return lastHitdef;
-	}
-	
-	public HitDefSub getTheLastProjectile(String spriteHitterId) {
-		Sprite one = StateMachine.getInstance().getSpriteInstance(spriteHitterId);
-		HitDefSub lastHitdef = null;
-		if (one.getInfo().getMovetype() == MoveType.A) {
-			LinkedList<HitDefSub> hitdefs = StateMachine.getInstance().getFightEngine().getHitdefBySpriteHitter(spriteHitterId);
-
-
-			// I want the last not reversal
-			for (HitDefSub h: hitdefs) {
-				if (!(h instanceof ProjectileSub))
-					continue;
-				if (lastHitdef == null) {
-					lastHitdef = h;
-				}
-				if (lastHitdef.getTimeCreated() < h.getTimeCreated())
-					lastHitdef = h;
-				
-			}
-
-			for (Sprite s: StateMachine.getInstance().getSprites()) {
-				
-				if (s == one || (s instanceof SpriteHelper))
-					continue;
-				if (s.getInfo().getLastHitdef() == null || !spriteHitterId.equals(s.getInfo().getLastHitdef().getSpriteId()))
-					continue;
-				if (!(s.getInfo().getLastHitdef() instanceof ProjectileSub))
-					continue;
-				if (lastHitdef.getTimeCreated() < s.getInfo().getLastHitdef().getTimeCreated())
-					lastHitdef = s.getInfo().getLastHitdef();
-			}
-		}
-		return lastHitdef;
-	}
 }
