@@ -1,18 +1,34 @@
 package org.lee.mugen.sprite.cns;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.lee.mugen.core.StateMachine;
 import org.lee.mugen.parser.type.Functionable;
+import org.lee.mugen.sprite.character.Sprite;
+import org.lee.mugen.sprite.parser.CnsParse;
+import org.lee.mugen.sprite.parser.Parser.GroupText;
 
 public class StateDef implements Cloneable {
-
+	
 	private String id;
 	private List<StateCtrl> stateCtrlList = new ArrayList<StateCtrl>();
 	private List<Functionable> executors = new ArrayList<Functionable>();
-//	private int stateTime = 0;
 	
+	private boolean isCompiled = false;
+	private List<GroupText> groups = new LinkedList<GroupText>();
+	
+	public void addGroup(GroupText grp) {
+		groups.add(grp);
+	}
+	
+	
+	public List<GroupText> getGroups() {
+		return groups;
+	}
+
+
 	@Override
 	public String toString() {
 		return "StateDef N° " + getId();
@@ -33,6 +49,17 @@ public class StateDef implements Cloneable {
 	}
 	private boolean isExecMainFunc = false;
 	public void execute(String spriteId) {
+		if (!isCompiled) {
+			Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);
+			try {
+				CnsParse.buildSpriteInfoForReal(groups, sprite, sprite.getInfo(), sprite.getSpriteState());
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			isCompiled = true;
+		}
 		if (StateMachine.getInstance().getSpriteInstance(spriteId) == null)
 			return; // case where helper is not add again
 		long time = StateMachine.getInstance().getSpriteInstance(spriteId).getSpriteState().getTimeInState();
