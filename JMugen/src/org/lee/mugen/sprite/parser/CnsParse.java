@@ -132,14 +132,11 @@ public class CnsParse {
 	}
 	
 	public static void buildSpriteInfo(List<GroupText> groups, Sprite sprite, SpriteCns spriteInfo, SpriteState spriteState) throws Exception {
-					
 		String spriteId = sprite.getSpriteId();
-
 		String precedentStateDef = null;
 		StateDef precedentStateDefObj = null;
 		boolean skip = false;
 		for (GroupText grp : groups) {
-
 				if (isMatch(P_DATA_TITLE_REGEX, grp.getSectionRaw())) {
 					fillDirectSpriteInfoData(spriteInfo, spriteId, "data", grp);
 				} else if (isMatch(P_SIZE_TITLE_REGEX, grp.getSectionRaw())) {
@@ -160,10 +157,12 @@ public class CnsParse {
 					skip = false;
 					
 					precedentStateDef = stateDefId;
-					precedentStateDefObj = parseStateDef(stateDefId, grp, "");
+					precedentStateDefObj = new StateDef(stateDefId);
+					if (Integer.parseInt(stateDefId) < 0)
+						precedentStateDefObj = parseStateDef(stateDefId, grp, "");
+					precedentStateDefObj.addGroup(grp);
 					spriteState.addStateDef(precedentStateDefObj);
 					
-					SpriteDebuggerCns.addStatedef(sprite.getSpriteId(), stateDefId, grp.getSectionRaw() + "\n" + grp.getText().toString());
 					
 				} else if (isMatch(P_STATE_CONTINUE_DEF_TITLE_REGEX, grp.getSectionRaw())) {
 					Matcher m = P_STATE_CONTINUE_DEF_TITLE_REGEX.matcher(grp.getSectionRaw());
@@ -185,8 +184,8 @@ public class CnsParse {
 						
 					
 					if (precedentStateDefObj == null) {
-						precedentStateDefObj = parseStateDef(stateDefId, grp, "");
-						spriteState.addStateDef(precedentStateDefObj);
+						precedentStateDef = id + "";
+						precedentStateDefObj.addGroup(grp);
 					
 						SpriteDebuggerCns.addStatedef(sprite.getSpriteId(), stateDefId, grp.getSectionRaw() + "\n" + grp.getText().toString());
 					} else {
@@ -199,11 +198,14 @@ public class CnsParse {
 					m.find();
 					String stateDefId = precedentStateDef;//;m.group(1);
 					SpriteDebuggerCns.addStateCtrl(spriteId, stateDefId, grp.getSectionRaw() + "\n" + grp.getText().toString());
-
 					String stateCtrlId = m.group(1);
 					try {
-						parseStateCtrl(precedentStateDefObj, stateDefId, stateCtrlId, grp);
-						
+						if (Integer.parseInt(stateDefId) < 0) {
+							parseStateCtrl(precedentStateDefObj, stateDefId, stateCtrlId, grp);
+							
+						}
+
+						precedentStateDefObj.addGroup(grp);
 					} catch (Exception e) {
 //						e.printStackTrace();
 					}
@@ -216,19 +218,26 @@ public class CnsParse {
 //				}
 //			}
 		}
-		StateCtrlFunction.endOfParsing();
+//		StateCtrlFunction.endOfParsing();
 	}
+	
+	
+	
 	
 //	static final String[] defaultNamesStateDef = {"type", "movetype", "physics", "facep2", "movehitpersist", "hitcountpersist"};
 //	static final String[] defaultValuesStateDef = {"S", "I", "N", "0", "0", "0"};
 	
 	static final String[] defaultNamesStateDef = {"type", "movetype", "physics", "facep2", "hitdefpersist"};
 	static final String[] defaultValuesStateDef = {"S", "I", "N", "0", "0", };
-	
 	public static StateDef parseStateDef(String stateDefId,
 			GroupText grp, final String prefix) throws Exception {
+		return parseStateDef(null, stateDefId, grp, prefix);
+	}
+	public static StateDef parseStateDef(StateDef stateDef, String stateDefId,
+			GroupText grp, final String prefix) throws Exception {
 
-		StateDef stateDef = new StateDef(stateDefId);
+		if (stateDef == null)
+			stateDef = new StateDef(stateDefId);
 		
 		// Valeur par default
 		Map<String, String> defaultsMap = new HashMap<String, String>();
@@ -534,5 +543,91 @@ public class CnsParse {
 	public static final Pattern P_STATEDEF = Pattern.compile(S_STATEDEF);
 	public static final Pattern P_STATECTRL = Pattern.compile(S_STATECTRL);
 
+
+	public static void buildSpriteInfoForReal(List<GroupText> groups, Sprite sprite, SpriteCns spriteInfo, SpriteState spriteState) throws Exception {
+		String spriteId = sprite.getSpriteId();
+		String precedentStateDef = null;
+		StateDef precedentStateDefObj = null;
+		boolean skip = false;
+		for (GroupText grp : groups) {
+				if (isMatch(P_DATA_TITLE_REGEX, grp.getSectionRaw())) {
+					fillDirectSpriteInfoData(spriteInfo, spriteId, "data", grp);
+				} else if (isMatch(P_SIZE_TITLE_REGEX, grp.getSectionRaw())) {
+					fillDirectSpriteInfoData(spriteInfo, spriteId, "size", grp);
+				} else if (isMatch(P_VELOCITY_TITLE_REGEX, grp.getSectionRaw())) {
+					fillDirectSpriteInfoData(spriteInfo, spriteId, "velocity", grp);
+				} else if (isMatch(P_MOVEMENT_TITLE_REGEX, grp.getSectionRaw())) {
+					fillDirectSpriteInfoData(spriteInfo, spriteId, "movement", grp);
+				} else if (isMatch(P_STATE_DEF_TITLE_REGEX, grp.getSectionRaw())) {
+
+					Matcher m = P_STATE_DEF_TITLE_REGEX.matcher(grp.getSectionRaw());
+					m.find();
+					String stateDefId = m.group(1);
+//					if (spriteState.getStateDef(stateDefId) != null) {
+//						skip = true;
+//						continue;
+//					}
+					skip = false;
+					
+					precedentStateDef = stateDefId;
+					precedentStateDefObj = spriteState.getStateDef(stateDefId);
+					parseStateDef(precedentStateDefObj, stateDefId, grp, "");
+//					spriteState.addStateDef(precedentStateDefObj);
+					
+					SpriteDebuggerCns.addStatedef(sprite.getSpriteId(), stateDefId, grp.getSectionRaw() + "\n" + grp.getText().toString());
+					
+				} else if (isMatch(P_STATE_CONTINUE_DEF_TITLE_REGEX, grp.getSectionRaw())) {
+					Matcher m = P_STATE_CONTINUE_DEF_TITLE_REGEX.matcher(grp.getSectionRaw());
+					m.find();
+					String stateDefId = m.group(1);
+					precedentStateDef = stateDefId;
+					int id = Integer.parseInt(stateDefId);
+					
+					if (id < 0) {
+						for (StateDef statedef : spriteState.getNegativeStateSef()) {
+							if (statedef.getIntId() == id) {
+								precedentStateDefObj = statedef;
+								break;
+							}
+						}
+					} else {
+						precedentStateDefObj = spriteState.getStateDef(id);
+					}
+						
+					
+					if (precedentStateDefObj == null) {
+						precedentStateDef = stateDefId;
+						precedentStateDefObj = spriteState.getStateDef(Integer.parseInt(stateDefId));
+						spriteState.addStateDef(precedentStateDefObj);
+					
+						SpriteDebuggerCns.addStatedef(sprite.getSpriteId(), stateDefId, grp.getSectionRaw() + "\n" + grp.getText().toString());
+					} else {
+					}
+				} else if (isMatch(P_STATE_CTRL_TITLE_REGEX, grp.getSectionRaw())) {
+					if (skip) {
+						continue;
+					}
+					Matcher m = P_STATE_CTRL_TITLE_REGEX.matcher(grp.getSectionRaw());
+					m.find();
+					String stateDefId = precedentStateDef;//;m.group(1);
+					SpriteDebuggerCns.addStateCtrl(spriteId, stateDefId, grp.getSectionRaw() + "\n" + grp.getText().toString());
+
+					String stateCtrlId = m.group(1);
+					try {
+						parseStateCtrl(precedentStateDefObj, stateDefId, stateCtrlId, grp);
+						
+					} catch (Exception e) {
+//						e.printStackTrace();
+					}
+				} else if ("command".equalsIgnoreCase(grp.getSection())) {
+					MugenCommands mugenCommands = CmdParser.interpretCmd(grp);
+					sprite.getCmds().add(mugenCommands);
+				}
+//				else if (isMatch(P_COMMENT_OR_EMPTY_REGEX, grp.getSectionRaw())) {
+//
+//				}
+//			}
+		}
+	}
 
 }
