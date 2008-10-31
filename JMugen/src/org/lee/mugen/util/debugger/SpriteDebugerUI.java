@@ -163,8 +163,8 @@ public class SpriteDebugerUI extends JFrame {
 				String action = sdef.getId();
 				if (action != null) {
 					String spriteId = (String) cbxSprChooser.getSelectedItem();
-					String raw = SpriteDebuggerCns.getRaw(spriteId, action);
-					txaStateCtrInfo.setText(raw);
+//					String raw = SpriteDebuggerCns.getRaw(spriteId, action);
+//					txaStateCtrInfo.setText(raw);
 				}
 				
 			}});
@@ -176,8 +176,8 @@ public class SpriteDebugerUI extends JFrame {
 				String action = sdef.getId();
 				String raw = txaStateCtrInfo.getText();
 				try {
-					SpriteDebuggerCns.delete(spriteId, action);
-					SpriteDebuggerCns.load(spriteId, action, raw);
+//					SpriteDebuggerCns.delete(spriteId, action);
+//					SpriteDebuggerCns.load(spriteId, action, raw);
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}

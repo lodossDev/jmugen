@@ -239,37 +239,39 @@ public class Parser {
 
 		
 	}
-	private static final String _END = "(?:(?:\\s*;.*$)|(?:\\s*$))";
-	private static final String _COMMENT_OR_EMPTY_REGEX = "^ *;.*$|^ *$";
+	private static final String S_END = "(?:(?:\\s*;.*$)|(?:\\s*$))";
+	private static final String S_COMMENT_OR_EMPTY_REGEX = "^ *;.*$|^ *$";
+	
+	private static final Pattern P_COMMENT_OR_EMPTY_REGEX = Pattern.compile(S_COMMENT_OR_EMPTY_REGEX);
+	private static final Pattern P_END = Pattern.compile(S_END);
+	private static final Pattern P_SECTION_REGEX = Pattern.compile("^\\s*\\[(.*)\\]" + S_END);
 
 	public static String[] getGroupText(String src) {
 		src = src.replaceAll("\\t", " ");
-        Pattern matchGroup = Pattern.compile("^ *\\[.*\\]" + _END);
         StringTokenizer strToken = new StringTokenizer(src, "\r\n");
     
         
         ArrayList<String> stringList = new ArrayList<String>();
         String line = "";
         boolean processLine = true;
-        Pattern regexIsCommentOrEmpty = Pattern.compile(_COMMENT_OR_EMPTY_REGEX);
         while (strToken.hasMoreTokens()) {
             StringBuilder strBuilder = new StringBuilder();
 
         	if (processLine)
                 line = strToken.nextToken();
-        	if (regexIsCommentOrEmpty.matcher(line).find()) {
+        	if (P_COMMENT_OR_EMPTY_REGEX.matcher(line).find()) {
             	processLine = true;
             	strBuilder.append(line + "\n");
             	continue;
             }
-            if (matchGroup.matcher(line).find()) {
+            if (P_SECTION_REGEX.matcher(line).find()) {
                 do {
-                    if (!regexIsCommentOrEmpty.matcher(line).matches()) {
+                    if (!P_COMMENT_OR_EMPTY_REGEX.matcher(line).matches()) {
 //                    	line = line.replaceAll(_END, "");
                     	strBuilder.append(line + "\n");
                     }
                     line = strToken.nextToken();
-                } while (!matchGroup.matcher(line).find() && strToken.hasMoreTokens());
+                } while (!P_SECTION_REGEX.matcher(line).find() && strToken.hasMoreTokens());
                 if (!strToken.hasMoreTokens())
                     strBuilder.append(line + "\n");
                 else
@@ -285,7 +287,7 @@ public class Parser {
 	}
 	private static String[] getSeparateKeyValue(String line, boolean caseSensitive) {
 		String[] keyValue = new String[2];
-		if (Pattern.matches(_COMMENT_OR_EMPTY_REGEX, line))
+		if (P_COMMENT_OR_EMPTY_REGEX.matcher(line).find())
 			return null;
 		line = caseSensitive? line :line.trim().toLowerCase();
 //		line = Parser.toLowerCase(line);
@@ -307,7 +309,6 @@ public class Parser {
 	}
 	public static List<GroupText> getGroupTextMap(String src, boolean caseSensitive) {
 //		   String matchGroup = "^ *\\[([\\ a-zA-Z0-9\\.\\-\\_\\+\\,]*)\\]" + _END;
-		String matchGroup = "^\\s*\\[(.*)\\]" + _END;
 		StringTokenizer strToken = new StringTokenizer(caseSensitive? src: src.toLowerCase(), "\r\n");
     
         List<GroupText> result = new ArrayList<GroupText>();
@@ -315,31 +316,29 @@ public class Parser {
         ArrayList<String> stringList = new ArrayList<String>();
         String line = "";
         boolean processLine = true;
-        Pattern regexIsCommentOrEmpty = Pattern.compile(_COMMENT_OR_EMPTY_REGEX);
+        Pattern regexIsCommentOrEmpty = P_COMMENT_OR_EMPTY_REGEX;
         while (strToken.hasMoreTokens()) {
             if (processLine)
-                line = strToken.nextToken().replaceAll(_END, "");
+                line = strToken.nextToken().replaceAll(S_END, "");
             if (regexIsCommentOrEmpty.matcher(line).find()) {
             	processLine = true;
             	continue;
             }
-            Matcher matcher = null;
-            if (Pattern.matches(matchGroup, line)) {
-            	matcher = Pattern.compile(matchGroup).matcher(line);
-            	matcher.find();
+            Matcher matcher = P_SECTION_REGEX.matcher(line);
+            if (matcher.find()) {
             	String section = matcher.group(1);
             	GroupText groupText = new GroupText();
             	groupText.setSection(section.toLowerCase());
             	groupText.setSectionRaw(line);
             	line = strToken.nextToken();
-            	if (Pattern.matches(matchGroup, line)) {
+            	if (P_SECTION_REGEX.matcher(line).find()) {
             		processLine = false;
             		result.add(groupText);
             		continue;
             	}
             	do {
                     if (!regexIsCommentOrEmpty.matcher(line).matches()) {
-                    	line = line.replaceAll(_END, "");
+                    	line = line.replaceAll(S_END, "");
                     	if (line.indexOf("=") != -1) {
                         	String[] kv = getSeparateKeyValue(line, caseSensitive);
                         	groupText.getKeyValues().put(kv[0].toLowerCase(), kv[1] == null? "": caseSensitive? kv[1]: kv[1].toLowerCase());
@@ -348,13 +347,13 @@ public class Parser {
                     }
                     if (strToken.hasMoreTokens())
                     line = strToken.nextToken();
-                } while (!Pattern.matches(matchGroup, line) && strToken.hasMoreTokens());
+                } while (!P_SECTION_REGEX.matcher(line).find() && strToken.hasMoreTokens());
                 
                 if (!strToken.hasMoreTokens()) {
-                	if (Pattern.matches(matchGroup, line)) {
+                	if (P_SECTION_REGEX.matcher(line).find()) {
                 		processLine = false;
                 	} else if (!regexIsCommentOrEmpty.matcher(line).matches()) {
-                    	line = line.replaceAll(_END, "");
+                    	line = line.replaceAll(S_END, "");
                     	if (line.indexOf("=") != -1) {
                         	String[] kv = getSeparateKeyValue(line, caseSensitive);
                         	groupText.getKeyValues().put(kv[0].toLowerCase(), kv[1] == null? "": caseSensitive? kv[1]: kv[1].toLowerCase());

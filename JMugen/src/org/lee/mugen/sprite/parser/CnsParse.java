@@ -28,7 +28,6 @@ import org.lee.mugen.sprite.cns.eval.function.StateCtrlFunctionDef;
 import org.lee.mugen.sprite.parser.Parser.GroupText;
 import org.lee.mugen.util.BeanTools;
 import org.lee.mugen.util.Logger;
-import org.lee.mugen.util.debugger.SpriteDebuggerCns;
 
 public class CnsParse {
 	/*
@@ -186,8 +185,6 @@ public class CnsParse {
 					if (precedentStateDefObj == null) {
 						precedentStateDef = id + "";
 						precedentStateDefObj.addGroup(grp);
-					
-						SpriteDebuggerCns.addStatedef(sprite.getSpriteId(), stateDefId, grp.getSectionRaw() + "\n" + grp.getText().toString());
 					} else {
 					}
 				} else if (isMatch(P_STATE_CTRL_TITLE_REGEX, grp.getSectionRaw())) {
@@ -197,7 +194,6 @@ public class CnsParse {
 					Matcher m = P_STATE_CTRL_TITLE_REGEX.matcher(grp.getSectionRaw());
 					m.find();
 					String stateDefId = precedentStateDef;//;m.group(1);
-					SpriteDebuggerCns.addStateCtrl(spriteId, stateDefId, grp.getSectionRaw() + "\n" + grp.getText().toString());
 					String stateCtrlId = m.group(1);
 					try {
 						if (Integer.parseInt(stateDefId) < 0) {
@@ -574,8 +570,6 @@ public class CnsParse {
 					parseStateDef(precedentStateDefObj, stateDefId, grp, "");
 //					spriteState.addStateDef(precedentStateDefObj);
 					
-					SpriteDebuggerCns.addStatedef(sprite.getSpriteId(), stateDefId, grp.getSectionRaw() + "\n" + grp.getText().toString());
-					
 				} else if (isMatch(P_STATE_CONTINUE_DEF_TITLE_REGEX, grp.getSectionRaw())) {
 					Matcher m = P_STATE_CONTINUE_DEF_TITLE_REGEX.matcher(grp.getSectionRaw());
 					m.find();
@@ -600,7 +594,6 @@ public class CnsParse {
 						precedentStateDefObj = spriteState.getStateDef(Integer.parseInt(stateDefId));
 						spriteState.addStateDef(precedentStateDefObj);
 					
-						SpriteDebuggerCns.addStatedef(sprite.getSpriteId(), stateDefId, grp.getSectionRaw() + "\n" + grp.getText().toString());
 					} else {
 					}
 				} else if (isMatch(P_STATE_CTRL_TITLE_REGEX, grp.getSectionRaw())) {
@@ -610,7 +603,6 @@ public class CnsParse {
 					Matcher m = P_STATE_CTRL_TITLE_REGEX.matcher(grp.getSectionRaw());
 					m.find();
 					String stateDefId = precedentStateDef;//;m.group(1);
-					SpriteDebuggerCns.addStateCtrl(spriteId, stateDefId, grp.getSectionRaw() + "\n" + grp.getText().toString());
 
 					String stateCtrlId = m.group(1);
 					try {

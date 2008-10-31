@@ -192,8 +192,8 @@ public class TestFrame {
 	    
 	    
 		String[] args = new String[] {
-				"sf3gouki", "1", 
-				"cvsg_rugal", "0",
+				"RAOH", "0", 
+				"kfm", "0",
 				"d4_ggxxac_China.def",
 				"ADX_S060.wav"
 		};
@@ -213,9 +213,9 @@ public class TestFrame {
 		GraphicsWrapper.init();
 		final GameWindow gameWindow = GraphicsWrapper.getInstance().getInstanceOfGameWindow();
 		gameWindow.setGameWindowCallback(statemachine);
-		SpriteDebugerUI debugerUI = new SpriteDebugerUI();
-		debugerUI.setVisible(true);
-		ExpressionTester.lanch();
+//		SpriteDebugerUI debugerUI = new SpriteDebugerUI();
+//		debugerUI.setVisible(true);
+//		ExpressionTester.lanch();
 		
 		gameWindow.start();
 
