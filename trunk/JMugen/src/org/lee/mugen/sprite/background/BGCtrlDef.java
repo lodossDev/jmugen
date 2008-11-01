@@ -245,7 +245,7 @@ public class BGCtrlDef {
 
 				} else if (Pattern.matches(_TRIGGER, line)) {
 					String[] tokens = ExpressionFactory.expression2Tokens(value);
-					Matcher m = Pattern.compile(_TRIGGER).matcher(line);
+					Matcher m = Pattern.compile(_TRIGGER, Pattern.CASE_INSENSITIVE).matcher(line);
 					m.find();
 					int prio = Integer.parseInt(m.group(1));
 

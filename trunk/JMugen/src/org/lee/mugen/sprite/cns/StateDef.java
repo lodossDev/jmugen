@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
+
 import org.lee.mugen.core.StateMachine;
 import org.lee.mugen.parser.type.Functionable;
 import org.lee.mugen.sprite.character.Sprite;
@@ -52,7 +54,13 @@ public class StateDef implements Cloneable {
 		if (!isCompiled) {
 			Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);
 			try {
-				CnsParse.buildSpriteInfoForReal(groups, sprite, sprite.getInfo(), sprite.getSpriteState());
+				getStateCtrls().clear();
+				executors.clear();
+				if (getIntId() < 0) {
+					CnsParse.buildSpriteInfoForReal(groups, sprite, sprite.getInfo(), sprite.getSpriteState());
+					
+				} else 
+					CnsParse.buildSpriteInfoForReal(groups, sprite, sprite.getInfo(), sprite.getSpriteState());
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -118,6 +126,17 @@ public class StateDef implements Cloneable {
 
 	public void setStateCtrlList(List<StateCtrl> stateCtrlList) {
 		this.stateCtrlList = stateCtrlList;
+	}
+
+
+	public void recompile() {
+		isCompiled = false;
+		
+	}
+
+
+	public void setCompiled() {
+		isCompiled = true;
 	}
 
 //	public int getStateTime() {

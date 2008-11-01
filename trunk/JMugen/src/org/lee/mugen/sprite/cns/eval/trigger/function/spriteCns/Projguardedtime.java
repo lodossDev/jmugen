@@ -31,7 +31,7 @@ public class Projguardedtime extends SpriteCnsTriggerFunction {
 	public static Pattern PROJ_GUARDED_TIME_SPEC_REG = Pattern.compile(
 			"(" + "projguardedtime *\\((\\d+)\\)" + ")" +
 			"|" +
-			"\\b(" + "projguardedtime(\\d*)" + ")\\b");
+			"\\b(" + "projguardedtime(\\d*)" + ")\\b", Pattern.CASE_INSENSITIVE);
 	@Override
 	public int parseValue(String[] tokens, int pos, List<Valueable> result) {
 		String keyStr = tokens[pos];

@@ -41,6 +41,10 @@ public class JoglGameWindow implements GameWindow, GLEventListener {
 	
 	private MouseCtrl mouse = new MouseCtrl();
 	private boolean isFinishInit = false;
+	public boolean isFinishInit() {
+		return isFinishInit;
+	}
+
 	private Thread loadingInitThread = new Thread() {
 		@Override
 		public void run() {

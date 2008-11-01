@@ -21,16 +21,14 @@ public class SpriteDef {
 	private Files files = new Files();
 	private Arcade arcade = new Arcade();
 	private List<GroupText> cnsGroups;
-
+	private static final Pattern MULTIPLE_OUT_BEAN = Pattern.compile("(^.*pal|^.*st)([0-9]*)$", Pattern.CASE_INSENSITIVE);
 	public static SpriteDef parseSpriteDef(String def, String spriteId)
 			throws Exception {
 
 		SpriteDef spriteDef = new SpriteDef();
 		String parentPath = new File(def).getParentFile().getAbsolutePath();
 		spriteDef.setParentPath(parentPath);
-		List<GroupText> groups = Parser
-				.getGroupTextMap(org.apache.commons.io.IOUtils
-						.toString(new FileInputStream(def)));
+		List<GroupText> groups = Parser.getGroupTextMap(org.apache.commons.io.IOUtils.toString(new FileInputStream(def)));
 
 		for (GroupText grp : groups) {
 			String section = grp.getSection();
@@ -38,12 +36,10 @@ public class SpriteDef {
 			for (String key : kvs.keySet()) {
 				String value = kvs.get(key);
 
-				Matcher m = Pattern.compile("(^.*pal|^.*st)([0-9]*)$").matcher(
-						key);
+				Matcher m = MULTIPLE_OUT_BEAN.matcher(key);
 				if (m.find()) {
 					value = m.group(2) + "," + value;
 					key = m.group(1);
-
 				}
 				try {
 					BeanTools.setObject(spriteDef, section + "." + key, value);

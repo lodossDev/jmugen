@@ -33,7 +33,7 @@ public class Projcontact extends SpriteCnsTriggerFunction {
 	public static Pattern PROJ_CONTACT_SPEC_REG = Pattern.compile(
 				"(" + "projcontact *\\((\\d+)\\)" + ")" +
 				"|" +
-				"\\b(" + "projcontact(\\d*)" + ")\\b");
+				"\\b(" + "projcontact(\\d*)" + ")\\b", Pattern.CASE_INSENSITIVE);
 	@Override
 	public int parseValue(String[] tokens, int pos, List<Valueable> result) {
 		final Wrap<MathFunction> firstOp = new Wrapper<MathFunction>();

@@ -122,18 +122,24 @@ public class SpriteSFF {
 		Logger.log("Total Image Free " + i);
 	}
 
-	public void reload(SpriteSFF spriteSFF) {
-		int i = 0;
-		for (GroupSpriteSFF grp: _groupMap.values()) {
-			for (ImageSpriteSFF img: grp.ImgMap().values()) {
-				if (spriteSFF.getGroupSpr(grp.getGrpNum()) == null || spriteSFF.getGroupSpr(grp.getGrpNum()).getImgSpr(img.getImgNum()) == null)
-					throw new IllegalArgumentException("reload Sprite must be the same groupe");
-				ImageSpriteSFF imgSFF = spriteSFF.getGroupSpr(grp.getGrpNum()).getImgSpr(img.getImgNum());
-				img.getImage().reload(imgSFF.getImage());
-				i++;
+	public void reload(final SpriteSFF spriteSFF) {
+		new Thread() {
+			@Override
+			public void run() {
+				int i = 0;
+				for (GroupSpriteSFF grp: _groupMap.values()) {
+					for (ImageSpriteSFF img: grp.ImgMap().values()) {
+						if (spriteSFF.getGroupSpr(grp.getGrpNum()) == null || spriteSFF.getGroupSpr(grp.getGrpNum()).getImgSpr(img.getImgNum()) == null)
+							throw new IllegalArgumentException("reload Sprite must be the same groupe");
+						ImageSpriteSFF imgSFF = spriteSFF.getGroupSpr(grp.getGrpNum()).getImgSpr(img.getImgNum());
+						img.getImage().reload(imgSFF.getImage());
+						i++;
+					}
+				}
+				Logger.log("Total Image reloaded " + i);
 			}
-		}
-		Logger.log("Total Image reloaded " + i);
+		}.run();
+		
 	}
 
 }

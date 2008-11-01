@@ -32,7 +32,7 @@ public class Projhit extends SpriteCnsTriggerFunction {
 	public static Pattern PROJ_HIT_SPEC_REG = Pattern.compile(
 			"(" + "projhit *\\((\\d+)\\)" + ")" +
 			"|" +
-			"\\b(" + "projhit(\\d*)" + ")\\b");
+			"\\b(" + "projhit(\\d*)" + ")\\b", Pattern.CASE_INSENSITIVE);
 	@Override
 	public int parseValue(String[] tokens, int pos, List<Valueable> result) {
 		final Wrap<MathFunction> firstOp = new Wrapper<MathFunction>();

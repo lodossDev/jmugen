@@ -504,11 +504,19 @@ public class JoglMugenDrawer extends MugenDrawer {
 		@Override
 		public void reload(ImageContainer img) {
 			synchronized (this) {
+				
+//				if (imageStatus.get() == TEXTURE) {
+//					Texture oldImg = (Texture)this.img;
+//					oldImg.disable();
+//					oldImg.dispose();
+//						
+//				}
 				ImageContainerText imgText = (ImageContainerText) img;
 				this.img = imgText.img;
 				this.width = img.getWidth();
 				this.height = img.getHeight();
 				imageStatus.set(imgText.imageStatus.get());
+//				prepareImageToTexture();
 			}
 
 		}

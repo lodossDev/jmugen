@@ -77,7 +77,7 @@ public class StateCtrl implements Cloneable {
 
 				if (_triggers.size() == 0) {
 					isTriggered = true;
-					persistentCounter = persistentCounter == 0? 0: persistentCounter - 1;
+//					persistentCounter = persistentCounter == 0? 0: persistentCounter - 1;
 				} else {
 					for (Trigger trig: _triggers) {
 						float trigValue = 0;

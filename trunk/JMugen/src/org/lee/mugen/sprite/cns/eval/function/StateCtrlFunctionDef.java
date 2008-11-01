@@ -215,6 +215,13 @@ public class StateCtrlFunctionDef {
 		return stateCtrlFunctionMap;
 	}
 
+	public static void main(String[] args) {
+		StringBuilder b = new StringBuilder();
+		for (String k : stateCtrlFunctionMap.keySet()) {
+			b.append(k+"|");
+		}
+		System.out.println(b);
+	}
 
 
 

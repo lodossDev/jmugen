@@ -34,7 +34,7 @@ import org.lee.mugen.util.MugenTools;
 
 public class Stage {
 	public static void main(String[] args) {
-		Pattern p = Pattern.compile(_BG_SECTION_REGEX);
+		Pattern p = Pattern.compile(_BG_SECTION_REGEX, Pattern.CASE_INSENSITIVE);
 		Matcher m = p.matcher("bg sky");
 		if (m.find()) {
 			Logger.log(m.group(1));
@@ -98,22 +98,28 @@ public class Stage {
 		
 		List<GroupText> groups = Parser.getGroupTextMap(text);
 		BGCtrlDef parentBGCtrlDef = null;
+		Pattern bgGrpPattern = Pattern.compile(_GRP_ACTION_REGEX, Pattern.CASE_INSENSITIVE);
+		Pattern bgPattern = Pattern.compile(_BG_SECTION_REGEX, Pattern.CASE_INSENSITIVE);
+		Pattern bgCtrlDefPattern = Pattern.compile(_BGCTRLDEF_SECTION_REGEX, Pattern.CASE_INSENSITIVE);
+		Pattern bgCtrlPattern = Pattern.compile(_BGCTRL_SECTION_REGEX, Pattern.CASE_INSENSITIVE);
+		
 		for (GroupText grp: groups) {
 			Object bean = stage;
 			String parent = grp.getSection();
-			if (Pattern.matches(_GRP_ACTION_REGEX, grp.getSection())) {
-				Pattern bgPattern = Pattern.compile(_GRP_ACTION_REGEX);
-				Matcher m = bgPattern.matcher(grp.getSection());
+
+			if (bgGrpPattern.matcher(grp.getSection()).find()) {
+				
+				Matcher m = bgGrpPattern.matcher(grp.getSection());
 				m.find();
 				int actionno = Integer.parseInt(m.group(1));
 				
 				AirGroup ag = parseGroup(actionno, grp.getText().toString());
 				stage.getAirGroupMap().put(actionno, new AnimGroup(ag));
 				continue;
-			} else if (Pattern.matches(_BG_SECTION_REGEX, grp.getSection()) || "bg".equals(grp.getSection())) {
+			} else if (bgPattern.matcher(grp.getSection()).find() || "bg".equals(grp.getSection())) {
 				String bgName;
-				if (!"bg".equals(grp.getSection())) {
-					Pattern bgPattern = Pattern.compile(_BG_SECTION_REGEX);
+				if (!"bg".equalsIgnoreCase(grp.getSection())) {
+					
 					Matcher m = bgPattern.matcher(grp.getSection());
 					m.find();
 					bgName = m.group(1);
@@ -130,14 +136,14 @@ public class Stage {
 				stage.getBgs().add(bg);
 				bean = bg;
 				parent = "";
-			} else if (Pattern.matches(_BGCTRLDEF_SECTION_REGEX, grp.getSection())) {
+			} else if (bgCtrlDefPattern.matcher(grp.getSection()).find()) {
 
 				parentBGCtrlDef = BGCtrlDef.parseBGCtrlDef(grp.getSection(), grp);
 				bean = parentBGCtrlDef;
 				stage.getBgCtrlDefMap().put(parentBGCtrlDef.getCtrlid(), parentBGCtrlDef);
 				continue;
-			} else if (Pattern.matches(_BGCTRL_SECTION_REGEX, grp.getSection())) {
-				BGCtrlDef.BGCtrl ctrl = BGCtrlDef.BGCtrl.parseBGCtrl(parentBGCtrlDef, parentBGCtrlDef.getId(), grp.getSection(), grp);
+			} else if (bgCtrlPattern.matcher(grp.getSection()).find()) {
+//				BGCtrlDef.BGCtrl ctrl = BGCtrlDef.BGCtrl.parseBGCtrl(parentBGCtrlDef, parentBGCtrlDef.getId(), grp.getSection(), grp);
 				continue;
 			}
 			for (String key: grp.getKeyValues().keySet()) {
@@ -150,14 +156,14 @@ public class Stage {
 					objectValues = new Object[] {null};
 				} else {
 					Valueable[] values = null;
-					if ("bgmusic".equals(key) || "spr".equals(key) || "type".equals(key)) {
+					if ("bgmusic".equalsIgnoreCase(key) || "spr".equalsIgnoreCase(key) || "type".equalsIgnoreCase(key)) {
 						values = new Valueable[] {new StringValueable(value)};
 					} else {
 						String[] tokens = ExpressionFactory.expression2Tokens(value);
 						values = ExpressionFactory.evalExpression(tokens, false, true);
 					}
 					objectValues = new Object[values.length];
-					if ("delta".equals(key)) {
+					if ("delta".equalsIgnoreCase(key)) {
 						objectValues = new Object[2];
 						objectValues[0] = 1;
 						objectValues[1] = 1;
