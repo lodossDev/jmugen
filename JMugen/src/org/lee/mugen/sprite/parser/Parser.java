@@ -308,12 +308,10 @@ public class Parser {
 		return getGroupTextMap(src, false);
 	}
 	public static List<GroupText> getGroupTextMap(String src, boolean caseSensitive) {
-//		   String matchGroup = "^ *\\[([\\ a-zA-Z0-9\\.\\-\\_\\+\\,]*)\\]" + _END;
 		StringTokenizer strToken = new StringTokenizer(caseSensitive? src: src.toLowerCase(), "\r\n");
     
         List<GroupText> result = new ArrayList<GroupText>();
         
-        ArrayList<String> stringList = new ArrayList<String>();
         String line = "";
         boolean processLine = true;
         Pattern regexIsCommentOrEmpty = P_COMMENT_OR_EMPTY_REGEX;
@@ -330,7 +328,7 @@ public class Parser {
             	GroupText groupText = new GroupText();
             	groupText.setSection(section.toLowerCase());
             	groupText.setSectionRaw(line);
-            	line = strToken.nextToken();
+            	line = strToken.nextToken().replaceAll(S_END, "");
             	if (P_SECTION_REGEX.matcher(line).find()) {
             		processLine = false;
             		result.add(groupText);
@@ -346,7 +344,7 @@ public class Parser {
                     	groupText.appendText(line);
                     }
                     if (strToken.hasMoreTokens())
-                    line = strToken.nextToken();
+                    line = strToken.nextToken().replaceAll(S_END, "");
                 } while (!P_SECTION_REGEX.matcher(line).find() && strToken.hasMoreTokens());
                 
                 if (!strToken.hasMoreTokens()) {
@@ -378,6 +376,7 @@ public class Parser {
     	StringBuilder strBuild = new StringBuilder();
     	while ((line = br.readLine()) != null) {
     		strBuild.append(line.replaceAll("\t", "").replaceAll("\r", "").toLowerCase() + "\n");
+//    		strBuild.append(line + "\n");
     	}
     	return strBuild.toString();
     	

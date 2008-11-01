@@ -254,10 +254,17 @@ public class SpriteState {
 	
 
 	public StateDef getStateDef(int i) {
-		return stateDefMap.get(i + "");
+		if (i < 0) {
+			for (StateDef s: negativeStateSef)
+				if (i == s.getIntId())
+					return s;
+			return null;
+		} else {
+			return stateDefMap.get(i + "");
+		}
 	}
 	public StateDef getStateDef(String i) {
-		return stateDefMap.get(i + "");
+		return getStateDef(Integer.parseInt(i));
 	}
 	
 	public String getPrevstateno() {

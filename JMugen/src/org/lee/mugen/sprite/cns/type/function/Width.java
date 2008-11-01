@@ -33,14 +33,12 @@ public class Width extends StateCtrlFunction {
 
 					int iFront = Parser.getIntValue(front.getValue(spriteId));
 					sprInfo.setWidth(iFront, iBack);
-
+					sprInfo.setEdge(iFront, iBack);
 				} else {
 					int iFront = Parser.getIntValue(front.getValue(spriteId));
 					sprInfo.setWidth(iFront);
-
+					sprInfo.setEdge(iFront);
 				}
-			} else {
-				sprInfo.setWidth(0, 0);
 			}
 		}
 		{
@@ -59,8 +57,6 @@ public class Width extends StateCtrlFunction {
 					sprInfo.setEdge(iFront);
 
 				}
-			} else {
-				sprInfo.setWidth(0, 0);
 			}
 		}
 		{
@@ -73,12 +69,10 @@ public class Width extends StateCtrlFunction {
 
 					int iFront = Parser.getIntValue(front.getValue(spriteId));
 					sprInfo.setWidth(iFront, iBack);
-					sprInfo.setEdge(iFront, iBack);
 
 				} else {
 					int iFront = Parser.getIntValue(front.getValue(spriteId));
 					sprInfo.setWidth(iFront);
-					sprInfo.setEdge(iFront);
 
 				}
 			}

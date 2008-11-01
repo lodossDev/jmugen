@@ -3,7 +3,6 @@ package org.lee.mugen.sprite.cns.type.function;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.lee.mugen.core.StateMachine;
 import org.lee.mugen.parser.type.Functionable;
@@ -24,28 +23,22 @@ public class Varadd extends StateCtrlFunction {
 	public Varadd() {
 		super("varadd", new String[] {"v", "fv", "value"});
 	}
-	private static final String _SYSVAR_REG = "sysvar *\\(([^\\)]*)\\)";
-	private static final String _SYSVAR_F_REG = "sysvarf *\\(([^\\)]*)\\)";
-	private static final String _VAR_REG = "var *\\(([^\\)]*)\\)";
-	private static final String _VAR_F_REG = "fvar *\\(([^\\)]*)\\)";
+
 	
 	private List<Functionable> listOfValSet = new ArrayList<Functionable>();
 	private List<Functionable> listOfValFSet = new ArrayList<Functionable>();
 
-	protected String REG_IS_VAR_PARAM = (
-			_SYSVAR_REG + "|" + _SYSVAR_F_REG + "|" + _VAR_REG + "|" + _VAR_F_REG
-	);
 
 	
 	@Override
     public boolean containsParam(String param) {
-    	return super.containsParam(param) || Pattern.matches(REG_IS_VAR_PARAM, param);
+    	return super.containsParam(param) || Varset.isMatch(Varset.PREG_IS_VAR_PARAM, param);
     }
 	
 	public void addParam(String name, Valueable[] param) {
 		
-		if (Pattern.matches(_SYSVAR_REG, name)) {
-			Matcher m = Pattern.compile(_SYSVAR_REG).matcher(name);
+		if (Varset.isMatch(Varset.P_SYSVAR_REG, name)) {
+			Matcher m = Varset.P_SYSVAR_REG.matcher(name);
 			m.find();
 			final String value = m.group(1);
 			String[] tokens = ExpressionFactory.expression2Tokens(value);
@@ -64,8 +57,8 @@ public class Varadd extends StateCtrlFunction {
 			listOfValSet.add(functionable);
 			return;
 		}
-		if (Pattern.matches(_SYSVAR_F_REG, name)) {
-			Matcher m = Pattern.compile(_SYSVAR_F_REG).matcher(name);
+		if (Varset.isMatch(Varset.P_SYSVAR_F_REG, name)) {
+			Matcher m = Varset.P_SYSVAR_F_REG.matcher(name);
 			m.find();
 			final String value = m.group(1);
 			String[] tokens = ExpressionFactory.expression2Tokens(value);
@@ -84,8 +77,8 @@ public class Varadd extends StateCtrlFunction {
 			listOfValFSet.add(functionable);
 			return;
 		}
-		if (Pattern.matches(_SYSVAR_F_REG, name)) {
-			Matcher m = Pattern.compile(_SYSVAR_F_REG).matcher(name);
+		if (Varset.isMatch(Varset.P_SYSVAR_F_REG, name)) {
+			Matcher m = Varset.P_SYSVAR_F_REG.matcher(name);
 			m.find();
 			final String value = m.group(1);
 			String[] tokens = ExpressionFactory.expression2Tokens(value);
@@ -104,8 +97,8 @@ public class Varadd extends StateCtrlFunction {
 			listOfValFSet.add(functionable);
 			return;
 		}
-		if (Pattern.matches(_VAR_REG, name)) {
-			Matcher m = Pattern.compile(_VAR_REG).matcher(name);
+		if (Varset.isMatch(Varset.P_VAR_REG, name)) {
+			Matcher m = Varset.P_VAR_REG.matcher(name);
 			m.find();
 			final String value = m.group(1);
 			String[] tokens = ExpressionFactory.expression2Tokens(value);
@@ -124,8 +117,8 @@ public class Varadd extends StateCtrlFunction {
 			listOfValFSet.add(functionable);
 			return;
 		}
-		if (Pattern.matches(_VAR_F_REG, name)) {
-			Matcher m = Pattern.compile(_VAR_F_REG).matcher(name);
+		if (Varset.isMatch(Varset.P_VAR_F_REG, name)) {
+			Matcher m = Varset.P_VAR_F_REG.matcher(name);
 			m.find();
 			final String value = m.group(1);
 			String[] tokens = ExpressionFactory.expression2Tokens(value);

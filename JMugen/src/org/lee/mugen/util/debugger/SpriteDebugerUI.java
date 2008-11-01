@@ -2,8 +2,11 @@ package org.lee.mugen.util.debugger;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -12,26 +15,37 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
+import javax.swing.JTextPane;
+import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.undo.CannotRedoException;
+import javax.swing.undo.CannotUndoException;
+import javax.swing.undo.UndoManager;
 
 import org.lee.mugen.core.StateMachine;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.cns.StateDef;
+import org.lee.mugen.sprite.parser.Parser;
+import org.lee.mugen.sprite.parser.Parser.GroupText;
+
+import com.Ostermiller.Syntax.HighlightedDocument;
 
 public class SpriteDebugerUI extends JFrame {
 	
@@ -45,8 +59,40 @@ public class SpriteDebugerUI extends JFrame {
 		return cbxSprChooser.getSelectedItem().toString();
 	}
 	
-	private JTextArea txaStateCtrInfo;
+	private JTextPane txaStateCtrInfo;
 
+	public class UndoAction extends AbstractAction {
+	    public UndoAction(UndoManager manager) {
+	      this.manager = manager;
+	    }
+
+	    public void actionPerformed(ActionEvent evt) {
+	      try {
+	        manager.undo();
+	      } catch (CannotUndoException e) {
+	        Toolkit.getDefaultToolkit().beep();
+	      }
+	    }
+
+	    private UndoManager manager;
+	  }
+
+	  // The Redo action
+	  public class RedoAction extends AbstractAction {
+	    public RedoAction(UndoManager manager) {
+	      this.manager = manager;
+	    }
+
+	    public void actionPerformed(ActionEvent evt) {
+	      try {
+	        manager.redo();
+	      } catch (CannotRedoException e) {
+	        Toolkit.getDefaultToolkit().beep();
+	      }
+	    }
+
+	    private UndoManager manager;
+	  }
 	public SpriteDebugerUI() {
 		super("Mugen StateControler Debugger");
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -106,9 +152,21 @@ public class SpriteDebugerUI extends JFrame {
 		// Right
 		JPanel pnlRight = new JPanel();
 		pnlRight.setLayout(new BorderLayout());
-		txaStateCtrInfo = new JTextArea();
+		HighlightedDocument kit = new HighlightedDocument();
+		txaStateCtrInfo = new JTextPane(kit);
+		
+	   UndoManager manager = new UndoManager();
+	   txaStateCtrInfo.getDocument().addUndoableEditListener(manager);
+	    Action undoAction = new UndoAction(manager);
+	    Action redoAction = new RedoAction(manager);
+	    txaStateCtrInfo.registerKeyboardAction(undoAction, KeyStroke.getKeyStroke(
+	            KeyEvent.VK_Z, InputEvent.CTRL_MASK), JComponent.WHEN_FOCUSED);
+	    txaStateCtrInfo.registerKeyboardAction(redoAction, KeyStroke.getKeyStroke(
+	            KeyEvent.VK_Y, InputEvent.CTRL_MASK), JComponent.WHEN_FOCUSED);
+	    
+	    
 		JScrollPane scpStateCtrl = new JScrollPane(txaStateCtrInfo);
-//		scpStateCtrl.setPreferredSize(new Dimension(400, 600));
+		scpStateCtrl.setPreferredSize(new Dimension(400, 600));
 		scpStateCtrl.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
 		
 		pnlRight.add(scpStateCtrl);
@@ -163,8 +221,26 @@ public class SpriteDebugerUI extends JFrame {
 				String action = sdef.getId();
 				if (action != null) {
 					String spriteId = (String) cbxSprChooser.getSelectedItem();
-//					String raw = SpriteDebuggerCns.getRaw(spriteId, action);
-//					txaStateCtrInfo.setText(raw);
+					StringBuilder builder = new StringBuilder();
+					if (Integer.parseInt(action) < 0) {
+						for (StateDef state: StateMachine.getInstance().getSpriteInstance(spriteId).getSpriteState().getNegativeStateSef()) {
+							if (state.getId().equals(action)) {
+								for (GroupText grp: state.getGroups()) {
+									builder.append(grp.getSectionRaw() + "\n");
+									builder.append(grp.getText() + "\n");
+								}
+							}
+						}
+						
+					} else {
+						for (GroupText grp: StateMachine.getInstance().getSpriteInstance(spriteId).getSpriteState().getStateDef(action).getGroups()) {
+							builder.append(grp.getSectionRaw() + "\n");
+							builder.append(grp.getText() + "\n");
+						}
+						
+					}
+					txaStateCtrInfo.setText(builder.toString());
+
 				}
 				
 			}});
@@ -176,13 +252,31 @@ public class SpriteDebugerUI extends JFrame {
 				String action = sdef.getId();
 				String raw = txaStateCtrInfo.getText();
 				try {
-//					SpriteDebuggerCns.delete(spriteId, action);
-//					SpriteDebuggerCns.load(spriteId, action, raw);
+
+					Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);
+					StateDef statedef = sprite.getSpriteState().getStateDef(action);
+					statedef.getGroups().clear();
+					List<GroupText> groups = Parser.getGroupTextMap(raw, true);
+					statedef.getGroups().addAll(groups);
+					statedef.recompile();
+						
+
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
 				
 			}});
 		pack();
+	}
+	@Override
+	public void setVisible(boolean b) {
+		super.setVisible(b);
+		Collection<Sprite> sprites = StateMachine.getInstance().getSprites();
+		DefaultComboBoxModel model = new DefaultComboBoxModel();
+		for (Sprite s: sprites)
+			model.addElement(s.getSpriteId());
+		cbxSprChooser.setModel(model);
+		cbxSprChooser.setSelectedIndex(sprites.size() -1);
+		lstActions.setSelectedIndex(0);
 	}
 }

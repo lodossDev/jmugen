@@ -32,7 +32,7 @@ public class Projguarded extends SpriteCnsTriggerFunction {
 	public static Pattern PROJ_GUARDED_SPEC_REG = Pattern.compile(
 					"(" + "projguarded *\\((\\d+)\\)" + ")" +
 					"|" +
-					"\\b(" + "projguarded(\\d*)" + ")\\b" );
+					"\\b(" + "projguarded(\\d*)" + ")\\b" , Pattern.CASE_INSENSITIVE);
 	@Override
 	public int parseValue(String[] tokens, int pos, List<Valueable> result) {
 		final Wrap<MathFunction> firstOp = new Wrapper<MathFunction>();

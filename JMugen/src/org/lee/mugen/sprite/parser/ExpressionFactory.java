@@ -55,6 +55,30 @@ public class ExpressionFactory {
 	private static final String _SPECIAL_OPERATOR_REGEX = "(?:(=|!=) *((?:\\[|\\()) *"
 			+ _FLOAT_REGEX + " *, *" + _FLOAT_REGEX + " *((?:\\]|\\))))";
 
+	
+	public static void main(String[] args) {
+		System.out.println("CONST_STRING="+_CONST_STRING);
+		System.out.println("-------------------");
+		System.out.println("CONST_SPRITE_REGEX="+_CONST_SPRITE_REGEX);
+		System.out.println("-------------------");
+		System.out.println("CONST_STRING_REG_EXP=" + _CONST_STRING_REG_EXP);
+		System.out.println("-------------------");
+		System.out.println("TRIGGER_MATHS_FUNCTION_REGEX="+_TRIGGER_MATHS_FUNCTION_REGEX);
+		System.out.println("-------------------");
+		System.out.println("TRIGGER_FUNCTION_SPRITE_REGEX=" + _TRIGGER_FUNCTION_SPRITE_REGEX);
+		System.out.println("-------------------");
+		System.out.println("TRIGGER_FUNCTION_BG_REGEX=" + _TRIGGER_FUNCTION_BG_REGEX);
+		System.out.println("-------------------");
+		System.out.println("SPECIAL_OPERATOR_REGEX=" + _SPECIAL_OPERATOR_REGEX);
+		System.out.println("-------------------");
+		System.out.println("OPERATOR_REGEX=" + _OPERATOR_REGEX);
+		System.out.println("-------------------");
+		System.out.println("STRING_REX_EXP="+_STRING_REX_EXP);
+		System.out.println("-------------------");
+		
+
+	}
+	
 
 	private static final String _CONST_STRING = "(\"[^\"\\\\]*(\\\\.^\"\\\\]*)*\")";
 	
@@ -161,12 +185,12 @@ public class ExpressionFactory {
 	private static final Pattern P_FLOAT_REGEX = Pattern.compile(_FLOAT_REGEX);
 	private static final Pattern P_SPECIAL_OPERATOR_REGEX = Pattern.compile(_SPECIAL_OPERATOR_REGEX);
 	private static final Pattern P_OPERATOR_REGEX = Pattern.compile(_OPERATOR_REGEX);
-	private static final Pattern P_TRIGGER_MATHS_FUNCTION_REGEX = Pattern.compile(_TRIGGER_MATHS_FUNCTION_REGEX);
-	private static final Pattern P_CONST_SPRITE_REGEX = Pattern.compile(_CONST_SPRITE_REGEX);
-	private static final Pattern P_TRIGGER_FUNCTION_SPRITE_REGEX = Pattern.compile(_TRIGGER_FUNCTION_SPRITE_REGEX);
-	private static final Pattern P_TRIGGER_FUNCTION_BG_REGEX = Pattern.compile(_TRIGGER_FUNCTION_BG_REGEX);
-	private static final Pattern P_STRING_REX_EXP = Pattern.compile(_STRING_REX_EXP);
-	private static final Pattern P_CONST_EXP = Pattern.compile("const *\\((.*)\\)");
+	private static final Pattern P_TRIGGER_MATHS_FUNCTION_REGEX = Pattern.compile(_TRIGGER_MATHS_FUNCTION_REGEX, Pattern.CASE_INSENSITIVE);
+	private static final Pattern P_CONST_SPRITE_REGEX = Pattern.compile(_CONST_SPRITE_REGEX, Pattern.CASE_INSENSITIVE);
+	private static final Pattern P_TRIGGER_FUNCTION_SPRITE_REGEX = Pattern.compile(_TRIGGER_FUNCTION_SPRITE_REGEX, Pattern.CASE_INSENSITIVE);
+	private static final Pattern P_TRIGGER_FUNCTION_BG_REGEX = Pattern.compile(_TRIGGER_FUNCTION_BG_REGEX, Pattern.CASE_INSENSITIVE);
+	private static final Pattern P_STRING_REX_EXP = Pattern.compile(_STRING_REX_EXP, Pattern.CASE_INSENSITIVE);
+	private static final Pattern P_CONST_EXP = Pattern.compile("const *\\((.*)\\)", Pattern.CASE_INSENSITIVE);
 	
 	private static boolean isMatch(Pattern reg, String input) {
 		return reg.matcher(input).matches();

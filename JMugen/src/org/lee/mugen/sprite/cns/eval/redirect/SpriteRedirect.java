@@ -35,7 +35,7 @@ public class SpriteRedirect {
 	"\\b(" + TARGET_WITH_ID_GROUP_REGEX + ")\\b" + "|" +
 	"\\b(" + ENEMY_GROUP_REGEX + ")\\b";
 	
-	public static Pattern P_SPRITE_REDIRECT_REG = Pattern.compile(SPRITE_REDIRECT_REG);
+	public static Pattern P_SPRITE_REDIRECT_REG = Pattern.compile(SPRITE_REDIRECT_REG, Pattern.CASE_INSENSITIVE);
 	
 	private static Map<String, MathFunction> functionInfoMap = buildFunctionInfo();
 

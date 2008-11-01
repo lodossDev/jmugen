@@ -10,6 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.lee.mugen.core.StateMachine;
@@ -26,12 +27,19 @@ import org.lee.mugen.sprite.cns.StateDef;
 import org.lee.mugen.sprite.entity.PointF;
 import org.lee.mugen.sprite.parser.CmdParser;
 import org.lee.mugen.sprite.parser.CnsParse;
+import org.lee.mugen.sprite.parser.Parser.GroupText;
 import org.lee.mugen.util.MugenRandom;
 
 
 public class Sprite extends AbstractSprite implements Cloneable {
-
+	private List<GroupText> groupsCmd = new LinkedList<GroupText>();
 	
+	public List<GroupText> getGroupsCmd() {
+		return groupsCmd;
+	}
+	public void addGroupCmd(GroupText grp) {
+		getGroupsCmd().add(grp);
+	}
 	public void nextPal() {
 		SpriteDef oneDef = StateMachine.getInstance().getSpriteDef(spriteId);
 		if (pal + 1 < oneDef.getFiles().getPal().length - 1)
@@ -112,15 +120,24 @@ public class Sprite extends AbstractSprite implements Cloneable {
 		
 	}
 	public void changePal(int pal) {
-		try {
-			buildSpriteSff(pal, true);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
+			final int thePal = pal;
+			new Thread() {
+				@Override
+				public void run() {
+					try {
+						buildSpriteSff(thePal, true);
+					} catch (FileNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+				}
+			}.start();
+	
 	}
 	
 	@Override

@@ -49,21 +49,21 @@ public class AirParser {
     	_FLOAT_REGEX + " *, *" +  _FOUR_NUMBER_COMMA_REGEX + "(?: *, *((?:h?v?)|(?:v?h?)))?(?: *, *(\\w*)?)?" + ",*" +_END;
     
     
-    public static final Pattern _AIR_DATA_PATTERN = Pattern.compile(_AIR_DATA_REGEX);
+    public static final Pattern _AIR_DATA_PATTERN = Pattern.compile(_AIR_DATA_REGEX, Pattern.CASE_INSENSITIVE);
 
 
     
-	private static final Pattern grpActionPattern = Pattern.compile(_GRP_ACTION_REGEX);
+	private static final Pattern grpActionPattern = Pattern.compile(_GRP_ACTION_REGEX, Pattern.CASE_INSENSITIVE);
 
 	
-	private static final Pattern P_COMMENT_OR_EMPTY_REGEX = Pattern.compile(_COMMENT_OR_EMPTY_REGEX);
-	private static final Pattern P_CLSN1DEFAULT_REGEX = Pattern.compile(_CLSN1DEFAULT_REGEX);
-	private static final Pattern P_CLSN2DEFAULT_REGEX = Pattern.compile(_CLSN2DEFAULT_REGEX);
-	private static final Pattern P_CLSN1_REGEX = Pattern.compile(_CLSN1_REGEX);
-	private static final Pattern P_CLSN2_REGEX = Pattern.compile(_CLSN2_REGEX);
-	private static final Pattern P_CLSN1_RECT_REGEX = Pattern.compile(_CLSN1_RECT_REGEX);
-	private static final Pattern P_CLSN2_RECT_REGEX = Pattern.compile(_CLSN2_RECT_REGEX);
-	private static final Pattern P_LOOP_START_REGEX = Pattern.compile(_LOOP_START_REGEX);
+	private static final Pattern P_COMMENT_OR_EMPTY_REGEX = Pattern.compile(_COMMENT_OR_EMPTY_REGEX, Pattern.CASE_INSENSITIVE);
+	private static final Pattern P_CLSN1DEFAULT_REGEX = Pattern.compile(_CLSN1DEFAULT_REGEX, Pattern.CASE_INSENSITIVE);
+	private static final Pattern P_CLSN2DEFAULT_REGEX = Pattern.compile(_CLSN2DEFAULT_REGEX, Pattern.CASE_INSENSITIVE);
+	private static final Pattern P_CLSN1_REGEX = Pattern.compile(_CLSN1_REGEX, Pattern.CASE_INSENSITIVE);
+	private static final Pattern P_CLSN2_REGEX = Pattern.compile(_CLSN2_REGEX, Pattern.CASE_INSENSITIVE);
+	private static final Pattern P_CLSN1_RECT_REGEX = Pattern.compile(_CLSN1_RECT_REGEX, Pattern.CASE_INSENSITIVE);
+	private static final Pattern P_CLSN2_RECT_REGEX = Pattern.compile(_CLSN2_RECT_REGEX, Pattern.CASE_INSENSITIVE);
+	private static final Pattern P_LOOP_START_REGEX = Pattern.compile(_LOOP_START_REGEX, Pattern.CASE_INSENSITIVE);
 
 	/*
 
@@ -226,11 +226,11 @@ public class AirParser {
 	
 	
     
-    private static final Pattern P_A = Pattern.compile(".*a$");
-    private static final Pattern P_AS09d09 = Pattern.compile(".*as([0-9]+)d([0-9]+).*");
-    private static final Pattern P_A09 = Pattern.compile(".*a([0-9]+).*");
-    private static final Pattern P_S09 = Pattern.compile(".*s([0-9]+).*");
-    private static final Pattern P_S = Pattern.compile(".*s$");
+    private static final Pattern P_A = Pattern.compile(".*a$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern P_AS09d09 = Pattern.compile(".*as([0-9]+)d([0-9]+).*", Pattern.CASE_INSENSITIVE);
+    private static final Pattern P_A09 = Pattern.compile(".*a([0-9]+).*", Pattern.CASE_INSENSITIVE);
+    private static final Pattern P_S09 = Pattern.compile(".*s([0-9]+).*", Pattern.CASE_INSENSITIVE);
+    private static final Pattern P_S = Pattern.compile(".*s$", Pattern.CASE_INSENSITIVE);
     
     public static boolean parseAirData(String line, AirGroup aGrp, Wrapper<Rectangle[]> clsn1, Wrapper<Rectangle[]> clsn2) {
         line = getFormatedLine(line).replace(" ", "");

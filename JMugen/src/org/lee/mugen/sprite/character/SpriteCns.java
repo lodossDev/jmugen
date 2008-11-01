@@ -29,8 +29,15 @@ import org.lee.mugen.sprite.entity.PointF;
 import org.lee.mugen.sprite.entity.ScreenboundSub;
 import org.lee.mugen.sprite.entity.Shake;
 import org.lee.mugen.sprite.parser.Parser;
+import org.lee.mugen.sprite.parser.Parser.GroupText;
 
 public class SpriteCns implements Cloneable, Serializable {
+	private List<GroupText> groups = new LinkedList<GroupText>();
+	
+	public List<GroupText> getGroups() {
+		return groups;
+	}
+
 	public static enum Type {
 		S("STAND", 1), C("CROUCH", 2), I("IN_THE_AIR", 4), L("LYING_DOUWN", 8), A(
 				"IN_THE_AIR", 4), U("UNCHANGED", 32);
@@ -393,8 +400,6 @@ public class SpriteCns implements Cloneable, Serializable {
 	//
 
 	public int getCommand(String cmd) {
-		if (commands.containsKey(cmd))
-			return 1;
 		return commands.containsKey(cmd) ? 1 : 0;
 	}
 
@@ -1060,5 +1065,10 @@ public class SpriteCns implements Cloneable, Serializable {
 				return h;
 		}
 		return null;
+	}
+
+	public void addGroupData(GroupText grp) {
+		getGroups().add(grp);
+		
 	}
 }

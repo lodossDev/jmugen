@@ -31,7 +31,8 @@ public class Projcanceltime extends SpriteCnsTriggerFunction {
 	public static Pattern PROJ_CANCEL_TIME_SPEC_REG = Pattern.compile(
 			"(" + "projcanceltime *\\((\\d+)\\)" + ")" +
 			"|" +
-			"\\b(" + "projcanceltime(\\d*)" + ")\\b");
+			"\\b(" + "projcanceltime(\\d*)" + ")\\b"
+			, Pattern.CASE_INSENSITIVE);
 	@Override
 	public int parseValue(String[] tokens, int pos, List<Valueable> result) {
 		final Wrap<String[]> key = new Wrapper<String[]>();;

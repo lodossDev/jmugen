@@ -19,27 +19,38 @@ public class Varset extends StateCtrlFunction {
 	public Varset() {
 		super("varset", new String[] {"v", "fv", "sv", "sfv", "value"});
 	}
-	private static final String _SYSVAR_REG = "sysvar *\\(([^\\)]*)\\)";
-	private static final String _SYSVAR_F_REG = "sysfvar *\\(([^\\)]*)\\)";
-
-	private static final String _VAR_REG = "var *\\(([^\\)]*)\\)";
-	private static final String _VAR_F_REG = "fvar *\\(([^\\)]*)\\)";
 	
-	protected String REG_IS_VAR_PARAM = (
-			_SYSVAR_REG + "|" + _SYSVAR_F_REG + "|" + _VAR_REG + "|" + _VAR_F_REG
+	private static final String S_SYSVAR_REG = "sysvar *\\(([^\\)]*)\\)";
+	private static final String S_SYSVAR_F_REG = "sysvarf *\\(([^\\)]*)\\)";
+	private static final String S_VAR_REG = "var *\\(([^\\)]*)\\)";
+	private static final String S_VAR_F_REG = "fvar *\\(([^\\)]*)\\)";
+	
+	public static final Pattern P_SYSVAR_REG = Pattern.compile(S_SYSVAR_REG, Pattern.CASE_INSENSITIVE);
+	public static final Pattern P_SYSVAR_F_REG = Pattern.compile(S_SYSVAR_F_REG, Pattern.CASE_INSENSITIVE);
+	public static final Pattern P_VAR_REG = Pattern.compile(S_VAR_REG, Pattern.CASE_INSENSITIVE);
+	public static final Pattern P_VAR_F_REG = Pattern.compile(S_VAR_F_REG, Pattern.CASE_INSENSITIVE);
+	public static String SREG_IS_VAR_PARAM = (
+			S_SYSVAR_REG + "|" + S_SYSVAR_F_REG + "|" + S_VAR_REG + "|" + S_VAR_F_REG
 	);
+	public static final Pattern PREG_IS_VAR_PARAM = Pattern.compile(SREG_IS_VAR_PARAM, Pattern.CASE_INSENSITIVE);
+	
+	public static boolean isMatch(Pattern reg, String in) {
+		return reg.matcher(in).find();
+	}
+	
+
 
 	
 	@Override
     public boolean containsParam(String param) {
-    	return super.containsParam(param) || Pattern.matches(REG_IS_VAR_PARAM, param);
+    	return super.containsParam(param) || isMatch(PREG_IS_VAR_PARAM, param);
     }
 	private List<Functionable> listOfValSet = new ArrayList<Functionable>();
 	private List<Functionable> listOfValFSet = new ArrayList<Functionable>();
 	
 	public void addParam(String name, Valueable[] param) {
-		if (Pattern.matches(_SYSVAR_REG, name)) {
-			Matcher m = Pattern.compile(_SYSVAR_REG).matcher(name);
+		if (isMatch(P_SYSVAR_REG, name)) {
+			Matcher m = (P_SYSVAR_REG).matcher(name);
 			m.find();
 			final String value = m.group(1);
 			String[] tokens = ExpressionFactory.expression2Tokens(value);
@@ -58,8 +69,8 @@ public class Varset extends StateCtrlFunction {
 			listOfValSet.add(functionable);
 			return;
 		}
-		if (Pattern.matches(_SYSVAR_F_REG, name)) {
-			Matcher m = Pattern.compile(_SYSVAR_F_REG).matcher(name);
+		if (isMatch(P_SYSVAR_F_REG, name)) {
+			Matcher m = (P_SYSVAR_F_REG).matcher(name);
 			m.find();
 			final String value = m.group(1);
 			String[] tokens = ExpressionFactory.expression2Tokens(value);
@@ -78,8 +89,8 @@ public class Varset extends StateCtrlFunction {
 			listOfValFSet.add(functionable);
 			return;
 		}
-		if (Pattern.matches(_SYSVAR_F_REG, name)) {
-			Matcher m = Pattern.compile(_SYSVAR_F_REG).matcher(name);
+		if (isMatch(P_SYSVAR_F_REG, name)) {
+			Matcher m = (P_SYSVAR_F_REG).matcher(name);
 			m.find();
 			final String value = m.group(1);
 			String[] tokens = ExpressionFactory.expression2Tokens(value);
@@ -98,8 +109,8 @@ public class Varset extends StateCtrlFunction {
 			listOfValFSet.add(functionable);
 			return;
 		}
-		if (Pattern.matches(_VAR_REG, name)) {
-			Matcher m = Pattern.compile(_VAR_REG).matcher(name);
+		if (isMatch(P_VAR_REG, name)) {
+			Matcher m = (P_VAR_REG).matcher(name);
 			m.find();
 			final String value = m.group(1);
 			String[] tokens = ExpressionFactory.expression2Tokens(value);
@@ -118,8 +129,8 @@ public class Varset extends StateCtrlFunction {
 			listOfValFSet.add(functionable);
 			return;
 		}
-		if (Pattern.matches(_VAR_F_REG, name)) {
-			Matcher m = Pattern.compile(_VAR_F_REG).matcher(name);
+		if (isMatch(P_VAR_F_REG, name)) {
+			Matcher m = (P_VAR_F_REG).matcher(name);
 			m.find();
 			final String value = m.group(1);
 			String[] tokens = ExpressionFactory.expression2Tokens(value);

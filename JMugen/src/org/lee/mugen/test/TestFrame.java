@@ -1,6 +1,7 @@
 package org.lee.mugen.test;
 
 import java.io.File;
+import java.lang.reflect.Method;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -166,14 +167,20 @@ public class TestFrame {
 		final GameWindow gameWindow = GraphicsWrapper.getInstance()
 				.getInstanceOfGameWindow();
 		gameWindow.setGameWindowCallback(statemachine);
-		SpriteDebugerUI debugerUI = new SpriteDebugerUI();
-		debugerUI.setVisible(true);
 		gameWindow.start();
+		
+		
+		Method m = gameWindow.getClass().getDeclaredMethod("isFinishInit");
+		SpriteDebugerUI debugerUI = new SpriteDebugerUI();
+		while (!(Boolean)m.invoke(gameWindow))
+			Thread.sleep(1000);
+		debugerUI.setVisible(true);
+		ExpressionTester.lanch();
 		
 	}
 	public static void main(String[] args) throws Exception {
-		launchDirect();
-//		launchUI();
+//		launchDirect();
+		launchUI();
 	}
 	
 	public static void launchDirect() throws Exception {
@@ -192,7 +199,7 @@ public class TestFrame {
 	    
 	    
 		String[] args = new String[] {
-				"RAOH", "0", 
+				"ryuDG", "0", 
 				"kfm", "0",
 				"d4_ggxxac_China.def",
 				"ADX_S060.wav"
@@ -213,11 +220,17 @@ public class TestFrame {
 		GraphicsWrapper.init();
 		final GameWindow gameWindow = GraphicsWrapper.getInstance().getInstanceOfGameWindow();
 		gameWindow.setGameWindowCallback(statemachine);
-//		SpriteDebugerUI debugerUI = new SpriteDebugerUI();
-//		debugerUI.setVisible(true);
-//		ExpressionTester.lanch();
+		SpriteDebugerUI debugerUI = new SpriteDebugerUI();
+		
+
 		
 		gameWindow.start();
+		Method m = gameWindow.getClass().getDeclaredMethod("isFinishInit");
+
+		while (!(Boolean)m.invoke(gameWindow))
+			Thread.sleep(1000);
+		debugerUI.setVisible(true);
+		ExpressionTester.lanch();
 
 	}
 
