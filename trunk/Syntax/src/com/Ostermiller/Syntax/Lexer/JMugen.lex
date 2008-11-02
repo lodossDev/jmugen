@@ -134,6 +134,7 @@ import java.io.*;
 %line
 %char
 %full
+%column
 
 HexDigit=([0-9a-fA-F])
 Digit=([0-9])
@@ -169,7 +170,6 @@ MalformedString=({MalformedUnclosedString}[\"])
 COMMENT_REGEX = (;.*)
 
 
-
 FloatDouble1=({Digit}+[\.]{Digit}*)
 FloatDouble2=([\.]{Digit}+)
 FloatDouble3=({Digit}+)
@@ -178,7 +178,8 @@ Float2=({FloatDouble2})
 Float3=({FloatDouble3})
 FLOAT_REGEX=({Float1}|{Float2}|{Float3})
 
-LEFT_KEY = ({EOL}{WhiteSpace}*[a-z0-9().]+){WhiteSpace}*=
+LEFT_CONTAINS=[a-z0-9().]
+LEFT_KEY = ({EOL}{WhiteSpace}*{LEFT_CONTAINS}+){WhiteSpace}*=
 
 
 
@@ -192,11 +193,11 @@ TYPE_STATECTRL = (afterimage|targetdrop|forcefeedback|changeanim2|hitfallvel|pow
 
 SPRITE_REDIRECT_REG=(root|parent|partner|enemynear|helper|playerid|target|enemy)
 CONST_SPRITE_REGEX = (const{WhiteSpace}*\([a-zA-Z0-9.]+\))
-SECTION_STATEDEF =  ({EOL}{WhiteSpace}*\[statedef{WhiteSpace}*[0-9]+\])
+SECTION_STATEDEF =  ({WhiteSpace}*\[statedef{WhiteSpace}*[-+]*[0-9]+\])
 
-STATECTRL_PARAM = {Text}|[^\[\]]|{WhiteSpace}
-SECTION_STATECTRL = ({EOL}{WhiteSpace}*\[state{WhiteSpace}{STATECTRL_PARAM}.+\])
-SECTION = ({EOL}{WhiteSpace}*\[*.+\])
+STATECTRL_PARAM = ({Text}|[^\[\]]|{WhiteSpace})
+SECTION_STATECTRL = ({WhiteSpace}*\[state{WhiteSpace}{STATECTRL_PARAM}.+\])
+SECTION = ({WhiteSpace}*\[[^\[\]]+\])
 
 
 
@@ -472,6 +473,12 @@ SECTION = ({EOL}{WhiteSpace}*\[*.+\])
 
 <YYINITIAL> ({WhiteSpace}+) { 
     lastToken = JMugenToken.WHITE_SPACE;
+    String text = yytext();
+    JMugenToken t = (new JMugenToken(lastToken,text,yyline,yychar,yychar+text.length(),nextState));
+    return (t);
+}
+<YYINITIAL> ({EOL}+) { 
+    lastToken = JMugenToken.EOL;
     String text = yytext();
     JMugenToken t = (new JMugenToken(lastToken,text,yyline,yychar,yychar+text.length(),nextState));
     return (t);

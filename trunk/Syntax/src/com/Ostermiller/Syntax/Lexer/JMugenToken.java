@@ -105,12 +105,18 @@ public class JMugenToken extends Token {
 	public boolean isStateCtrlType() {
 		return (ID == 0xB05);
 	}
+	
+	public static final int EOL = 0xB06;
+	
+	public boolean isEOL() {
+		return (ID == 0xB06);
+	}
 
 	public String getDescription() {
-		if (isStateCtrlType()) {
+		if (isEOL()) {
+			return "EOL";
+		} else if (isStateCtrlType()) {
 			return "typeStateCtrl";
-		} else if (isSection()) {
-			return "section";
 		} else if (isStatectrlSection()) {
 			return "sectionStatectrl";
 		} else if (isStatedefSection()) {
@@ -141,6 +147,8 @@ public class JMugenToken extends Token {
 			return "comment";
 		} else if (isLeftKey()) {
 			return "leftKey";
+		} else if (isSection()) {
+			return "section";
 		} else {
 			return "unknow";
 		}
