@@ -4,7 +4,7 @@ import java.awt.Point;
 
 public class ScreenboundSub {
 	private int time;
-	private Point movecamera = new Point();
+	private Point movecamera = new Point(1,1);
 	private int value = 0;
 	public int getTime() {
 		return time;

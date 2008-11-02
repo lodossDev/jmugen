@@ -179,8 +179,8 @@ public class TestFrame {
 		
 	}
 	public static void main(String[] args) throws Exception {
-//		launchDirect();
-		launchUI();
+		launchDirect();
+//		launchUI();
 	}
 	
 	public static void launchDirect() throws Exception {
@@ -199,8 +199,8 @@ public class TestFrame {
 	    
 	    
 		String[] args = new String[] {
-				"ryuDG", "0", 
-				"kfm", "0",
+				"kfm", "0", 
+				"gokuHR", "0",
 				"d4_ggxxac_China.def",
 				"ADX_S060.wav"
 		};
