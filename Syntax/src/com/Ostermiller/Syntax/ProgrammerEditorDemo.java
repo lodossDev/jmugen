@@ -127,14 +127,12 @@ public class ProgrammerEditorDemo extends JFrame {
      */
     private void initDocument() {
         String initString = (
-            ";this is a comment\n" +
-            "type=123\n" +
-            "const(1235)\n" +
-            "[statedef 12];comment\n" +
-            "[statectrl kldsqfjlklk];hjh\n" +
-            "45+3*9/6&dsf&&\n" +
-            "cos(12) + sin(5)\n" +
-            "projhit, command = \"123\""
+        		"\n[state -3, end sounds]\n" +
+        		 "type = StopSnd\n" +
+        		 "triggerall = PrevStateNo = [1250,1252]\n" +
+        		 "trigger1 = StateNo != [1250,1252]\n" +
+        		 "channel = 1\n" +
+        		 "ignorehitpause = 1\n"
         );
         
         textPane.setText(initString);
