@@ -370,8 +370,10 @@ public class BeanTools {
 	private static Converter<Point> pointConverter = new Converter<Point>() {
 
 		public Point convert(Object o) {
-			
-			if (o.getClass().isArray()) {
+			if (o instanceof String) {
+				String[] value = ((String) o).split(",");
+				return new Point(Integer.parseInt(value[0]), Integer.parseInt(value[1]));
+			} else if (o.getClass().isArray()) {
 				Object[] objects = (Object[]) o;
 				Point pt = new Point(((Number) objects[0]).intValue(), ((Number) objects[1]).intValue());
 				return pt;

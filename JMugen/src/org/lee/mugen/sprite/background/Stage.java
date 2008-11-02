@@ -355,7 +355,10 @@ public class Stage {
 			canMoveX &= s.getInfo().getScreenbound().isCamCanMoveX();
 			canMoveY &= s.getInfo().getScreenbound().isCamCanMoveY();
 		}
-
+//		if (StateMachine.getInstance().getGlobalEvents().isSuperPause()) {
+//			canMoveX = true;
+//			canMoveY = true;
+//		}
 		int xCam = getCamera().getXNoShaKe();
 		int xSpr = 0;
 

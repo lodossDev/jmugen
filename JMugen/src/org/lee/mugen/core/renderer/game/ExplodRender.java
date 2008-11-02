@@ -103,7 +103,7 @@ public class ExplodRender implements Renderable {
 
 	}
 	public int getPriority() {
-		return sprite.getPriority() - 1 + (sprite.getExplod().isOntop()? -1000: 0);
+		return sprite.getPriority();
 	}
 
 	public boolean isProcess() {

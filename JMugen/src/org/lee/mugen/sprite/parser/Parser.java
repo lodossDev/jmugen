@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -210,6 +211,10 @@ public class Parser {
 	public static class GroupText {
 		private String section;
 		private String sectionRaw;
+		private List<String> keysOrdered = new LinkedList<String>();
+		public List<String> getKeysOrdered() {
+			return keysOrdered;
+		}
 		private Map<String, String> keyValues = new HashMap<String, String>();
 		private StringBuilder text = new StringBuilder();
 		public StringBuilder getText() {
@@ -340,6 +345,7 @@ public class Parser {
                     	if (line.indexOf("=") != -1) {
                         	String[] kv = getSeparateKeyValue(line, caseSensitive);
                         	groupText.getKeyValues().put(kv[0].toLowerCase(), kv[1] == null? "": caseSensitive? kv[1]: kv[1].toLowerCase());
+                        	groupText.getKeysOrdered().add(kv[0].toLowerCase());
                     	}
                     	groupText.appendText(line);
                     }
@@ -355,6 +361,7 @@ public class Parser {
                     	if (line.indexOf("=") != -1) {
                         	String[] kv = getSeparateKeyValue(line, caseSensitive);
                         	groupText.getKeyValues().put(kv[0].toLowerCase(), kv[1] == null? "": caseSensitive? kv[1]: kv[1].toLowerCase());
+                        	groupText.getKeysOrdered().add(kv[0].toLowerCase());
                         	groupText.appendText(line);
                     	}
                     }
