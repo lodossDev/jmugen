@@ -3,32 +3,21 @@ package org.lee.mugen.fight.section.elem;
 import java.awt.Point;
 
 import org.lee.mugen.fight.section.elem.FontType.ALIGNMT;
-import org.lee.mugen.snd.Snd;
 import org.lee.mugen.sprite.entity.PointF;
 import org.lee.mugen.util.BeanTools;
 
 public class Type {
 	
-	public static Type buildType(String type) {
-		Type result = null;
-		if (type.equalsIgnoreCase("anim")) {
-			result = new AnimType();
-		} else if (type.equalsIgnoreCase("spr")) {
-			result = new SprType();
-		} else if (type.equalsIgnoreCase("font")) {
-			result = new FontType();
-		}
-		return result;
-	}
 	public static String getNext(String name) {
 		return name.substring(name.indexOf(".") + 1);
 	}
-	
+
+	CommonType type;
 	Point offset = new Point();
 	int displaytime = -1;
 	int facing = 1;
 	int vfacing = 1;
-	Snd snd;
+	SndType snd;
 	int sndtime;
 	int layerno = 0;
 	PointF scale = new PointF(1,1);
@@ -81,11 +70,11 @@ public class Type {
 		this.sndtime = sndtime;
 	}
 
-	public Snd getSnd() {
+	public SndType getSnd() {
 		return snd;
 	}
 
-	public void setSnd(Snd snd) {
+	public void setSnd(SndType snd) {
 		this.snd = snd;
 	}
 
@@ -110,7 +99,10 @@ public class Type {
 		} else if (name.equalsIgnoreCase("vfacing")) {
 			vfacing = (Integer) BeanTools.getConvertersMap().get(Integer.class).convert(value);
 		} else if (name.equalsIgnoreCase("snd")) {
-			snd = (Snd) BeanTools.getConvertersMap().get(Snd.class).convert(value);
+			int[] sndGrpNum = (int[]) BeanTools.getConvertersMap().get(int[].class).convert(value);
+			snd = new SndType();
+			snd.setGrp(sndGrpNum[0]);
+			snd.setNum(sndGrpNum[1]);
 		} else if (name.equalsIgnoreCase("sndtime")) {
 			sndtime = (Integer) BeanTools.getConvertersMap().get(Integer.class).convert(value);
 		} else if (name.equalsIgnoreCase("layerno")) {
@@ -121,21 +113,23 @@ public class Type {
 
 	}
 
-	public static void setValue(String name, Type elem, String value) {
+	public void setType(String name, Type elem, String value) {
 		if (name.equalsIgnoreCase("anim") 
 				&& name.equalsIgnoreCase("spr")
 						&& name.equalsIgnoreCase("font")) {
-			if (elem instanceof AnimType) {
-				AnimType e = (AnimType) elem;
+			if (name.equalsIgnoreCase("anim") ) {
+				AnimType e = new AnimType();
 				e.setAction(Integer.parseInt(value));
-			} else if (elem instanceof SprType) {
-				SprType e = (SprType) elem;
+				type = e;
+			} else if (name.equalsIgnoreCase("spr")) {
+				SprType e = new SprType();
 				int[] grpNo = (int[]) BeanTools.getConvertersMap().get(int[].class).convert(value);
 				e.setSpritegrp(grpNo[0]);
 				e.setSpriteno(grpNo[1]);
+				type = e;
 				
-			} else if (elem instanceof FontType) {
-				FontType e = (FontType) elem;
+			} else if (name.equalsIgnoreCase("font")) {
+				FontType e = new FontType();
 				int[] nba = (int[]) BeanTools.getConvertersMap().get(int[].class).convert(value);
 				int fontno = nba[0];
 				e.setFontno(fontno);
@@ -147,6 +141,7 @@ public class Type {
 					int alignmt = nba[2];
 					e.setAlignmt(ALIGNMT.getValue(alignmt));
 				}
+				type = e;
 			}		
 							
 						}

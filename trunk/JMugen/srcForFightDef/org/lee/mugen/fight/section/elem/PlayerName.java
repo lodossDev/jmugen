@@ -16,13 +16,10 @@ public class PlayerName extends SimpleElement {
 		super.parse(pname, value);
 		if (pname.startsWith("name")) {
 			if (name == null) {
-				name = Type.buildType(pname.substring(pname.indexOf(".") + 1));
-				if (name == null) {
-					throw new IllegalStateException("You Must specifie type anim, font, or spr first");
-				}
+				name = new Type();
 			}
-			Type.setValue(pname.substring(pname.indexOf(".") + 1), name, value);
-			name.parse(pname.substring(pname.indexOf(".") + 1), value);
+			name.setType(Type.getNext(pname), name, value);
+			name.parse(Type.getNext(pname), value);
 		}
 	}
 }

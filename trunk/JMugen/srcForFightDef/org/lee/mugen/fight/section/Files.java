@@ -14,10 +14,9 @@ import org.lee.mugen.sprite.character.SpriteAnimManager;
 import org.lee.mugen.sprite.common.resource.FontParser;
 import org.lee.mugen.sprite.common.resource.FontProducer;
 import org.lee.mugen.sprite.parser.Parser;
-import org.lee.mugen.sprite.parser.Parser.AccessorParser;
 import org.lee.mugen.sprite.parser.Parser.GroupText;
 
-public class Files implements AccessorParser {
+public class Files implements Section {
 	private SpriteSFF sff;
 	private Snd snd;
 	private Map<Integer, FontProducer> font = new HashMap<Integer, FontProducer>();
@@ -110,6 +109,11 @@ public class Files implements AccessorParser {
 	}
 	public boolean isParse() {
 		return true;
+	}
+	@Override
+	public void parse(String key, String string) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	

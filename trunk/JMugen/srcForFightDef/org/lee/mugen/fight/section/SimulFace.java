@@ -1,12 +1,16 @@
 package org.lee.mugen.fight.section;
 
 import org.lee.mugen.fight.section.elem.PlayerFace;
+import org.lee.mugen.fight.section.elem.Type;
 
-public class SimulFace {
-	PlayerFace p1;
-	PlayerFace p2;
-	PlayerFace p3;
-	PlayerFace p4;
+public class SimulFace implements Section {
+	PlayerFace p1 = new PlayerFace();
+	PlayerFace p2 = new PlayerFace();
+	PlayerFace p3 = new PlayerFace();
+	PlayerFace p4 = new PlayerFace();
+	
+	
+	
 	public PlayerFace getP1() {
 		return p1;
 	}
@@ -30,6 +34,18 @@ public class SimulFace {
 	}
 	public void setP4(PlayerFace p4) {
 		this.p4 = p4;
+	}
+	@Override
+	public void parse(String name, String value) throws Exception {
+		if (name.startsWith("p1.")) {
+			p1.parse(Type.getNext(name), value);
+		} else if (name.startsWith("p2.")) {
+			p2.parse(Type.getNext(name), value);
+		} else if (name.startsWith("p3.")) {
+			p2.parse(Type.getNext(name), value);
+		} else if (name.startsWith("p4.")) {
+			p2.parse(Type.getNext(name), value);
+		}
 	}
 
 }

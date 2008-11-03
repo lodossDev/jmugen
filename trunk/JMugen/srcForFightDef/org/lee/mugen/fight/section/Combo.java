@@ -5,7 +5,7 @@ import org.lee.mugen.fight.section.elem.SimpleElement;
 import org.lee.mugen.fight.section.elem.Start;
 import org.lee.mugen.fight.section.elem.Type;
 
-public class Combo extends SimpleElement {
+public class Combo extends SimpleElement implements Section {
 
 	
 	Start start = new Start();
@@ -31,13 +31,10 @@ public class Combo extends SimpleElement {
 				counter$shake = Integer.parseInt(value);
 			} else {
 				if (counter == null) {
-					counter = Type.buildType(Type.getNext(name));
-					if (counter == null) {
-						throw new IllegalStateException("You Must specifie type anim, font, or spr first");
-					}
+					counter = new Type();
 				}
-				Type.setValue(name.substring(name.indexOf(".") + 1), counter, value);
-				counter.parse(name.substring(name.indexOf(".") + 1), value);
+				counter.setType(Type.getNext(name), counter, value);
+				counter.parse(Type.getNext(name), value);
 				
 			}
 		}

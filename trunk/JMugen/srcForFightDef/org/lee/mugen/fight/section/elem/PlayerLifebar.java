@@ -21,22 +21,16 @@ public class PlayerLifebar extends Bar {
 		super.parse(name, value);
 		if (name.startsWith("mid.")) {
 			if (mid == null) {
-				mid = Type.buildType(name.substring(name.indexOf(".") + 1));
-				if (mid == null) {
-					throw new IllegalStateException("You Must specifie type anim, font, or spr first");
-				}
+				mid = new Type();
 			}
-			Type.setValue(name.substring(name.indexOf(".") + 1), mid, value);
-			mid.parse(name.substring(name.indexOf(".") + 1), value);
+			mid.setType(Type.getNext(name), mid, value);
+			mid.parse(Type.getNext(name), value);
 		} else if (name.startsWith("front.")) {
 			if (front == null) {
-				front = Type.buildType(name.substring(name.indexOf(".") + 1));
-				if (front == null) {
-					throw new IllegalStateException("You Must specifie type anim, font, or spr first");
-				}
+				front = new Type();
 			}
-			Type.setValue(name.substring(name.indexOf(".") + 1), mid, value);
-			front.parse(name.substring(name.indexOf(".") + 1), value);
+			front.setType(Type.getNext(name), mid, value);
+			front.parse(Type.getNext(name), value);
 		}
 	}
 }

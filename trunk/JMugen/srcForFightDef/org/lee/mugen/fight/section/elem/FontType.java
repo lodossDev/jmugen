@@ -1,6 +1,8 @@
 package org.lee.mugen.fight.section.elem;
 
-public class FontType extends Type {
+import org.lee.mugen.util.BeanTools;
+
+public class FontType extends CommonType {
 	public enum ALIGNMT {
 		left(-1), center(0), right(1);
 		
@@ -72,5 +74,16 @@ public class FontType extends Type {
 	public void setText(String text) {
 		this.text = text;
 	}
-	
+	public void parse(String name, String value) {
+		if (name.equals("font")) {
+			int[] res = (int[]) BeanTools.getConvertersMap().get(int[].class).convert(value);
+			fontno = res[0];
+			if (res.length > 1)
+				fontbank = res[1];
+			if (res.length > 2)
+				alignmt = ALIGNMT.getValue(res[2]);
+		} else if (name.equals("text")) {
+			text = value;
+		}
+	}
 }

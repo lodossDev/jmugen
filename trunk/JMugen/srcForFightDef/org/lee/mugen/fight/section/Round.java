@@ -1,13 +1,17 @@
 package org.lee.mugen.fight.section;
 
 import java.awt.Point;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
 
+import org.lee.mugen.fight.section.elem.SimpleElement;
 import org.lee.mugen.fight.section.elem.Start;
 import org.lee.mugen.fight.section.elem.Type;
 
-public class Round {
+public class Round extends SimpleElement implements Section {
 	public static class Match {
 		int wins;
 		int maxdrawgames;
@@ -24,11 +28,12 @@ public class Round {
 			this.maxdrawgames = maxdrawgames;
 		}
 	}
-	public static class Sub {
+	public static class Sub implements Section {
 		int time;
 		Type _default;
 		List<Type> round = new LinkedList<Type>();
 		int sndtime;
+		
 		public int getTime() {
 			return time;
 		}
@@ -52,6 +57,17 @@ public class Round {
 		}
 		public void setSndtime(int sndtime) {
 			this.sndtime = sndtime;
+		}
+		@Override
+		public void parse(String name, String value) {
+			if (name.startsWith("default.")) {
+				if (_default == null) {
+					_default = new Type();
+				}
+				_default.setType(Type.getNext(name), _default, value);
+				_default.parse(Type.getNext(name), value);
+			} 
+			
 		}
 	}
 	public static class TimeTest {
@@ -88,6 +104,21 @@ public class Round {
 		public void setWintime(int wintime) {
 			this.wintime = wintime;
 		}
+		public void parse(String name, String value) {
+			if (name.equals("waittime")) {
+				waittime = Integer.parseInt(value);
+			} else if (name.equals("hittime")) {
+				hittime = Integer.parseInt(value);
+				
+			} else if (name.equals("wintime")) {
+				wintime = Integer.parseInt(value);
+				
+			} else if (name.equals("time")) {
+				time = Integer.parseInt(value);
+				
+			}
+			
+		}
 
 	}
 	
@@ -96,6 +127,7 @@ public class Round {
 	Start start = new Start();
 	Point pos = new Point();
 	Sub round = new Sub();
+	Map<Integer, Type> rounds = new HashMap<Integer, Type>();
 	Type fight;
 	TimeTest ctrl = new TimeTest();
 	Type KO;
@@ -106,71 +138,78 @@ public class Round {
 	Type win;
 	Type win2;
 	Type draw;
-	
 	public void parse(String name, String value) {
-		if (name.startsWith("fight.")) {
-			if (fight == null) {
-				fight = Type.buildType(name.substring(name.indexOf(".") + 1));
-				if (fight == null) {
-					throw new IllegalStateException("You Must specifie type anim, font, or spr first");
-				}
+		super.parse(name, value);
+		if (name.equals("match.wins")) {
+			match.setWins(Integer.parseInt(value));
+		} else if (name.equals("match.maxdrawgames")) {
+			match.setMaxdrawgames(Integer.parseInt(value));
+		} else if (name.equals("start.waittime")) {
+			start.setTime(Integer.parseInt(value));
+		} else if (name.equals("round.")) {
+			round.parse(Type.getNext(name), value);
+		} else if (Pattern.matches("round[0-9]+\\.", name)) {
+			String sNum = name.substring(5, name.indexOf("."));
+			int num = 0;
+			if (sNum.length() > 0) {
+				num = Integer.parseInt(sNum);
 			}
-			Type.setValue(name.substring(name.indexOf(".") + 1), fight, value);
-			fight.parse(name.substring(name.indexOf(".") + 1), value);
+			Type elem = rounds.get(num);
+			if (elem == null) {
+				elem = new Type();
+				rounds.put(num, elem);
+			}
+			elem.setType(Type.getNext(name), elem, value);
+			elem.parse(Type.getNext(name), value);
+			
+		} else if (name.equals("ctrl.time")) {
+			ctrl.setTime(Integer.parseInt(value));
+		} else if (name.equals("slow.time")) {
+			slow.setTime(Integer.parseInt(value));
+		} else if (name.startsWith("over.")) {
+			over.parse(Type.getNext(name), value);
+		} else if (name.startsWith("fight.")) {
+			if (fight == null) {
+				fight = new Type();
+			}
+			fight.setType(Type.getNext(name), fight, value);
+			fight.parse(Type.getNext(name), value);
 		} else if (name.startsWith("ko.")) {
 			if (KO == null) {
-				KO = Type.buildType(name.substring(name.indexOf(".") + 1));
-				if (KO == null) {
-					throw new IllegalStateException("You Must specifie type anim, font, or spr first");
-				}
+				KO = new Type();
 			}
-			Type.setValue(name.substring(name.indexOf(".") + 1), KO, value);
-			KO.parse(name.substring(name.indexOf(".") + 1), value);
+			KO.setType(Type.getNext(name), KO, value);
+			KO.parse(Type.getNext(name), value);
 		} else if (name.startsWith("dko.")) {
 			if (DKO == null) {
-				DKO = Type.buildType(name.substring(name.indexOf(".") + 1));
-				if (DKO == null) {
-					throw new IllegalStateException("You Must specifie type anim, font, or spr first");
-				}
+				DKO = new Type();
 			}
-			Type.setValue(name.substring(name.indexOf(".") + 1), DKO, value);
-			DKO.parse(name.substring(name.indexOf(".") + 1), value);
+			DKO.setType(Type.getNext(name), DKO, value);
+			DKO.parse(Type.getNext(name), value);
 		} else if (name.startsWith("to.")) {
 			if (TO == null) {
-				TO = Type.buildType(name.substring(name.indexOf(".") + 1));
-				if (TO == null) {
-					throw new IllegalStateException("You Must specifie type anim, font, or spr first");
-				}
+				TO = new Type();
 			}
-			Type.setValue(name.substring(name.indexOf(".") + 1), TO, value);
-			TO.parse(name.substring(name.indexOf(".") + 1), value);
+			TO.setType(Type.getNext(name), TO, value);
+			TO.parse(Type.getNext(name), value);
 		} else if (name.startsWith("win.")) {
 			if (win == null) {
-				win = Type.buildType(name.substring(name.indexOf(".") + 1));
-				if (win == null) {
-					throw new IllegalStateException("You Must specifie type anim, font, or spr first");
-				}
+				win = new Type();
 			}
-			Type.setValue(name.substring(name.indexOf(".") + 1), win, value);
-			win.parse(name.substring(name.indexOf(".") + 1), value);
+			win.setType(Type.getNext(name), win, value);
+			win.parse(Type.getNext(name), value);
 		} else if (name.startsWith("win2.")) {
 			if (win2 == null) {
-				win2 = Type.buildType(name.substring(name.indexOf(".") + 1));
-				if (win2 == null) {
-					throw new IllegalStateException("You Must specifie type anim, font, or spr first");
-				}
+				win2 = new Type();
 			}
-			Type.setValue(name.substring(name.indexOf(".") + 1), win2, value);
-			win2.parse(name.substring(name.indexOf(".") + 1), value);
+			win2.setType(Type.getNext(name), win2, value);
+			win2.parse(Type.getNext(name), value);
 		} else if (name.startsWith("draw.")) {
 			if (draw == null) {
-				draw = Type.buildType(name.substring(name.indexOf(".") + 1));
-				if (draw == null) {
-					throw new IllegalStateException("You Must specifie type anim, font, or spr first");
-				}
+				draw = new Type();
 			}
-			Type.setValue(name.substring(name.indexOf(".") + 1), draw, value);
-			draw.parse(name.substring(name.indexOf(".") + 1), value);
+			draw.setType(Type.getNext(name), draw, value);
+			draw.parse(Type.getNext(name), value);
 		}
 	}
 	

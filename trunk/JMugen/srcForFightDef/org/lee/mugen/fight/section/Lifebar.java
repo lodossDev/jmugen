@@ -9,7 +9,7 @@ import org.lee.mugen.sprite.parser.CnsParse;
 import org.lee.mugen.sprite.parser.Parser;
 import org.lee.mugen.sprite.parser.Parser.GroupText;
 
-public class Lifebar {
+public class Lifebar implements Section {
 	PlayerLifebar p1 = new PlayerLifebar();
 	PlayerLifebar p2 = new PlayerLifebar();
 	
@@ -63,5 +63,9 @@ public class Lifebar {
 	public void setP2(PlayerLifebar p2) {
 		this.p2 = p2;
 	}
+
+
+
+
 	
 }

@@ -1,6 +1,8 @@
 package org.lee.mugen.fight.section.elem;
 
-public class AnimType extends Type {
+import org.lee.mugen.util.BeanTools;
+
+public class AnimType extends CommonType {
 	int action;
 
 	public AnimType(int action) {
@@ -15,6 +17,13 @@ public class AnimType extends Type {
 	public void setAction(int action) {
 		this.action = action;
 	}
-	
+	@Override
+	public void parse(String name, String value) {
+		if (name.equals("anim")) {
+			action = Integer.parseInt(value);
+			
+		}
+		
+	}
 	
 }
