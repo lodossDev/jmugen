@@ -1,6 +1,6 @@
 package org.lee.mugen.fight.section.elem;
 
-public abstract class CommonType {
+public abstract class CommonType implements Cloneable {
 	public abstract void parse(String name, String value);
 	public static CommonType buildType(String type) {
 		CommonType result = null;
@@ -12,5 +12,9 @@ public abstract class CommonType {
 			result = new FontType();
 		}
 		return result;
+	}
+	public void process() {
+		// TODO Auto-generated method stub
+		
 	}
 }

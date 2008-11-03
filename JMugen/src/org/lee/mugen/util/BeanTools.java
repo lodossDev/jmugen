@@ -13,7 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.lee.mugen.fight.Lifebar.Spr;
+import org.lee.mugen.fight.section.elem.SprType;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.renderer.RGB;
 import org.lee.mugen.renderer.Trans;
@@ -354,13 +354,13 @@ public class BeanTools {
 
 	};
 	// Spr
-	private static Converter<Spr> sprConverter = new Converter<Spr>() {
+	private static Converter<SprType> sprConverter = new Converter<SprType>() {
 
-		public Spr convert(Object o) {
+		public SprType convert(Object o) {
 			
 			if (o.getClass().isArray()) {
 				Object[] objects = (Object[]) o;
-				Spr spr = new Spr(((Number) objects[0]).intValue(), ((Number) objects[1]).intValue());
+				SprType spr = new SprType(((Number) objects[0]).intValue(), ((Number) objects[1]).intValue());
 				return spr;
 			}
 			throw new IllegalArgumentException("Not supported checkwhat is excatly");
@@ -371,7 +371,7 @@ public class BeanTools {
 
 		public Point convert(Object o) {
 			if (o instanceof String) {
-				String[] value = ((String) o).split(",");
+				String[] value = ((String) o).replaceAll(" ", "").split(",");
 				return new Point(Integer.parseInt(value[0]), Integer.parseInt(value[1]));
 			} else if (o.getClass().isArray()) {
 				Object[] objects = (Object[]) o;
@@ -775,7 +775,7 @@ public class BeanTools {
 		convertersMap.put(Sinadd.class, sinaddClassConverter);
 		convertersMap.put(BG.Type.class, bg$TypeClassConverter);
 //		convertersMap.put(ReversalAttrClass.class, reversalAttrClassConverter);
-		convertersMap.put(Spr.class, sprConverter);
+		convertersMap.put(SprType.class, sprConverter);
 		convertersMap.put(AttrClass.class, attrClassConverter);
 		convertersMap.put(AffectTeam.class, affectTeamConverter);
 		convertersMap.put(BindToTargetSub.Pos.class, bindToTargetSub$posConverter);

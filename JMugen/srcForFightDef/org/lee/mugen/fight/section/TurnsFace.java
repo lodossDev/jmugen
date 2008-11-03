@@ -27,5 +27,9 @@ public class TurnsFace implements Section {
 		}
 		
 	}
+	public void process() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

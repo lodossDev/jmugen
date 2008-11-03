@@ -34,6 +34,7 @@ public class SimpleElement {
 			Type elem = bg.get(num);
 			if (elem == null) {
 				elem = new Type();
+				bg.put(num, elem);
 			}
 			elem.setType(Type.getNext(name), elem, value);
 			elem.parse(Type.getNext(name), value);

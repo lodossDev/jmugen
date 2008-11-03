@@ -27,5 +27,10 @@ public class Name implements Section {
 	public void setP2(PlayerName p2) {
 		this.p2 = p2;
 	}
+
+	public void process() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

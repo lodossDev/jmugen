@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.lee.mugen.core.StateMachine;
-import org.lee.mugen.fight.Fightfx;
+import org.lee.mugen.fight.section.Fightfx;
 import org.lee.mugen.renderer.ImageContainer;
 import org.lee.mugen.renderer.PalFxSub;
 import org.lee.mugen.sprite.baseForParse.GroupSpriteSFF;
@@ -89,7 +89,7 @@ public abstract class AbstractSprite {
 	protected int priority;
 
 	// /////////////////////:
-	protected SpriteAnimManager sprAnimMng;
+	protected AbstractAnimManager sprAnimMng;
 
 	protected SpriteSFF spriteSFF;
 
@@ -240,7 +240,7 @@ public abstract class AbstractSprite {
 	public abstract float getRealYPos();
 
 	public SpriteAnimManager getSprAnimMng() {
-		return sprAnimMng;
+		return (SpriteAnimManager) sprAnimMng;
 	}
 
 	public PointF getSpriteRealPos() {

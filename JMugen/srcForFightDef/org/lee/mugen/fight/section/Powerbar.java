@@ -3,8 +3,11 @@ package org.lee.mugen.fight.section;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.lee.mugen.core.StateMachine;
 import org.lee.mugen.fight.section.elem.PlayerPowerbar;
 import org.lee.mugen.fight.section.elem.Type;
+import org.lee.mugen.sprite.character.Sprite;
+import org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub;
 
 public class Powerbar implements Section {
 	PlayerPowerbar p1 = new PlayerPowerbar();
@@ -56,6 +59,22 @@ public class Powerbar implements Section {
 
 	public void setLevel(Map<Integer, Type> level) {
 		this.level = level;
+	}
+
+	public void process() {
+		{
+			Sprite sprite = StateMachine.getInstance().getSpriteInstance("1");
+			int life = sprite.getInfo().getPower();
+			int maxlife = sprite.getInfo().getData().getPower();
+			p1.process(true, life, maxlife, true);
+		}	
+		{
+			Sprite sprite = StateMachine.getInstance().getSpriteInstance("2");
+			int life = sprite.getInfo().getPower();
+			int maxlife = sprite.getInfo().getData().getPower();
+			p2.process(false, life, maxlife, true);
+		}	
+		
 	}
 
 

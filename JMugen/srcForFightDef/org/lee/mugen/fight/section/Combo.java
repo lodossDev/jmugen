@@ -78,4 +78,11 @@ public class Combo extends SimpleElement implements Section {
 	public void setDisplaytime(int displaytime) {
 		this.displaytime = displaytime;
 	}
+
+
+
+	public void process() {
+		// TODO Auto-generated method stub
+		
+	}
 }

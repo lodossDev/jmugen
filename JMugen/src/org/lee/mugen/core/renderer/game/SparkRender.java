@@ -4,7 +4,7 @@ import java.awt.Rectangle;
 
 import org.lee.mugen.core.FightEngine;
 import org.lee.mugen.core.StateMachine;
-import org.lee.mugen.fight.Fightfx;
+import org.lee.mugen.fight.section.Fightfx;
 import org.lee.mugen.sprite.base.AbstractSprite;
 import org.lee.mugen.sprite.baseForParse.SpriteSFF;
 import org.lee.mugen.sprite.character.Sprite;

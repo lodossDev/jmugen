@@ -1,7 +1,10 @@
 package org.lee.mugen.fight.section;
 
+import org.lee.mugen.core.StateMachine;
 import org.lee.mugen.fight.section.elem.PlayerLifebar;
 import org.lee.mugen.fight.section.elem.Type;
+import org.lee.mugen.sprite.character.Sprite;
+import org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub;
 
 public class SimulLifebar implements Section {
 	PlayerLifebar p1 = new PlayerLifebar();
@@ -43,6 +46,41 @@ public class SimulLifebar implements Section {
 		} else if (name.startsWith("p4.")) {
 			p4.parse(Type.getNext(name), value);
 		}
+	}
+	public void process() {
+		{
+			Sprite sprite = StateMachine.getInstance().getSpriteInstance("1");
+			int life = sprite.getInfo().getLife();
+			int maxlife = sprite.getInfo().getData().getLife();
+			HitDefSub lastHitdef = sprite.getInfo().getLastHitdef();
+			p1.process(true, life, maxlife, lastHitdef == null || lastHitdef.getHittime() <= 0);
+		}	
+		{
+			Sprite sprite = StateMachine.getInstance().getSpriteInstance("2");
+			int life = sprite.getInfo().getLife();
+			int maxlife = sprite.getInfo().getData().getLife();
+			HitDefSub lastHitdef = sprite.getInfo().getLastHitdef();
+			p2.process(true, life, maxlife, lastHitdef == null || lastHitdef.getHittime() <= 0);
+		}
+		{
+			Sprite sprite = StateMachine.getInstance().getSpriteInstance("3");
+			if (sprite != null) {
+				int life = sprite.getInfo().getLife();
+				int maxlife = sprite.getInfo().getData().getLife();
+				HitDefSub lastHitdef = sprite.getInfo().getLastHitdef();
+				p3.process(true, life, maxlife, lastHitdef == null || lastHitdef.getHittime() <= 0);
+			}
+		}	
+		{
+			Sprite sprite = StateMachine.getInstance().getSpriteInstance("4");
+			if (sprite != null) {
+				int life = sprite.getInfo().getLife();
+				int maxlife = sprite.getInfo().getData().getLife();
+				HitDefSub lastHitdef = sprite.getInfo().getLastHitdef();
+				p4.process(true, life, maxlife, lastHitdef == null || lastHitdef.getHittime() <= 0);
+			}
+		}
+		
 	}
 	
 }

@@ -3,7 +3,7 @@ package org.lee.mugen.sprite.background;
 import java.awt.Point;
 import java.awt.Rectangle;
 
-import org.lee.mugen.fight.Lifebar.Spr;
+import org.lee.mugen.fight.section.elem.SprType;
 import org.lee.mugen.renderer.Trans;
 import org.lee.mugen.sprite.base.AbstractAnimManager;
 import org.lee.mugen.sprite.entity.PointF;
@@ -63,7 +63,7 @@ public class BG implements Cloneable {
 	private Stage parent = null;
 
 	// spriteno = ?, ? Sprite group and number: groupno, imgno (req'd)
-	private Spr spriteno = new Spr();
+	private SprType spriteno = new SprType();
 	// width = ?, ? Top width, bottom width (int) (use either this or above, but
 	// not both)
 	private int topWidth = 0;
@@ -223,7 +223,7 @@ public class BG implements Cloneable {
 		return p2Alpha;
 	}
 
-	public Spr getSpriteno() {
+	public SprType getSpriteno() {
 		return spriteno;
 	}
 
@@ -282,7 +282,7 @@ public class BG implements Cloneable {
 		this.name = name;
 	}
 
-	public void setSpriteno(Spr spriteno) {
+	public void setSpriteno(SprType spriteno) {
 		this.spriteno = spriteno;
 	}
 

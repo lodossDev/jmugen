@@ -23,5 +23,10 @@ public class Start {
 	public void setY(int y) {
 		this.y = y;
 	}
+	public void decrease() {
+		if (time > 0)
+			time--;
+		
+	}
 
 }

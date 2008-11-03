@@ -21,12 +21,16 @@ import org.lee.mugen.core.renderer.game.CnsRender;
 import org.lee.mugen.core.renderer.game.DebugExplodRender;
 import org.lee.mugen.core.renderer.game.DebugRender;
 import org.lee.mugen.core.renderer.game.ExplodRender;
-import org.lee.mugen.core.renderer.game.LifeBarRenderNormal;
 import org.lee.mugen.core.renderer.game.MakedustRender;
 import org.lee.mugen.core.renderer.game.ProjectileRender;
 import org.lee.mugen.core.renderer.game.SpriteRender;
 import org.lee.mugen.core.renderer.game.SpriteShadowRender;
-import org.lee.mugen.fight.FightDef;
+import org.lee.mugen.core.renderer.game.fight.FaceRender;
+import org.lee.mugen.core.renderer.game.fight.LifeBarRender;
+import org.lee.mugen.core.renderer.game.fight.PowerBarRender;
+import org.lee.mugen.core.renderer.game.fight.RoundRender;
+import org.lee.mugen.core.renderer.game.fight.TimeRender;
+import org.lee.mugen.fight.section.Fightdef;
 import org.lee.mugen.input.CmdProcDispatcher;
 import org.lee.mugen.input.ISpriteCmdProcess;
 import org.lee.mugen.renderer.GameWindow;
@@ -47,6 +51,7 @@ import org.lee.mugen.sprite.entity.AfterImageSprite;
 import org.lee.mugen.sprite.entity.ExplodSprite;
 import org.lee.mugen.sprite.entity.MakeDustSpriteManager;
 import org.lee.mugen.sprite.entity.ProjectileSprite;
+import org.lee.mugen.sprite.entity.AnimTypeSprite;
 
 /**
  * 
@@ -97,7 +102,7 @@ public class StateMachine implements Game {
 	private GameState gameState = new GameState();
 	private GameGlobalEvents globalEvents;
 	private Stage instanceOfStage;
-	private FightDef fightDef = new FightDef();
+	private Fightdef fightdef = new Fightdef();
 	
 // Preload	
 	private String stage;
@@ -462,11 +467,11 @@ public class StateMachine implements Game {
 	
 
 	
-	public FightDef getFightDef() {
-		return fightDef;
+	public Fightdef getFightDef() {
+		return fightdef;
 	}
-	public void setFightDef(FightDef fightDef) {
-		this.fightDef = fightDef;
+	public void setFightDef(Fightdef fightDef) {
+		this.fightdef = fightDef;
 	}
 	////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////
@@ -476,7 +481,7 @@ public class StateMachine implements Game {
 
 		loadingText += "\nloading Fight.def";
 		
-		fightDef.init();
+		fightdef.init();
 		try {
 			
 			loadSprites();
@@ -496,7 +501,14 @@ public class StateMachine implements Game {
 			addRender(cnsRenderList.get(1));
 			
 //			if (gameState.getGameType() == TeamMode.SINGLE) // TODO Lifebar
-				addRender(new LifeBarRenderNormal());
+
+			addRender(new FaceRender());
+			addRender(new LifeBarRender());
+			addRender(new PowerBarRender());
+			addRender(new TimeRender());
+			addRender(new RoundRender());
+
+//			addRender(new SpriteRender(new TypeSprite(getFightDef().getLifebar().getP1().getFront(), getFightDef().getLifebar().getP1().getPos())));
 
 		
 		
@@ -584,7 +596,7 @@ public class StateMachine implements Game {
 		
 		loadSprites();
 		helperManagement();
-		fightDef.process();
+		fightdef.process();
 		flipRender();
 		
 		/////////////
@@ -966,6 +978,12 @@ public class StateMachine implements Game {
 
 	
 	private void initRound() {
+		try {
+			getFightDef().init();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		getInstanceOfStage().getCamera().init();
 		
 		for (AbstractSprite s: getOtherSprites()) {

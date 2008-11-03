@@ -22,6 +22,9 @@ public class FontType extends CommonType {
 				throw new IllegalArgumentException();
 			}
 		}
+		public Integer getCode() {
+			return code;
+		}
 
 	}
 	int fontno;

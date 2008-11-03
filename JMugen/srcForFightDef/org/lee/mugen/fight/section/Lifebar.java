@@ -1,11 +1,12 @@
 package org.lee.mugen.fight.section;
 
 import java.util.List;
-import java.util.StringTokenizer;
 
+import org.lee.mugen.core.StateMachine;
 import org.lee.mugen.fight.section.elem.PlayerLifebar;
 import org.lee.mugen.fight.section.elem.Type;
-import org.lee.mugen.sprite.parser.CnsParse;
+import org.lee.mugen.sprite.character.Sprite;
+import org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub;
 import org.lee.mugen.sprite.parser.Parser;
 import org.lee.mugen.sprite.parser.Parser.GroupText;
 
@@ -64,7 +65,22 @@ public class Lifebar implements Section {
 		this.p2 = p2;
 	}
 
-
+	public void process() {
+		{
+			Sprite sprite = StateMachine.getInstance().getSpriteInstance("1");
+			int life = sprite.getInfo().getLife();
+			int maxlife = sprite.getInfo().getData().getLife();
+			HitDefSub lastHitdef = sprite.getInfo().getLastHitdef();
+			p1.process(true, life, maxlife, lastHitdef == null || lastHitdef.getHittime() <= 0);
+		}	
+		{
+			Sprite sprite = StateMachine.getInstance().getSpriteInstance("2");
+			int life = sprite.getInfo().getLife();
+			int maxlife = sprite.getInfo().getData().getLife();
+			HitDefSub lastHitdef = sprite.getInfo().getLastHitdef();
+			p2.process(false, life, maxlife, lastHitdef == null || lastHitdef.getHittime() <= 0);
+		}	
+	}
 
 
 	
