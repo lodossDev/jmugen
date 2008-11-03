@@ -449,7 +449,7 @@ public class JoglGameWindow implements GameWindow, GLEventListener {
 				mouse.setLeftRelease(false);
 				mouse.setRightRelease(false);
 			} catch (Exception e) {
-				// TODO: handle exception
+				e.printStackTrace();
 			}
 
 		}
