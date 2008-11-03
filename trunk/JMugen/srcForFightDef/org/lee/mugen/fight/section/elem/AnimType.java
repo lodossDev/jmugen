@@ -1,6 +1,8 @@
 package org.lee.mugen.fight.section.elem;
 
-import org.lee.mugen.util.BeanTools;
+import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.sprite.base.AbstractAnimManager;
+
 
 public class AnimType extends CommonType {
 	int action;
@@ -23,7 +25,21 @@ public class AnimType extends CommonType {
 			action = Integer.parseInt(value);
 			
 		}
+	}
+	AbstractAnimManager anim;
+
+	public AbstractAnimManager getAnim() {
+		if (anim == null) {
+			anim = new AbstractAnimManager(StateMachine.getInstance().getFightDef().getAnim().getGroupSpriteMap());
+			anim.setAction(action);
+		}
+		return anim;
+	}
+	
+	public void process() {
+		getAnim().process();
 		
 	}
+	
 	
 }

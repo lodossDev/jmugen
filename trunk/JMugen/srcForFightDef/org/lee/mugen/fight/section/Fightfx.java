@@ -1,4 +1,4 @@
-package org.lee.mugen.fight;
+package org.lee.mugen.fight.section;
 
 import org.lee.mugen.sprite.baseForParse.SpriteSFF;
 import org.lee.mugen.sprite.character.SpriteAnimManager;

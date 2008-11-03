@@ -26,4 +26,8 @@ public class Face implements Section {
 			p2.parse(Type.getNext(name), value);
 		}
 	}
+	public void process() {
+		// TODO Auto-generated method stub
+		
+	}
 }

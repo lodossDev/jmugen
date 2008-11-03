@@ -37,4 +37,9 @@ public class Time extends SimpleElement implements Section {
 			framespercount = Integer.parseInt(value);
 		}
 	}
+
+	public void process() {
+		// TODO Auto-generated method stub
+		
+	}
 }

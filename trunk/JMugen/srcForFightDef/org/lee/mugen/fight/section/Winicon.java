@@ -35,5 +35,9 @@ public class Winicon implements Section {
 			useiconupto = Integer.parseInt(value);
 		}
 	}
+	public void process() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

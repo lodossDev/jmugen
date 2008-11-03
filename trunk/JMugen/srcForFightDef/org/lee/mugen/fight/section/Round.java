@@ -7,12 +7,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameState.WinType;
 import org.lee.mugen.fight.section.elem.SimpleElement;
 import org.lee.mugen.fight.section.elem.Start;
 import org.lee.mugen.fight.section.elem.Type;
+import org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns.Roundstate;
 
-public class Round extends SimpleElement implements Section {
-	public static class Match {
+public class Round extends SimpleElement implements Section, Cloneable {
+	public static class Match implements Cloneable {
 		int wins;
 		int maxdrawgames;
 		public int getWins() {
@@ -28,7 +31,7 @@ public class Round extends SimpleElement implements Section {
 			this.maxdrawgames = maxdrawgames;
 		}
 	}
-	public static class Sub implements Section {
+	public static class Sub implements Section, Cloneable {
 		int time;
 		Type _default;
 		List<Type> round = new LinkedList<Type>();
@@ -66,6 +69,8 @@ public class Round extends SimpleElement implements Section {
 				}
 				_default.setType(Type.getNext(name), _default, value);
 				_default.parse(Type.getNext(name), value);
+			} else if (name.equals("time")) {
+				time = Integer.parseInt(value);
 			} 
 			
 		}
@@ -138,6 +143,9 @@ public class Round extends SimpleElement implements Section {
 	Type win;
 	Type win2;
 	Type draw;
+	
+
+	
 	public void parse(String name, String value) {
 		super.parse(name, value);
 		if (name.equals("match.wins")) {
@@ -146,7 +154,7 @@ public class Round extends SimpleElement implements Section {
 			match.setMaxdrawgames(Integer.parseInt(value));
 		} else if (name.equals("start.waittime")) {
 			start.setTime(Integer.parseInt(value));
-		} else if (name.equals("round.")) {
+		} else if (name.startsWith("round.")) {
 			round.parse(Type.getNext(name), value);
 		} else if (Pattern.matches("round[0-9]+\\.", name)) {
 			String sNum = name.substring(5, name.indexOf("."));
@@ -299,8 +307,27 @@ public class Round extends SimpleElement implements Section {
 	public void setDraw(Type draw) {
 		this.draw = draw;
 	}
-	
-	
-	
+
+
+
+	public void process() {
+		if (StateMachine.getInstance().getGameState().getRoundState() <= Roundstate.COMBAT) {
+			getStart().decrease();
+			getRound().getDefault().decreaseDisplayTime();
+		}
+		
+		if (StateMachine.getInstance().getGameState().getRoundState() == Roundstate.VICTORY) {
+			if (StateMachine.getInstance().getGameState().getLastWin() == WinType.KO)
+				getKO().getType().process();
+			if (StateMachine.getInstance().getGameState().getLastWin() == WinType.DKO)
+				getDKO().getType().process();
+			if (StateMachine.getInstance().getGameState().getLastWin() == WinType.TO)
+				getTO().getType().process();
+			
+		}
+	}
+
+
+
 	
 }

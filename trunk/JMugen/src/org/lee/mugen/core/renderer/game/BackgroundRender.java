@@ -113,12 +113,12 @@ public class BackgroundRender implements IBackgroundRenderer {
 						|| bg.getBgType() == BG.Type.NORM) {
 					int grpno = 0;
 					try {
-						grpno = bg.getSpriteno().getGrp();
+						grpno = bg.getSpriteno().getSpritegrp();
 						
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-					int imgno = bg.getSpriteno().getImg();
+					int imgno = bg.getSpriteno().getSpriteno();
 					ImageSpriteSFF imgSprSff = sffSprite.getGroupSpr(grpno)
 							.getImgSpr(imgno);
 					ImageContainer img = (ImageContainer) imgSprSff.getImage();
@@ -195,8 +195,8 @@ public class BackgroundRender implements IBackgroundRenderer {
 					
 
 				} else if (bg.getBgType() == BG.Type.PARALLAX) {
-					int grpno = bg.getSpriteno().getGrp();
-					int imgno = bg.getSpriteno().getImg();
+					int grpno = bg.getSpriteno().getSpritegrp();
+					int imgno = bg.getSpriteno().getSpriteno();
 					ImageSpriteSFF imgSprSff = sffSprite.getGroupSpr(grpno)
 							.getImgSpr(imgno);
 					ImageContainer img = (ImageContainer) imgSprSff.getImage();

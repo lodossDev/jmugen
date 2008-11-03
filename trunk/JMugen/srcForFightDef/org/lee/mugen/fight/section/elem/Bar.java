@@ -5,8 +5,8 @@ import java.awt.Point;
 import org.lee.mugen.util.BeanTools;
 
 public class Bar extends SimpleElement {
-	static class Range {
-		Point x;
+	public static class Range {
+		Point x = new Point();
 
 		public Point getX() {
 			return x;

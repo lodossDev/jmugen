@@ -21,6 +21,12 @@ public class PlayerFace extends SimpleElement {
 			}
 			elem.setType(Type.getNext(name), elem, value);
 			elem.parse(Type.getNext(name), value);
+		} else 	if (name.startsWith("face.")) {
+			if (elem == null) {
+				elem = new Type();
+			}
+			elem.setType(Type.getNext(name), elem, value);
+			elem.parse(Type.getNext(name), value);
 		}
 	}
 }

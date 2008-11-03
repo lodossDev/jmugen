@@ -4,8 +4,12 @@ import java.io.FileInputStream;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.lee.mugen.parser.air.AirParser;
+import org.lee.mugen.sprite.base.AbstractAnimManager;
+import org.lee.mugen.sprite.character.SpriteAnimManager;
 import org.lee.mugen.sprite.parser.Parser;
 import org.lee.mugen.sprite.parser.Parser.GroupText;
+import org.lee.mugen.util.MugenTools;
 
 public class Fightdef {
 	public static void main(String[] args) throws Exception {
@@ -30,6 +34,32 @@ public class Fightdef {
 	Round round = new Round();
 	Winicon winicon = new Winicon(); 
 	
+	private AbstractAnimManager anim;
+
+    public AbstractAnimManager getAnim() {
+		return anim;
+	}
+
+	public void setAnim(AbstractAnimManager anim) {
+		this.anim = anim;
+	}
+
+	public void init() throws Exception {
+        
+//      String fightDef = Parser.getExistFile("lb2_lifebars.def");
+//      String fightDef = Parser.getExistFile("mvc_lifebars.def");
+        String fightDef = Parser.getExistFile("fight.def");
+//      String fightDef = Parser.getExistFile("mvc_lifebars.def");
+        String text = IOUtils.toString(new FileInputStream(fightDef));
+        List<GroupText> list = Parser.getGroupTextMap(text);
+
+        AirParser airParser = new AirParser(fightDef);
+        anim = new AbstractAnimManager(airParser);
+        
+        parse(list);
+        
+	}
+
 	public void parse(Section section, GroupText grp) throws Exception {
 		for (String key: grp.getKeysOrdered()) {
 			section.parse(key, grp.getKeyValues().get(key));
@@ -38,7 +68,7 @@ public class Fightdef {
 	public void parse(List<GroupText> groups) throws Exception {
 		for (GroupText grp: groups) {
 			if (grp.getSection().toLowerCase().equals("files")) {
-				parse(files, grp);
+				files.parse(grp);
 			} else if (grp.getSection().toLowerCase().equals("lifebar")) {
 				parse(lifebar, grp);
 			} else if (grp.getSection().toLowerCase().equals("simullifebar")) {
@@ -160,6 +190,24 @@ public class Fightdef {
 	}
 	public void setWinicon(Winicon winicon) {
 		this.winicon = winicon;
+	}
+
+	public void process() {
+		lifebar.process();
+		simullifebar.process();
+		turnslifebar.process();
+		powerbar.process();
+		face.process();
+		simulface.process();
+		turnsface.process();	
+		name.process();
+		simulname.process();
+		turnsname.process();
+		time.process();
+		combo.process();
+		round.process();
+		winicon.process();
+		
 	}
 
 

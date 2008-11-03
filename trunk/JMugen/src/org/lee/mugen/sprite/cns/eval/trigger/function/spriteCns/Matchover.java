@@ -14,7 +14,8 @@ public class Matchover extends SpriteCnsTriggerFunction {
 	@Override
 	public Object getValue(String spriteId, Valueable... params) {
 		GameState gs = StateMachine.getInstance().getGameState();
-		boolean result = gs.getTeamOneWinRound() > gs.getTotalRound()/2 || gs.getTeamTwoWinRound() > gs.getTotalRound()/2;
+		int winRoundCount = StateMachine.getInstance().getFightDef().getRound().getMatch().getWins();
+		boolean result = gs.getTeamOneWinRound() >= winRoundCount || gs.getTeamTwoWinRound() > winRoundCount;
 		return result? 1: 0;
 	}
 }

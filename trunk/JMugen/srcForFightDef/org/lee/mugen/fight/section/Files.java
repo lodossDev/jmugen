@@ -3,8 +3,6 @@ package org.lee.mugen.fight.section;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.lee.mugen.fight.Common;
-import org.lee.mugen.fight.Fightfx;
 import org.lee.mugen.parser.air.AirParser;
 import org.lee.mugen.sff.SffReader;
 import org.lee.mugen.snd.Snd;

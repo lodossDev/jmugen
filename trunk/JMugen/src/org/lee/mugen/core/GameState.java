@@ -12,6 +12,7 @@ import org.lee.mugen.sprite.character.SpriteHelper;
 import org.lee.mugen.sprite.character.SpriteCns.Type;
 import org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns.Roundstate;
 import org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns.Win;
+import org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns.Winko;
 import org.lee.mugen.sprite.cns.type.function.Assertspecial.Flag;
 import org.lee.mugen.util.MugenRandom;
 
@@ -46,6 +47,8 @@ public class GameState {
 	
 	
 	private Map<String, Integer> spriteIdStateMap = new HashMap<String, Integer>();
+	private int drawCountMap = 0;
+
 	
 	public int getRoundsExisted() {
 		return roundsExisted;
@@ -61,19 +64,12 @@ public class GameState {
 	}
 	private int teamOneWinRound;
 	private int teamTwoWinRound;
+	public enum WinType {
+		KO, DKO, TO
+	}
+	private WinType lastWin;
 
 	private int drawRound;
-
-	private int totalRound = 3;
-
-
-	public int getTotalRound() {
-		return totalRound;
-	}
-
-	public void setTotalRound(int totalRound) {
-		this.totalRound = totalRound;
-	}
 
 	public int getDrawRound() {
 		return drawRound;
@@ -115,6 +111,9 @@ public class GameState {
 		this.gameTime = gameTime;
 	}
 	
+	public WinType getLastWin() {
+		return lastWin;
+	}
 	public void leave(StateMachine sm) {
 		gameTime++;
 		if (getRoundTime() > 0 && getRoundState() != Roundstate.PRE_END)
@@ -127,6 +126,7 @@ public class GameState {
 				if (Win.isWin(spriteId)) {
 					isOneWin = true;
 					winner = StateMachine.getInstance().getSpriteInstance(spriteId);
+
 				}
 			}
 			if (isOneWin) {
@@ -136,7 +136,7 @@ public class GameState {
 					StateMachine.getInstance().getSpriteInstance(spriteId).getInfo().setCtrl(0);
 				}
 			}
-			if (getRoundTime() <= 0) {
+			if (getRoundTime() == 0) {
 				roundState = Roundstate.PRE_END;
 				for (String spriteId: spriteIdStateMap.keySet()) {
 					spriteIdStateMap.put(spriteId, Roundstate.PRE_END);
@@ -167,12 +167,20 @@ public class GameState {
 			if (winner != null) {
 				Collection<Sprite> winners = new LinkedList<Sprite>();
 				Collection<Sprite> loser = new LinkedList<Sprite>();
+				if (Winko.isWinKo(winner.getSpriteId()))
+					lastWin = WinType.KO;
+				if (Win.isWin(winner.getSpriteId()) && !Winko.isWinKo(winner.getSpriteId()))
+					lastWin = WinType.TO;
+				
 				if (StateMachine.getInstance().getTeamOne().containsKey(winner.getSpriteId())) {
 					winners.addAll(StateMachine.getInstance().getTeamOne().values());
 					loser.addAll(StateMachine.getInstance().getTeamTwo().values());
+					teamOneWinRound++;
+
 				} else {
 					winners.addAll(StateMachine.getInstance().getTeamTwo().values());
 					loser.addAll(StateMachine.getInstance().getTeamOne().values());
+					teamTwoWinRound++;
 				}
 				for (Sprite s: winners) {
 					if (s instanceof SpriteHelper)
@@ -216,6 +224,24 @@ public class GameState {
 				}
 				
 			} else {
+				int lifeTeamOne = 0;
+				int lifeTeamTwo = 0;
+				for (Sprite s: StateMachine.getInstance().getTeamOne().values()) {
+					if (s.getClass() == Sprite.class) {
+						lifeTeamOne += s.getInfo().getLife();
+					}
+				}
+				for (Sprite s: StateMachine.getInstance().getTeamTwo().values()) {
+					if (s.getClass() == Sprite.class) {
+						lifeTeamTwo += s.getInfo().getLife();
+					}
+				}
+				if (lifeTeamOne == 0)
+					lastWin = WinType.DKO;
+				else
+					lastWin = WinType.TO;
+					
+				drawCountMap++;
 				for (Sprite s: StateMachine.getInstance().getSprites()) {
 					if (s instanceof SpriteHelper)
 						continue;
@@ -259,6 +285,8 @@ public class GameState {
 			setRoundState(state);
 			if (getRoundState() == Roundstate.COMBAT 
 					&& getRoundsExisted() == 0) {
+				
+				roundno++;
 				for (String spriteId: spriteIdStateMap.keySet()) {
 					sm.getSpriteInstance(spriteId).getInfo().setCtrl(1);
 				}
@@ -269,7 +297,7 @@ public class GameState {
 	}
 	
 	public int getRoundTime() {
-		return DEFAULT_TIME;//roundTime;
+		return roundTime;
 	}
 
 	public void setRoundTime(int roundTime) {
@@ -278,6 +306,7 @@ public class GameState {
 	public void init(StateMachine sm) {
 		setRoundState(0);
 		setRoundsExisted(0);
+		roundno = 0;
 		roundTime = DEFAULT_TIME;
 		spriteIdStateMap.clear();
 		for (Sprite s: sm.getSprites()) {
