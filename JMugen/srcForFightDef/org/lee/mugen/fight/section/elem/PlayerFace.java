@@ -17,13 +17,10 @@ public class PlayerFace extends SimpleElement {
 		super.parse(name, value);
 		if (name.startsWith("elem")) {
 			if (elem == null) {
-				elem = Type.buildType(name.substring(name.indexOf(".") + 1));
-				if (elem == null) {
-					throw new IllegalStateException("You Must specifie type anim, font, or spr first");
-				}
+				elem = new Type();
 			}
-			Type.setValue(name.substring(name.indexOf(".") + 1), elem, value);
-			elem.parse(name.substring(name.indexOf(".") + 1), value);
+			elem.setType(Type.getNext(name), elem, value);
+			elem.parse(Type.getNext(name), value);
 		}
 	}
 }

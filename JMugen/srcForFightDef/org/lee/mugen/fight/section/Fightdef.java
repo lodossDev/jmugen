@@ -1,8 +1,19 @@
 package org.lee.mugen.fight.section;
 
-import org.lee.mugen.fight.TurnsFace;
+import java.io.FileInputStream;
+import java.util.List;
+
+import org.apache.commons.io.IOUtils;
+import org.lee.mugen.sprite.parser.Parser;
+import org.lee.mugen.sprite.parser.Parser.GroupText;
 
 public class Fightdef {
+	public static void main(String[] args) throws Exception {
+		String res = IOUtils.toString(new FileInputStream("C:/dev/workspace/JMugen/resource/data/fight.def"));
+		List<GroupText> groups = Parser.getGroupTextMap(res);
+		new Fightdef().parse(groups);
+	}
+	
 	Files files = new Files();
 	Lifebar lifebar = new Lifebar();
 	SimulLifebar simullifebar = new SimulLifebar();
@@ -13,8 +24,51 @@ public class Fightdef {
 	TurnsFace turnsface = new TurnsFace();
 	Name name = new Name();
 	SimulName simulname = new SimulName();
+	TurnsName turnsname = new TurnsName();
+	Time time = new Time();
+	Combo combo = new Combo();
+	Round round = new Round();
+	Winicon winicon = new Winicon(); 
 	
-	public void parse(String name, String value) {
+	public void parse(Section section, GroupText grp) throws Exception {
+		for (String key: grp.getKeysOrdered()) {
+			section.parse(key, grp.getKeyValues().get(key));
+		}
+	}
+	public void parse(List<GroupText> groups) throws Exception {
+		for (GroupText grp: groups) {
+			if (grp.getSection().toLowerCase().equals("files")) {
+				parse(files, grp);
+			} else if (grp.getSection().toLowerCase().equals("lifebar")) {
+				parse(lifebar, grp);
+			} else if (grp.getSection().toLowerCase().equals("simullifebar")) {
+				parse(simullifebar, grp);
+			} else if (grp.getSection().toLowerCase().equals("turnslifebar")) {
+				parse(turnslifebar, grp);
+			} else if (grp.getSection().toLowerCase().equals("powerbar")) {
+				parse(powerbar, grp);
+			} else if (grp.getSection().toLowerCase().equals("face")) {
+				parse(face, grp);
+			} else if (grp.getSection().toLowerCase().equals("simulface")) {
+				parse(simulface, grp);
+			} else if (grp.getSection().toLowerCase().equals("turnsface")) {
+				parse(turnsface, grp);
+			} else if (grp.getSection().toLowerCase().equals("name")) {
+				parse(name, grp);
+			} else if (grp.getSection().toLowerCase().equals("simulname")) {
+				parse(simulname, grp);
+			} else if (grp.getSection().toLowerCase().equals("turnsname")) {
+				parse(turnsname, grp);
+			} else if (grp.getSection().toLowerCase().equals("time")) {
+				parse(time, grp);
+			} else if (grp.getSection().toLowerCase().equals("combo")) {
+				parse(combo, grp);
+			} else if (grp.getSection().toLowerCase().equals("round")) {
+				parse(round, grp);
+			} else if (grp.getSection().toLowerCase().equals("winicon")) {
+				parse(winicon, grp);
+			}
+		}
 	}
 	
 	public Files getFiles() {
@@ -107,10 +161,6 @@ public class Fightdef {
 	public void setWinicon(Winicon winicon) {
 		this.winicon = winicon;
 	}
-	TurnsName turnsname = new TurnsName();
-	Time time = new Time();
-	Combo combo = new Combo();
-	Round round = new Round();
-	Winicon winicon = new Winicon(); 
+
 
 }

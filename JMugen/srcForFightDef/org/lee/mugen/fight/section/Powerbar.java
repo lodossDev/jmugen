@@ -6,7 +6,7 @@ import java.util.Map;
 import org.lee.mugen.fight.section.elem.PlayerPowerbar;
 import org.lee.mugen.fight.section.elem.Type;
 
-public class Powerbar {
+public class Powerbar implements Section {
 	PlayerPowerbar p1 = new PlayerPowerbar();
 	PlayerPowerbar p2 = new PlayerPowerbar();
 	
@@ -18,20 +18,17 @@ public class Powerbar {
 		} else if (name.startsWith("p2.")) {
 			p2.parse(Type.getNext(name), value);
 		}  else if (name.startsWith("level")) {
-			String sNum = name.substring(2);
+			String sNum = name.substring(5, name.indexOf("."));
 			int num = 0;
 			if (sNum.length() > 0) {
 				num = Integer.parseInt(sNum);
 			}
 			Type elem = level.get(num);
 			if (elem == null) {
-				elem = Type.buildType(Type.getNext(name));
-				if (elem == null) {
-					throw new IllegalStateException("You Must specifie type anim, font, or spr first");
-				}
+				elem = new Type();
 				level.put(num, elem);
 			}
-			Type.setValue(Type.getNext(name), elem, value);
+			elem.setType(Type.getNext(name), elem, value);
 			elem.parse(Type.getNext(name), value);
 			
 		}

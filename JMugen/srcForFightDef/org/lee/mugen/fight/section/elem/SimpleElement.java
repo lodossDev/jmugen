@@ -33,13 +33,9 @@ public class SimpleElement {
 			}
 			Type elem = bg.get(num);
 			if (elem == null) {
-				elem = Type.buildType(Type.getNext(name));
-				if (elem == null) {
-					throw new IllegalStateException("You Must specifie type anim, font, or spr first");
-				}
-				bg.put(num, elem);
+				elem = new Type();
 			}
-			Type.setValue(Type.getNext(name), elem, value);
+			elem.setType(Type.getNext(name), elem, value);
 			elem.parse(Type.getNext(name), value);
 			
 		}

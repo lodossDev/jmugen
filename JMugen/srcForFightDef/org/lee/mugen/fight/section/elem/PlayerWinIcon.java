@@ -23,85 +23,61 @@ public class PlayerWinIcon extends SimpleElement {
 			iconoffset = (Point) BeanTools.getConvertersMap().get(Point.class).convert(value);
 		} else if (name.startsWith("counter.")) {
 			if (counter == null) {
-				counter = Type.buildType(name.substring(name.indexOf(".") + 1));
-				if (counter == null) {
-					throw new IllegalStateException("You Must specifie type anim, font, or spr first");
-				}
+				counter = new Type();
 			}
-			Type.setValue(name.substring(name.indexOf(".") + 1), counter, value);
-			counter.parse(name.substring(name.indexOf(".") + 1), value);
+			counter.setType(Type.getNext(name), counter, value);
+			counter.parse(Type.getNext(name), value);
 		} else if (name.startsWith("n.")) {
 			if (n == null) {
-				n = Type.buildType(name.substring(name.indexOf(".") + 1));
-				if (n == null) {
-					throw new IllegalStateException("You Must specifie type anim, font, or spr first");
-				}
+				n = new Type();
 			}
-			Type.setValue(name.substring(name.indexOf(".") + 1), n, value);
-			n.parse(name.substring(name.indexOf(".") + 1), value);
+			n.setType(Type.getNext(name), n, value);
+			n.parse(Type.getNext(name), value);
 		} else if (name.startsWith("h.")) {
 			if (h == null) {
-				h = Type.buildType(name.substring(name.indexOf(".") + 1));
-				if (h == null) {
-					throw new IllegalStateException("You Must specifie type anim, font, or spr first");
-				}
+				h = new Type();
 			}
-			Type.setValue(name.substring(name.indexOf(".") + 1), h, value);
-			h.parse(name.substring(name.indexOf(".") + 1), value);
+			h.setType(Type.getNext(name), h, value);
+			h.parse(Type.getNext(name), value);
 		} else if (name.startsWith("throw.")) {
 			if (_throw == null) {
-				_throw = Type.buildType(name.substring(name.indexOf(".") + 1));
-				if (_throw == null) {
-					throw new IllegalStateException("You Must specifie type anim, font, or spr first");
-				}
+				_throw = new Type();
 			}
-			Type.setValue(name.substring(name.indexOf(".") + 1), _throw, value);
-			_throw.parse(name.substring(name.indexOf(".") + 1), value);
+			_throw.setType(Type.getNext(name), _throw, value);
+			_throw.parse(Type.getNext(name), value);
 		} else if (name.startsWith("c.")) {
 			if (c == null) {
-				c = Type.buildType(name.substring(name.indexOf(".") + 1));
-				if (c == null) {
-					throw new IllegalStateException("You Must specifie type anim, font, or spr first");
-				}
+				c = new Type();
 			}
-			Type.setValue(name.substring(name.indexOf(".") + 1), c, value);
-			c.parse(name.substring(name.indexOf(".") + 1), value);
+			c.setType(Type.getNext(name), c, value);
+			c.parse(Type.getNext(name), value);
 		} else if (name.startsWith("t.")) {
 			if (t == null) {
-				t = Type.buildType(name.substring(name.indexOf(".") + 1));
-				if (t == null) {
-					throw new IllegalStateException("You Must specifie type anim, font, or spr first");
-				}
+				t = new Type();
 			}
-			Type.setValue(name.substring(name.indexOf(".") + 1), t, value);
-			t.parse(name.substring(name.indexOf(".") + 1), value);
+			t.setType(Type.getNext(name), t, value);
+			t.parse(Type.getNext(name), value);
 		} else if (name.startsWith("sucide.")) {
 			if (sucide == null) {
-				sucide = Type.buildType(name.substring(name.indexOf(".") + 1));
+				sucide = new Type();
 				if (sucide == null) {
 					throw new IllegalStateException("You Must specifie type anim, font, or spr first");
 				}
 			}
-			Type.setValue(name.substring(name.indexOf(".") + 1), sucide, value);
-			sucide.parse(name.substring(name.indexOf(".") + 1), value);
+			sucide.setType(Type.getNext(name), sucide, value);
+			sucide.parse(Type.getNext(name), value);
 		} else if (name.startsWith("teammate.")) {
 			if (teammate == null) {
-				teammate = Type.buildType(name.substring(name.indexOf(".") + 1));
-				if (teammate == null) {
-					throw new IllegalStateException("You Must specifie type anim, font, or spr first");
-				}
+				teammate = new Type();
 			}
-			Type.setValue(name.substring(name.indexOf(".") + 1), teammate, value);
-			teammate.parse(name.substring(name.indexOf(".") + 1), value);
+			teammate.setType(Type.getNext(name), teammate, value);
+			teammate.parse(Type.getNext(name), value);
 		} else if (name.startsWith("perfect.")) {
 			if (perfect == null) {
-				perfect = Type.buildType(name.substring(name.indexOf(".") + 1));
-				if (perfect == null) {
-					throw new IllegalStateException("You Must specifie type anim, font, or spr first");
-				}
+				perfect = new Type();
 			}
-			Type.setValue(name.substring(name.indexOf(".") + 1), perfect, value);
-			perfect.parse(name.substring(name.indexOf(".") + 1), value);
+			perfect.setType(Type.getNext(name), perfect, value);
+			perfect.parse(Type.getNext(name), value);
 		}
 	}
 	

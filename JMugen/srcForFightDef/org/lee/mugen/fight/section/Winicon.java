@@ -1,10 +1,11 @@
 package org.lee.mugen.fight.section;
 
 import org.lee.mugen.fight.section.elem.PlayerWinIcon;
+import org.lee.mugen.fight.section.elem.Type;
 
-public class Winicon {
-	PlayerWinIcon p1;
-	PlayerWinIcon p2;
+public class Winicon implements Section {
+	PlayerWinIcon p1 = new PlayerWinIcon();
+	PlayerWinIcon p2 = new PlayerWinIcon();
 	int useiconupto;
 	public PlayerWinIcon getP1() {
 		return p1;
@@ -23,6 +24,16 @@ public class Winicon {
 	}
 	public void setUseiconupto(int useiconupto) {
 		this.useiconupto = useiconupto;
+	}
+	@Override
+	public void parse(String name, String value) throws Exception {
+		if (name.startsWith("p1.")) {
+			p1.parse(Type.getNext(name), value);
+		} else if (name.startsWith("p2.")) {
+			p2.parse(Type.getNext(name), value);
+		} else if (name.equals("useiconupto")) {
+			useiconupto = Integer.parseInt(value);
+		}
 	}
 	
 }

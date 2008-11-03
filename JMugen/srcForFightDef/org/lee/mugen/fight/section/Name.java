@@ -3,7 +3,7 @@ package org.lee.mugen.fight.section;
 import org.lee.mugen.fight.section.elem.PlayerName;
 import org.lee.mugen.fight.section.elem.Type;
 
-public class Name {
+public class Name implements Section {
 	PlayerName p1 = new PlayerName();
 	PlayerName p2 = new PlayerName();
 	

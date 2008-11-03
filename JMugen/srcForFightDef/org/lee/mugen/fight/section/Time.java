@@ -1,20 +1,25 @@
 package org.lee.mugen.fight.section;
 
+import org.lee.mugen.fight.section.elem.FontType;
 import org.lee.mugen.fight.section.elem.SimpleElement;
 import org.lee.mugen.fight.section.elem.Type;
 
-public class Time extends SimpleElement {
+public class Time extends SimpleElement implements Section {
 	Type counter;
 	int framespercount;
-	public Type getCounter() {
-		return counter;
-	}
-	public void setCounter(Type counter) {
-		this.counter = counter;
-	}
+
 	public int getFramespercount() {
 		return framespercount;
 	}
+
+	public Type getCounter() {
+		return counter;
+	}
+
+	public void setCounter(Type counter) {
+		this.counter = counter;
+	}
+
 	public void setFramespercount(int framespercount) {
 		this.framespercount = framespercount;
 	}
@@ -24,13 +29,10 @@ public class Time extends SimpleElement {
 		super.parse(name, value);
 		if (name.startsWith("counter.")) {
 			if (counter == null) {
-				counter = Type.buildType(name.substring(name.indexOf(".") + 1));
-				if (counter == null) {
-					throw new IllegalStateException("You Must specifie type anim, font, or spr first");
-				}
+				counter = new Type();
 			}
-			Type.setValue(name.substring(name.indexOf(".") + 1), counter, value);
-			counter.parse(name.substring(name.indexOf(".") + 1), value);
+			counter.setType(Type.getNext(name), counter, value);
+			counter.parse(Type.getNext(name), value);
 		} else if (name.equalsIgnoreCase("framespercount")) {
 			framespercount = Integer.parseInt(value);
 		}

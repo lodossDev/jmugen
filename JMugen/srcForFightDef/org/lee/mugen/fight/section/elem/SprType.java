@@ -1,6 +1,8 @@
 package org.lee.mugen.fight.section.elem;
 
-public class SprType extends Type {
+import org.lee.mugen.util.BeanTools;
+
+public class SprType extends CommonType {
 	int spritegrp;
 	int spriteno;
 	
@@ -26,6 +28,17 @@ public class SprType extends Type {
 
 	public void setSpriteno(int spriteno) {
 		this.spriteno = spriteno;
+	}
+
+	@Override
+	public void parse(String name, String value) {
+		if (name.equals("spr")) {
+			int[] res = (int[]) BeanTools.getConvertersMap().get(int[].class).convert(value);
+			spritegrp = res[0];
+			spriteno = res[1];
+			
+		}
+		
 	}
 	
 	

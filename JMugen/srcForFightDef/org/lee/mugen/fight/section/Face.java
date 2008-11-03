@@ -3,7 +3,7 @@ package org.lee.mugen.fight.section;
 import org.lee.mugen.fight.section.elem.PlayerFace;
 import org.lee.mugen.fight.section.elem.Type;
 
-public class Face {
+public class Face implements Section {
 	PlayerFace p1 = new PlayerFace();
 	PlayerFace p2 = new PlayerFace();
 	public PlayerFace getP1() {
