@@ -40,7 +40,8 @@ public class FaceRender extends BaseRender {
 			Type bg = map.get(key);
 			render(md, pos, bg);
 		}
-		render(md, pos, p.getElem(), id);
+		if (p.getElem() != null)
+			render(md, pos, p.getElem(), id);
 	}
 	public void render(MugenDrawer md, Point pos, Type type, String id) {
 
@@ -55,7 +56,8 @@ public class FaceRender extends BaseRender {
 					pos.y - sff.getYAxis() + type.getOffset().y, 
 					true, 
 					false, sff.getImage());
-			
+			drawProperties.setXScaleFactor(type.getScale().getX());
+			drawProperties.setYScaleFactor(type.getScale().getY());
 			draw(md, drawProperties);
 		} else if (type.getFacing() == 1) {
 			DrawProperties drawProperties = new DrawProperties(
@@ -63,6 +65,8 @@ public class FaceRender extends BaseRender {
 					pos.y - sff.getYAxis() + type.getOffset().y, 
 					false, 
 					false, sff.getImage());
+			drawProperties.setXScaleFactor(type.getScale().getX());
+			drawProperties.setYScaleFactor(type.getScale().getY());
 			draw(md, drawProperties);
 		}
 	
@@ -90,8 +94,14 @@ public class FaceRender extends BaseRender {
 		FontType font = (FontType) p.getName().getType();
 		
 		int fontSens = font.getAlignmt().getCode();
-		
-		StateMachine.getInstance().getFightDef().getFiles().getFont().get(font.getFontno()).draw(pos.x, pos.y, md, name, fontSens);
+//		md.scale(p.getName().getScale().getX(), p.getName().getScale().getY());
+//		StateMachine.getInstance().getFightDef().getFiles().getFont().get(font.getFontno()).draw(pos.x, pos.y, md, name, fontSens);
+//		md.scale(1f/p.getName().getScale().getX(), 1f/p.getName().getScale().getY());
+		md.scale(p.getName().getScale().getX(), p.getName().getScale().getY());
+		StateMachine.getInstance().getFightDef().getFiles().getFont().get(font.getFontno()).
+				draw((int)(pos.x*1f/p.getName().getScale().getX()), (int)(pos.y*1f/p.getName().getScale().getY()),
+						md, name, fontSens);
+		md.scale(1f/p.getName().getScale().getX(), 1f/p.getName().getScale().getY());
 	}
 	
 	

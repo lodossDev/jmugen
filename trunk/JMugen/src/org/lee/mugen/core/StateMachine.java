@@ -501,12 +501,13 @@ public class StateMachine implements Game {
 			addRender(cnsRenderList.get(1));
 			
 //			if (gameState.getGameType() == TeamMode.SINGLE) // TODO Lifebar
-
-			addRender(new FaceRender());
-			addRender(new LifeBarRender());
-			addRender(new PowerBarRender());
 			addRender(new TimeRender());
 			addRender(new RoundRender());
+			addRender(new FaceRender());
+			addRender(new PowerBarRender());
+			addRender(new LifeBarRender());
+
+
 
 //			addRender(new SpriteRender(new TypeSprite(getFightDef().getLifebar().getP1().getFront(), getFightDef().getLifebar().getP1().getPos())));
 

@@ -44,48 +44,27 @@ public class PlayerPowerbar extends PlayerLifebar {
 	@Override
 	public void process(boolean isLeft, int power, int maxPower,
 			boolean processMid) {
-		if (isLeft) {
-	        float rangeStart = getRange().getX().x;
-	        float rangeEnd = getRange().getX().y;
-	        
-	        int speed = rangeStart > rangeEnd? -1: 1;
-	        
-	        float newRangeFrontStart = (maxPower - power) * rangeEnd / maxPower;
-	        
-	        if (getRangeFront().getX().x > (int)newRangeFrontStart && getRangeFront().getX().x >= rangeEnd) {
-	                getRangeFront().getX().x += speed;
-	        } else if (getRangeFront().getX().x < (int)newRangeFrontStart && getRangeFront().getX().x < rangeStart) {
-	                getRangeFront().getX().x -= speed;
-	        } 
-	        if (processMid) {
-	                if (getRangeMid().getX().x > (int)newRangeFrontStart && getRangeMid().getX().x >= rangeEnd) {
-	                        getRangeMid().getX().x += speed;
-	                } else if (getRangeMid().getX().x < (int)newRangeFrontStart && getRangeMid().getX().x < rangeStart) {
-	                        getRangeMid().getX().x -= speed;
-	                } 
-	        }
-		} else {
-            
-            float rangeStart = getRange().getX().x;
-            float rangeEnd = getRange().getX().y;
-            
-            int speed = rangeStart > rangeEnd? -1: 1;
-            
-            float newRangeFrontStart = (maxPower - power) * rangeEnd / maxPower;
-            
-            if (getRangeFront().getX().x < (int)newRangeFrontStart && getRangeFront().getX().x <= rangeEnd) {
-                    getRangeFront().getX().x += speed;
-            } else if (getRangeFront().getX().x > (int)newRangeFrontStart && getRangeFront().getX().x > rangeStart) {
-                    getRangeFront().getX().x -= speed;
-            } 
-            if (processMid) {
-                    if (getRangeMid().getX().x < (int)newRangeFrontStart && getRangeMid().getX().x <= rangeEnd) {
-                            getRangeMid().getX().x += speed;
-                    } else if (getRangeMid().getX().x > (int)newRangeFrontStart && getRangeMid().getX().x > rangeStart) {
-                            getRangeMid().getX().x -= speed;
-                    } 
-            }               
-		}
-
+        float rangeStart = getRange().getX().x;
+        float rangeEnd = getRange().getX().y;
+        
+        int speed = rangeStart > rangeEnd? -1: 1;
+        
+        float newRangeFrontStart = rangeStart + (((float)power / maxPower) * (rangeEnd - rangeStart));
+        int velocity = 1;
+        if (getRangeFront().getX().y  > Math.floor(newRangeFrontStart))
+        	getRangeFront().getX().y -= velocity;
+        else if (getRangeFront().getX().y  < Math.floor(newRangeFrontStart))
+        	getRangeFront().getX().y += velocity;
+        
+        
+        if (processMid) {
+            if (getRangeMid().getX().y  > Math.floor(newRangeFrontStart))
+            	getRangeMid().getX().y -= velocity;
+            else if (getRangeMid().getX().y  < Math.floor(newRangeFrontStart))
+            	getRangeMid().getX().y += velocity;
+        }
+        
+        
+        
 	}
 }

@@ -62,6 +62,9 @@ public class BaseRender implements Renderable {
 //			dp = anim.getAnim().getSpriteDrawProperties();
 		} else if (type.getType() instanceof SprType) {
 			SprType spr = (SprType) type.getType();
+			if (fightdef.getFiles().getSff().getGroupSpr(spr.getSpritegrp()) == null 
+					|| fightdef.getFiles().getSff().getGroupSpr(spr.getSpritegrp()).getImgSpr(spr.getSpriteno()) == null)
+				return null;
 			return fightdef.getFiles().getSff().getGroupSpr(spr.getSpritegrp()).getImgSpr(spr.getSpriteno());
 		}
 		return null;
@@ -77,10 +80,17 @@ public class BaseRender implements Renderable {
 	
 	
 	public void render(MugenDrawer md, Point pos, Type type) {
+		float xScale = 1;
+		float yScale = 1;
+		
+		if (type.getScale().getX() != 1 || type.getScale().getY() != 1) {
+			xScale = type.getScale().getX();
+			yScale = type.getScale().getY();
+		}
 		if ((type.getType() instanceof AnimType) || (type.getType() instanceof SprType)) {
 			ImageSpriteSFF sff = getImageSFF(type);
 			SpriteDrawProperties dp = getSpriteDrawProperties(type);
-			
+
 			if (sff == null)
 				return;
 			if (type.getFacing() == -1) {
@@ -89,7 +99,8 @@ public class BaseRender implements Renderable {
 						pos.y - sff.getYAxis() + type.getOffset().y, 
 						true, 
 						false, sff.getImage());
-				
+				drawProperties.setXScaleFactor(xScale);
+				drawProperties.setYScaleFactor(yScale);
 				draw(md, drawProperties);
 			} else if (type.getFacing() == 1) {
 				DrawProperties drawProperties = new DrawProperties(
@@ -97,6 +108,8 @@ public class BaseRender implements Renderable {
 						pos.y - sff.getYAxis() + type.getOffset().y, 
 						false, 
 						false, sff.getImage());
+				drawProperties.setXScaleFactor(xScale);
+				drawProperties.setYScaleFactor(yScale);
 				draw(md, drawProperties);
 			}
 			
@@ -108,6 +121,5 @@ public class BaseRender implements Renderable {
 			
 			StateMachine.getInstance().getFightDef().getFiles().getFont().get(font.getFontno()).draw(pos.x + type.getOffset().x, pos.y + type.getOffset().y, md, text, fontSens);
 		}
-	
 	}
 }

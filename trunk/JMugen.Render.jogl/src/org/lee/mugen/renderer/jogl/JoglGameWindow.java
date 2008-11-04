@@ -132,7 +132,8 @@ public class JoglGameWindow implements GameWindow, GLEventListener {
 		
 		@Override
 		public void keyPressed(KeyEvent e) {
-			
+			if (e.getKeyCode() == KeyEvent.VK_ESCAPE)
+				System.exit(0);
 			
 		}
 		@Override

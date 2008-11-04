@@ -558,7 +558,10 @@ public class BeanTools {
 	private static Converter<float[]> floatPrimiArrayConverter = new Converter<float[]>() {
 
 		public float[] convert(Object o) {
-			if (o == null) {
+			if (o instanceof String) {
+				String[] value = ((String) o).replaceAll(" ", "").split(",");
+				return new float[] {Float.parseFloat(value[0]), Float.parseFloat(value[1])};
+			} else if (o == null) {
 				return new float[] { 0f };
 
 			} else if (o instanceof float[]) {

@@ -6,10 +6,8 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.lee.mugen.parser.air.AirParser;
 import org.lee.mugen.sprite.base.AbstractAnimManager;
-import org.lee.mugen.sprite.character.SpriteAnimManager;
 import org.lee.mugen.sprite.parser.Parser;
 import org.lee.mugen.sprite.parser.Parser.GroupText;
-import org.lee.mugen.util.MugenTools;
 
 public class Fightdef {
 	public static void main(String[] args) throws Exception {
@@ -55,7 +53,6 @@ public class Fightdef {
 
         AirParser airParser = new AirParser(fightDef);
         anim = new AbstractAnimManager(airParser);
-        
         parse(list);
         
 	}

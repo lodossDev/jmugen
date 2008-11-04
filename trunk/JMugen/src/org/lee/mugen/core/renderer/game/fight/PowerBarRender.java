@@ -45,10 +45,14 @@ public class PowerBarRender extends LifeBarRender {
 				render(md, pos, bg);
 			}
 
-			if (plb.getMid() != null)
-				render(md, pos, plb.getMid(), plb.getRange().getX().x, plb.getRangeMid().getX().x);
-			if (plb.getFront() != null)
-				render(md, pos, plb.getFront(), plb.getRange().getX().x, plb.getRangeFront().getX().x);
+
+
+			if (plb.getMid() != null) {
+				render(md, pos, plb.getMid(), plb.getRange().getX().x, plb.getRangeMid().getX().y);
+			}
+			if (plb.getFront() != null) {
+				render(md, pos, plb.getFront(), plb.getRange().getX().x, plb.getRangeFront().getX().y);
+			}
 			
 		}
 		
@@ -66,10 +70,13 @@ public class PowerBarRender extends LifeBarRender {
 				Type bg = map.get(key);
 				render(md, pos, bg);
 			}
-			if (plb.getMid() != null)
-				render(md, pos, plb.getMid(), plb.getRange().getX().x, plb.getRangeMid().getX().x);
-			if (plb.getFront() != null)
-				render(md, pos, plb.getFront(), plb.getRange().getX().x, plb.getRangeFront().getX().x);
+			
+			if (plb.getMid() != null) {
+				render(md, pos, plb.getMid(), plb.getRange().getX().x, plb.getRangeMid().getX().y);
+			}
+			if (plb.getFront() != null) {
+				render(md, pos, plb.getFront(), plb.getRange().getX().x, plb.getRangeFront().getX().y);
+			}
 		}
 		
 	}

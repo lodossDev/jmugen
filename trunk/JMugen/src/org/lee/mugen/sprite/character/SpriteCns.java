@@ -837,10 +837,14 @@ public class SpriteCns implements Cloneable, Serializable {
 
 	public void setPower(int power) {
 		this.power = power;
+		if (this.power > getData().getPower())
+			this.power = getData().getPower();
 	}
 
 	public void setPoweradd(int power) {
 		this.power += power;
+		if (this.power > getData().getPower())
+			this.power = getData().getPower();
 	}
 
 	public int getAirjuggle() {

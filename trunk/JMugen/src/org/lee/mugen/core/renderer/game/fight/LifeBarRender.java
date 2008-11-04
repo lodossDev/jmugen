@@ -42,27 +42,37 @@ public class LifeBarRender extends BaseRender {
 			return;
 		
 		SpriteDrawProperties dp = getSpriteDrawProperties(type);
+		DrawProperties drawProperties = null;
 		if (type.getFacing() == -1) {
-			DrawProperties drawProperties = new DrawProperties(
-					pos.x - sff.getWidth() + sff.getXAxis(), 
-					pos.y - sff.getYAxis(), 
+			drawProperties = new DrawProperties(
+					pos.x + sff.getWidth() - sff.getXAxis() + type.getOffset().x, 
+					pos.y - sff.getYAxis() + type.getOffset().y, 
 					true, 
 					false, sff.getImage());
-			drawProperties.setXRightSrc(drawProperties.getXRightSrc() + (x - x2));
-			drawProperties.setXRightDst(drawProperties.getXRightDst() + (x - x2));
-
-			draw(md, drawProperties);
 		} else if (type.getFacing() == 1) {
-			DrawProperties drawProperties = new DrawProperties(
-					pos.x - sff.getXAxis(), 
-					pos.y - sff.getYAxis(), 
+			drawProperties = new DrawProperties(
+					pos.x - sff.getXAxis() + type.getOffset().x, 
+					pos.y - sff.getYAxis() + type.getOffset().y, 
 					false, 
 					false, sff.getImage());
-			drawProperties.setXLeftSrc(drawProperties.getXLeftSrc() + (x - x2));
-			drawProperties.setXLeftDst(drawProperties.getXLeftDst() + (x - x2));
-			
-			draw(md, drawProperties);
 		}
+		if (x < x2) {
+			int delta = Math.abs(x-x2);
+			int originDelta = (int) ((drawProperties.getXRightDst() - drawProperties.getXLeftDst()) * type.getScale().getX());
+			drawProperties.setXRightDst(drawProperties.getXLeftDst() + delta/type.getScale().getX());
+			drawProperties.setXRightSrc(drawProperties.getXLeftSrc() + delta/type.getScale().getX());
+			drawProperties.setXScaleFactor(type.getScale().getX());
+			drawProperties.setYScaleFactor(type.getScale().getY());
+		} else if (x >= x2) {
+			int delta = Math.abs(x2-x);
+			int originDelta = (int) ((drawProperties.getXRightDst() - drawProperties.getXLeftDst()) * type.getScale().getX());
+			drawProperties.setXRightDst(drawProperties.getXLeftDst() + originDelta);
+			drawProperties.setXLeftDst(drawProperties.getXRightDst() - delta);
+			
+			drawProperties.setXLeftSrc(drawProperties.getXRightSrc() - delta/type.getScale().getX());
+			drawProperties.setYScaleFactor(type.getScale().getY());
+		}
+		draw(md, drawProperties);
 	
 	}
 	
@@ -96,8 +106,8 @@ public class LifeBarRender extends BaseRender {
 				render(md, pos, bg);
 			}
 
-			render(md, pos, plb.getMid(), plb.getRange().getX().x, plb.getRangeMid().getX().x);
-			render(md, pos, plb.getFront(), plb.getRange().getX().x, plb.getRangeFront().getX().x);
+			render(md, pos, plb.getMid(), plb.getRange().getX().x, plb.getRangeMid().getX().y);
+			render(md, pos, plb.getFront(), plb.getRange().getX().x, plb.getRangeFront().getX().y);
 			
 		}
 		
@@ -115,8 +125,10 @@ public class LifeBarRender extends BaseRender {
 				Type bg = map.get(key);
 				render(md, pos, bg);
 			}
-			render(md, pos, plb.getMid(), plb.getRange().getX().x, plb.getRangeMid().getX().x);
-			render(md, pos, plb.getFront(), plb.getRange().getX().x, plb.getRangeFront().getX().x);
+
+			render(md, pos, plb.getMid(), plb.getRange().getX().x, plb.getRangeMid().getX().y);
+			render(md, pos, plb.getFront(), plb.getRange().getX().x, plb.getRangeFront().getX().y);
+			
 		}
 		
 	}
