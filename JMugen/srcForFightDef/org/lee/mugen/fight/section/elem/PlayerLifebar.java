@@ -1,6 +1,5 @@
 package org.lee.mugen.fight.section.elem;
 
-import org.lee.mugen.fight.section.elem.Bar.Range;
 
 public class PlayerLifebar extends Bar {
 	Type mid;
@@ -30,50 +29,31 @@ public class PlayerLifebar extends Bar {
 		this.front = front;
 	}
 	public void process(boolean isLeft, int life, int maxLife, boolean processMid) {
-		if (isLeft) {
 	        float rangeStart = getRange().getX().x;
 	        float rangeEnd = getRange().getX().y;
 	        
 	        int speed = rangeStart > rangeEnd? -1: 1;
 	        
-	        float newRangeFrontStart = (maxLife - life) * rangeEnd / maxLife;
+            float newRangeFrontStart = rangeStart + (((float)life / maxLife) * (rangeEnd - rangeStart));
 	        
-	        if (getRangeFront().getX().x > (int)newRangeFrontStart && getRangeFront().getX().x >= rangeEnd) {
-	                getRangeFront().getX().x += speed;
-	        } else if (getRangeFront().getX().x < (int)newRangeFrontStart && getRangeFront().getX().x < rangeStart) {
-	                getRangeFront().getX().x -= speed;
-	        } 
-	        if (processMid) {
-	                if (getRangeMid().getX().x > (int)newRangeFrontStart && getRangeMid().getX().x >= rangeEnd) {
-	                        getRangeMid().getX().x += speed;
-	                } else if (getRangeMid().getX().x < (int)newRangeFrontStart && getRangeMid().getX().x < rangeStart) {
-	                        getRangeMid().getX().x -= speed;
-	                } 
-	        }
-		} else {
+            int velocity = 1;
+            if (getRangeFront().getX().y  > Math.floor(newRangeFrontStart))
+            	getRangeFront().getX().y -= velocity;
+            else if (getRangeFront().getX().y  < Math.floor(newRangeFrontStart))
+            	getRangeFront().getX().y += velocity;
             
-            float rangeStart = getRange().getX().x;
-            float rangeEnd = getRange().getX().y;
             
-            int speed = rangeStart > rangeEnd? -1: 1;
-            
-            float newRangeFrontStart = (maxLife - life) * rangeEnd / maxLife;
-            
-            if (getRangeFront().getX().x < (int)newRangeFrontStart && getRangeFront().getX().x <= rangeEnd) {
-                    getRangeFront().getX().x += speed;
-            } else if (getRangeFront().getX().x > (int)newRangeFrontStart && getRangeFront().getX().x > rangeStart) {
-                    getRangeFront().getX().x -= speed;
-            } 
             if (processMid) {
-                    if (getRangeMid().getX().x < (int)newRangeFrontStart && getRangeMid().getX().x <= rangeEnd) {
-                            getRangeMid().getX().x += speed;
-                    } else if (getRangeMid().getX().x > (int)newRangeFrontStart && getRangeMid().getX().x > rangeStart) {
-                            getRangeMid().getX().x -= speed;
-                    } 
-            }               
-		}
-
+                if (getRangeMid().getX().y  > Math.floor(newRangeFrontStart))
+                	getRangeMid().getX().y -= velocity;
+                else if (getRangeMid().getX().y  < Math.floor(newRangeFrontStart))
+                	getRangeMid().getX().y += velocity;
+            }
+            
+            
+            
 	}
+
 	@Override
 	public void parse(String name, String value) {
 		super.parse(name, value);

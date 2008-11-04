@@ -313,7 +313,8 @@ public class Round extends SimpleElement implements Section, Cloneable {
 	public void process() {
 		if (StateMachine.getInstance().getGameState().getRoundState() <= Roundstate.COMBAT) {
 			getStart().decrease();
-			getRound().getDefault().decreaseDisplayTime();
+			if (getRound().getDefault() != null)
+				getRound().getDefault().decreaseDisplayTime();
 		}
 		
 		if (StateMachine.getInstance().getGameState().getRoundState() == Roundstate.VICTORY) {

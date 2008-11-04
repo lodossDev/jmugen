@@ -297,7 +297,7 @@ public class GameState {
 	}
 	
 	public int getRoundTime() {
-		return roundTime;
+		return DEFAULT_TIME;//roundTime;
 	}
 
 	public void setRoundTime(int roundTime) {

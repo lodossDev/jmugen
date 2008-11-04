@@ -81,7 +81,7 @@ public class FontParser {
 				fontProducer.setSize(new Dimension(Integer.parseInt(strsSize[0]), Integer.parseInt(strsSize[1])));
 				
 				String[] strsSpacing = grp.getKeyValues().get("spacing").replaceAll(" ", "").split(",");
-				fontProducer.setSpacing(new Dimension(Integer.parseInt(strsSpacing[0]), Integer.parseInt(strsSpacing[1])));
+				fontProducer.setSpacing(new Dimension(Integer.parseInt(strsSpacing[0]), strsSpacing.length > 1?Integer.parseInt(strsSpacing[1]):0));
 				
 				String strColors = grp.getKeyValues().get("colors");
 				//TODO
@@ -98,16 +98,20 @@ public class FontParser {
 				int count = 0;
 				while (strToken.hasMoreTokens()) {
 					String line = strToken.nextToken();
-					String[] tokens = line.replaceAll("  ", " ").split(" ");
+					String[] tokens = line.replaceAll("( )|(\t)|(  )", " ").split(" ");
 					char c = 0;
 					if (tokens[0].length() > 0 && tokens[0].length() > 1) {
-						c = (char) Integer.decode(tokens[0]).intValue();
+						try {c = (char) Integer.decode(tokens[0]).intValue();}catch (Exception e) {
+							c = tokens[0].toCharArray()[0];
+							assert tokens[0].length() == 1;
+						}
 					} else if (tokens[0].length() > 0) {
 						c = tokens[0].charAt(0);
 					}
 					if (fontProducer.getType().equalsIgnoreCase("Fixed")) {
 						fontProducer.getMap().put(c, new Desc((count + (count > 0? fontProducer.getSpacing().width: 0)) * fontProducer.getSize().width, fontProducer.getSize().width));
 					} else if (fontProducer.getType().equalsIgnoreCase("Variable")) {
+						
 						fontProducer.getMap().put(c, new Desc(Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2])));
 					} else
 						throw new IllegalArgumentException("Unknow Type");

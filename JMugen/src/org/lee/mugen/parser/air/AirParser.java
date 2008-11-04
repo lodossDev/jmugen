@@ -46,7 +46,7 @@ public class AirParser {
 
     public static final String _LOOP_START_REGEX = " *(loopstart)" + _END;
     private static final String _AIR_DATA_REGEX = 
-    	_FLOAT_REGEX + " *, *" +  _FOUR_NUMBER_COMMA_REGEX + "(?: *, *((?:h?v?)|(?:v?h?)))?(?: *, *(\\w*)?)?" + ",*" +_END;
+    	_FLOAT_REGEX + " *, *" +  _FOUR_NUMBER_COMMA_REGEX + "(?: *, *((?:h?v?)|(?:v?h?)))?(?: *, *(\\w*)?)?" + ",*" + ".*";//_END;
     
     
     public static final Pattern _AIR_DATA_PATTERN = Pattern.compile(_AIR_DATA_REGEX, Pattern.CASE_INSENSITIVE);

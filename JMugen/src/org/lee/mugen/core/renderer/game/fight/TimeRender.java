@@ -39,9 +39,11 @@ public class TimeRender extends BaseRender {
 		Integer fontIdx = ((FontType)counter.getType()).getFontno();
 		
 		Integer fontSens = ((FontType)counter.getType()).getAlignmt().getCode();
-		
-		StateMachine.getInstance().getFightDef().getFiles().getFont().get(fontIdx).draw(pos.x, pos.y, md, display, fontSens);
-		
+		md.scale(counter.getScale().getX(), counter.getScale().getY());
+		StateMachine.getInstance().getFightDef().getFiles().getFont().get(fontIdx).
+				draw((int)(pos.x*1f/counter.getScale().getX()), (int)(pos.y*1f/counter.getScale().getY()),
+						md, display, fontSens);
+		md.scale(1f/counter.getScale().getX(), 1f/counter.getScale().getY());
 	}
 
 }

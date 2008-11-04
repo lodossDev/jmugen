@@ -20,15 +20,20 @@ public class RoundRender extends BaseRender {
 		if (round.getStart().getTime() > 0)
 			return;
 		
-		if (round.getRound().getDefault().getDisplaytime() > 0) {
-			FontType f = (FontType) round.getRound().getDefault().getType();
-			String text = f.getText().replaceAll("%i", StateMachine.getInstance().getGameState().getRoundno() + "");
-			f.setText(text);
+		if (round.getRound().getDefault() != null && round.getRound().getDefault().getDisplaytime() > 0) {
+			if (round.getRound().getDefault().getType() instanceof FontType) {
+				FontType f = (FontType) round.getRound().getDefault().getType();
+				String text = f.getText().replaceAll("%i", StateMachine.getInstance().getGameState().getRoundno() + "");
+				f.setText(text);
+				
+			} else {
+				
+			}
 			render(md, round.getPos(), round.getRound().getDefault());
 		}
 		
 		if ((round.getFight().getDisplaytime() > 0 || round.getFight().getDisplaytime() == -1) 
-				&& round.getRound().getDefault().getDisplaytime() <= 0
+				&& (round.getRound().getDefault() == null || round.getRound().getDefault().getDisplaytime() <= 0)
 				&& StateMachine.getInstance().getGameState().getRoundState() < Roundstate.COMBAT) {
 			render(md, round.getPos(), round.getFight());
 		}
