@@ -44,7 +44,8 @@ public class FaceRender extends BaseRender {
 			render(md, pos, p.getElem(), id);
 	}
 	public void render(MugenDrawer md, Point pos, Type type, String id) {
-
+		if (type.getLayerno() != layer)
+			return;
 		ImageSpriteSFF sff = getImageSFF(type, id);
 //		SpriteDrawProperties dp = getSpriteDrawProperties(type, id);
 		
@@ -87,6 +88,8 @@ public class FaceRender extends BaseRender {
 		return null;
 	}
 	private void render(PlayerName p, String id) {
+		if (p.getName().getLayerno() != layer)
+			return;
 		String name = StateMachine.getInstance().getSpriteInstance(id).getDefinition().getInfo().getName();
 		name = name.substring(1, name.length() - 1);
 		MugenDrawer md = GraphicsWrapper.getInstance();
@@ -94,9 +97,6 @@ public class FaceRender extends BaseRender {
 		FontType font = (FontType) p.getName().getType();
 		
 		int fontSens = font.getAlignmt().getCode();
-//		md.scale(p.getName().getScale().getX(), p.getName().getScale().getY());
-//		StateMachine.getInstance().getFightDef().getFiles().getFont().get(font.getFontno()).draw(pos.x, pos.y, md, name, fontSens);
-//		md.scale(1f/p.getName().getScale().getX(), 1f/p.getName().getScale().getY());
 		md.scale(p.getName().getScale().getX(), p.getName().getScale().getY());
 		StateMachine.getInstance().getFightDef().getFiles().getFont().get(font.getFontno()).
 				draw((int)(pos.x*1f/p.getName().getScale().getX()), (int)(pos.y*1f/p.getName().getScale().getY()),

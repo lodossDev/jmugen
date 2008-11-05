@@ -35,6 +35,8 @@ public class TimeRender extends BaseRender {
 		if (time == -1) {
 			display = "00";
 		}
+		if (counter.getLayerno() != layer)
+			return;
 		Point pos = StateMachine.getInstance().getFightDef().getTime().getPos();
 		Integer fontIdx = ((FontType)counter.getType()).getFontno();
 		

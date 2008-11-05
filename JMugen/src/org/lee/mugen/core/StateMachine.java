@@ -25,11 +25,8 @@ import org.lee.mugen.core.renderer.game.MakedustRender;
 import org.lee.mugen.core.renderer.game.ProjectileRender;
 import org.lee.mugen.core.renderer.game.SpriteRender;
 import org.lee.mugen.core.renderer.game.SpriteShadowRender;
-import org.lee.mugen.core.renderer.game.fight.FaceRender;
-import org.lee.mugen.core.renderer.game.fight.LifeBarRender;
-import org.lee.mugen.core.renderer.game.fight.PowerBarRender;
+import org.lee.mugen.core.renderer.game.fight.FightdefRender;
 import org.lee.mugen.core.renderer.game.fight.RoundRender;
-import org.lee.mugen.core.renderer.game.fight.TimeRender;
 import org.lee.mugen.fight.section.Fightdef;
 import org.lee.mugen.input.CmdProcDispatcher;
 import org.lee.mugen.input.ISpriteCmdProcess;
@@ -51,7 +48,6 @@ import org.lee.mugen.sprite.entity.AfterImageSprite;
 import org.lee.mugen.sprite.entity.ExplodSprite;
 import org.lee.mugen.sprite.entity.MakeDustSpriteManager;
 import org.lee.mugen.sprite.entity.ProjectileSprite;
-import org.lee.mugen.sprite.entity.AnimTypeSprite;
 
 /**
  * 
@@ -500,12 +496,8 @@ public class StateMachine implements Game {
 			addRender(cnsRenderList.get(0));
 			addRender(cnsRenderList.get(1));
 			
-//			if (gameState.getGameType() == TeamMode.SINGLE) // TODO Lifebar
-			addRender(new TimeRender());
+			addRender(new FightdefRender());
 			addRender(new RoundRender());
-			addRender(new FaceRender());
-			addRender(new PowerBarRender());
-			addRender(new LifeBarRender());
 
 
 

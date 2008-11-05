@@ -9,7 +9,6 @@ import org.lee.mugen.fight.section.elem.FontType;
 import org.lee.mugen.fight.section.elem.SprType;
 import org.lee.mugen.fight.section.elem.Type;
 import org.lee.mugen.renderer.DrawProperties;
-import org.lee.mugen.renderer.GraphicsWrapper;
 import org.lee.mugen.renderer.MugenDrawer;
 import org.lee.mugen.renderer.Renderable;
 import org.lee.mugen.sprite.base.AbstractAnimManager.SpriteDrawProperties;
@@ -17,6 +16,14 @@ import org.lee.mugen.sprite.baseForParse.ImageSpriteSFF;
 import org.lee.mugen.sprite.character.AnimElement;
 
 public class BaseRender implements Renderable {
+	protected int layer = 0;
+	public int getLayer() {
+		return layer;
+	}
+
+	public void setLayer(int layer) {
+		this.layer = layer;
+	}
 
 	@Override
 	public int getPriority() {
@@ -80,6 +87,10 @@ public class BaseRender implements Renderable {
 	
 	
 	public void render(MugenDrawer md, Point pos, Type type) {
+		
+		if (type.getLayerno() != layer)
+			return;
+		
 		float xScale = 1;
 		float yScale = 1;
 		
