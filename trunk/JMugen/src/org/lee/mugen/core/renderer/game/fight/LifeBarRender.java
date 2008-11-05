@@ -37,6 +37,8 @@ public class LifeBarRender extends BaseRender {
 		super.draw(md, drawProperties);
 	}
 	protected void render(MugenDrawer md, Point pos, Type type, int x, int x2) {
+		if (type.getLayerno() != layer)
+			return;
 		ImageSpriteSFF sff = getImageSFF(type);
 		if (sff == null)
 			return;

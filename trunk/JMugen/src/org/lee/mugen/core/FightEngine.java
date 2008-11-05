@@ -83,7 +83,7 @@ public class FightEngine {
 			if (!(hitdef instanceof ProjectileSub)) {
 				Sprite spr = StateMachine.getInstance().getSpriteInstance(
 						hitdef.getSpriteId());
-				if (spr == null)
+				if (spr == null || spr.getInfo().getMovetype() != MoveType.A)
 					removes.add(hitdef);
 			}
 			if (hitdefsWhenClns1IsDefine.contains(hitdef) && !(hitdef instanceof ProjectileSub)) {
