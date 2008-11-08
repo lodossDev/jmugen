@@ -29,7 +29,10 @@ public abstract class MugenDrawer {
     	    drawLine(x + width, y + height, x + 1, y + height);
     	    drawLine(x, y + height, x, y + 1);
     	}
-        }
+    }
+    
+    
+    
 	public void setColor(Color color) {
 		setColor(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
 		

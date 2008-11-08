@@ -38,10 +38,10 @@ public class PCXLoader {
         
         InputStream in = new ByteArrayInputStream(data);
         
-        in.skip(128);
+       
         int width = header.xmax - header.xmin + 1;
         int height = header.ymax - header.ymin + 1;
-        
+        in.skip(128); 
         IndexColorModel icm = new IndexColorModel(8, 256, convertToByteArray(pal.r), convertToByteArray(pal.g), convertToByteArray(pal.b), 0);
         
       image = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_INDEXED, icm);
