@@ -1,6 +1,6 @@
 package org.lee.mugen.sprite.cns.type.function;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.SpriteCns;
@@ -27,8 +27,8 @@ public class Targetlifeadd extends StateCtrlFunction {
 		if (id == null) {
 			id = "-1";
 		}
-		Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);
-		Sprite s = StateMachine.getInstance().getFightEngine().getTarget(sprite, Integer.parseInt(id));
+		Sprite sprite = GameFight.getInstance().getSpriteInstance(spriteId);
+		Sprite s = GameFight.getInstance().getFightEngine().getTarget(sprite, Integer.parseInt(id));
 		if (s != null) {
 
 			SpriteCns spriteInfo = s.getInfo();

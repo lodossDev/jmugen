@@ -1,6 +1,6 @@
 package org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.cns.eval.function.SpriteCnsTriggerFunction;
 
@@ -11,7 +11,7 @@ public class Tickspersecond extends SpriteCnsTriggerFunction {
 	}
 	@Override
 	public Object getValue(String spriteId, Valueable... params) {
-		return (int)StateMachine.getInstance().getWindow().getTimer().getFps();
+		return (int)GameFight.getInstance().getWindow().getTimer().getFps();
 	}
 
 }

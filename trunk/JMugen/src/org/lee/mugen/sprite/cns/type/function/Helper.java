@@ -1,6 +1,6 @@
 package org.lee.mugen.sprite.cns.type.function;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.SpriteCns;
@@ -46,7 +46,7 @@ public class Helper extends StateCtrlFunction {
 
     @Override
     public Object getValue(String spriteId, Valueable... params) {
-		Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);
+		Sprite sprite = GameFight.getInstance().getSpriteInstance(spriteId);
 		HelperSub helperSub = new HelperSub();
 		fillBean(spriteId, helperSub);
 		helperSub.setSpriteFrom(sprite);
@@ -60,7 +60,7 @@ public class Helper extends StateCtrlFunction {
 //		Logger.log("Create helper " + helperSub.getId());
 		
 		helperSpr.initSpriteHelper();
-		StateMachine.getInstance().addSpriteHelper(helperSpr);
+		GameFight.getInstance().addSpriteHelper(helperSpr);
 		
 		
 //		CnsRender cnsRender = new CnsRender(helperSpr) {

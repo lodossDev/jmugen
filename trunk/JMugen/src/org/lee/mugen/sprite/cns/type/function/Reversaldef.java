@@ -1,6 +1,6 @@
 package org.lee.mugen.sprite.cns.type.function;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.spiteCnsSubClass.ReversaldefSub;
@@ -31,14 +31,14 @@ public class Reversaldef extends StateCtrlFunction {
 
 	@Override
 	public Object getValue(String spriteId, Valueable... params) {		
-		Sprite sprOne = StateMachine.getInstance().getSpriteInstance(spriteId);
+		Sprite sprOne = GameFight.getInstance().getSpriteInstance(spriteId);
 		ReversaldefSub hitDef = new ReversaldefSub();
 		hitDef.setSpriteHitter(sprOne);
 		hitDef.setSpriteId(spriteId);
 		fillBean(spriteId, hitDef);
 		
-		StateMachine.getInstance().getFightEngine().add(hitDef);
-		StateMachine.getInstance().getFightEngine().process();
+		GameFight.getInstance().getFightEngine().add(hitDef);
+		GameFight.getInstance().getFightEngine().process();
 		return null;
 	}
 

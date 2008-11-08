@@ -1,6 +1,6 @@
 package org.lee.mugen.sprite.cns.type.function;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.cns.eval.function.StateCtrlFunction;
 import org.lee.mugen.sprite.entity.PauseSub;
@@ -16,8 +16,8 @@ public class Pause extends StateCtrlFunction {
     public Object getValue(String spriteId, Valueable... params) {
     	PauseSub pause = new PauseSub();
     	fillBean(spriteId, pause);
-    	pause.setSpriteFrom(StateMachine.getInstance().getSpriteInstance(spriteId));
-    	StateMachine.getInstance().getGlobalEvents().setPause(pause);
+    	pause.setSpriteFrom(GameFight.getInstance().getSpriteInstance(spriteId));
+    	GameFight.getInstance().getGlobalEvents().setPause(pause);
     	return null;
     }
     

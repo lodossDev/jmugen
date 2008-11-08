@@ -1,6 +1,6 @@
 package org.lee.mugen.sprite.cns.type.function;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.cns.eval.function.StateCtrlFunction;
 import org.lee.mugen.sprite.entity.SuperpauseSub;
@@ -48,8 +48,8 @@ public class Superpause extends StateCtrlFunction {
 	public Object getValue(String spriteId, Valueable... params) {
 		SuperpauseSub superpauseSub = new SuperpauseSub();
 		fillBean(spriteId, superpauseSub);
-		superpauseSub.setSprite(StateMachine.getInstance().getSpriteInstance(spriteId));
-		StateMachine.getInstance().getGlobalEvents().setSuperPause(superpauseSub);
+		superpauseSub.setSprite(GameFight.getInstance().getSpriteInstance(spriteId));
+		GameFight.getInstance().getGlobalEvents().setSuperPause(superpauseSub);
 		return null;
 	}
 	public static Valueable[] parseForAnim(String name, String value) {

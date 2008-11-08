@@ -3,11 +3,10 @@ package org.lee.mugen.fight.section;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.fight.section.elem.PlayerPowerbar;
 import org.lee.mugen.fight.section.elem.Type;
 import org.lee.mugen.sprite.character.Sprite;
-import org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub;
 
 public class Powerbar implements Section {
 	PlayerPowerbar p1 = new PlayerPowerbar();
@@ -15,11 +14,11 @@ public class Powerbar implements Section {
 	
 	Map<Integer, Type> level = new HashMap<Integer, Type>();
 
-	public void parse(String name, String value) {
+	public void parse(Object root, String name, String value) {
 		if (name.startsWith("p1.")) {
-			p1.parse(Type.getNext(name), value);
+			p1.parse(root, Type.getNext(name), value);
 		} else if (name.startsWith("p2.")) {
-			p2.parse(Type.getNext(name), value);
+			p2.parse(root, Type.getNext(name), value);
 		}  else if (name.startsWith("level")) {
 			String sNum = name.substring(5, name.indexOf("."));
 			int num = 0;
@@ -31,7 +30,7 @@ public class Powerbar implements Section {
 				elem = new Type();
 				level.put(num, elem);
 			}
-			elem.setType(Type.getNext(name), elem, value);
+			elem.setType(Type.getNext(name), elem, value, root);
 			elem.parse(Type.getNext(name), value);
 			
 		}
@@ -63,17 +62,25 @@ public class Powerbar implements Section {
 
 	public void process() {
 		{
-			Sprite sprite = StateMachine.getInstance().getSpriteInstance("1");
+			Sprite sprite = GameFight.getInstance().getSpriteInstance("1");
 			int life = sprite.getInfo().getPower();
 			int maxlife = sprite.getInfo().getData().getPower();
 			p1.process(true, life, maxlife, true);
 		}	
 		{
-			Sprite sprite = StateMachine.getInstance().getSpriteInstance("2");
+			Sprite sprite = GameFight.getInstance().getSpriteInstance("2");
 			int life = sprite.getInfo().getPower();
 			int maxlife = sprite.getInfo().getData().getPower();
 			p2.process(false, life, maxlife, true);
 		}	
+		
+	}
+
+	public void init() {
+		p1.init();
+		p2.init();
+		for (Type t: level.values())
+			t.init();
 		
 	}
 

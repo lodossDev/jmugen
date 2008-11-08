@@ -22,7 +22,7 @@ public class SimpleElement {
 		this.bg = bg;
 	}
 	
-	public void parse(String name, String value) {
+	public void parse(Object root, String name, String value) {
 		if (name.equalsIgnoreCase("pos")) {
 			pos = (Point) BeanTools.getConvertersMap().get(Point.class).convert(value);
 		} else if (name.startsWith("bg")) {
@@ -36,9 +36,14 @@ public class SimpleElement {
 				elem = new Type();
 				bg.put(num, elem);
 			}
-			elem.setType(Type.getNext(name), elem, value);
+			elem.setType(Type.getNext(name), elem, value, root);
 			elem.parse(Type.getNext(name), value);
 			
 		}
+	}
+	public void init() {
+		for (Type t: bg.values())
+			t.init();
+		
 	}
 }

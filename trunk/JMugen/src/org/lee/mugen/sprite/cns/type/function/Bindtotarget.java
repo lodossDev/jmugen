@@ -1,6 +1,6 @@
 package org.lee.mugen.sprite.cns.type.function;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.cns.eval.function.StateCtrlFunction;
@@ -20,13 +20,13 @@ public class Bindtotarget extends StateCtrlFunction {
 
 	@Override
 	public Object getValue(String spriteId, Valueable... params) {
-		final Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);
+		final Sprite sprite = GameFight.getInstance().getSpriteInstance(spriteId);
 
 		
 		final BindToTargetSub bindToTarget = new BindToTargetSub();
 		fillBean(spriteId, bindToTarget);
 		
-		final Sprite cible = StateMachine.getInstance().getFightEngine().getTarget(sprite, bindToTarget.getId());
+		final Sprite cible = GameFight.getInstance().getFightEngine().getTarget(sprite, bindToTarget.getId());
 		BindToSub bindToSub = new BindToSub() {
 			@Override
 			public boolean isBindOriginal() {
@@ -63,7 +63,7 @@ public class Bindtotarget extends StateCtrlFunction {
 			
 		};
 
-		bindToSub.setCaller(StateMachine.getInstance().getSpriteInstance(spriteId));
+		bindToSub.setCaller(GameFight.getInstance().getSpriteInstance(spriteId));
 		bindToSub.setTime(bindToTarget.getTime());
 		
 		sprite.getInfo().setBindTo(bindToSub);

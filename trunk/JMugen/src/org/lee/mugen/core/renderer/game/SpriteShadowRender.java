@@ -1,6 +1,6 @@
 package org.lee.mugen.core.renderer.game;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.renderer.DrawProperties;
 import org.lee.mugen.renderer.GraphicsWrapper;
 import org.lee.mugen.renderer.ImageContainer;
@@ -9,10 +9,10 @@ import org.lee.mugen.renderer.PalFxSub;
 import org.lee.mugen.renderer.RGB;
 import org.lee.mugen.renderer.Renderable;
 import org.lee.mugen.renderer.Trans;
-import org.lee.mugen.sprite.background.Stage;
 import org.lee.mugen.sprite.base.AbstractSprite;
 import org.lee.mugen.sprite.cns.type.function.Assertspecial.Flag;
 import org.lee.mugen.sprite.entity.PointF;
+import org.lee.mugen.stage.Stage;
 
 public class SpriteShadowRender implements Renderable {
 	
@@ -28,7 +28,7 @@ public class SpriteShadowRender implements Renderable {
 	}
 
 	public boolean isProcess() {
-		if (StateMachine.getInstance().getGlobalEvents().isAssertSpecial(Flag.globalnoshadow))
+		if (GameFight.getInstance().getGlobalEvents().isAssertSpecial(Flag.globalnoshadow))
 			return false;
 		return true;
 	}
@@ -60,7 +60,7 @@ public class SpriteShadowRender implements Renderable {
 		ImageContainer img = null;
 		img = (ImageContainer) sprite.getCurrentImage();
 		
-		Stage stage = StateMachine.getInstance().getInstanceOfStage();
+		Stage stage = GameFight.getInstance().getInstanceOfStage();
 		int _mvX = stage.getCamera().getX();
 		int _mvY = stage.getCamera().getY();
 	
@@ -113,7 +113,7 @@ public class SpriteShadowRender implements Renderable {
 		
 		if (img == null)
 			return;
-		Stage stage = StateMachine.getInstance().getInstanceOfStage();
+		Stage stage = GameFight.getInstance().getInstanceOfStage();
 		int _mvX = stage.getCamera().getX();
 		int _mvY = stage.getCamera().getY();
 	

@@ -29,12 +29,14 @@ public class Bar extends SimpleElement {
 	}
 	
 	@Override
-	public void parse(String name, String value) {
-		super.parse(name, value);
+	public void parse(Object root, String name, String value) {
+		super.parse(root, name, value);
 		if (name.equalsIgnoreCase("range.x")) {
 			Point rangeX = (Point) BeanTools.getConvertersMap().get(Point.class).convert(value);
 			getRange().setX(rangeX);
 		}
 		
 	}
+
+
 }

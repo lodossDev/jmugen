@@ -7,11 +7,11 @@ public class Name implements Section {
 	PlayerName p1 = new PlayerName();
 	PlayerName p2 = new PlayerName();
 	
-	public void parse(String name, String value) {
+	public void parse(Object root, String name, String value) {
 		if (name.startsWith("p1.")) {
-			p1.parse(Type.getNext(name), value);
+			p1.parse(root, Type.getNext(name), value);
 		} else if (name.startsWith("p2.")) {
-			p2.parse(Type.getNext(name), value);
+			p2.parse(root, Type.getNext(name), value);
 		}
 	}
 	
@@ -31,6 +31,12 @@ public class Name implements Section {
 	public void process() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public void init() {
+		p1.init();
+		p2.init();
+				
 	}
 	
 }

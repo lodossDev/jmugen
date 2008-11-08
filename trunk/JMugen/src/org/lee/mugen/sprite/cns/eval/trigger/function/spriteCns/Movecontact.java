@@ -2,7 +2,7 @@ package org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns;
 
 import java.util.LinkedList;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.SpriteHelper;
@@ -18,15 +18,15 @@ public class Movecontact extends SpriteCnsTriggerFunction {
 	}
 	@Override
 	public Object getValue(String spriteId, Valueable... params) {
-		Sprite one = StateMachine.getInstance().getSpriteInstance(spriteId);
+		Sprite one = GameFight.getInstance().getSpriteInstance(spriteId);
 		if (one.getInfo().getMovetype() == MoveType.A) {
-			LinkedList<HitDefSub> hitdefs = StateMachine.getInstance().getFightEngine().getHitdefBySpriteHitter(spriteId);
+			LinkedList<HitDefSub> hitdefs = GameFight.getInstance().getFightEngine().getHitdefBySpriteHitter(spriteId);
 			HitDefSub strictHitdef = null;
 			for (HitDefSub h: hitdefs)
 				if (h.getClass() != ProjectileSub.class && spriteId.equals(h.getSpriteId()))
 					strictHitdef = h;
 
-			for (Sprite s: StateMachine.getInstance().getSprites()) {
+			for (Sprite s: GameFight.getInstance().getSprites()) {
 				
 				if (s == one || (s instanceof SpriteHelper))
 					continue;

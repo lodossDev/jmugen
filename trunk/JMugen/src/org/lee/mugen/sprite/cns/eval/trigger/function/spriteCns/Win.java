@@ -1,6 +1,6 @@
 package org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.SpriteHelper;
@@ -18,8 +18,8 @@ public class Win extends SpriteCnsTriggerFunction {
 	
 	public static boolean isWin(String spriteId) {
 		boolean allLoose = true;
-		Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);
-		for (Sprite s: StateMachine.getInstance().getEnnmies(sprite)) {
+		Sprite sprite = GameFight.getInstance().getSpriteInstance(spriteId);
+		for (Sprite s: GameFight.getInstance().getEnnmies(sprite)) {
 			if (s instanceof SpriteHelper)
 				continue;
 			if (s.getSpriteId().equals(spriteId))

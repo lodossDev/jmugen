@@ -6,15 +6,11 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.lee.mugen.parser.air.AirParser;
 import org.lee.mugen.sprite.base.AbstractAnimManager;
+import org.lee.mugen.sprite.baseForParse.SpriteSFF;
 import org.lee.mugen.sprite.parser.Parser;
 import org.lee.mugen.sprite.parser.Parser.GroupText;
 
 public class Fightdef {
-	public static void main(String[] args) throws Exception {
-		String res = IOUtils.toString(new FileInputStream("C:/dev/workspace/JMugen/resource/data/fight.def"));
-		List<GroupText> groups = Parser.getGroupTextMap(res);
-		new Fightdef().parse(groups);
-	}
 	
 	Files files = new Files();
 	Lifebar lifebar = new Lifebar();
@@ -32,6 +28,21 @@ public class Fightdef {
 	Round round = new Round();
 	Winicon winicon = new Winicon(); 
 	
+	
+	public Fightdef(String filename) throws Exception {
+        String text = IOUtils.toString(new FileInputStream(filename));
+        List<GroupText> list = Parser.getGroupTextMap(text);
+
+        AirParser airParser = new AirParser(filename);
+        anim = new AbstractAnimManager(airParser);
+        parse(list);
+        
+	}
+	
+	public SpriteSFF getSpriteSff() {
+		return getFiles().getSff();
+	}
+	
 	private AbstractAnimManager anim;
 
     public AbstractAnimManager getAnim() {
@@ -42,24 +53,28 @@ public class Fightdef {
 		this.anim = anim;
 	}
 
-	public void init() throws Exception {
-        
-//      String fightDef = Parser.getExistFile("lb2_lifebars.def");
-//      String fightDef = Parser.getExistFile("mvc_lifebars.def");
-        String fightDef = Parser.getExistFile("fight.def");
-//      String fightDef = Parser.getExistFile("mvc_lifebars.def");
-        String text = IOUtils.toString(new FileInputStream(fightDef));
-        List<GroupText> list = Parser.getGroupTextMap(text);
 
-        AirParser airParser = new AirParser(fightDef);
-        anim = new AbstractAnimManager(airParser);
-        parse(list);
-        
+	
+	public void rezet() {
+		lifebar.init();
+		simullifebar.init();
+		turnslifebar.init();
+		powerbar.init();
+		face.init();
+		simulface.init();
+		turnsface.init();
+		name.init();
+		simulname.init();
+		turnsname.init();
+		time.init();
+		combo.init();
+		round.init();
+		winicon.init();
 	}
 
 	public void parse(Section section, GroupText grp) throws Exception {
 		for (String key: grp.getKeysOrdered()) {
-			section.parse(key, grp.getKeyValues().get(key));
+			section.parse(this, key, grp.getKeyValues().get(key));
 		}
 	}
 	public void parse(List<GroupText> groups) throws Exception {

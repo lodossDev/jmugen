@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.fight.section.Fightfx;
 import org.lee.mugen.renderer.ImageContainer;
 import org.lee.mugen.renderer.PalFxSub;
@@ -18,7 +18,7 @@ import org.lee.mugen.sprite.entity.PointF;
 
 public abstract class AbstractSprite {
 	public static Fightfx getMugenFightfx() {
-		return StateMachine.getInstance().getFightDef().getFiles().getFightfx();
+		return GameFight.getInstance().getFightdef().getFiles().getFightfx();
 	}
 	public static List<Rectangle> replaceCns(AbstractSprite spr, int xAxis,
 			int yAxis, org.lee.mugen.parser.air.Rectangle[] rects) {

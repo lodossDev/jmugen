@@ -1,6 +1,6 @@
 package org.lee.mugen.sprite.cns.type.function;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.cns.eval.function.StateCtrlFunction;
@@ -25,7 +25,7 @@ public class Angleadd extends StateCtrlFunction {
 		if (valueableParams[valueIndex] != null) {
 			Valueable value = valueableParams[valueIndex][0];
 			int iValue = Parser.getIntValue(value.getValue(spriteId, params));
-			Sprite sprite = StateMachine.getInstance().getSpriteInstance(
+			Sprite sprite = GameFight.getInstance().getSpriteInstance(
 					spriteId);
 			sprite.getSprAnimMng().getSpriteDrawProperties().setAngleadd(iValue);
 		}

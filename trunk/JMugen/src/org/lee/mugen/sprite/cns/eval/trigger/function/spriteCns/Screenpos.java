@@ -2,13 +2,13 @@ package org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns;
 
 import java.util.List;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.StringValueable;
 import org.lee.mugen.parser.type.Valueable;
-import org.lee.mugen.sprite.background.Stage;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.cns.eval.function.SpriteCnsTriggerFunction;
 import org.lee.mugen.sprite.entity.PointF;
+import org.lee.mugen.stage.Stage;
 
 /**
  * 
@@ -24,8 +24,8 @@ public class Screenpos extends SpriteCnsTriggerFunction {
 	@Override
 	public Object getValue(String spriteId, Valueable... params) {
 		String p = params[0].getValue(spriteId).toString();
-		Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);
-		final Stage stage = StateMachine.getInstance().getInstanceOfStage();
+		Sprite sprite = GameFight.getInstance().getSpriteInstance(spriteId);
+		final Stage stage = GameFight.getInstance().getInstanceOfStage();
 		
 		if ("x".equals(p)) {
 			return getPosRelativeToScreen(stage, sprite.getRealXPos(), sprite.getRealYPos()).getX();

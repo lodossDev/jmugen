@@ -2,12 +2,12 @@ package org.lee.mugen.core.physics;
 
 import java.awt.Rectangle;
 
-import org.lee.mugen.core.StateMachine;
-import org.lee.mugen.sprite.background.Stage;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.SpriteHelper;
 import org.lee.mugen.sprite.character.SpriteCns.Physics;
 import org.lee.mugen.sprite.cns.type.function.Assertspecial.Flag;
+import org.lee.mugen.stage.Stage;
 
 /**
  * Compute position of sprite TODO : with SpriteCns take in consideration the
@@ -54,13 +54,13 @@ public class PhysicsEngime {
 			throw new IllegalStateException("This state musn't be reached : "
 					+ PhysicsEngime.class.getName());
 		}
-		if (StateMachine.getInstance().getGlobalEvents().isAssertSpecial(sprite.getSpriteId(), Flag.intro))
+		if (GameFight.getInstance().getGlobalEvents().isAssertSpecial(sprite.getSpriteId(), Flag.intro))
 			return;
 		if (sprite instanceof SpriteHelper) {
 			
 		} else {
 			try {
-				for (Sprite s : StateMachine.getInstance().getSprites()) {
+				for (Sprite s : GameFight.getInstance().getSprites()) {
 					if (!s.equals(sprite) && !(s instanceof SpriteHelper) && s != sprite) {
 						processSpriteCollision(sprite, s);
 					}
@@ -98,7 +98,7 @@ public class PhysicsEngime {
 		}
 		int x = 0;
 		int y = 0;
-		Stage stage = StateMachine.getInstance().getInstanceOfStage();
+		Stage stage = GameFight.getInstance().getInstanceOfStage();
 		int _mvX = stage.getCamera().getXNoShaKe();
 		int _mvY = stage.getCamera().getYNoShake();
 		x = _mvX + stage.getCamera().getWidth()/2;
@@ -250,7 +250,7 @@ public class PhysicsEngime {
 	private static Rectangle getRectEdge(Sprite spr) {
 
 		boolean isFlip = spr.isFlip();
-		Stage stage = StateMachine.getInstance().getInstanceOfStage();
+		Stage stage = GameFight.getInstance().getInstanceOfStage();
 		float _mvX = stage.getCamera().getXNoShaKe();
 		float _mvY = stage.getCamera().getYNoShake();
 
@@ -355,7 +355,7 @@ public class PhysicsEngime {
 	}
 
 	public static boolean isSpriteOutOfScreeen(int x) {
-		for (Sprite s : StateMachine.getInstance().getSprites()) {
+		for (Sprite s : GameFight.getInstance().getSprites()) {
 			if (!(s instanceof SpriteHelper)) {
 				if (isOutOfScreeen(s, x))
 					return true;

@@ -2,7 +2,7 @@ package org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns;
 
 import java.util.List;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.StringValueable;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.character.Sprite;
@@ -25,12 +25,12 @@ public class Parentdist extends SpriteCnsTriggerFunction {
 	@Override
 	public Object getValue(String spriteId, Valueable... params) {
 		String p = params[0].getValue(spriteId).toString();
-		if (!(StateMachine.getInstance().getSpriteInstance(spriteId) instanceof SpriteHelper))
+		if (!(GameFight.getInstance().getSpriteInstance(spriteId) instanceof SpriteHelper))
 			return null;
-		SpriteHelper helper = (SpriteHelper) StateMachine.getInstance().getSpriteInstance(spriteId);
+		SpriteHelper helper = (SpriteHelper) GameFight.getInstance().getSpriteInstance(spriteId);
 		SpriteCns helperInfo = helper.getInfo();
 
-		Sprite parent = StateMachine.getInstance().getParent(helper);
+		Sprite parent = GameFight.getInstance().getParent(helper);
 		if (parent == null)
 			return null;
 		if ("x".equals(p)) {

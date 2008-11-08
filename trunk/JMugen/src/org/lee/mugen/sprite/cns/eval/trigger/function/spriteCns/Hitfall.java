@@ -1,6 +1,6 @@
 package org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.cns.eval.function.SpriteCnsTriggerFunction;
@@ -12,7 +12,7 @@ public class Hitfall extends SpriteCnsTriggerFunction {
 
 	@Override
 	public Object getValue(String spriteId, Valueable... params) {
-		Sprite sprOne = StateMachine.getInstance().getSpriteInstance(spriteId);
+		Sprite sprOne = GameFight.getInstance().getSpriteInstance(spriteId);
 		
 //		for (HitDefSub hitdefFrom: sprOne.getInfo().getHitdefs()) {
 //			if (hitdefFrom == null)

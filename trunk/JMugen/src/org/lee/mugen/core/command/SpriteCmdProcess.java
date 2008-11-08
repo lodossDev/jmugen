@@ -4,7 +4,7 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.input.CmdProcDispatcher;
 import org.lee.mugen.input.MugenCommands;
 import org.lee.mugen.sprite.character.Sprite;
@@ -21,7 +21,7 @@ public class SpriteCmdProcess implements org.lee.mugen.input.ISpriteCmdProcess {
 	private List<String> spriteIds = new ArrayList<String>();
 	private CmdProcDispatcher dispatcher;
 	private List<MugenCommands> cmds;
-	private StateMachine stateMachine = null;
+	private GameFight stateMachine = null;
 	
 	/* (non-Javadoc)
 	 * @see org.lee.mugen.core.command.ISpriteCmdProcess#addSprite(java.lang.String)
@@ -37,7 +37,7 @@ public class SpriteCmdProcess implements org.lee.mugen.input.ISpriteCmdProcess {
 	}
 	public SpriteCmdProcess(CmdProcDispatcher dispatcher) {
 		this.dispatcher = dispatcher;
-		stateMachine = StateMachine.getInstance();
+		stateMachine = GameFight.getInstance();
 	}
 	
 	
@@ -46,7 +46,7 @@ public class SpriteCmdProcess implements org.lee.mugen.input.ISpriteCmdProcess {
 	 */
 	public void process() {
 		for (String spriteId: spriteIds) {
-			Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);
+			Sprite sprite = GameFight.getInstance().getSpriteInstance(spriteId);
 			
 			boolean find = false;
 			SpriteCns sprInfo = sprite.getInfo();
@@ -64,7 +64,7 @@ public class SpriteCmdProcess implements org.lee.mugen.input.ISpriteCmdProcess {
 
 	}
 	public void process(String spriteId) {
-		Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);
+		Sprite sprite = GameFight.getInstance().getSpriteInstance(spriteId);
 		
 		boolean find = false;
 		SpriteCns sprInfo = sprite.getInfo();
@@ -83,7 +83,7 @@ public class SpriteCmdProcess implements org.lee.mugen.input.ISpriteCmdProcess {
 
 	public void keyPressed(KeyEvent e) {
 		for (String sid: spriteIds) {
-			Sprite sprite = StateMachine.getInstance().getSpriteInstance(sid);
+			Sprite sprite = GameFight.getInstance().getSpriteInstance(sid);
 			dispatcher.press(e.getKeyCode(), stateMachine.getGameState().getGameTime(), sprite.isFlip());
 		}
 		
@@ -92,7 +92,7 @@ public class SpriteCmdProcess implements org.lee.mugen.input.ISpriteCmdProcess {
 
 	public void keyReleased(KeyEvent e) {
 		for (String sid: spriteIds) {
-			Sprite sprite = StateMachine.getInstance().getSpriteInstance(sid);
+			Sprite sprite = GameFight.getInstance().getSpriteInstance(sid);
 			dispatcher.release(e.getKeyCode(), stateMachine.getGameState().getGameTime(), sprite.isFlip());
 		}
 		
@@ -104,7 +104,7 @@ public class SpriteCmdProcess implements org.lee.mugen.input.ISpriteCmdProcess {
 	public void keyPressed(int keycode) {
 		for (String sid: spriteIds) {
 
-			Sprite sprite = StateMachine.getInstance().getSpriteInstance(sid);
+			Sprite sprite = GameFight.getInstance().getSpriteInstance(sid);
 			if (dispatcher == null)
 				continue;
 				
@@ -119,7 +119,7 @@ public class SpriteCmdProcess implements org.lee.mugen.input.ISpriteCmdProcess {
 	 */
 	public void keyReleased(int keycode) {
 		for (String sid: spriteIds) {
-			Sprite sprite = StateMachine.getInstance().getSpriteInstance(sid);
+			Sprite sprite = GameFight.getInstance().getSpriteInstance(sid);
 			if (dispatcher == null)
 				continue;
 			dispatcher.release(keycode, stateMachine.getGameState().getGameTime(), sprite.isFlip());

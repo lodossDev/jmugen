@@ -4,7 +4,7 @@ import java.awt.Rectangle;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.base.AbstractSprite;
 import org.lee.mugen.sprite.character.Sprite;
@@ -76,14 +76,14 @@ public class Hitdef extends StateCtrlFunction {
 	};
 	@Override
 	public Object getValue(String spriteId, Valueable... params) {
-		Sprite sprOne = StateMachine.getInstance().getSpriteInstance(spriteId);
+		Sprite sprOne = GameFight.getInstance().getSpriteInstance(spriteId);
 		HitDefSub hitDef = new HitDefSub();
 		hitDef.setSpriteHitter(sprOne);
 		hitDef.setSpriteId(spriteId);
 		fillBean(spriteId, hitDef);
-		hitDef.setTimeCreated(StateMachine.getInstance().getGameState().getGameTime());
+		hitDef.setTimeCreated(GameFight.getInstance().getGameState().getGameTime());
 		
-		StateMachine.getInstance().getFightEngine().add(hitDef);
+		GameFight.getInstance().getFightEngine().add(hitDef);
 //		StateMachine.getInstance().getFightEngine().process();
 		return null;
 	}
@@ -226,7 +226,7 @@ public class Hitdef extends StateCtrlFunction {
 		map.put("sparkno", new Object[] {
 				new Valueable() {
 					public Object getValue(String spriteId, Valueable... params) {
-						return StateMachine.getInstance().getSpriteInstance(spriteId).getInfo().getData().getSparkno();
+						return GameFight.getInstance().getSpriteInstance(spriteId).getInfo().getData().getSparkno();
 					}
 				}
 		});
@@ -236,7 +236,7 @@ public class Hitdef extends StateCtrlFunction {
 		map.put("guard.sparkno", new Object[] {
 				new Valueable() {
 					public Object getValue(String spriteId, Valueable... params) {
-						return StateMachine.getInstance().getSpriteInstance(spriteId).getInfo().getData().getGuard().getSparkno();
+						return GameFight.getInstance().getSpriteInstance(spriteId).getInfo().getData().getGuard().getSparkno();
 					}
 				}
 		});
@@ -358,7 +358,7 @@ public class Hitdef extends StateCtrlFunction {
 //		Vous n'avez normalement pas besoin d'utiliser ce paramètre.
 		map.put("guard.dist", new Object[] {new Valueable() {
 			public Object getValue(String spriteId, Valueable... params) {
-				return StateMachine.getInstance().getSpriteInstance(spriteId).getInfo().getSize().getAttack().getDist();
+				return GameFight.getInstance().getSpriteInstance(spriteId).getInfo().getSize().getAttack().getDist();
 			}}});
 		
 //yaccel = accel (flottant)
@@ -1096,7 +1096,7 @@ public class Hitdef extends StateCtrlFunction {
 			return new Valueable[] {				
 					new Valueable() {
 						public Object getValue(String spriteId, Valueable... params) {
-							return StateMachine.getInstance().getSpriteInstance(spriteId).getInfo().getData().getSparkno();
+							return GameFight.getInstance().getSpriteInstance(spriteId).getInfo().getData().getSparkno();
 					}
 				}
 			};

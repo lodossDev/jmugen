@@ -12,13 +12,27 @@ public class Combo extends SimpleElement implements Section {
 	Type counter;
 	FontType text;
 	int displaytime;
+	int originalDisplaytime;
+	public int getOriginalDisplaytime() {
+		return originalDisplaytime;
+	}
+
+
+
 	int counter$shake;
 	
 	@Override
-	public void parse(String name, String value) {
-		super.parse(name, value);
+	public void init() {
+		super.init();
+		displaytime = originalDisplaytime;
+	}
+	
+	@Override
+	public void parse(Object root, String name, String value) {
+		super.parse(root, name, value);
 		if (name.equals("displaytime")) {
 			displaytime = Integer.parseInt(value);
+			originalDisplaytime = displaytime;
 		} else if (name.equals("text.")) {
 			if (text == null) {
 				text = new FontType();
@@ -33,7 +47,7 @@ public class Combo extends SimpleElement implements Section {
 				if (counter == null) {
 					counter = new Type();
 				}
-				counter.setType(Type.getNext(name), counter, value);
+				counter.setType(Type.getNext(name), counter, value, root);
 				counter.parse(Type.getNext(name), value);
 				
 			}

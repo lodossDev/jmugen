@@ -1,6 +1,6 @@
 package org.lee.mugen.sprite.cns.type.function;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.SpriteDef;
@@ -15,8 +15,8 @@ public class Changepal extends StateCtrlFunction {
 	
 	@Override
 	public Object getValue(String spriteId, Valueable... p) {
-		Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);
-		SpriteDef spriteDef = StateMachine.getInstance().getSpriteDef(spriteId);
+		Sprite sprite = GameFight.getInstance().getSpriteInstance(spriteId);
+		SpriteDef spriteDef = GameFight.getInstance().getSpriteDef(spriteId);
 
 		
 		int valueIndex = getParamIndex("value" + "");

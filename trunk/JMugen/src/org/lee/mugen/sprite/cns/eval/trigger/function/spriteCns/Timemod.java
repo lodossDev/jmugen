@@ -2,7 +2,7 @@ package org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns;
 
 import java.util.List;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.IntValueable;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.cns.eval.function.MathFunction;
@@ -18,7 +18,7 @@ public class Timemod extends SpriteCnsTriggerFunction {
 	}
 	@Override
 	public Object getValue(String spriteId, Valueable... params) {
-		int pstatetime = (int) StateMachine.getInstance().getSpriteInstance(spriteId).getSpriteState().getTimeInState();
+		int pstatetime = (int) GameFight.getInstance().getSpriteInstance(spriteId).getSpriteState().getTimeInState();
 		// 1er op
 		// 2 diviseur
 		// value to compare

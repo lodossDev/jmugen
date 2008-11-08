@@ -81,7 +81,7 @@ public class FightEngine {
 				}
 			}
 			if (!(hitdef instanceof ProjectileSub)) {
-				Sprite spr = StateMachine.getInstance().getSpriteInstance(
+				Sprite spr = GameFight.getInstance().getSpriteInstance(
 						hitdef.getSpriteId());
 				if (spr == null || spr.getInfo().getMovetype() != MoveType.A)
 					removes.add(hitdef);
@@ -103,13 +103,13 @@ public class FightEngine {
 
 	private Collection<Sprite> getSpriteAffected(AffectTeam affectTeam, AbstractSprite sprite) {
 		if (affectTeam == AffectTeam.E) {
-			return StateMachine.getInstance().getEnnmies(sprite);
+			return GameFight.getInstance().getEnnmies(sprite);
 		} else if (affectTeam == AffectTeam.F) {
-			return StateMachine.getInstance().getPartners(sprite);
+			return GameFight.getInstance().getPartners(sprite);
 		} else if (affectTeam == AffectTeam.B) {
 			Collection<Sprite> result = new LinkedList<Sprite>();
-			result.addAll(StateMachine.getInstance().getEnnmies(sprite));
-			result.addAll(StateMachine.getInstance().getPartners(sprite));
+			result.addAll(GameFight.getInstance().getEnnmies(sprite));
+			result.addAll(GameFight.getInstance().getPartners(sprite));
 			return result;
 		}
 		return null;
@@ -199,7 +199,7 @@ public class FightEngine {
 //		Wrapper<Rectangle> wrap = new Wrapper<Rectangle>();
 
 		if (isHitdefHitCollisionRec(hitdef, sprite)) {
-			Sprite spriteHitter = StateMachine.getInstance().getSpriteInstance(
+			Sprite spriteHitter = GameFight.getInstance().getSpriteInstance(
 					hitdef.getSpriteId());
 			
 			hitdef.setTargetId(sprite.getSpriteId());
@@ -226,7 +226,7 @@ public class FightEngine {
 			
 			
 			// envshake
-    		StateMachine.getInstance().getInstanceOfStage().getCamera().setEnvShake(hitdef.getEnvshake());
+    		GameFight.getInstance().getInstanceOfStage().getCamera().setEnvShake(hitdef.getEnvshake());
 			
 			
 
@@ -261,7 +261,7 @@ public class FightEngine {
 		if (isHitdefHitCollisionRec(hitdef, sprite, wrap) || force) {
 			hitdef.setTargetId(sprite.getSpriteId());
 
-			Sprite spriteHitter = StateMachine.getInstance().getSpriteInstance(
+			Sprite spriteHitter = GameFight.getInstance().getSpriteInstance(
 					hitdef.getSpriteId());
 
 			// TODO Make a class for shaking
@@ -287,7 +287,7 @@ public class FightEngine {
 //			sprite.getInfo().addLife(-10);
 
 			// envshake
-    		StateMachine.getInstance().getInstanceOfStage().getCamera().setEnvShake(hitdef.getEnvshake());
+    		GameFight.getInstance().getInstanceOfStage().getCamera().setEnvShake(hitdef.getEnvshake());
 
 			
 			drawSparkHit(hitdef, sprite, wrap.getValue());
@@ -309,7 +309,7 @@ public class FightEngine {
 
 			hitdef.setTargetId(sprite.getSpriteId());
 
-			Sprite spriteHitter = StateMachine.getInstance().getSpriteInstance(
+			Sprite spriteHitter = GameFight.getInstance().getSpriteInstance(
 					hitdef.getSpriteId());
 
 			// TODO Make a class for shaking
@@ -335,7 +335,7 @@ public class FightEngine {
 
 
 			// envshake
-    		StateMachine.getInstance().getInstanceOfStage().getCamera().setEnvShake(hitdef.getEnvshake());
+    		GameFight.getInstance().getInstanceOfStage().getCamera().setEnvShake(hitdef.getEnvshake());
 
 			
 			drawSparkHit(hitdef, sprite);
@@ -358,7 +358,7 @@ public class FightEngine {
 
 			// /////////////
 			HitDefSub hitdefOne = hitdef;
-			Sprite one = StateMachine.getInstance().getSpriteInstance(
+			Sprite one = GameFight.getInstance().getSpriteInstance(
 					hitdef.getSpriteId());
 			Sprite two = sprite;
 
@@ -455,7 +455,7 @@ public class FightEngine {
 			
 			hitdef.setTargetId(sprite.getSpriteId());
 
-			Sprite spriteHitter = StateMachine.getInstance().getSpriteInstance(
+			Sprite spriteHitter = GameFight.getInstance().getSpriteInstance(
 					hitdef.getSpriteId());
 
 			// TODO Make a class for shaking
@@ -469,7 +469,7 @@ public class FightEngine {
 			if (spriteHitter != null) // It's a helper
 				spriteHitter.setPause(hitdef.getGuard().getPausetime().getP1_pausetime());
 
-			long currentTime = StateMachine.getInstance().getGameState().getGameTime();
+			long currentTime = GameFight.getInstance().getGameState().getGameTime();
 			hitdef.setLastTimeBlockBySomething(currentTime);
 			hitdef.setLastTimeHitSomething(currentTime);
 			
@@ -522,12 +522,12 @@ public class FightEngine {
 
 //		Wrapper<Rectangle> wrap = new Wrapper<Rectangle>();
 		if (isHitdefHitCollisionRec(hitdef, sprite)) {
-			long time = StateMachine.getInstance().getGameState().getGameTime();
+			long time = GameFight.getInstance().getGameState().getGameTime();
 			hitdef.setLastTimeHitSomething(time);
 			
 			hitdef.setTargetId(sprite.getSpriteId());
 
-			Sprite spriteHitter = StateMachine.getInstance().getSpriteInstance(
+			Sprite spriteHitter = GameFight.getInstance().getSpriteInstance(
 					hitdef.getSpriteId());
 
 			// TODO Make a class for shaking
@@ -684,7 +684,7 @@ public class FightEngine {
 			throw new IllegalArgumentException("Only Hitdef");
 		Sprite sprHitted = sprite;
 
-		hitdef.setLastTimeBlockBySomething(StateMachine.getInstance().getGameState().getGameTime());
+		hitdef.setLastTimeBlockBySomething(GameFight.getInstance().getGameState().getGameTime());
 		if (sprHitted.getInfo().getType() == Type.C) {
 			sprHitted.getSpriteState().changeStateDef(152);
 
@@ -856,7 +856,7 @@ public class FightEngine {
 
 
 		} else {
-			Snd commonSnd = StateMachine.getInstance().getFightDef().getFiles().getCommon().getSnd();
+			Snd commonSnd = GameFight.getInstance().getFightdef().getFiles().getCommon().getSnd();
 			try {
 				SoundSystem.Sfx.playSnd(commonSnd.getGroup(
 						hitdef.getHitsound().getSnd_grp()).getSound(
@@ -876,14 +876,14 @@ public class FightEngine {
 		if (hitdef.getGuardsound().getSnd_grp() < 0)
 			return;
 		if (hitdef.getHitsound().isPlaySpriteSnd()) {
-			Sprite spriteHitter = StateMachine.getInstance().getSpriteInstance(
+			Sprite spriteHitter = GameFight.getInstance().getSpriteInstance(
 					hitdef.getSpriteId());
 			SoundSystem.Sfx.playSnd(spriteHitter.getSpriteSnd().getGroup(
 					hitdef.getGuardsound().getSnd_grp()).getSound(
 					hitdef.getGuardsound().getSnd_item()), new AtomicBoolean(
 					true));
 		} else {
-			Snd commonSnd = StateMachine.getInstance().getFightDef().getFiles().getCommon().getSnd();
+			Snd commonSnd = GameFight.getInstance().getFightdef().getFiles().getCommon().getSnd();
 			
 			try {
 				SoundSystem.Sfx.playSnd(commonSnd.getGroup(
@@ -916,8 +916,8 @@ public class FightEngine {
 		}
 		
 		
-		StateMachine.getInstance().addRender(new SparkhitRender(sprToRender));
-		StateMachine.getInstance().getOtherSprites().add(sprToRender);
+		GameFight.getInstance().addRender(new SparkhitRender(sprToRender));
+		GameFight.getInstance().getOtherSprites().add(sprToRender);
 
 	}
 
@@ -926,7 +926,7 @@ public class FightEngine {
 	// ///////////////////////////////////
 
 	public static Sprite getNearestEnnemies(Sprite spr) {
-		Collection<Sprite> sprites = StateMachine.getInstance().getEnnmies(spr);
+		Collection<Sprite> sprites = GameFight.getInstance().getEnnmies(spr);
 		Sprite theNearest = null;
 		float dist = 0;
 		for (Sprite s: sprites) {
@@ -948,7 +948,7 @@ public class FightEngine {
 	
 	private static void processPosition(Sprite one, Sprite two) {
 		boolean isTempFlip = one.getInfo().getXPos() > two.getInfo().getXPos();
-		if (!StateMachine.getInstance().getGlobalEvents().isAssertSpecial(one.getSpriteId(), Assertspecial.Flag.noautoturn))
+		if (!GameFight.getInstance().getGlobalEvents().isAssertSpecial(one.getSpriteId(), Assertspecial.Flag.noautoturn))
 		if (
 				one.getInfo().getCtrl() == 1
 				&& 
@@ -976,7 +976,7 @@ public class FightEngine {
 
 
 		}
-		if (!StateMachine.getInstance().getGlobalEvents().isAssertSpecial(two.getSpriteId(), Assertspecial.Flag.noautoturn))
+		if (!GameFight.getInstance().getGlobalEvents().isAssertSpecial(two.getSpriteId(), Assertspecial.Flag.noautoturn))
 		if (
 				two.getInfo().getCtrl() == 1
 				&& 
@@ -1003,7 +1003,7 @@ public class FightEngine {
 	public void processPosition() {
 		Sprite one = null;
 		Sprite two = null;
-		for (Sprite s : StateMachine.getInstance().getSprites()) {
+		for (Sprite s : GameFight.getInstance().getSprites()) {
 			if (s instanceof SpriteHelper)
 				continue;
 			if (one == null) {
@@ -1217,7 +1217,7 @@ public class FightEngine {
 				}
 			}
 			if (hit != null) {
-				for (Sprite s: StateMachine.getInstance().getSprites()) {
+				for (Sprite s: GameFight.getInstance().getSprites()) {
 					if (s.getInfo().getLastHitdef() != null && s.getInfo().getLastHitdef().equals(hit))
 						return s;
 				}
@@ -1241,18 +1241,18 @@ public class FightEngine {
 				}
 			}
 			if (hit != null) {
-				for (Sprite s: StateMachine.getInstance().getSprites()) {
+				for (Sprite s: GameFight.getInstance().getSprites()) {
 					if (s.getInfo().getLastHitdef() != null && s.getInfo().getLastHitdef().equals(hit))
 						return s;
 				}
 			} else {
-				for (Sprite s: StateMachine.getInstance().getEnnmies(sprite)) {
+				for (Sprite s: GameFight.getInstance().getEnnmies(sprite)) {
 					if (s.getInfo().getLastHitdef() != null && s.getInfo().getLastHitdef().getSpriteHitter().equals(sprite))
 						return s;
 				}
 			}
 		}
-		for (Sprite s: StateMachine.getInstance().getSprites()) {
+		for (Sprite s: GameFight.getInstance().getSprites()) {
 			if (s.getInfo().getLastHitdef() != null && !s.equals(sprite) && s.getInfo().getLastHitdef().getSpriteHitter().equals(sprite))
 				return s;
 		}
@@ -1281,7 +1281,7 @@ public class FightEngine {
 				}
 			}
 			if (hit != null) {
-				for (Sprite s: StateMachine.getInstance().getSprites()) {
+				for (Sprite s: GameFight.getInstance().getSprites()) {
 					if (s.getInfo().getLastHitdef() != null && s.getInfo().getLastHitdef().equals(hit))
 						count++;
 				}
@@ -1305,12 +1305,12 @@ public class FightEngine {
 				}
 			}
 			if (hit != null) {
-				for (Sprite s: StateMachine.getInstance().getSprites()) {
+				for (Sprite s: GameFight.getInstance().getSprites()) {
 					if (s.getInfo().getLastHitdef() != null && s.getInfo().getLastHitdef().equals(hit))
 						count++;
 				}
 			} else {
-				for (Sprite s: StateMachine.getInstance().getEnnmies(sprite)) {
+				for (Sprite s: GameFight.getInstance().getEnnmies(sprite)) {
 					if (s.getInfo().getLastHitdef() != null && s.getInfo().getLastHitdef().getSpriteHitter().equals(sprite))
 						count++;
 				}
@@ -1322,7 +1322,7 @@ public class FightEngine {
 	public Sprite getEnemynear(Sprite sprite, Integer id) {
 		float dist = 0;
 		Sprite enemy = null;
-		for (Sprite s: StateMachine.getInstance().getEnnmies(sprite)) {
+		for (Sprite s: GameFight.getInstance().getEnnmies(sprite)) {
 			if (s instanceof SpriteHelper &&((SpriteHelper)s).getHelperSub().getHelpertype().equals("normal"))
 				continue;
 			float tempDist = getDistatnce(sprite, s);
@@ -1358,7 +1358,7 @@ public class FightEngine {
 					projectiles.add((ProjectileSub) hitdef);
 			}
 		}
-		for (Sprite s: StateMachine.getInstance().getSprites()) {
+		for (Sprite s: GameFight.getInstance().getSprites()) {
 			if (s.getClass() == Sprite.class) {
 				if (s.getInfo().getLastHitdef() != null && s.getInfo().getLastHitdef() instanceof ProjectileSub) {
 					if (!projectiles.contains(s.getInfo().getLastHitdef())) {

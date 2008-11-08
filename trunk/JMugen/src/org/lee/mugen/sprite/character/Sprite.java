@@ -13,7 +13,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.core.physics.PhysicsEngime;
 import org.lee.mugen.input.MugenCommands;
 import org.lee.mugen.io.IOUtils;
@@ -41,7 +41,7 @@ public class Sprite extends AbstractSprite implements Cloneable {
 		getGroupsCmd().add(grp);
 	}
 	public void nextPal() {
-		SpriteDef oneDef = StateMachine.getInstance().getSpriteDef(spriteId);
+		SpriteDef oneDef = GameFight.getInstance().getSpriteDef(spriteId);
 		if (pal + 1 < oneDef.getFiles().getPal().length - 1)
 			changePal(pal + 1);
 	}
@@ -52,7 +52,7 @@ public class Sprite extends AbstractSprite implements Cloneable {
 	}
 	
 	public void roundPal() {
-		SpriteDef oneDef = StateMachine.getInstance().getSpriteDef(spriteId);
+		SpriteDef oneDef = GameFight.getInstance().getSpriteDef(spriteId);
 		if (pal + 1 < oneDef.getFiles().getPal().length - 1)
 			changePal(pal + 1);
 		else

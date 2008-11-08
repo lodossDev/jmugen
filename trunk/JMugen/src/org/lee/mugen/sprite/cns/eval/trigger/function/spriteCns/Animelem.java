@@ -2,7 +2,7 @@ package org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns;
 
 import java.util.List;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.lang.Wrap;
 import org.lee.mugen.lang.Wrapper;
 import org.lee.mugen.parser.type.IntValueable;
@@ -38,7 +38,7 @@ public class Animelem extends SpriteCnsTriggerFunction {
 		Valueable opSecond = params[2];
 		int res = 0;
 		
-		Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);
+		Sprite sprite = GameFight.getInstance().getSpriteInstance(spriteId);
 		final int[] grpImg = tick < 0? sprite.getSprAnimMng().getAnimElemNoNegative(tick): sprite.getSprAnimMng().getAnimElemNoImgCount();
 
 

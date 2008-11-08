@@ -1,6 +1,6 @@
 package org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.SpriteHelper;
@@ -18,9 +18,9 @@ public class P2stateno extends SpriteCnsTriggerFunction {
 
 	@Override
 	public Object getValue(String spriteId, Valueable... params) {
-		Sprite sprOne = StateMachine.getInstance().getSpriteInstance(spriteId);
+		Sprite sprOne = GameFight.getInstance().getSpriteInstance(spriteId);
 		Sprite sprTwo = null;
-		for (Sprite spr : StateMachine.getInstance().getEnnmies(sprOne)) {
+		for (Sprite spr : GameFight.getInstance().getEnnmies(sprOne)) {
 			if (spr instanceof SpriteHelper)
 				continue;
 			if (!spr.equals(sprOne)) {

@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 import org.lee.mugen.lang.Wrapper;
 import org.lee.mugen.parser.air.AirData.TypeBlit;
 import org.lee.mugen.sprite.parser.Parser;
+import org.lee.mugen.sprite.parser.Parser.GroupText;
 
 
 public class AirParser {
@@ -82,6 +83,8 @@ public class AirParser {
 		line = line == null? null: line.toLowerCase();
 		return line;
     }
+    public AirParser() {
+	}
     public AirParser(String sFilename) throws IOException {
     	this(Parser.getGroupText(Parser.getText(new FileInputStream(sFilename))));
     }
@@ -92,7 +95,11 @@ public class AirParser {
         }
     }
     
-	private boolean parseGroup(String grp) throws IOException {
+    public boolean parseGroup(GroupText grp) throws IOException {
+    	return parseGroup("[" + grp.getSection() + "]" + "\n" + grp.getText().toString());
+    }
+    
+	public boolean parseGroup(String grp) throws IOException {
     	StringTokenizer strToken = new StringTokenizer(grp, "\r\n");
     	
     	String line = strToken.nextToken();

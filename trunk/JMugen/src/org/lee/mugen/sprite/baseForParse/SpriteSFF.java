@@ -10,6 +10,9 @@ import java.util.Set;
 
 import org.lee.mugen.imageIO.PCXPalette;
 import org.lee.mugen.imageIO.RawPCXImage;
+import org.lee.mugen.imageIO.PCXLoader.PCXHeader;
+import org.lee.mugen.renderer.DeferedImageLoader;
+import org.lee.mugen.renderer.ImageContainer;
 import org.lee.mugen.sff.SffReader;
 import org.lee.mugen.util.Logger;
 
@@ -22,6 +25,9 @@ public class SpriteSFF {
 	}
 
 	public SpriteSFF(final SffReader sffReader, final boolean isUseIndexColor) throws IOException {
+		this(sffReader, isUseIndexColor, false);
+	}
+	public SpriteSFF(final SffReader sffReader, final boolean isUseIndexColor, boolean useBufferedImage) throws IOException {
 
 		_groupMap = new HashMap<Integer, GroupSpriteSFF>();
 		PCXPalette prevPalette = new PCXPalette();
@@ -47,24 +53,6 @@ public class SpriteSFF {
 				ByteArrayOutputStream memStream = subFile.pcxFile.pcxStream;
 				long time = System.currentTimeMillis();
 				RawPCXImage rawPCXImage = new RawPCXImage(memStream.toByteArray(), prevPalette);
-				
-//				if (pos == 1) {
-//					new File("ryu").mkdirs();
-//					FileOutputStream fos = new FileOutputStream("ryu/" + subFile.grpNumber + "_" + subFile.imgNumber + ".pcx");
-//					fos.write(rawPCXImage.getData());
-//					fos.close();
-//					
-////					BufferedImage loadImage = 
-////					(BufferedImage) PCXLoader.loadImage(new ByteArrayInputStream(memStream.toByteArray()), prevPalette, false, true);
-////				
-////				new File("ryu").mkdirs();
-////				ImageIO.write(loadImage, "png", new File( "ryu/" + subFile.grpNumber + "_" + subFile.imgNumber + ".png"));
-////				System.exit(0);
-//					
-//				}
-				
-				
-
 				bitmap = rawPCXImage;
 				time = System.currentTimeMillis() - time;
 				timeToLoadPcx += time;
@@ -72,15 +60,23 @@ public class SpriteSFF {
 			} else {
 				bitmap = imgSprList.get(subFile.indexPreviousCopySprite);
 			}
-			
-
-			
-			
 			imgSprList.add(bitmap);
 
 			long time = System.currentTimeMillis();
-			imgSpr = new ImageSpriteSFF(subFile.grpNumber, subFile.imgNumber,
-					bitmap, subFile.xAxis, subFile.yAxis);
+			if (useBufferedImage) {
+				ByteArrayOutputStream memStream = subFile.pcxFile.pcxStream;
+//			BufferedImage loadImage = (BufferedImage) PCXLoader.loadImageColorIndexed(new ByteArrayInputStream(memStream.toByteArray()), prevPalette, false, true);
+//				ImageContainer imgContainer = new ImageContainer(loadImage, loadImage.getWidth(), loadImage.getHeight());
+
+				PCXHeader header = new PCXHeader(memStream.toByteArray());
+				int width = header.xmax - header.xmin + 1;
+				int height = header.ymax - header.ymin + 1;
+				ImageContainer imgContainer = new DeferedImageLoader(bitmap, width, height);
+				imgSpr = new ImageSpriteSFF(subFile.grpNumber, subFile.imgNumber, imgContainer, subFile.xAxis, subFile.yAxis);
+			} else {
+				imgSpr = new ImageSpriteSFF(subFile.grpNumber, subFile.imgNumber, bitmap, subFile.xAxis, subFile.yAxis);
+				
+			}
 			time = System.currentTimeMillis() - time;
 			timeToLoadTExture += time;
 			grpSpr.add(subFile.imgNumber, imgSpr);
@@ -89,11 +85,7 @@ public class SpriteSFF {
 		Logger.log("Number of image = " + countImage);
 		Logger.log("Time to load PCX = " + timeToLoadPcx);
 		Logger.log("Time to load PCX = " + timeToLoadTExture);
-//		if (pos == 1)
-//			System.exit(0);
-//		pos++;
 	}
-//	static int pos = 0;
 
 	protected void addGroup(int key, GroupSpriteSFF grpSpr) {
 		_groupMap.put(key, grpSpr);

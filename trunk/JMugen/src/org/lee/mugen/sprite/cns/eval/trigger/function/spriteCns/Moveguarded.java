@@ -3,7 +3,7 @@ package org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns;
 import java.util.LinkedList;
 
 import org.lee.mugen.core.FightEngine;
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.SpriteHelper;
@@ -21,16 +21,16 @@ public class Moveguarded extends SpriteCnsTriggerFunction {
 
 	@Override
 	public Object getValue(String spriteId, Valueable... params) {
-		Sprite one = StateMachine.getInstance().getSpriteInstance(spriteId);
+		Sprite one = GameFight.getInstance().getSpriteInstance(spriteId);
 		if (one.getInfo().getMovetype() == MoveType.A) {
-			LinkedList<HitDefSub> hitdefs = StateMachine.getInstance().getFightEngine().getHitdefBySpriteHitter(spriteId);
+			LinkedList<HitDefSub> hitdefs = GameFight.getInstance().getFightEngine().getHitdefBySpriteHitter(spriteId);
 			HitDefSub strictHitdef = null;
 			for (HitDefSub h: hitdefs)
 				if (h.getClass() != ProjectileSub.class && spriteId.equals(h.getSpriteId()))
 					strictHitdef = h;
 			if (hitdefs.size() > 0 && (strictHitdef != null && strictHitdef.getTargetId() == null))
 				return 0;
-			for (Sprite s: StateMachine.getInstance().getSprites()) {
+			for (Sprite s: GameFight.getInstance().getSprites()) {
 				if (s == one || (s instanceof SpriteHelper))
 					continue;
 				if (s.getInfo().getLastHitdef() == null || !spriteId.equals(s.getInfo().getLastHitdef().getSpriteId())) {
@@ -42,7 +42,7 @@ public class Moveguarded extends SpriteCnsTriggerFunction {
 						&& spriteId.equals(s.getInfo().getLastHitdef().getSpriteId()) 
 //						&& s.getInfo().getLastHitdef().getHittime() > 0
 						&& s.getInfo().getLastHitdef().getLastTimeHitSomething() == s.getInfo().getLastHitdef().getLastTimeBlockBySomething()
-						&& s.getInfo().getLastHitdef().getLastTimeBlockBySomething() + 1 < StateMachine.getInstance().getGameState().getGameTime()
+						&& s.getInfo().getLastHitdef().getLastTimeBlockBySomething() + 1 < GameFight.getInstance().getGameState().getGameTime()
 				) {
 					return 1;
 				}

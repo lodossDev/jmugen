@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.lang.WrapInt;
 import org.lee.mugen.sprite.character.spiteCnsSubClass.HitBySub;
 import org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub;
@@ -632,7 +632,7 @@ public class SpriteCns implements Cloneable, Serializable {
 	private String spriteId;
 
 	private Sprite getSprite() {
-		return StateMachine.getInstance().getSpriteInstance(spriteId);
+		return GameFight.getInstance().getSpriteInstance(spriteId);
 	}
 
 	public SpriteCns(String spriteId) {
@@ -872,7 +872,7 @@ public class SpriteCns implements Cloneable, Serializable {
 		
 		if (facep2 == 1) {
 			Sprite spr = null;
-			for (Sprite s : StateMachine.getInstance().getEnnmies(getSprite()))
+			for (Sprite s : GameFight.getInstance().getEnnmies(getSprite()))
 				if (!s.getSpriteId().equals(spriteId) && !(s instanceof SpriteHelper))
 					spr = s;
 			if (xPos > spr.getInfo().getXPos())
@@ -952,7 +952,7 @@ public class SpriteCns implements Cloneable, Serializable {
 			
 		}
 		HitDefSub lastHitdef = getLastHitdef();
-		hitdef.setLastTimeHitSomething(StateMachine.getInstance().getGameState().getGameTime());
+		hitdef.setLastTimeHitSomething(GameFight.getInstance().getGameState().getGameTime());
 //		hitdef.setHittedFlipWhenHit(isFlip());
 		
 		if (lastHitdef != null) {
@@ -1039,7 +1039,7 @@ public class SpriteCns implements Cloneable, Serializable {
 		for (HitDefSub hitdef: hitdefs) {
 			if (hitdef.getHittime() > 0 
 					&& hitdef.getLastTimeHitSomething() != -1
-					&& hitdef.getLastTimeHitSomething() + 1 < StateMachine.getInstance().getGameState().getGameTime())
+					&& hitdef.getLastTimeHitSomething() + 1 < GameFight.getInstance().getGameState().getGameTime())
 				return true;
 		}
 		return false;

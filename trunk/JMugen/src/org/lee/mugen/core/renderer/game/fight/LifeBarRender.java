@@ -6,9 +6,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.fight.section.Lifebar;
-import org.lee.mugen.fight.section.elem.FontType;
 import org.lee.mugen.fight.section.elem.PlayerLifebar;
 import org.lee.mugen.fight.section.elem.Type;
 import org.lee.mugen.renderer.DrawProperties;
@@ -61,6 +60,7 @@ public class LifeBarRender extends BaseRender {
 		if (x < x2) {
 			int delta = Math.abs(x-x2);
 			int originDelta = (int) ((drawProperties.getXRightDst() - drawProperties.getXLeftDst()) * type.getScale().getX());
+			delta = Math.min(delta, originDelta);
 			drawProperties.setXRightDst(drawProperties.getXLeftDst() + delta/type.getScale().getX());
 			drawProperties.setXRightSrc(drawProperties.getXLeftSrc() + delta/type.getScale().getX());
 			drawProperties.setXScaleFactor(type.getScale().getX());
@@ -68,6 +68,7 @@ public class LifeBarRender extends BaseRender {
 		} else if (x >= x2) {
 			int delta = Math.abs(x2-x);
 			int originDelta = (int) ((drawProperties.getXRightDst() - drawProperties.getXLeftDst()) * type.getScale().getX());
+			delta = Math.min(delta, originDelta);
 			drawProperties.setXRightDst(drawProperties.getXLeftDst() + originDelta);
 			drawProperties.setXLeftDst(drawProperties.getXRightDst() - delta);
 			
@@ -80,10 +81,10 @@ public class LifeBarRender extends BaseRender {
 	
 	@Override
 	public void render() {
-		if (StateMachine.getInstance().getGlobalEvents().isAssertSpecial(Flag.nobardisplay))
+		if (GameFight.getInstance().getGlobalEvents().isAssertSpecial(Flag.nobardisplay))
 			return;
 		
-		if (StateMachine.getInstance().getGameState().getRoundState() != Roundstate.COMBAT) {
+		if (GameFight.getInstance().getGameState().getRoundState() != Roundstate.COMBAT) {
 			thisCustompalFx.getMul().setA(0f);
 			return;
 		} else if (thisCustompalFx.getMul().getA() < 255) {
@@ -93,8 +94,8 @@ public class LifeBarRender extends BaseRender {
 		
 		
 		MugenDrawer md = GraphicsWrapper.getInstance();
-		if (StateMachine.getInstance().getTeamOneMode() == TeamMode.SINGLE) {
-			Lifebar lifebar = StateMachine.getInstance().getFightDef().getLifebar();
+		if (GameFight.getInstance().getTeamOneMode() == TeamMode.SINGLE) {
+			Lifebar lifebar = GameFight.getInstance().getFightdef().getLifebar();
 			PlayerLifebar plb = lifebar.getP1();
 			
 			List<Integer> order = new ArrayList<Integer>();
@@ -108,13 +109,16 @@ public class LifeBarRender extends BaseRender {
 				render(md, pos, bg);
 			}
 
+			float zero = plb.getRange().getX().x;
+			float full = plb.getRange().getX().x;
+			
 			render(md, pos, plb.getMid(), plb.getRange().getX().x, plb.getRangeMid().getX().y);
 			render(md, pos, plb.getFront(), plb.getRange().getX().x, plb.getRangeFront().getX().y);
 			
 		}
 		
-		if (StateMachine.getInstance().getTeamTwoMode() == TeamMode.SINGLE) {
-			Lifebar lifebar = StateMachine.getInstance().getFightDef().getLifebar();
+		if (GameFight.getInstance().getTeamTwoMode() == TeamMode.SINGLE) {
+			Lifebar lifebar = GameFight.getInstance().getFightdef().getLifebar();
 			PlayerLifebar plb = lifebar.getP2();
 			
 			List<Integer> order = new ArrayList<Integer>();

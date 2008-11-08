@@ -3,7 +3,7 @@ package org.lee.mugen.sprite.cns.type.function;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.ObjectValueable;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.renderer.RGB;
@@ -53,8 +53,8 @@ public class Afterimage extends StateCtrlFunction {
 	private AfterImageSprite afterimageSprite = null;
 	@Override
 	public Object getValue(final String spriteId, Valueable... params) {
-		StateMachine stateMachine = StateMachine.getInstance();
-		Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);
+		GameFight stateMachine = GameFight.getInstance();
+		Sprite sprite = GameFight.getInstance().getSpriteInstance(spriteId);
 		
 		stateMachine.removeAfterImageSprite(afterimageSprite);
 

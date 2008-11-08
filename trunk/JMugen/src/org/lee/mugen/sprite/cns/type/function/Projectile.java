@@ -3,14 +3,13 @@ package org.lee.mugen.sprite.cns.type.function;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.core.renderer.game.ProjectileRender;
 import org.lee.mugen.core.renderer.game.SpriteShadowRender;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.entity.ProjectileSprite;
 import org.lee.mugen.sprite.entity.ProjectileSub;
-import org.lee.mugen.sprite.parser.ExpressionFactory;
 import org.lee.mugen.util.BeanTools;
 
 public class Projectile extends Hitdef {
@@ -32,7 +31,7 @@ public class Projectile extends Hitdef {
 	public static void setHitedFor(Integer projid) {
 		if (projid == null)
 			projid = -1;
-		projectilesHitsMap.put(projid, StateMachine.getInstance().getGameState().getGameTime());
+		projectilesHitsMap.put(projid, GameFight.getInstance().getGameState().getGameTime());
 	}
 	@Override
 	public void fillBean(String spriteId, Object hitDef) {
@@ -82,18 +81,18 @@ public class Projectile extends Hitdef {
 	
 	@Override
 	public Object getValue(String spriteId, Valueable... param) {
-		Sprite sprOne = StateMachine.getInstance().getSpriteInstance(spriteId);
+		Sprite sprOne = GameFight.getInstance().getSpriteInstance(spriteId);
 		
 		ProjectileSub projectile = new ProjectileSub(sprOne);
 		projectile.setSpriteId(spriteId);
 		fillBean(spriteId, projectile);
 		final ProjectileSprite projectileSprite = new ProjectileSprite(projectile);
 		projectile.setSpriteHitter(projectileSprite);
-		StateMachine.getInstance().getFightEngine().add(projectile);
+		GameFight.getInstance().getFightEngine().add(projectile);
 		ProjectileRender projRender = new ProjectileRender(projectile);
-		StateMachine.getInstance().addRender(projRender);
-		StateMachine.getInstance().getOtherSprites().add(projectileSprite);
-		StateMachine.getInstance().addRender(new SpriteShadowRender(projectileSprite, false));
+		GameFight.getInstance().addRender(projRender);
+		GameFight.getInstance().getOtherSprites().add(projectileSprite);
+		GameFight.getInstance().addRender(new SpriteShadowRender(projectileSprite, false));
 		
 		// This help me to see CNS For Projectile
 //		CnsRender cnsRender = new CnsRender(projectileSprite) {

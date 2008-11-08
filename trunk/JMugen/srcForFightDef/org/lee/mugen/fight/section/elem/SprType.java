@@ -1,17 +1,22 @@
 package org.lee.mugen.fight.section.elem;
 
+import org.lee.mugen.sprite.baseForParse.ImageSpriteSFF;
+import org.lee.mugen.sprite.baseForParse.SpriteSFF;
 import org.lee.mugen.util.BeanTools;
 
 public class SprType extends CommonType {
 	int spritegrp;
 	int spriteno;
+	Object root;
 	
-	public SprType(int spritegrp, int spriteno) {
+	public SprType(int spritegrp, int spriteno, Object root) {
 		this.spritegrp = spritegrp;
 		this.spriteno = spriteno;
+		this.root = root;
 	}
 
-	public SprType() {
+	public SprType(Object root) {
+		this.root = root;
 	}
 
 	public int getSpritegrp() {
@@ -41,5 +46,19 @@ public class SprType extends CommonType {
 		
 	}
 	
-	
+	public ImageSpriteSFF getImage() {
+		SprType spr = this;
+		try {
+			SpriteSFF sff = (SpriteSFF) root.getClass().getMethod("getSpriteSff").invoke(root);
+			if (sff.getGroupSpr(spr.getSpritegrp()) == null 
+					|| sff.getGroupSpr(spr.getSpritegrp()).getImgSpr(spr.getSpriteno()) == null)
+				return null;
+			return sff.getGroupSpr(spr.getSpritegrp()).getImgSpr(spr.getSpriteno());
+			
+		} catch (Exception e) {
+			throw new IllegalArgumentException();
+		}
+
+		
+	}
 }

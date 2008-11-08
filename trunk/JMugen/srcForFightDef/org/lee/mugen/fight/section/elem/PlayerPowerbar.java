@@ -21,8 +21,8 @@ public class PlayerPowerbar extends PlayerLifebar {
 		this.level = level;
 	}
 	@Override
-	public void parse(String name, String value) {
-		super.parse(name, value);
+	public void parse(Object root, String name, String value) {
+		super.parse(root, name, value);
 		if (name.startsWith("level")) {
 			String sNum = name.substring(5, name.indexOf("."));
 			int num = 0;
@@ -34,7 +34,7 @@ public class PlayerPowerbar extends PlayerLifebar {
 				elem = new Type();
 				level.put(num, elem);
 			}
-			elem.setType(Type.getNext(name), elem, value);
+			elem.setType(Type.getNext(name), elem, value, root);
 			elem.parse(Type.getNext(name), value);
 			
 		}

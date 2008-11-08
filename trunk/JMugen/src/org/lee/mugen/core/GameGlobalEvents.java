@@ -105,7 +105,7 @@ public class GameGlobalEvents {
 	}	
 	
 	public boolean canGameProcessWithPause(Sprite s) {
-		s = StateMachine.getInstance().getRoot(s);
+		s = GameFight.getInstance().getRoot(s);
 		
 		if (isSuperPause() && isSuperpauseMoveTime(s))
 			return true;
@@ -119,8 +119,8 @@ public class GameGlobalEvents {
 	public void setSuperPause(SuperpauseSub superpauseSub) {
 		superpauseToActivate = superpauseSub;
 		AbstractSprite sprToRender = SparkRenderFactory.getInstanceOfSparkSuperpause(superpauseSub);
-		StateMachine.getInstance().addRender(new SuperpauseRender(sprToRender));
-		StateMachine.getInstance().getOtherSprites().add(sprToRender);
+		GameFight.getInstance().addRender(new SuperpauseRender(sprToRender));
+		GameFight.getInstance().getOtherSprites().add(sprToRender);
 	}
 
 	public void addAssertSpecial(AssertSpecialEval assertSpecial) {
@@ -181,7 +181,7 @@ public class GameGlobalEvents {
 		return _envcolorRender;
 	}
 	public boolean canGameProcessWithSuperPause(Sprite s) {
-		s = StateMachine.getInstance().getRoot(s);
+		s = GameFight.getInstance().getRoot(s);
 		if (isSuperPause() && isSuperpauseMoveTime(s))
 			return true;
 		if (!isSuperPause())

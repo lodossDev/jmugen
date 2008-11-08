@@ -1,12 +1,13 @@
 package org.lee.mugen.sprite.entity;
 
+
 import java.awt.Point;
 
-import org.lee.mugen.core.StateMachine;
-import org.lee.mugen.sprite.background.Camera;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.sprite.base.AbstractSprite;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.SpriteAnimManager;
+import org.lee.mugen.stage.section.elem.Camera;
 
 public class ProjectileSprite extends AbstractSprite {
 	
@@ -16,7 +17,7 @@ public class ProjectileSprite extends AbstractSprite {
 	
 	public ProjectileSprite(ProjectileSub projectile) {
 		this.projectileSub = projectile;
-		StateMachine machine = StateMachine.getInstance();
+		GameFight machine = GameFight.getInstance();
 		Sprite sprHitter = machine.getSpriteInstance(projectile.getSpriteId());
 		isFlip = sprHitter.isFlip();
 		isSprHitterFlip = isFlip;
@@ -47,7 +48,7 @@ x positif s'éloigne du centre de l'écran alors qu'un offset x négatif s'en ra
 - right : interprète les positions x et y relativement au coin haut droit de l'écran. Un offset x positif est vers la droite de l'écran.
 		 */
 		
-		PointF pos = projectile.getPostype().computePos(sprHitter, StateMachine.getInstance().getFirstEnnmy(sprHitter.getSpriteId()), projectile.getOffset(), 0);
+		PointF pos = projectile.getPostype().computePos(sprHitter, GameFight.getInstance().getFirstEnnmy(sprHitter.getSpriteId()), projectile.getOffset(), 0);
 		projectile.setX(pos.getX());
 		projectile.setY(pos.getY());
 		
@@ -82,9 +83,9 @@ x positif s'éloigne du centre de l'écran alors qu'un offset x négatif s'en ra
 	public PointF getPosToDraw() {
 		ProjectileSub explod = getProjectileSub();
 		Postype postype = explod.getPostype();
-		Sprite parent = StateMachine.getInstance().getRoot(explod.getSpriteParent());
+		Sprite parent = GameFight.getInstance().getRoot(explod.getSpriteParent());
 		PointF pos = postype.computePos(parent, 
-				StateMachine.getInstance().getFirstEnnmy(parent.getSpriteId()), 
+				GameFight.getInstance().getFirstEnnmy(parent.getSpriteId()), 
 				explod.getOffset(), 
 				0);
 		if (explod.getPostype() == Postype.left) {
@@ -153,7 +154,7 @@ x positif s'éloigne du centre de l'écran alors qu'un offset x négatif s'en ra
 		}
 		
 		// remove by Projedgebound
-		Camera cam = StateMachine.getInstance().getInstanceOfStage().getCamera();
+		Camera cam = GameFight.getInstance().getInstanceOfStage().getCamera();
 		Point pt = new Point((int)getRealXPos() + cam.getX(), (int)getRealYPos() + cam.getY());
 		remove = remove || projectileSub.getProjedgebound() + Math.pow(320*320 + 240*240, 0.5)< pt.distance(new Point(cam.getX(), cam.getY()));
 		
@@ -161,7 +162,7 @@ x positif s'éloigne du centre de l'écran alors qu'un offset x négatif s'en ra
 		projectileSub.addProjremovetime(-1);
 		
 		if (remove) {
-			StateMachine.getInstance().getFightEngine().remove(projectileSub);
+			GameFight.getInstance().getFightEngine().remove(projectileSub);
 		}
 		linearTime++;
 	}

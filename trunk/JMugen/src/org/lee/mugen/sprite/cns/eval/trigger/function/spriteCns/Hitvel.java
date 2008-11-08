@@ -2,7 +2,7 @@ package org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns;
 
 import java.util.List;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.StringValueable;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.character.Sprite;
@@ -18,8 +18,8 @@ public class Hitvel extends SpriteCnsTriggerFunction {
 	@Override
 	public Object getValue(String spriteId, Valueable... params) {
 		String p = params[0].getValue(spriteId).toString();
-		Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);
-		HitDefSub hitdefFrom = StateMachine.getInstance().getSpriteInstance(spriteId).getInfo().getLastHitdef();
+		Sprite sprite = GameFight.getInstance().getSpriteInstance(spriteId);
+		HitDefSub hitdefFrom = GameFight.getInstance().getSpriteInstance(spriteId).getInfo().getLastHitdef();
 		if (hitdefFrom == null || hitdefFrom.getHittime() <= 0)
 			return 0;
 		if ("x".equals(p)) {

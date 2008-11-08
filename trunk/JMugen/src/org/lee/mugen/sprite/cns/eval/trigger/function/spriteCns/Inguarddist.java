@@ -1,6 +1,6 @@
 package org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.cns.eval.function.SpriteCnsTriggerFunction;
@@ -12,9 +12,9 @@ public class Inguarddist extends SpriteCnsTriggerFunction {
 		super("inguarddist", new String[] {});
 	}
 	public float getXDiff(String spriteId, Valueable... params) {
-		Sprite sprOne = StateMachine.getInstance().getSpriteInstance(spriteId);
+		Sprite sprOne = GameFight.getInstance().getSpriteInstance(spriteId);
 		Sprite sprTwo = null;
-		for (Sprite spr : StateMachine.getInstance().getSprites()) {
+		for (Sprite spr : GameFight.getInstance().getSprites()) {
 			if (!spr.equals(sprOne)) {
 				sprTwo = spr;
 			}
@@ -48,7 +48,7 @@ public class Inguarddist extends SpriteCnsTriggerFunction {
 	}
 	@Override
 	public Object getValue(String spriteId, Valueable... params) {
-		float dist = getXDiff(spriteId) <= StateMachine.getInstance().getSpriteInstance(spriteId).getInfo().getSize().getAttack().getDist()? 1: 0;
+		float dist = getXDiff(spriteId) <= GameFight.getInstance().getSpriteInstance(spriteId).getInfo().getSize().getAttack().getDist()? 1: 0;
 		return dist;
 	}
 

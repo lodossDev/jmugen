@@ -36,19 +36,26 @@ public class SimulFace implements Section {
 		this.p4 = p4;
 	}
 	@Override
-	public void parse(String name, String value) throws Exception {
+	public void parse(Object root, String name, String value) throws Exception {
 		if (name.startsWith("p1.")) {
-			p1.parse(Type.getNext(name), value);
+			p1.parse(root, Type.getNext(name), value);
 		} else if (name.startsWith("p2.")) {
-			p2.parse(Type.getNext(name), value);
+			p2.parse(root, Type.getNext(name), value);
 		} else if (name.startsWith("p3.")) {
-			p2.parse(Type.getNext(name), value);
+			p2.parse(root, Type.getNext(name), value);
 		} else if (name.startsWith("p4.")) {
-			p2.parse(Type.getNext(name), value);
+			p2.parse(root, Type.getNext(name), value);
 		}
 	}
 	public void process() {
 		// TODO Auto-generated method stub
+		
+	}
+	public void init() {
+		p1.init();
+		p2.init();
+		p3.init();
+		p4.init();
 		
 	}
 

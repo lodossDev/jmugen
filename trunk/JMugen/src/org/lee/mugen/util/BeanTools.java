@@ -13,12 +13,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.lee.mugen.fight.section.elem.SprType;
+import org.lee.mugen.background.BG;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.renderer.RGB;
 import org.lee.mugen.renderer.Trans;
 import org.lee.mugen.renderer.PalFxSub.Sinadd;
-import org.lee.mugen.sprite.background.BG;
 import org.lee.mugen.sprite.character.SpriteCns.MoveType;
 import org.lee.mugen.sprite.character.SpriteCns.Physics;
 import org.lee.mugen.sprite.character.SpriteCns.Type;
@@ -27,13 +26,14 @@ import org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub.AffectTeam;
 import org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub.AttrClass;
 import org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub.AttrLevel;
 import org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub.AttrType;
-import org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub.Sound;
 import org.lee.mugen.sprite.entity.Anim;
 import org.lee.mugen.sprite.entity.BindToTargetSub;
 import org.lee.mugen.sprite.entity.PointF;
 import org.lee.mugen.sprite.entity.Postype;
 import org.lee.mugen.sprite.entity.Priority;
+import org.lee.mugen.sprite.entity.SndGrpNum;
 import org.lee.mugen.sprite.entity.Sparkno;
+import org.lee.mugen.sprite.entity.SprGrpNum;
 import org.lee.mugen.sprite.entity.Velocity;
 import org.lee.mugen.sprite.entity.BindToTargetSub.Pos;
 import org.lee.mugen.sprite.entity.Priority.HitType;
@@ -225,13 +225,22 @@ public class BeanTools {
 		
 	};
 	
-	private static Converter<HitDefSub.Sound> soundConvertor = new Converter<HitDefSub.Sound>() {
+	private static Converter<SndGrpNum> soundConvertor = new Converter<SndGrpNum>() {
 
-		public org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub.Sound convert(Object o) {
-			HitDefSub.Sound sound = new HitDefSub.Sound();
+		public SndGrpNum convert(Object o) {
+			SndGrpNum sound = new SndGrpNum();
+			if (o instanceof String) {
+				String[] str = ((String) o).replaceAll(" ", "").replaceAll("\t", "").split(",");
+				Object[] objects = new Object[2];
+				objects[0] = Integer.parseInt(str[0]);
+				objects[1] = Integer.parseInt(str[1]);
+				o = objects;
+			} 
+			
 			if (o.getClass().isArray()) {
 				Object[] objects = (Object[]) o;
-				sound.setPlaySpriteSnd((Boolean) objects[2]);
+				if (objects.length > 2)
+					sound.setPlaySpriteSnd((Boolean) objects[2]);
 				sound.setSnd_grp(((Number) objects[0]).intValue());
 				sound.setSnd_item(((Number) objects[1]).intValue());
 				return sound;
@@ -245,10 +254,12 @@ public class BeanTools {
 
 		public RGB convert(Object o) {
 			RGB rgb = new RGB();
+			if (o instanceof String) {
+				o = intArrayConverter.convert(o);
+			}
 			if (o != null &&(o instanceof RGB)) {
 				return (RGB) o;
-			}
-			if (o.getClass() == int[].class) {
+			} else if (o.getClass() == int[].class) {
 				int[] objects = (int[]) o;
 				int pos = 0;
 
@@ -354,18 +365,20 @@ public class BeanTools {
 
 	};
 	// Spr
-	private static Converter<SprType> sprConverter = new Converter<SprType>() {
+	private static Converter<SprGrpNum> sprConverter = new Converter<SprGrpNum>() {
 
-		public SprType convert(Object o) {
+		public SprGrpNum convert(Object o) {
 			
 			if (o.getClass().isArray()) {
 				Object[] objects = (Object[]) o;
-				SprType spr = new SprType(((Number) objects[0]).intValue(), ((Number) objects[1]).intValue());
+				SprGrpNum spr = new SprGrpNum(((Number) objects[0]).intValue(), ((Number) objects[1]).intValue());
 				return spr;
 			}
 			throw new IllegalArgumentException("Not supported checkwhat is excatly");
 		}
 	};
+	
+	
 	// Point
 	private static Converter<Point> pointConverter = new Converter<Point>() {
 
@@ -778,7 +791,7 @@ public class BeanTools {
 		convertersMap.put(Sinadd.class, sinaddClassConverter);
 		convertersMap.put(BG.Type.class, bg$TypeClassConverter);
 //		convertersMap.put(ReversalAttrClass.class, reversalAttrClassConverter);
-		convertersMap.put(SprType.class, sprConverter);
+		convertersMap.put(SprGrpNum.class, sprConverter);
 		convertersMap.put(AttrClass.class, attrClassConverter);
 		convertersMap.put(AffectTeam.class, affectTeamConverter);
 		convertersMap.put(BindToTargetSub.Pos.class, bindToTargetSub$posConverter);
@@ -791,7 +804,7 @@ public class BeanTools {
 		convertersMap.put(RGB.class, rgbConverter);
 		convertersMap.put(Velocity.class, velocityConverter);
 
-		convertersMap.put(Sound.class, soundConvertor);
+		convertersMap.put(SndGrpNum.class, soundConvertor);
 		
 		convertersMap.put(Anim.class, animExplodConverter);
 		convertersMap.put(Sparkno.class, sparknoConverter);

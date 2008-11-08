@@ -2,7 +2,7 @@ package org.lee.mugen.sprite.cns.type.function;
 
 import java.util.Collection;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.cns.eval.function.StateCtrlFunction;
 import org.lee.mugen.sprite.entity.ExplodSprite;
@@ -39,7 +39,7 @@ public class Explodbindtime extends StateCtrlFunction {
     	if (time == null) {
     		time = 1;
     	}
-    	Collection<ExplodSprite> explods = StateMachine.getInstance().getExplodeSprites(id);
+    	Collection<ExplodSprite> explods = GameFight.getInstance().getExplodeSprites(id);
     	for (ExplodSprite es: explods) {
     		es.getExplod().setBindtime(time);
     	}

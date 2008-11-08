@@ -1,6 +1,6 @@
 package org.lee.mugen.sprite.cns.type.function;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.cns.eval.function.StateCtrlFunction;
@@ -22,7 +22,7 @@ public class Angledraw extends StateCtrlFunction {
 		if (valueableParams[scaleIndex] != null) {
 			Valueable xscale = valueableParams[scaleIndex][0];
 			float fXScale = Parser.getFloatValue(xscale.getValue(spriteId, params));
-			Sprite sprite = StateMachine.getInstance().getSpriteInstance(
+			Sprite sprite = GameFight.getInstance().getSpriteInstance(
 					spriteId);
 			sprite.getSprAnimMng().getSpriteDrawProperties().setXScale(fXScale);
 			if (valueableParams[scaleIndex].length > 1) {
@@ -32,7 +32,7 @@ public class Angledraw extends StateCtrlFunction {
 			}
 			
 		}
-		StateMachine.getInstance().getSpriteInstance(spriteId).getSprAnimMng().getSpriteDrawProperties().setActive(true);
+		GameFight.getInstance().getSpriteInstance(spriteId).getSprAnimMng().getSpriteDrawProperties().setActive(true);
 		return null;
     }
     

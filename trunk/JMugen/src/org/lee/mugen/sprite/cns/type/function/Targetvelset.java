@@ -1,6 +1,6 @@
 package org.lee.mugen.sprite.cns.type.function;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.cns.eval.function.StateCtrlFunction;
@@ -15,7 +15,7 @@ public class Targetvelset extends StateCtrlFunction {
     
     @Override
     public Object getValue(String spriteId, Valueable... params) {
-		Sprite thisSprite = StateMachine.getInstance().getSpriteInstance(spriteId);
+		Sprite thisSprite = GameFight.getInstance().getSpriteInstance(spriteId);
 		int idIndex = getParamIndex("id");
 		int idSpriteToChange = -1;
 		if (valueableParams[idIndex] != null) {
@@ -28,7 +28,7 @@ public class Targetvelset extends StateCtrlFunction {
 			}
 		}
 	
-		Sprite targetSpr = StateMachine.getInstance().getFightEngine().getTarget(thisSprite, idSpriteToChange);
+		Sprite targetSpr = GameFight.getInstance().getFightEngine().getTarget(thisSprite, idSpriteToChange);
 		int xIndex = getParamIndex("x");
 		int yIndex = getParamIndex("y");
 		

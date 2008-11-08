@@ -4,16 +4,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.renderer.GraphicsWrapper;
 import org.lee.mugen.renderer.Renderable;
 import org.lee.mugen.renderer.GameWindow.MouseCtrl;
-import org.lee.mugen.sprite.background.Stage;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.SpriteCns;
 import org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns.Backedgebodydist;
 import org.lee.mugen.sprite.common.resource.FontParser;
 import org.lee.mugen.sprite.common.resource.FontProducer;
+import org.lee.mugen.stage.Stage;
 
 
 public class DebugRender implements Renderable {
@@ -39,7 +39,7 @@ public class DebugRender implements Renderable {
 	public void nextSprite() {
 		
 		ArrayList<Sprite> sprites = new ArrayList<Sprite>();
-		for (Sprite spr: StateMachine.getInstance().getSprites()) {
+		for (Sprite spr: GameFight.getInstance().getSprites()) {
 //			if (!(spr instanceof SpriteHelper)) {
 				sprites.add(spr);
 //			}
@@ -66,7 +66,7 @@ public class DebugRender implements Renderable {
 	public void render() {
 		try {
 			displayHelp();
-			if (!StateMachine.getInstance().getSprites().contains(current)) {
+			if (!GameFight.getInstance().getSprites().contains(current)) {
 				current = null;
 			}
 			if (current == null)
@@ -74,7 +74,7 @@ public class DebugRender implements Renderable {
 
 			Sprite sprite = current;
 			SpriteCns sprInfo = sprite.getInfo();
-			Stage stage = StateMachine.getInstance().getInstanceOfStage();
+			Stage stage = GameFight.getInstance().getInstanceOfStage();
 			int _mvX = stage.getCamera().getX();
 			int _mvY = stage.getCamera().getY();
 			int x = 10;
@@ -94,7 +94,7 @@ public class DebugRender implements Renderable {
 				"Author : " + sprite.getDefinition().getInfo().getAuthor() + " - " + "backedgebodydist : " + Backedgebodydist.compute(sprite)
 				,"Name : " + sprite.getDefinition().getInfo().getName()
 				,"SpriteID : " + sprite.getSpriteId() + " - IsFlip : " + sprite.isFlip() + " " + "Debug " + sprite.isDebugRender()
-				,"Game Fps = " + StateMachine.getInstance().getWindow().getTimer().getFps() 
+				,"Game Fps = " + GameFight.getInstance().getWindow().getTimer().getFps() 
 				+ " - Camera : " + (-stage.getCamera().getXNoShaKe()) + ", " + stage.getCamera().getYNoShake()
 			};
 			String[] strSpriteInfos2 = {
@@ -119,10 +119,10 @@ public class DebugRender implements Renderable {
 			String[] strSpriteInfos4 = {
 				"state = " + (sprite.getSpriteState().getCurrentState() != null? sprite.getSpriteState().getCurrentState().getId():"")
 				,"prevstateno = " + sprite.getSpriteState().getPrevstateno()
-				,"Time = " + StateMachine.getInstance().getGameState().getGameTime()
+				,"Time = " + GameFight.getInstance().getGameState().getGameTime()
 				,"StateTime = " + sprite.getSpriteState().getTimeInState()
-				,"Porjectile Sprite Count : " + StateMachine.getInstance().getOtherSprites().size()
-				,"Helper Count : " + StateMachine.getInstance().countHelper(sprite.getSpriteId())
+				,"Porjectile Sprite Count : " + GameFight.getInstance().getOtherSprites().size()
+				,"Helper Count : " + GameFight.getInstance().countHelper(sprite.getSpriteId())
 				
 			};
 			FontProducer fp = FontParser.getFontProducer();

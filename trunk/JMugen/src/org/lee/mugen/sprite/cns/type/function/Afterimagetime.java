@@ -2,7 +2,7 @@ package org.lee.mugen.sprite.cns.type.function;
 
 import java.util.List;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.renderer.Renderable;
 import org.lee.mugen.sprite.cns.eval.function.StateCtrlFunction;
@@ -20,12 +20,12 @@ public class Afterimagetime extends StateCtrlFunction {
 	}
 	@Override
 	public Object getValue(String spriteId, Valueable... params) {
-		List<Renderable> list = StateMachine.getInstance().getRenderables();
+		List<Renderable> list = GameFight.getInstance().getRenderables();
 		int timeIndex = getParamIndex("time");
 		Valueable time = valueableParams[timeIndex][0];
 		int itime = Parser.getIntValue(time.getValue(spriteId, params));
 		
-		StateMachine.getInstance().setAfterImageTime(spriteId, itime);
+		GameFight.getInstance().setAfterImageTime(spriteId, itime);
 		return null;
 	}
 }

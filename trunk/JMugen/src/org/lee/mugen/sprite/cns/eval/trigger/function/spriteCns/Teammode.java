@@ -1,6 +1,6 @@
 package org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.cns.eval.function.SpriteCnsTriggerFunction;
@@ -32,12 +32,12 @@ public class Teammode extends SpriteCnsTriggerFunction {
 	
 	@Override
 	public Object getValue(String spriteId, Valueable... params) {
-		Sprite one = StateMachine.getInstance().getRoot(spriteId);
-		if (StateMachine.getInstance().getTeamOne().get(one.getSpriteId()) != null) {
-			return StateMachine.getInstance().getTeamOneMode().toString().toLowerCase();
+		Sprite one = GameFight.getInstance().getRoot(spriteId);
+		if (GameFight.getInstance().getTeamOne().get(one.getSpriteId()) != null) {
+			return GameFight.getInstance().getTeamOneMode().toString().toLowerCase();
 			
 		} else {
-			return StateMachine.getInstance().getTeamTwoMode().toString().toLowerCase();
+			return GameFight.getInstance().getTeamTwoMode().toString().toLowerCase();
 		}
 	}
 	

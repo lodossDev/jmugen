@@ -2,7 +2,7 @@ package org.lee.mugen.sprite.entity;
 
 import java.awt.Point;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.fight.section.Fightdef;
 import org.lee.mugen.fight.section.elem.AnimType;
 import org.lee.mugen.fight.section.elem.Type;
@@ -23,7 +23,7 @@ public class AnimTypeSprite extends AbstractSprite {
 	
 	@Override
 	public ImageSpriteSFF getCurrentImageSpriteSFF() {
-		Fightdef fightdef = StateMachine.getInstance().getFightDef();
+		Fightdef fightdef = GameFight.getInstance().getFightdef();
 		if (type.getType() instanceof AnimType) {
 			AnimType anim = (AnimType) type.getType();
 			AnimElement animElem = anim.getAnim().getCurrentImageSprite();

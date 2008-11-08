@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.lee.mugen.core.FightEngine;
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.SpriteCns.Type;
@@ -54,7 +54,7 @@ public class Gethitvar extends SpriteCnsTriggerFunction {
 //		xveladd : Retourne la vitesse x additionnelle ajoutée à celle du joueur quand il est mis KO (flottant).
 		map.put("xveladd", new Valueable() {
 			public Object getValue(String spriteId, Valueable... params) {
-				Sprite sprOne = StateMachine.getInstance().getSpriteInstance(spriteId);
+				Sprite sprOne = GameFight.getInstance().getSpriteInstance(spriteId);
 				HitDefSub hitdefFrom = sprOne.getInfo().getLastHitdef();
 				if (hitdefFrom == null)
 					return null;
@@ -71,7 +71,7 @@ public class Gethitvar extends SpriteCnsTriggerFunction {
 //		yveladd : Retourne la vitesse y additionnelle ajoutée à celle du joueur quand il est mis KO (flottant).
 		map.put("yveladd", new Valueable() {
 			public Object getValue(String spriteId, Valueable... params) {
-				Sprite sprOne = StateMachine.getInstance().getSpriteInstance(spriteId);
+				Sprite sprOne = GameFight.getInstance().getSpriteInstance(spriteId);
 				HitDefSub hitdefFrom = sprOne.getInfo().getLastHitdef();
 				if (hitdefFrom == null)
 					return null;
@@ -88,7 +88,7 @@ public class Gethitvar extends SpriteCnsTriggerFunction {
 //		type : Retourne le type du coup : 0 pour aucun, 1 pour high, 2 pour low, 3 pour trip (au sol uniquement). 
 		map.put("type", new Valueable() {
 			public Object getValue(String spriteId, Valueable... params) {
-				Sprite sprOne = StateMachine.getInstance().getSpriteInstance(spriteId);
+				Sprite sprOne = GameFight.getInstance().getSpriteInstance(spriteId);
 				HitDefSub hitdefFrom = sprOne.getInfo().getLastHitdef();
 				if (hitdefFrom == null)
 					return null;
@@ -100,7 +100,7 @@ public class Gethitvar extends SpriteCnsTriggerFunction {
 //		animtype : Retourne le type d'animation du coup (0 pour light, 1 pour medium, 2 pour hard, 3 pour back, 4 pour up, 5 pour diag-up).
 		map.put("animtype", new Valueable() {
 			public Object getValue(String spriteId, Valueable... params) {
-				Sprite sprOne = StateMachine.getInstance().getSpriteInstance(spriteId);
+				Sprite sprOne = GameFight.getInstance().getSpriteInstance(spriteId);
 				HitDefSub hitdefFrom = sprOne.getInfo().getLastHitdef();
 				if (hitdefFrom == null)
 					return null;
@@ -110,7 +110,7 @@ public class Gethitvar extends SpriteCnsTriggerFunction {
 //		airtype : Retourne le type spécifié dans le HitDef pour un coup aérien.
 		map.put("airtype", new Valueable() {
 			public Object getValue(String spriteId, Valueable... params) {
-				Sprite sprOne = StateMachine.getInstance().getSpriteInstance(spriteId);
+				Sprite sprOne = GameFight.getInstance().getSpriteInstance(spriteId);
 				HitDefSub hitdefFrom = sprOne.getInfo().getLastHitdef();
 				if (hitdefFrom == null)
 					return null;
@@ -120,7 +120,7 @@ public class Gethitvar extends SpriteCnsTriggerFunction {
 //		groundtype : Retourne le type spécifié dans le HitDef pour un coup au sol.
 		map.put("groundtype", new Valueable() {
 			public Object getValue(String spriteId, Valueable... params) {
-				Sprite sprOne = StateMachine.getInstance().getSpriteInstance(spriteId);
+				Sprite sprOne = GameFight.getInstance().getSpriteInstance(spriteId);
 				HitDefSub hitdefFrom = sprOne.getInfo().getLastHitdef();
 				if (hitdefFrom == null)
 					return null;
@@ -131,7 +131,7 @@ public class Gethitvar extends SpriteCnsTriggerFunction {
 //		damage : Retourne les dommages infligés par le coup (entier).
 		map.put("damage", new Valueable() {
 			public Object getValue(String spriteId, Valueable... params) {
-				Sprite sprOne = StateMachine.getInstance().getSpriteInstance(spriteId);
+				Sprite sprOne = GameFight.getInstance().getSpriteInstance(spriteId);
 				HitDefSub hitdefFrom = sprOne.getInfo().getLastHitdef();
 				if (hitdefFrom == null)
 					return null;
@@ -145,7 +145,7 @@ public class Gethitvar extends SpriteCnsTriggerFunction {
 //		hitcount : Retourne le nombre de coups subi par le joueur dans le combo courant (entier).
 		map.put("hitcount", new Valueable() {
 			public Object getValue(String spriteId, Valueable... params) {
-				Sprite sprOne = StateMachine.getInstance().getSpriteInstance(spriteId);
+				Sprite sprOne = GameFight.getInstance().getSpriteInstance(spriteId);
 				HitDefSub hitdefFrom = sprOne.getInfo().getLastHitdef();
 				if (hitdefFrom == null)
 					return null;
@@ -155,7 +155,7 @@ public class Gethitvar extends SpriteCnsTriggerFunction {
 //		fallcount : Retourne le nombre de fois que le joueur a été touché au sol dans le combo courant (entier).
 		map.put("fallcount", new Valueable() {
 			public Object getValue(String spriteId, Valueable... params) {
-				Sprite sprOne = StateMachine.getInstance().getSpriteInstance(spriteId);
+				Sprite sprOne = GameFight.getInstance().getSpriteInstance(spriteId);
 				HitDefSub hitdefFrom = sprOne.getInfo().getLastHitdef();
 				if (hitdefFrom == null)
 					return null;
@@ -165,7 +165,7 @@ public class Gethitvar extends SpriteCnsTriggerFunction {
 //		hitshaketime : Retourne le délai où le joueur est "gelé" pendant le coup. Ce nombre diminue de 1 à chaque tick, et s'arrête à 0 (entier).
 		map.put("hitshaketime", new Valueable() {
 			public Object getValue(String spriteId, Valueable... params) {
-				Sprite sprOne = StateMachine.getInstance().getSpriteInstance(spriteId);
+				Sprite sprOne = GameFight.getInstance().getSpriteInstance(spriteId);
 				HitDefSub hitdefFrom = sprOne.getInfo().getLastHitdef();
 				if (hitdefFrom == null)
 					return null;
@@ -175,7 +175,7 @@ public class Gethitvar extends SpriteCnsTriggerFunction {
 //		hittime : Retourne le délai avant que le joueur puisse ravoir le contrôle après le coup (entier).
 		map.put("hittime", new Valueable() {
 			public Object getValue(String spriteId, Valueable... params) {
-				Sprite sprOne = StateMachine.getInstance().getSpriteInstance(spriteId);
+				Sprite sprOne = GameFight.getInstance().getSpriteInstance(spriteId);
 				HitDefSub hitdefFrom = sprOne.getInfo().getLastHitdef();
 				if (hitdefFrom == null)
 					return null;
@@ -202,7 +202,7 @@ public class Gethitvar extends SpriteCnsTriggerFunction {
 //		slidetime : Retourne le temps durant lequel le joueur glisse vers l'arrière (au sol) après le coup (entier).
 		map.put("slidetime", new Valueable() {
 			public Object getValue(String spriteId, Valueable... params) {
-				Sprite sprOne = StateMachine.getInstance().getSpriteInstance(spriteId);
+				Sprite sprOne = GameFight.getInstance().getSpriteInstance(spriteId);
 				HitDefSub hitdefFrom = sprOne.getInfo().getLastHitdef();
 				if (hitdefFrom == null)
 					return null;
@@ -218,7 +218,7 @@ public class Gethitvar extends SpriteCnsTriggerFunction {
 //		après avoir paré le coup.
 		map.put("ctrltime", new Valueable() {
 			public Object getValue(String spriteId, Valueable... params) {
-				Sprite sprOne = StateMachine.getInstance().getSpriteInstance(spriteId);
+				Sprite sprOne = GameFight.getInstance().getSpriteInstance(spriteId);
 				HitDefSub hitdefFrom = sprOne.getInfo().getLastHitdef();
 				if (hitdefFrom == null)
 					return null;
@@ -245,7 +245,7 @@ public class Gethitvar extends SpriteCnsTriggerFunction {
 //		recovertime : Retourne le délai avant que le joueur se relève d'un state liedown. 
 		map.put("recovertime", new Valueable() {
 			public Object getValue(String spriteId, Valueable... params) {
-				Sprite sprOne = StateMachine.getInstance().getSpriteInstance(spriteId);
+				Sprite sprOne = GameFight.getInstance().getSpriteInstance(spriteId);
 				HitDefSub hitdefFrom = sprOne.getInfo().getLastHitdef();
 				if (hitdefFrom == null)
 					return null;
@@ -258,7 +258,7 @@ public class Gethitvar extends SpriteCnsTriggerFunction {
 //		Ce nombre va vers 0 à chaque tick, et diminuera plus vite si des boutons sont pressés (entier).
 		map.put("ctrltime", new Valueable() {
 			public Object getValue(String spriteId, Valueable... params) {
-				Sprite sprOne = StateMachine.getInstance().getSpriteInstance(spriteId);
+				Sprite sprOne = GameFight.getInstance().getSpriteInstance(spriteId);
 				HitDefSub hitdefFrom = sprOne.getInfo().getLastHitdef();
 				if (hitdefFrom == null)
 					return null;
@@ -291,7 +291,7 @@ public class Gethitvar extends SpriteCnsTriggerFunction {
 //		xvel : Fixe la vitesse en x donnée par un coup (flottant).
 		map.put("xvel", new Valueable() {
 			public Object getValue(String spriteId, Valueable... params) {
-				Sprite sprOne = StateMachine.getInstance().getSpriteInstance(spriteId);
+				Sprite sprOne = GameFight.getInstance().getSpriteInstance(spriteId);
 				HitDefSub hitdefFrom = sprOne.getInfo().getLastHitdef();
 				if (hitdefFrom == null)
 					return null;
@@ -308,7 +308,7 @@ public class Gethitvar extends SpriteCnsTriggerFunction {
 //		yvel : Fixe la vitesse en y donnée par un coup (flottant).
 		map.put("yvel", new Valueable() {
 			public Object getValue(String spriteId, Valueable... params) {
-				Sprite sprOne = StateMachine.getInstance().getSpriteInstance(spriteId);
+				Sprite sprOne = GameFight.getInstance().getSpriteInstance(spriteId);
 				HitDefSub hitdefFrom = sprOne.getInfo().getLastHitdef();
 				if (hitdefFrom == null)
 					return null;
@@ -322,7 +322,7 @@ public class Gethitvar extends SpriteCnsTriggerFunction {
 //		yaccel : accélération y donnée par le coup (flottant).
 		map.put("yaccel", new Valueable() {
 			public Object getValue(String spriteId, Valueable... params) {
-				Sprite sprOne = StateMachine.getInstance().getSpriteInstance(spriteId);
+				Sprite sprOne = GameFight.getInstance().getSpriteInstance(spriteId);
 				HitDefSub hitdefFrom = sprOne.getInfo().getLastHitdef();
 				if (hitdefFrom == null)
 					return sprOne.getInfo().getMovement().getYaccel();
@@ -336,7 +336,7 @@ public class Gethitvar extends SpriteCnsTriggerFunction {
 //		chainid : chainID assignée au joueur pour le dernier coup encaissé (entier).
 		map.put("chainid", new Valueable() {
 			public Object getValue(String spriteId, Valueable... params) {
-				Sprite sprOne = StateMachine.getInstance().getSpriteInstance(spriteId);
+				Sprite sprOne = GameFight.getInstance().getSpriteInstance(spriteId);
 				HitDefSub hitdefFrom = sprOne.getInfo().getLastHitdef();
 				if (hitdefFrom == null)
 					return null;
@@ -345,7 +345,7 @@ public class Gethitvar extends SpriteCnsTriggerFunction {
 //		guarded : Vrai si le dernier coup a été bloqué, faux dans les autres cas.
 		map.put("guarded", new Valueable() {
 			public Object getValue(String spriteId, Valueable... params) {
-				Sprite sprOne = StateMachine.getInstance().getSpriteInstance(spriteId);
+				Sprite sprOne = GameFight.getInstance().getSpriteInstance(spriteId);
 				HitDefSub hitdefFrom = sprOne.getInfo().getLastHitdef();
 				if (hitdefFrom == null)
 					return null;
@@ -355,7 +355,7 @@ public class Gethitvar extends SpriteCnsTriggerFunction {
 //		fall : Vrai s'il y a chute, faux sinon (entier).
 		map.put("fall", new Valueable() {
 			public Object getValue(String spriteId, Valueable... params) {
-				Sprite sprOne = StateMachine.getInstance().getSpriteInstance(spriteId);
+				Sprite sprOne = GameFight.getInstance().getSpriteInstance(spriteId);
 				
 //				for (HitDefSub hitdefFrom: sprOne.getInfo().getHitdefs()) {
 				HitDefSub hitdefFrom = sprOne.getInfo().getLastHitdef();
@@ -377,7 +377,7 @@ public class Gethitvar extends SpriteCnsTriggerFunction {
 //		fall.damage : Dommages subis sur une chute (entier).
 		map.put("fall.damage", new Valueable() {
 			public Object getValue(String spriteId, Valueable... params) {
-				Sprite sprOne = StateMachine.getInstance().getSpriteInstance(spriteId);
+				Sprite sprOne = GameFight.getInstance().getSpriteInstance(spriteId);
 				HitDefSub hitdefFrom = sprOne.getInfo().getLastHitdef();
 				if (hitdefFrom == null)
 					return null;
@@ -387,7 +387,7 @@ public class Gethitvar extends SpriteCnsTriggerFunction {
 //		fall.xvel : vitesse en x après un rebond au sol (flottant).
 		map.put("fall.xvel", new Valueable() {
 			public Object getValue(String spriteId, Valueable... params) {
-				Sprite sprOne = StateMachine.getInstance().getSpriteInstance(spriteId);
+				Sprite sprOne = GameFight.getInstance().getSpriteInstance(spriteId);
 				HitDefSub hitdefFrom = sprOne.getInfo().getLastHitdef();
 				if (hitdefFrom == null)
 					return null;
@@ -398,7 +398,7 @@ public class Gethitvar extends SpriteCnsTriggerFunction {
 //		fall.yvel : vitesse en y après un rebond au sol (flottant).
 		map.put("fall.yvel", new Valueable() {
 			public Object getValue(String spriteId, Valueable... params) {
-				Sprite sprOne = StateMachine.getInstance().getSpriteInstance(spriteId);
+				Sprite sprOne = GameFight.getInstance().getSpriteInstance(spriteId);
 				HitDefSub hitdefFrom = sprOne.getInfo().getLastHitdef();
 				if (hitdefFrom == null)
 					return null;
@@ -409,7 +409,7 @@ public class Gethitvar extends SpriteCnsTriggerFunction {
 //		fall.recover : Vrai si le joueur peut se rétablir, faux sinon.
 		map.put("fall.recover", new Valueable() {
 			public Object getValue(String spriteId, Valueable... params) {
-				Sprite sprOne = StateMachine.getInstance().getSpriteInstance(spriteId);
+				Sprite sprOne = GameFight.getInstance().getSpriteInstance(spriteId);
 				HitDefSub hitdefFrom = sprOne.getInfo().getLastHitdef();
 				if (hitdefFrom == null)
 					return null;
@@ -419,7 +419,7 @@ public class Gethitvar extends SpriteCnsTriggerFunction {
 //		fall.recovertime : Délai avant que le joueur puisse se rétablir (entier).
 		map.put("fall.recovertime", new Valueable() {
 			public Object getValue(String spriteId, Valueable... params) {
-				Sprite sprOne = StateMachine.getInstance().getSpriteInstance(spriteId);
+				Sprite sprOne = GameFight.getInstance().getSpriteInstance(spriteId);
 				HitDefSub hitdefFrom = sprOne.getInfo().getLastHitdef();
 				if (hitdefFrom == null)
 					return null;
@@ -429,7 +429,7 @@ public class Gethitvar extends SpriteCnsTriggerFunction {
 //		fall.kill : Valeur du paramètre fall.kill dans le hitdef de l'attaquant (entier).
 		map.put("fall.kill", new Valueable() {
 			public Object getValue(String spriteId, Valueable... params) {
-				Sprite sprOne = StateMachine.getInstance().getSpriteInstance(spriteId);
+				Sprite sprOne = GameFight.getInstance().getSpriteInstance(spriteId);
 				HitDefSub hitdefFrom = sprOne.getInfo().getLastHitdef();
 				if (hitdefFrom == null)
 					return null;
@@ -439,7 +439,7 @@ public class Gethitvar extends SpriteCnsTriggerFunction {
 //		fall.envshake.time : Voir plus bas (entier).
 		map.put("fall.envshake.time", new Valueable() {
 			public Object getValue(String spriteId, Valueable... params) {
-				Sprite sprOne = StateMachine.getInstance().getSpriteInstance(spriteId);
+				Sprite sprOne = GameFight.getInstance().getSpriteInstance(spriteId);
 				HitDefSub hitdefFrom = sprOne.getInfo().getLastHitdef();
 				if (hitdefFrom == null)
 					return null;
@@ -449,7 +449,7 @@ public class Gethitvar extends SpriteCnsTriggerFunction {
 //		fall.envshake.freq : Voir plus bas (flottant).
 		map.put("fall.envshake.freq", new Valueable() {
 			public Object getValue(String spriteId, Valueable... params) {
-				Sprite sprOne = StateMachine.getInstance().getSpriteInstance(spriteId);
+				Sprite sprOne = GameFight.getInstance().getSpriteInstance(spriteId);
 				HitDefSub hitdefFrom = sprOne.getInfo().getLastHitdef();
 				if (hitdefFrom == null)
 					return null;
@@ -459,7 +459,7 @@ public class Gethitvar extends SpriteCnsTriggerFunction {
 //		fall.envshake.ampl : Voir plus bas (entier).
 		map.put("fall.envshake.ampl", new Valueable() {
 			public Object getValue(String spriteId, Valueable... params) {
-				Sprite sprOne = StateMachine.getInstance().getSpriteInstance(spriteId);
+				Sprite sprOne = GameFight.getInstance().getSpriteInstance(spriteId);
 				HitDefSub hitdefFrom = sprOne.getInfo().getLastHitdef();
 				if (hitdefFrom == null)
 					return null;
@@ -469,7 +469,7 @@ public class Gethitvar extends SpriteCnsTriggerFunction {
 //		fall.envshake.phase : Retourne la valeur donnée par le paramètre fall.envshake.* dans le hitdef de l'attaquant (flottant).
 		map.put("fall.envshake.phase", new Valueable() {
 			public Object getValue(String spriteId, Valueable... params) {
-				Sprite sprOne = StateMachine.getInstance().getSpriteInstance(spriteId);
+				Sprite sprOne = GameFight.getInstance().getSpriteInstance(spriteId);
 				HitDefSub hitdefFrom = sprOne.getInfo().getLastHitdef();
 				if (hitdefFrom == null)
 					return null;

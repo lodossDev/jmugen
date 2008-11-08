@@ -1,6 +1,6 @@
 package org.lee.mugen.core.renderer.game.fight;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.core.GameState.WinType;
 import org.lee.mugen.fight.section.Round;
 import org.lee.mugen.fight.section.elem.FontType;
@@ -15,7 +15,7 @@ public class RoundRender extends BaseRender {
 	public void render() {
 		MugenDrawer md = GraphicsWrapper.getInstance();
 		
-		Round round = StateMachine.getInstance().getFightDef().getRound();
+		Round round = GameFight.getInstance().getFightdef().getRound();
 		
 		if (round.getStart().getTime() > 0)
 			return;
@@ -23,7 +23,7 @@ public class RoundRender extends BaseRender {
 		if (round.getRound().getDefault() != null && round.getRound().getDefault().getDisplaytime() > 0) {
 			if (round.getRound().getDefault().getType() instanceof FontType) {
 				FontType f = (FontType) round.getRound().getDefault().getType();
-				String text = f.getText().replaceAll("%i", StateMachine.getInstance().getGameState().getRoundno() + "");
+				String text = f.getText().replaceAll("%i", GameFight.getInstance().getGameState().getRoundno() + "");
 				f.setText(text);
 				
 			} else {
@@ -34,16 +34,16 @@ public class RoundRender extends BaseRender {
 		
 		if ((round.getFight().getDisplaytime() > 0 || round.getFight().getDisplaytime() == -1) 
 				&& (round.getRound().getDefault() == null || round.getRound().getDefault().getDisplaytime() <= 0)
-				&& StateMachine.getInstance().getGameState().getRoundState() < Roundstate.COMBAT) {
+				&& GameFight.getInstance().getGameState().getRoundState() < Roundstate.COMBAT) {
 			render(md, round.getPos(), round.getFight());
 		}
 		
-		if (StateMachine.getInstance().getGameState().getRoundState() == Roundstate.VICTORY) {
-			if (StateMachine.getInstance().getGameState().getLastWin() == WinType.KO)
+		if (GameFight.getInstance().getGameState().getRoundState() == Roundstate.VICTORY) {
+			if (GameFight.getInstance().getGameState().getLastWin() == WinType.KO)
 				render(md, round.getPos(), round.getKO());
-			if (StateMachine.getInstance().getGameState().getLastWin() == WinType.DKO)
+			if (GameFight.getInstance().getGameState().getLastWin() == WinType.DKO)
 				render(md, round.getPos(), round.getDKO());
-			if (StateMachine.getInstance().getGameState().getLastWin() == WinType.TO)
+			if (GameFight.getInstance().getGameState().getLastWin() == WinType.TO)
 				render(md, round.getPos(), round.getTO());
 			
 			

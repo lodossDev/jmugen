@@ -1,11 +1,11 @@
 package org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.Valueable;
-import org.lee.mugen.sprite.background.Stage;
 import org.lee.mugen.sprite.base.AbstractSprite;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.cns.eval.function.SpriteCnsTriggerFunction;
+import org.lee.mugen.stage.Stage;
 
 public class Backedgebodydist extends SpriteCnsTriggerFunction {
 
@@ -13,7 +13,7 @@ public class Backedgebodydist extends SpriteCnsTriggerFunction {
 		super("backedgebodydist", new String[] {});
 	}
 	public static float compute(AbstractSprite sprite) {
-		Stage stage = StateMachine.getInstance().getInstanceOfStage();
+		Stage stage = GameFight.getInstance().getInstanceOfStage();
 		int _mvX = stage.getCamera().getXNoShaKe();
 		if (sprite.isFlip()) {
 			float x = stage.getCamera().getWidth()/2 -_mvX - sprite.getRealXPos();
@@ -35,7 +35,7 @@ public class Backedgebodydist extends SpriteCnsTriggerFunction {
 	}
 	@Override
 	public Object getValue(String spriteId, Valueable... params) {
-		Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);
+		Sprite sprite = GameFight.getInstance().getSpriteInstance(spriteId);
 		return compute(sprite);
 	}
 

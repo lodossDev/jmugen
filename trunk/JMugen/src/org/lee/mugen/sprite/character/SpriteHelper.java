@@ -1,7 +1,7 @@
 package org.lee.mugen.sprite.character;
 
 import org.lee.mugen.core.FightEngine;
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.renderer.PalFxSub;
 import org.lee.mugen.sprite.entity.HelperSub;
 import org.lee.mugen.sprite.entity.PointF;
@@ -86,7 +86,7 @@ public class SpriteHelper extends Sprite {
 	
 	@Override
 	public boolean remove() {
-		if (StateMachine.getInstance().getSpriteInstance(getSpriteId()) == null) {
+		if (GameFight.getInstance().getSpriteInstance(getSpriteId()) == null) {
 			return true; // Security : mean that spritehelper is destroyed
 		}
 		return super.remove();

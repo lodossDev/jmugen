@@ -10,6 +10,7 @@ import org.lee.mugen.sprite.base.AbstractSprite;
 import org.lee.mugen.sprite.entity.CoupleOfAttrTypeAndLevel;
 import org.lee.mugen.sprite.entity.Priority;
 import org.lee.mugen.sprite.entity.Shake;
+import org.lee.mugen.sprite.entity.SndGrpNum;
 import org.lee.mugen.sprite.entity.Sparkno;
 import org.lee.mugen.sprite.entity.Velocity;
 import org.lee.mugen.sprite.parser.Parser;
@@ -386,74 +387,23 @@ Le second caractère doit être soit
 		Sparkxy.setSparkxy(sparkxy, params);
 	}
 	
-// Sound Class
-	public static class Sound {
-		private boolean isPlaySpriteSnd = false;
-		private int snd_grp = -1;
-		private int snd_item;
-		public boolean isPlaySpriteSnd() {
-			return isPlaySpriteSnd;
-		}
-		public void setPlaySpriteSnd(boolean isPlaySpriteSnd) {
-			this.isPlaySpriteSnd = isPlaySpriteSnd;
-		}
-		public int getSnd_item() {
-			return snd_item;
-		}
-		public void setSnd_item(int snd_item) {
-			this.snd_item = snd_item;
-		}
-		public int getSnd_grp() {
-			return snd_grp;
-		}
-		public void setSnd_grp(int snd_grp) {
-			this.snd_grp = snd_grp;
-		}
-		public static void setSound(Sound hitsound, Object...params) {
-			if (params.length > 3) {
-				throw new IllegalArgumentException("Set HiDef.XXXsound take 2 parameters");
-			}
-			if (params.length > 0) {
-				Integer snd_grp = null;
-				if (params[0] instanceof Number) {
-					snd_grp = Parser.getIntValue(params[0]);
-				} else {
-					String res = params[0].toString();
-					if (res.toLowerCase().startsWith("s")) {
-						hitsound.setPlaySpriteSnd(true);
-						res = res.substring(1);
-					}
-					snd_grp = new Integer(res.toString());
-				}
-				hitsound.setSnd_grp(snd_grp);
-				if (snd_grp == -1)
-					return;
-			}
-			if (params.length > 1) {
-				Integer snd_item = params[1] instanceof Number? Parser.getIntValue(params[1]): new Integer(params[1].toString());
-				hitsound.setSnd_item(snd_item);
-			}
-			if (params.length == 3) {
-				Boolean isSprSound = params[2] == null? false: (Boolean)params[2];
-				hitsound.setPlaySpriteSnd(isSprSound);
-			}
-		}
-	}
+
+
 //	  hitsound = snd_grp, snd_item (int)
-	private Sound hitsound = new Sound();
-	public Sound getHitsound() {
+	private SndGrpNum hitsound = new SndGrpNum();
+	public SndGrpNum getHitsound() {
 		return hitsound;
 	}
 	public void setHitsound(Object...params) {
-		Sound.setSound(hitsound, params);
+		SndGrpNum.setSound(hitsound, params);
 	}
 //	  guardsound = snd_grp, snd_item (int)
-	private Sound guardsound = new Sound();
-	public Sound getGuardsound() {
+	private SndGrpNum guardsound = new SndGrpNum();
+	public SndGrpNum getGuardsound() {
 		return guardsound;
 	}
 	public void setGuardsound(Object...params) {
-		Sound.setSound(guardsound, params);
+		SndGrpNum.setSound(guardsound, params);
 	}
 	
 //	  yaccel = accel (float)

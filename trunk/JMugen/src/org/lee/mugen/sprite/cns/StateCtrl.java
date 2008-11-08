@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.Functionable;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.character.Sprite;
@@ -139,7 +139,7 @@ public class StateCtrl implements Cloneable {
 		return false;
 	}
 	private Sprite getSprite(String spriteId) {
-		return StateMachine.getInstance().getSpriteInstance(spriteId);
+		return GameFight.getInstance().getSpriteInstance(spriteId);
 	}
 
 	//----------------//

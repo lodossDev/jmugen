@@ -3,7 +3,7 @@ package org.lee.mugen.core.renderer.game;
 import java.awt.Rectangle;
 
 import org.lee.mugen.core.FightEngine;
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.fight.section.Fightfx;
 import org.lee.mugen.sprite.base.AbstractSprite;
 import org.lee.mugen.sprite.baseForParse.SpriteSFF;
@@ -24,14 +24,14 @@ public class SparkRender {
 			return getInstanceOfSparkSpriteFor(hitdef, spriteHitted, null);
 		}
 		private static Fightfx getFightfx() {
-			return StateMachine.getInstance().getFightDef().getFiles().getFightfx();
+			return GameFight.getInstance().getFightdef().getFiles().getFightfx();
 		}
 		public static AbstractSprite getInstanceOfSparkSpriteFor(HitDefSub hitdef, Sprite spriteHitted, final Rectangle union) {
 			if (instance == null)
 				throw new IllegalStateException("You have to init this before");
 
 			final boolean isBlocked = FightEngine.isBlockState(spriteHitted);
-			Sprite spriteLaunchHit = StateMachine.getInstance().getSpriteInstance(hitdef.getSpriteId());
+			Sprite spriteLaunchHit = GameFight.getInstance().getSpriteInstance(hitdef.getSpriteId());
 			
 			final boolean isFlip = spriteLaunchHit.isFlip();
 			

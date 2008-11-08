@@ -1,5 +1,6 @@
 package org.lee.mugen.fight.section.elem;
 
+
 public class PlayerName extends SimpleElement {
 	Type name;
 
@@ -12,14 +13,21 @@ public class PlayerName extends SimpleElement {
 	}
 	
 	@Override
-	public void parse(String pname, String value) {
-		super.parse(pname, value);
+	public void parse(Object root, String pname, String value) {
+		super.parse(root, pname, value);
 		if (pname.startsWith("name")) {
 			if (name == null) {
 				name = new Type();
 			}
-			name.setType(Type.getNext(pname), name, value);
+			name.setType(Type.getNext(pname), name, value, root);
 			name.parse(Type.getNext(pname), value);
 		}
+	}
+	
+	@Override
+	public void init() {
+		super.init();
+		if (name != null)
+			name.init();
 	}
 }

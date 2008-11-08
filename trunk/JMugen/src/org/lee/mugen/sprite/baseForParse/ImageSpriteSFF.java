@@ -22,8 +22,16 @@ public class ImageSpriteSFF {
          _imgNum = imgNum;
         _xAxis = xAxis;
         _yAxis = yAxis;
-//       	BufferedImage bmp = (BufferedImage) PCXLoader.loadImage(new ByteArrayInputStream(pcx.getData()), pcx.getPalette(), false, true);
        	_image = GraphicsWrapper.getInstance().getImageContainer(pcx);
+        _rect = new Rectangle(0, 0, _image.getWidth(), _image.getHeight());
+    }
+    
+    public ImageSpriteSFF(int grpNum, int imgNum, ImageContainer image, int xAxis, int yAxis) throws IOException {
+        _grpNum = grpNum;
+         _imgNum = imgNum;
+        _xAxis = xAxis;
+        _yAxis = yAxis;
+       	_image = image;
         _rect = new Rectangle(0, 0, _image.getWidth(), _image.getHeight());
     }
     public int getGrpNum() {

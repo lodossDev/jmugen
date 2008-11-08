@@ -1,8 +1,5 @@
 package org.lee.mugen.util;
 
-import java.beans.BeanInfo;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 
 public class MugenTools {
 	public static boolean isEmpty(Object o) {

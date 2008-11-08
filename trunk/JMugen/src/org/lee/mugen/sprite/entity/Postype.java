@@ -2,11 +2,11 @@ package org.lee.mugen.sprite.entity;
 
 import java.awt.Point;
 
-import org.lee.mugen.core.StateMachine;
-import org.lee.mugen.sprite.background.Stage;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.sprite.base.AbstractSprite;
 import org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns.Backedgebodydist;
 import org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns.Frontedgebodydist;
+import org.lee.mugen.stage.Stage;
 
 public enum Postype {
 	p1, p2, front, back, left, right;
@@ -18,7 +18,7 @@ public enum Postype {
 	public PointF computePos(AbstractSprite p1, AbstractSprite p2, PointF offset, int facing) {
 		Postype postype = this;
 		offset = new PointF(offset);
-		Stage stage = StateMachine.getInstance().getInstanceOfStage();
+		Stage stage = GameFight.getInstance().getInstanceOfStage();
 		int _mvX = stage.getCamera().getX();
 		int _mvY = stage.getCamera().getY();
 		float x = _mvX + stage.getCamera().getWidth()/2f;

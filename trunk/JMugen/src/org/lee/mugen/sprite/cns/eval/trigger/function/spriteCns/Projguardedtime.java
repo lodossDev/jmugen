@@ -5,14 +5,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.lee.mugen.core.FightEngine;
-import org.lee.mugen.core.StateMachine;
-import org.lee.mugen.lang.Wrap;
-import org.lee.mugen.lang.Wrapper;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.Valueable;
-import org.lee.mugen.sprite.cns.eval.function.MathFunction;
 import org.lee.mugen.sprite.cns.eval.function.SpriteCnsTriggerFunction;
 import org.lee.mugen.sprite.entity.ProjectileSub;
-import org.lee.mugen.sprite.parser.Parser;
 
 public class Projguardedtime extends SpriteCnsTriggerFunction {
 
@@ -59,9 +55,9 @@ public class Projguardedtime extends SpriteCnsTriggerFunction {
 
 			public Object getValue(String spriteId, Valueable... params) {
 				List<ProjectileSub> projectiles;
-				FightEngine fightEngine = StateMachine.getInstance().getFightEngine();
+				FightEngine fightEngine = GameFight.getInstance().getFightEngine();
 				projectiles = fightEngine.getProjectiles(projid);
-				long currentTime = StateMachine.getInstance().getGameState().getGameTime();
+				long currentTime = GameFight.getInstance().getGameState().getGameTime();
 				for (ProjectileSub projectile: projectiles) {
 					if (projectile.getLastTimeHitSomething() == -1)
 						continue;
