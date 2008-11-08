@@ -1,6 +1,15 @@
 package org.lee.mugen.renderer.jogl;
 
+import static javax.media.opengl.GL.GL_BLEND;
+import static javax.media.opengl.GL.GL_MODULATE;
+import static javax.media.opengl.GL.GL_ONE;
+import static javax.media.opengl.GL.GL_ONE_MINUS_SRC_ALPHA;
+import static javax.media.opengl.GL.GL_TEXTURE_ENV;
+import static javax.media.opengl.GL.GL_TEXTURE_ENV_MODE;
+
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -8,10 +17,13 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import javax.imageio.ImageIO;
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLCanvas;
@@ -28,6 +40,10 @@ import org.lee.mugen.input.ISpriteCmdProcess;
 import org.lee.mugen.renderer.GameWindow;
 import org.lee.mugen.renderer.GraphicsWrapper;
 import org.lee.mugen.renderer.MugenTimer;
+
+import com.sun.opengl.util.j2d.TextureRenderer;
+import com.sun.opengl.util.texture.Texture;
+import com.sun.opengl.util.texture.TextureCoords;
 
 public class JoglGameWindow implements GameWindow, GLEventListener {
 	
@@ -331,7 +347,6 @@ public class JoglGameWindow implements GameWindow, GLEventListener {
 	 * 
 	 * 
 	 */
-	
 	@Override
 	public void init(GLAutoDrawable drawable) {
 		_gl = drawable.getGL();
@@ -422,7 +437,24 @@ public class JoglGameWindow implements GameWindow, GLEventListener {
 			}});
 		
 	}
-	
+	int index = 0;
+	int y;
+	String[] files = {"1.jpg", "2.jpg", "3.jpg", "4.jpg", };
+	BufferedImage[] images = null;
+	{
+		images = new BufferedImage[4];
+		int i = 0;
+		try {
+			images[i] = ImageIO.read(new File(files[i++])); 
+			images[i] = ImageIO.read(new File(files[i++])); 
+			images[i] = ImageIO.read(new File(files[i++])); 
+			images[i] = ImageIO.read(new File(files[i++])); 
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	boolean addIntro;
 	@Override
 	public void display(GLAutoDrawable drawable) {
 		_gl = drawable.getGL();
@@ -439,7 +471,10 @@ public class JoglGameWindow implements GameWindow, GLEventListener {
 				
 				_gl.glPushMatrix();
 				callback.render();
-				
+
+		        _gl.glEnd();
+		        
+
 				_gl.glPopMatrix();
 				
 				_gl.glPushMatrix();
