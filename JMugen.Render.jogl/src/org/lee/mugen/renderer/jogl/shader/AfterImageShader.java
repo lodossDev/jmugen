@@ -17,6 +17,8 @@ public class AfterImageShader extends Shader {
 	
 	private int typeUniPos;
 	
+	private int alphaUniPos;
+	
 	
 	public AfterImageShader() {
 		super("afterimage");
@@ -36,9 +38,10 @@ public class AfterImageShader extends Shader {
 		mulUniPos = getUniformLocation(gl, programID, "mul");
 		addUniPos = getUniformLocation(gl, programID, "add");
 		typeUniPos = getUniformLocation(gl, programID, "type");
+		alphaUniPos = getUniformLocation(gl, programID, "alpha");
 	}
 
-	public void render(GL gl, RGB palbright, RGB palcontrast, RGB palpostbright, RGB add, RGB mul, float type) {
+	public void render(GL gl, RGB palbright, RGB palcontrast, RGB palpostbright, RGB add, RGB mul, float type, float alpha) {
 		gl.glUseProgramObjectARB(programID);
 		
 		gl.glUniform4fARB(palbrightUniPos, palbright.getR(), palbright.getG(), palbright.getB(), palbright.getA());
@@ -49,6 +52,8 @@ public class AfterImageShader extends Shader {
 		gl.glUniform4fARB(mulUniPos, mul.getR(), mul.getG(), mul.getB(), mul.getA());
 		
 		gl.glUniform1fARB(typeUniPos, type);
+
+		gl.glUniform1fARB(alphaUniPos, alpha);
 	}
 
 
