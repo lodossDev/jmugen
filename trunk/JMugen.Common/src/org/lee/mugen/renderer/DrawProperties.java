@@ -3,7 +3,16 @@ package org.lee.mugen.renderer;
 
 
 public class DrawProperties {
+	private float alpha = 1f;
 	
+	public float getAlpha() {
+		return alpha;
+	}
+
+	public void setAlpha(float alpha) {
+		this.alpha = alpha;
+	}
+
 	public boolean isFlipH() {
 		return isFlipH;
 	}
