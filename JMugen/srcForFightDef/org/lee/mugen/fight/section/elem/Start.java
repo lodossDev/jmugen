@@ -5,11 +5,18 @@ public class Start {
 	int x;
 	int y;
 	int time;
+	int originalTime;
 	public int getTime() {
 		return time;
 	}
 	public void setTime(int time) {
 		this.time = time;
+	}
+	public int getOriginalTime() {
+		return originalTime;
+	}
+	public void setOriginalTime(int originalTime) {
+		this.originalTime = originalTime;
 	}
 	public int getX() {
 		return x;
@@ -27,6 +34,9 @@ public class Start {
 		if (time > 0)
 			time--;
 		
+	}
+	public void init() {
+		time = originalTime;
 	}
 
 }

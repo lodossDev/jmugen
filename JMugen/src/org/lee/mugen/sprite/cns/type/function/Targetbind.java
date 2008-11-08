@@ -1,6 +1,6 @@
 package org.lee.mugen.sprite.cns.type.function;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.SpriteCns;
@@ -21,7 +21,7 @@ public class Targetbind extends StateCtrlFunction {
 	public Object getValue(String spriteId, Valueable... params) {
 		
 		HitDefSub hitdef = null;
-		for (Sprite s: StateMachine.getInstance().getSprites()) {
+		for (Sprite s: GameFight.getInstance().getSprites()) {
 			if (s.getSpriteId().equals(spriteId)) {
 				continue;
 			}
@@ -31,10 +31,10 @@ public class Targetbind extends StateCtrlFunction {
 			}
 		}
 
-		final Sprite sprHitter = StateMachine.getInstance().getSpriteInstance(spriteId);
+		final Sprite sprHitter = GameFight.getInstance().getSpriteInstance(spriteId);
 		
 		String targetId = hitdef.getTargetId();
-		Sprite target = StateMachine.getInstance().getSpriteInstance(targetId);
+		Sprite target = GameFight.getInstance().getSpriteInstance(targetId);
 		SpriteCns sprInfo = target.getInfo();
 		final PointF pointF = new PointF();
 		

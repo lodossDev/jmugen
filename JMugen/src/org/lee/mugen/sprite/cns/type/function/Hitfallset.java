@@ -1,6 +1,6 @@
 package org.lee.mugen.sprite.cns.type.function;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.SpriteCns.Type;
@@ -20,8 +20,8 @@ public class Hitfallset extends StateCtrlFunction {
 		int xIndex = getParamIndex("xvel");
 		int yIndex = getParamIndex("yvel");
 
-		Sprite sprOne = StateMachine.getInstance().getSpriteInstance(spriteId);
-		HitDefSub hitdefFrom = StateMachine.getInstance().getSpriteInstance(spriteId).getInfo().getLastHitdef();
+		Sprite sprOne = GameFight.getInstance().getSpriteInstance(spriteId);
+		HitDefSub hitdefFrom = GameFight.getInstance().getSpriteInstance(spriteId).getInfo().getLastHitdef();
 				
 		if (valueableParams[valueIndex] != null) {
 			Valueable valueVl = valueableParams[valueIndex][0];
@@ -47,7 +47,7 @@ public class Hitfallset extends StateCtrlFunction {
 					xVel = hitdefFrom.getGround().getVelocity().getX();
 				}
 				Sprite two = null;
-				for (Sprite s: StateMachine.getInstance().getSprites())
+				for (Sprite s: GameFight.getInstance().getSprites())
 					if (!s.getSpriteId().equals(spriteId))
 						two = s;
 				if (sprOne.getInfo().isFlip() == two.getInfo().isFlip())

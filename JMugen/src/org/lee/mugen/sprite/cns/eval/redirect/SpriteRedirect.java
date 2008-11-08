@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.Functionable;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.character.Sprite;
@@ -73,7 +73,7 @@ public class SpriteRedirect {
 	
 	private static class Partner extends SpecialPatternRedirect {
 		public Object getValue(String spriteId, Valueable... params) {
-			Collection<Sprite> partners = StateMachine.getInstance().getPartners(StateMachine.getInstance().getSpriteInstance(spriteId));
+			Collection<Sprite> partners = GameFight.getInstance().getPartners(GameFight.getInstance().getSpriteInstance(spriteId));
 			for (Sprite s: partners) {
 				if (!(s instanceof SpriteHelper) 
 						|| (s instanceof SpriteHelper && ((SpriteHelper)s).getHelperSub().getHelpertype().equals("normal"))) {
@@ -88,14 +88,14 @@ public class SpriteRedirect {
 	
 	private static class Parent implements Functionable {
 		public Object getValue(String spriteId, Valueable... params) {
-			spriteId = StateMachine.getInstance().getParentId(spriteId);
+			spriteId = GameFight.getInstance().getParentId(spriteId);
 			return params[0].getValue(spriteId, params);
 		}
 		public void reset() {}
 	}
 	private static class Root implements Functionable {
 		public Object getValue(String spriteId, Valueable... params) {
-			spriteId = StateMachine.getInstance().getRootId(spriteId);
+			spriteId = GameFight.getInstance().getRootId(spriteId);
 			return params[0].getValue(spriteId, params);
 		}
 		public void reset() {}
@@ -168,11 +168,11 @@ public class SpriteRedirect {
 				id = Parser.getIntValue(param.getValue(spriteId));
 			}
 			if (id != null) {
-				spriteId = StateMachine.getInstance().getHelperIdWithID(spriteId, id);
+				spriteId = GameFight.getInstance().getHelperIdWithID(spriteId, id);
 				assert spriteId != null;
 				
 			} else {
-				spriteId = StateMachine.getInstance().getHelperId(spriteId);
+				spriteId = GameFight.getInstance().getHelperId(spriteId);
 			}
 			return params[0].getValue(spriteId, params);
 		}
@@ -182,16 +182,16 @@ public class SpriteRedirect {
 		}
 		public Object getValue(String spriteId, Valueable... params) {
 			Integer id = null;
-			Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);
+			Sprite sprite = GameFight.getInstance().getSpriteInstance(spriteId);
 			if (param != null) {
 				id = Parser.getIntValue(param.getValue(spriteId));
 			}
 			if (id != null) {
-				spriteId = StateMachine.getInstance().getFightEngine().getTarget(sprite, id).getSpriteId();
+				spriteId = GameFight.getInstance().getFightEngine().getTarget(sprite, id).getSpriteId();
 				assert spriteId != null;
 				
 			} else {
-				spriteId = StateMachine.getInstance().getFightEngine().getTarget(sprite, -1).getSpriteId();
+				spriteId = GameFight.getInstance().getFightEngine().getTarget(sprite, -1).getSpriteId();
 			}
 			return params[0].getValue(spriteId, params);
 		}
@@ -213,16 +213,16 @@ public class SpriteRedirect {
 		}
 		public Object getValue(String spriteId, Valueable... params) {
 			Integer id = null;
-			Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);
+			Sprite sprite = GameFight.getInstance().getSpriteInstance(spriteId);
 			if (param != null) {
 				id = Parser.getIntValue(param.getValue(spriteId));
 			}
 			if (id != null) {
-				spriteId = StateMachine.getInstance().getFightEngine().getEnemynear(sprite, id).getSpriteId();
+				spriteId = GameFight.getInstance().getFightEngine().getEnemynear(sprite, id).getSpriteId();
 				assert spriteId != null;
 				
 			} else {
-				spriteId = StateMachine.getInstance().getFightEngine().getEnemynear(sprite, -1).getSpriteId();
+				spriteId = GameFight.getInstance().getFightEngine().getEnemynear(sprite, -1).getSpriteId();
 			}
 			return params[0].getValue(spriteId, params);
 		}
@@ -231,9 +231,9 @@ public class SpriteRedirect {
 
 	private static class Enemy extends SpecialPatternRedirect {
 		public Object getValue(String spriteId, Valueable... params) {
-			Collection<Sprite> ennemies = StateMachine.getInstance().getEnnmies(StateMachine.getInstance().getSpriteInstance(spriteId));
+			Collection<Sprite> ennemies = GameFight.getInstance().getEnnmies(GameFight.getInstance().getSpriteInstance(spriteId));
 			Integer id = null;
-			Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);
+			Sprite sprite = GameFight.getInstance().getSpriteInstance(spriteId);
 			
 			if (param != null) {
 				id = Parser.getIntValue(param.getValue(spriteId));

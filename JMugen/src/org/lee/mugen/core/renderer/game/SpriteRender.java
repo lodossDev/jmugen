@@ -1,6 +1,6 @@
 package org.lee.mugen.core.renderer.game;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.air.AirData;
 import org.lee.mugen.parser.air.AirData.TypeBlit;
 import org.lee.mugen.renderer.AngleDrawProperties;
@@ -10,13 +10,13 @@ import org.lee.mugen.renderer.ImageContainer;
 import org.lee.mugen.renderer.MugenDrawer;
 import org.lee.mugen.renderer.Renderable;
 import org.lee.mugen.renderer.Trans;
-import org.lee.mugen.sprite.background.Stage;
 import org.lee.mugen.sprite.base.AbstractSprite;
 import org.lee.mugen.sprite.base.AbstractAnimManager.SpriteDrawProperties;
 import org.lee.mugen.sprite.baseForParse.ImageSpriteSFF;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.SpriteHelper;
 import org.lee.mugen.sprite.entity.PointF;
+import org.lee.mugen.stage.Stage;
 
 
 public class SpriteRender implements Renderable {
@@ -36,7 +36,7 @@ public class SpriteRender implements Renderable {
 		float yScale = sprite.getYScale();
 		MugenDrawer md = GraphicsWrapper.getInstance();
 		
-		Stage stage = StateMachine.getInstance().getInstanceOfStage();
+		Stage stage = GameFight.getInstance().getInstanceOfStage();
 		int _mvX = stage.getCamera().getX();
 		int _mvY = stage.getCamera().getY();
 		int x = _mvX + stage.getCamera().getWidth() / 2;

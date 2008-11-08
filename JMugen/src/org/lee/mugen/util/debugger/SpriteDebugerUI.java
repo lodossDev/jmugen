@@ -39,7 +39,7 @@ import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.cns.StateDef;
 import org.lee.mugen.sprite.parser.Parser;
@@ -110,7 +110,7 @@ public class SpriteDebugerUI extends JFrame {
 
 		lblForCbxSprChooser.setPreferredSize(new Dimension(70, 25));
 		
-		Collection<Sprite> sprites = StateMachine.getInstance().getSprites();
+		Collection<Sprite> sprites = GameFight.getInstance().getSprites();
 		List<String> spriteIdList = new ArrayList<String>();
 		for (Sprite s: sprites)
 			spriteIdList.add(s.getSpriteId());
@@ -127,7 +127,7 @@ public class SpriteDebugerUI extends JFrame {
 		lblForCbxSprChooser.addMouseListener(new MouseAdapter() {
 
 			public void mouseClicked(MouseEvent e) {
-				Collection<Sprite> sprites = StateMachine.getInstance().getSprites();
+				Collection<Sprite> sprites = GameFight.getInstance().getSprites();
 				DefaultComboBoxModel model = new DefaultComboBoxModel();
 				for (Sprite s: sprites)
 					model.addElement(s.getSpriteId());
@@ -191,7 +191,7 @@ public class SpriteDebugerUI extends JFrame {
 					model.clear();
 					txaStateCtrInfo.setText("");
 					
-					Sprite spr = StateMachine.getInstance().getSpriteInstance(spriteId);
+					Sprite spr = GameFight.getInstance().getSpriteInstance(spriteId);
 					List<StateDef> list = spr.getSpriteState().getAllStateDef();
 					
 					Collections.sort(list, new Comparator<StateDef>() {
@@ -223,7 +223,7 @@ public class SpriteDebugerUI extends JFrame {
 					String spriteId = (String) cbxSprChooser.getSelectedItem();
 					StringBuilder builder = new StringBuilder();
 					if (Integer.parseInt(action) < 0) {
-						for (StateDef state: StateMachine.getInstance().getSpriteInstance(spriteId).getSpriteState().getNegativeStateSef()) {
+						for (StateDef state: GameFight.getInstance().getSpriteInstance(spriteId).getSpriteState().getNegativeStateSef()) {
 							if (state.getId().equals(action)) {
 								for (GroupText grp: state.getGroups()) {
 									builder.append(grp.getSectionRaw() + "\n");
@@ -233,7 +233,7 @@ public class SpriteDebugerUI extends JFrame {
 						}
 						
 					} else {
-						for (GroupText grp: StateMachine.getInstance().getSpriteInstance(spriteId).getSpriteState().getStateDef(action).getGroups()) {
+						for (GroupText grp: GameFight.getInstance().getSpriteInstance(spriteId).getSpriteState().getStateDef(action).getGroups()) {
 							builder.append(grp.getSectionRaw() + "\n");
 							builder.append(grp.getText() + "\n");
 						}
@@ -253,7 +253,7 @@ public class SpriteDebugerUI extends JFrame {
 				String raw = txaStateCtrInfo.getText();
 				try {
 
-					Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);
+					Sprite sprite = GameFight.getInstance().getSpriteInstance(spriteId);
 					StateDef statedef = sprite.getSpriteState().getStateDef(action);
 					statedef.getGroups().clear();
 					List<GroupText> groups = Parser.getGroupTextMap(raw, true);
@@ -271,7 +271,7 @@ public class SpriteDebugerUI extends JFrame {
 	@Override
 	public void setVisible(boolean b) {
 		super.setVisible(b);
-		Collection<Sprite> sprites = StateMachine.getInstance().getSprites();
+		Collection<Sprite> sprites = GameFight.getInstance().getSprites();
 		DefaultComboBoxModel model = new DefaultComboBoxModel();
 		for (Sprite s: sprites)
 			model.addElement(s.getSpriteId());

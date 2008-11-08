@@ -1,19 +1,19 @@
 package org.lee.mugen.core.renderer.game;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.air.AirData;
 import org.lee.mugen.renderer.AngleDrawProperties;
 import org.lee.mugen.renderer.DrawProperties;
 import org.lee.mugen.renderer.GraphicsWrapper;
 import org.lee.mugen.renderer.ImageContainer;
 import org.lee.mugen.renderer.Trans;
-import org.lee.mugen.sprite.background.Stage;
 import org.lee.mugen.sprite.base.AbstractSprite;
 import org.lee.mugen.sprite.base.AbstractAnimManager.SpriteDrawProperties;
 import org.lee.mugen.sprite.baseForParse.ImageSpriteSFF;
 import org.lee.mugen.sprite.character.AnimElement;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.entity.PointF;
+import org.lee.mugen.stage.Stage;
 
 public class SparkhitRender extends SpriteRender {
 
@@ -31,7 +31,7 @@ public class SparkhitRender extends SpriteRender {
 	public void render() {
 		float xScale = sprite.getXScale();
 		float yScale = sprite.getYScale();
-		Stage stage = StateMachine.getInstance().getInstanceOfStage();
+		Stage stage = GameFight.getInstance().getInstanceOfStage();
 		int _mvX = stage.getCamera().getX();
 		int _mvY = stage.getCamera().getY();
 		int x = _mvX + stage.getCamera().getWidth() / 2;

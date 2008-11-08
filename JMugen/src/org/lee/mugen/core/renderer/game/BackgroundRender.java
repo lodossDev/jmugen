@@ -1,6 +1,7 @@
 package org.lee.mugen.core.renderer.game;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.background.BG;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.air.AirData;
 import org.lee.mugen.parser.air.AirData.TypeBlit;
 import org.lee.mugen.renderer.DrawProperties;
@@ -9,12 +10,11 @@ import org.lee.mugen.renderer.ImageContainer;
 import org.lee.mugen.renderer.PalFxSub;
 import org.lee.mugen.renderer.RGB;
 import org.lee.mugen.renderer.Trans;
-import org.lee.mugen.sprite.background.BG;
-import org.lee.mugen.sprite.background.Stage;
 import org.lee.mugen.sprite.base.AbstractAnimManager;
 import org.lee.mugen.sprite.baseForParse.ImageSpriteSFF;
 import org.lee.mugen.sprite.baseForParse.SpriteSFF;
 import org.lee.mugen.sprite.entity.SuperpauseSub;
+import org.lee.mugen.stage.Stage;
 
 public class BackgroundRender implements IBackgroundRenderer {
 
@@ -28,7 +28,7 @@ public class BackgroundRender implements IBackgroundRenderer {
 			float y, int width, float moveX, float moveY, int xStartForAll, Trans trans, boolean isHFlip, boolean isVFlip) {
 		if (!bg.isEnable())
 			return;
-		Stage stage = StateMachine.getInstance().getInstanceOfStage();
+		Stage stage = GameFight.getInstance().getInstanceOfStage();
 		int xTile = (int) bg.getTile().getX();
 		float startPos = x;
 		if (xTile == 0) {
@@ -64,7 +64,7 @@ public class BackgroundRender implements IBackgroundRenderer {
 
 
 	private void drawImage(Trans trans, ImageContainer img, float x, float y, boolean isHFlip, boolean isVFlip) {
-		PalFxSub palfx = StateMachine.getInstance().getGlobalEvents().getBgpalfx();
+		PalFxSub palfx = GameFight.getInstance().getGlobalEvents().getBgpalfx();
 
 		DrawProperties dp = 
 			new DrawProperties(x, y, isHFlip, isVFlip, img);
@@ -73,7 +73,7 @@ public class BackgroundRender implements IBackgroundRenderer {
 		}
 		dp.setTrans(trans);
 
-		if (StateMachine.getInstance().getGlobalEvents().isSuperPause()) {
+		if (GameFight.getInstance().getGlobalEvents().isSuperPause()) {
 			palfx = new PalFxSub();
 			palfx.setMul(new RGB(100f, 100f, 100f, 100f ));
 			palfx.setDrawProperties(dp);
@@ -89,7 +89,7 @@ public class BackgroundRender implements IBackgroundRenderer {
 	public void render() {
 
 		
-		Stage stage = StateMachine.getInstance().getInstanceOfStage();
+		Stage stage = GameFight.getInstance().getInstanceOfStage();
 		int xStartForAll = (int) (stage.getCamera().getWidth()/2 * 1f/stage.getScaling().getXscale());
 
 		
@@ -98,12 +98,12 @@ public class BackgroundRender implements IBackgroundRenderer {
 		float _mvX = stage.getCamera().getX();
 		float _mvY = stage.getCamera().getY();
 
-		SpriteSFF sffSprite = stage.getSpriteSFF();
+		SpriteSFF sffSprite = stage.getBackground().getBgdef().getSpr();
 
 		GraphicsWrapper.getInstance().scale(stage.getScaling().getXscale(), stage.getScaling().getYscale());
 
 		
-		for (BG bg : stage.getBgs()) {
+		for (BG bg : stage.getBackground().getBgs()) {
 			if (bg.getLayerno() != layerDisplay)
 				continue;
 			float moveX = _mvX;
@@ -163,7 +163,7 @@ public class BackgroundRender implements IBackgroundRenderer {
 
 				} else if (bg.getBgType() == BG.Type.ANIM && bg.getId() != null) {
 					
-					bg = stage.getBgCtrlDefMap().get(bg.getId()).getBgCopys().get(bg.getOrder());
+					bg = stage.getBackground().getBgCtrlDefMap().get(bg.getId()).getBgCopys().get(bg.getOrder());
 					if (!bg.isVisible())
 						continue;
 					AbstractAnimManager animMng = bg.getAnimManager();
@@ -233,7 +233,7 @@ public class BackgroundRender implements IBackgroundRenderer {
 
 	private void drawImage(Trans trans, ImageContainer img, float xl, float yt, float xr,
 			float yb, int xlSrc, int yTopSrc, int xrSrc, int yBottomSrc) {
-		PalFxSub palfx = StateMachine.getInstance().getGlobalEvents().getBgpalfx();
+		PalFxSub palfx = GameFight.getInstance().getGlobalEvents().getBgpalfx();
 
 		DrawProperties dp = 
 			new DrawProperties(xl, xr, yt,
@@ -247,8 +247,8 @@ public class BackgroundRender implements IBackgroundRenderer {
 	}
 
 	private ImageContainer getImgProcessSuperpause(ImageContainer img) {
-		if (StateMachine.getInstance().getGlobalEvents().isSuperPause()) {
-			SuperpauseSub superpause = StateMachine.getInstance().getGlobalEvents().getSuperpause();
+		if (GameFight.getInstance().getGlobalEvents().isSuperPause()) {
+			SuperpauseSub superpause = GameFight.getInstance().getGlobalEvents().getSuperpause();
 			for (int type: superpause.getDarken()) {
 //				img = superpause.getFilter(type).filter(img, null);
 			}

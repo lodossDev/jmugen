@@ -109,7 +109,7 @@ public class Files implements Section {
 		return true;
 	}
 	@Override
-	public void parse(String key, String string) {
+	public void parse(Object root, String key, String string) {
 		// TODO Auto-generated method stub
 		
 	}

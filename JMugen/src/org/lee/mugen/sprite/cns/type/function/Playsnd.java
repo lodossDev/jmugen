@@ -2,7 +2,7 @@ package org.lee.mugen.sprite.cns.type.function;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.core.sound.SoundSystem;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.snd.GroupSnd;
@@ -32,7 +32,7 @@ public Playsnd() {
 		String errorMsg = null;
 		try {
 
-			Sprite sprite = StateMachine.getInstance().getRoot(spriteId);
+			Sprite sprite = GameFight.getInstance().getRoot(spriteId);
 			spriteId = sprite.getSpriteId();
 //			spriteId = sprite.getSpriteId();
 			
@@ -48,7 +48,7 @@ public Playsnd() {
 //				return null;
 			String strGrp = value[0].getValue(spriteId).toString();
 			if (strGrp.startsWith("f")) {
-				Snd commonSnd = StateMachine.getInstance().getFightDef().getFiles().getCommon().getSnd();
+				Snd commonSnd = GameFight.getInstance().getFightdef().getFiles().getCommon().getSnd();
 				
 				strGrp = strGrp.substring(1);
 				int grp = Integer.parseInt(strGrp);

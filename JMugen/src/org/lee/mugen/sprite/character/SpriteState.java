@@ -8,7 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.FloatValueable;
 import org.lee.mugen.parser.type.IntValueable;
 import org.lee.mugen.parser.type.Valueable;
@@ -149,11 +149,11 @@ public class SpriteState {
 		getSprite().getInfo().reset();
 		isJustChangeState = true;
 		spriteIdToBind = spriteId;
-		stateDefMap = StateMachine.getInstance().getInstanceOfStatedefFromOther(spriteId);
+		stateDefMap = GameFight.getInstance().getInstanceOfStatedefFromOther(spriteId);
 		previousStateDef = currentStateDef;
 		currentStateDef = stateDefMap.get(state);
 		currentStateDef.reset(spriteId);
-		lastStateTime = StateMachine.getInstance().getGameState().getGameTime();
+		lastStateTime = GameFight.getInstance().getGameState().getGameTime();
 		timeInState = -1;
 		execute();
 	}
@@ -171,7 +171,7 @@ public class SpriteState {
 
 		currentStateDef = stateDefMap.get(state);
 		currentStateDef.reset(spriteId);
-		lastStateTime = StateMachine.getInstance().getGameState().getGameTime();
+		lastStateTime = GameFight.getInstance().getGameState().getGameTime();
 		timeInState = -1;
 		execute();
 	}
@@ -193,7 +193,7 @@ public class SpriteState {
 
 //			getSprite().getInfo().reset();
 			isJustChangeState = true;
-			lastStateTime = StateMachine.getInstance().getGameState().getGameTime();
+			lastStateTime = GameFight.getInstance().getGameState().getGameTime();
 			timeInState = -1;
 			previousStateDef = currentStateDef;
 
@@ -204,7 +204,7 @@ public class SpriteState {
 
 	}
 	private Sprite getSprite() {
-		return StateMachine.getInstance().getSpriteInstance(spriteId);
+		return GameFight.getInstance().getSpriteInstance(spriteId);
 	}
 	public StateDef getCurrentState() {
 		return currentStateDef;
@@ -374,7 +374,7 @@ public class SpriteState {
 	}
 	public Var getVars() {
 		if (isBindToOhterSprState()) {
-			return StateMachine.getInstance().getSpriteInstance(spriteIdToBind).getSpriteState().getVars();
+			return GameFight.getInstance().getSpriteInstance(spriteIdToBind).getSpriteState().getVars();
 		} else {
 			return vars;
 		}

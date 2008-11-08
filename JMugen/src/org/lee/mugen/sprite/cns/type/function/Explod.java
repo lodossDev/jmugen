@@ -3,7 +3,7 @@ package org.lee.mugen.sprite.cns.type.function;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.core.renderer.game.ExplodRender;
 import org.lee.mugen.core.renderer.game.SpriteShadowRender;
 import org.lee.mugen.parser.type.Valueable;
@@ -139,7 +139,7 @@ public class Explod extends StateCtrlFunction {
     public Object getValue(String spriteId, Valueable... params) {
     	ExplodSub explodSub = new ExplodSub();
     	fillBean(spriteId, explodSub);
-    	explodSub.setSprite(StateMachine.getInstance().getSpriteInstance(spriteId));
+    	explodSub.setSprite(GameFight.getInstance().getSpriteInstance(spriteId));
     	
     	
     	ExplodSprite explodSprite = new ExplodSprite(explodSub);
@@ -148,13 +148,13 @@ public class Explod extends StateCtrlFunction {
 
     	if (explodSub.getShadow() != null) {
     		SpriteShadowRender shadowRender = new SpriteShadowRender(explodSprite, false);
-        	StateMachine.getInstance().addRender(shadowRender);
+        	GameFight.getInstance().addRender(shadowRender);
     	}
 
-    	StateMachine.getInstance().getOtherSprites().add(explodSprite);
+    	GameFight.getInstance().getOtherSprites().add(explodSprite);
     	explodSprite.remove();
     	explodSprite.isProcess();
-    	StateMachine.getInstance().addRender(render);
+    	GameFight.getInstance().addRender(render);
     	return null;
     }
 }

@@ -1,6 +1,6 @@
 package org.lee.mugen.fight.section;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.fight.section.elem.PlayerLifebar;
 import org.lee.mugen.fight.section.elem.Type;
 import org.lee.mugen.sprite.character.Sprite;
@@ -27,18 +27,18 @@ public class TurnsLifebar implements Section {
 	}
 
 	@Override
-	public void parse(String name, String value) throws Exception {
+	public void parse(Object root, String name, String value) throws Exception {
 		if (name.startsWith("p1.")) {
-			p1.parse(Type.getNext(name), value);
+			p1.parse(root, Type.getNext(name), value);
 		} else if (name.startsWith("p2.")) {
-			p2.parse(Type.getNext(name), value);
+			p2.parse(root, Type.getNext(name), value);
 		}
 
 	}
 
 	public void process() {
 		{
-			Sprite sprite = StateMachine.getInstance().getSpriteInstance("1");
+			Sprite sprite = GameFight.getInstance().getSpriteInstance("1");
 			int life = sprite.getInfo().getLife();
 			int maxlife = sprite.getInfo().getData().getLife();
 			HitDefSub lastHitdef = sprite.getInfo().getLastHitdef();
@@ -46,13 +46,20 @@ public class TurnsLifebar implements Section {
 					|| lastHitdef.getHittime() <= 0);
 		}
 		{
-			Sprite sprite = StateMachine.getInstance().getSpriteInstance("2");
+			Sprite sprite = GameFight.getInstance().getSpriteInstance("2");
 			int life = sprite.getInfo().getLife();
 			int maxlife = sprite.getInfo().getData().getLife();
 			HitDefSub lastHitdef = sprite.getInfo().getLastHitdef();
 			p2.process(true, life, maxlife, lastHitdef == null
 					|| lastHitdef.getHittime() <= 0);
 		}
+	}
+
+	public void init() {
+		p1.init();
+		p2.init();
+
+		
 	}
 
 }

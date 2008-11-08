@@ -1,6 +1,6 @@
 package org.lee.mugen.sprite.cns.type.function;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.cns.eval.function.StateCtrlFunction;
@@ -17,7 +17,7 @@ public class Attackmulset extends StateCtrlFunction {
     	if (valueableParams[index] != null) {
         	Valueable v = valueableParams[index][0];
         	float value = Parser.getFloatValue(v.getValue(spriteId, params));
-        	Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);
+        	Sprite sprite = GameFight.getInstance().getSpriteInstance(spriteId);
         	sprite.getInfo().setAttackmulset(value);
     		
     	} else {

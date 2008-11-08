@@ -5,16 +5,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.renderer.ImageContainer;
 import org.lee.mugen.renderer.RGB;
 import org.lee.mugen.renderer.Trans;
-import org.lee.mugen.sprite.background.Stage;
 import org.lee.mugen.sprite.base.AbstractSprite;
 import org.lee.mugen.sprite.baseForParse.GroupSpriteSFF;
 import org.lee.mugen.sprite.baseForParse.ImageSpriteSFF;
 import org.lee.mugen.sprite.character.AnimElement;
 import org.lee.mugen.sprite.character.Sprite;
+import org.lee.mugen.stage.Stage;
 
 
 public class AfterImageSprite extends AbstractSprite {
@@ -44,13 +44,13 @@ public class AfterImageSprite extends AbstractSprite {
 		}
 		
 		public int getXToDraw() {
-			Stage stage = StateMachine.getInstance().getInstanceOfStage();
+			Stage stage = GameFight.getInstance().getInstanceOfStage();
 			int _mvX = stage.getCamera().getX();
 			return x + stage.getCamera().getWidth()/2 + _mvX;
 		}
 		
 		public int getYToDraw() {
-			Stage stage = StateMachine.getInstance().getInstanceOfStage();
+			Stage stage = GameFight.getInstance().getInstanceOfStage();
 			int _mvY = stage.getCamera().getY();
 			return y + stage.getStageinfo().getZoffset() + _mvY;
 		}
@@ -211,7 +211,7 @@ public class AfterImageSprite extends AbstractSprite {
 			}
 			///
 			
-			if (!(sprite.isPause() || !StateMachine.getInstance().getGlobalEvents().canGameProcessWithSuperPause(sprite)))
+			if (!(sprite.isPause() || !GameFight.getInstance().getGlobalEvents().canGameProcessWithSuperPause(sprite)))
 				info.decreaseTime();
 			if (info.getTime() < 0) {
 				toRemove.add(info);
@@ -219,7 +219,7 @@ public class AfterImageSprite extends AbstractSprite {
 		}
 		
 		animElementStack.removeAll(toRemove);
-		if (!(sprite.isPause() || !StateMachine.getInstance().getGlobalEvents().canGameProcessWithSuperPause(sprite))) {
+		if (!(sprite.isPause() || !GameFight.getInstance().getGlobalEvents().canGameProcessWithSuperPause(sprite))) {
 			count++;
 //			time--;
 			incForMod++;
@@ -238,7 +238,7 @@ public class AfterImageSprite extends AbstractSprite {
 	}
 	
 	private boolean canAdd() {
-		return ((!sprite.isPause() && StateMachine.getInstance().getGlobalEvents().canGameProcessWithSuperPause(sprite)))
+		return ((!sprite.isPause() && GameFight.getInstance().getGlobalEvents().canGameProcessWithSuperPause(sprite)))
 		 && (incForMod%timegap == 0 && incForMod%framegap == 0) && count < time;
 	}
 	public boolean remove() {

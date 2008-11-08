@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.fight.section.Fightdef;
 import org.lee.mugen.fight.section.elem.AnimType;
 import org.lee.mugen.fight.section.elem.FontType;
@@ -73,8 +73,8 @@ public class FaceRender extends BaseRender {
 	
 	}
 	private ImageSpriteSFF getImageSFF(Type type, String id) {
-		Fightdef fightdef = StateMachine.getInstance().getFightDef();
-		Sprite sprite = StateMachine.getInstance().getSpriteInstance(id);
+		Fightdef fightdef = GameFight.getInstance().getFightdef();
+		Sprite sprite = GameFight.getInstance().getSpriteInstance(id);
 		if (type.getType() instanceof AnimType) {
 			AnimType anim = (AnimType) type.getType();
 			AnimElement animElem = anim.getAnim().getCurrentImageSprite();
@@ -90,7 +90,7 @@ public class FaceRender extends BaseRender {
 	private void render(PlayerName p, String id) {
 		if (p.getName().getLayerno() != layer)
 			return;
-		String name = StateMachine.getInstance().getSpriteInstance(id).getDefinition().getInfo().getName();
+		String name = GameFight.getInstance().getSpriteInstance(id).getDefinition().getInfo().getName();
 		name = name.substring(1, name.length() - 1);
 		MugenDrawer md = GraphicsWrapper.getInstance();
 		Point pos = p.getPos();
@@ -98,7 +98,7 @@ public class FaceRender extends BaseRender {
 		
 		int fontSens = font.getAlignmt().getCode();
 		md.scale(p.getName().getScale().getX(), p.getName().getScale().getY());
-		StateMachine.getInstance().getFightDef().getFiles().getFont().get(font.getFontno()).
+		GameFight.getInstance().getFightdef().getFiles().getFont().get(font.getFontno()).
 				draw((int)(pos.x*1f/p.getName().getScale().getX()), (int)(pos.y*1f/p.getName().getScale().getY()),
 						md, name, fontSens);
 		md.scale(1f/p.getName().getScale().getX(), 1f/p.getName().getScale().getY());
@@ -113,24 +113,24 @@ public class FaceRender extends BaseRender {
 	
 	@Override
 	public void render() {
-		if (StateMachine.getInstance().getGlobalEvents().isAssertSpecial(Flag.nobardisplay))
+		if (GameFight.getInstance().getGlobalEvents().isAssertSpecial(Flag.nobardisplay))
 			return;
 		
-		if (StateMachine.getInstance().getGameState().getRoundState() != Roundstate.COMBAT) {
+		if (GameFight.getInstance().getGameState().getRoundState() != Roundstate.COMBAT) {
 			thisCustompalFx.getMul().setA(0f);
 			return;
 		} else if (thisCustompalFx.getMul().getA() < 255) {
 			thisCustompalFx.getMul().setA(thisCustompalFx.getMul().getA() + 1f);
 		}
-		if (StateMachine.getInstance().getTeamOneMode() == TeamMode.SINGLE) {
-			render(StateMachine.getInstance().getFightDef().getFace().getP1(), "1");
-			render(StateMachine.getInstance().getFightDef().getName().getP1(), "1");
+		if (GameFight.getInstance().getTeamOneMode() == TeamMode.SINGLE) {
+			render(GameFight.getInstance().getFightdef().getFace().getP1(), "1");
+			render(GameFight.getInstance().getFightdef().getName().getP1(), "1");
 			
 		}
 		
-		if (StateMachine.getInstance().getTeamTwoMode() == TeamMode.SINGLE) {
-			render(StateMachine.getInstance().getFightDef().getFace().getP2(), "2");
-			render(StateMachine.getInstance().getFightDef().getName().getP2(), "2");
+		if (GameFight.getInstance().getTeamTwoMode() == TeamMode.SINGLE) {
+			render(GameFight.getInstance().getFightdef().getFace().getP2(), "2");
+			render(GameFight.getInstance().getFightdef().getName().getP2(), "2");
 			
 		}
 	}

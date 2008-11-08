@@ -114,7 +114,7 @@ public class GameState {
 	public WinType getLastWin() {
 		return lastWin;
 	}
-	public void leave(StateMachine sm) {
+	public void leave(GameFight sm) {
 		gameTime++;
 		if (getRoundTime() > 0 && getRoundState() != Roundstate.PRE_END)
 			roundTime--;
@@ -125,7 +125,7 @@ public class GameState {
 			for (String spriteId: spriteIdStateMap.keySet()) {
 				if (Win.isWin(spriteId)) {
 					isOneWin = true;
-					winner = StateMachine.getInstance().getSpriteInstance(spriteId);
+					winner = GameFight.getInstance().getSpriteInstance(spriteId);
 
 				}
 			}
@@ -133,21 +133,21 @@ public class GameState {
 				roundState = Roundstate.PRE_END;
 				for (String spriteId: spriteIdStateMap.keySet()) {
 					spriteIdStateMap.put(spriteId, Roundstate.PRE_END);
-					StateMachine.getInstance().getSpriteInstance(spriteId).getInfo().setCtrl(0);
+					GameFight.getInstance().getSpriteInstance(spriteId).getInfo().setCtrl(0);
 				}
 			}
 			if (getRoundTime() == 0) {
 				roundState = Roundstate.PRE_END;
 				for (String spriteId: spriteIdStateMap.keySet()) {
 					spriteIdStateMap.put(spriteId, Roundstate.PRE_END);
-					StateMachine.getInstance().getSpriteInstance(spriteId).getInfo().setCtrl(0);
+					GameFight.getInstance().getSpriteInstance(spriteId).getInfo().setCtrl(0);
 				}
 			}
 			
 		} else if (roundState == Roundstate.PRE_END) {
 			boolean isAllSpriteInactive = true;
 			for (String spriteId: spriteIdStateMap.keySet()) {
-				Sprite s = StateMachine.getInstance().getSpriteInstance(spriteId);
+				Sprite s = GameFight.getInstance().getSpriteInstance(spriteId);
 				if (s.getInfo().getType() == Type.L && s.getInfo().getLife() <= 0) {
 					continue;
 				}
@@ -161,7 +161,7 @@ public class GameState {
 			Sprite winner = null;
 			for (String spriteId: spriteIdStateMap.keySet()) {
 				if (Win.isWin(spriteId)) {
-					winner = StateMachine.getInstance().getSpriteInstance(spriteId);
+					winner = GameFight.getInstance().getSpriteInstance(spriteId);
 				}
 			}
 			if (winner != null) {
@@ -172,14 +172,14 @@ public class GameState {
 				if (Win.isWin(winner.getSpriteId()) && !Winko.isWinKo(winner.getSpriteId()))
 					lastWin = WinType.TO;
 				
-				if (StateMachine.getInstance().getTeamOne().containsKey(winner.getSpriteId())) {
-					winners.addAll(StateMachine.getInstance().getTeamOne().values());
-					loser.addAll(StateMachine.getInstance().getTeamTwo().values());
+				if (GameFight.getInstance().getTeamOne().containsKey(winner.getSpriteId())) {
+					winners.addAll(GameFight.getInstance().getTeamOne().values());
+					loser.addAll(GameFight.getInstance().getTeamTwo().values());
 					teamOneWinRound++;
 
 				} else {
-					winners.addAll(StateMachine.getInstance().getTeamTwo().values());
-					loser.addAll(StateMachine.getInstance().getTeamOne().values());
+					winners.addAll(GameFight.getInstance().getTeamTwo().values());
+					loser.addAll(GameFight.getInstance().getTeamOne().values());
 					teamTwoWinRound++;
 				}
 				for (Sprite s: winners) {
@@ -226,12 +226,12 @@ public class GameState {
 			} else {
 				int lifeTeamOne = 0;
 				int lifeTeamTwo = 0;
-				for (Sprite s: StateMachine.getInstance().getTeamOne().values()) {
+				for (Sprite s: GameFight.getInstance().getTeamOne().values()) {
 					if (s.getClass() == Sprite.class) {
 						lifeTeamOne += s.getInfo().getLife();
 					}
 				}
-				for (Sprite s: StateMachine.getInstance().getTeamTwo().values()) {
+				for (Sprite s: GameFight.getInstance().getTeamTwo().values()) {
 					if (s.getClass() == Sprite.class) {
 						lifeTeamTwo += s.getInfo().getLife();
 					}
@@ -242,7 +242,7 @@ public class GameState {
 					lastWin = WinType.TO;
 					
 				drawCountMap++;
-				for (Sprite s: StateMachine.getInstance().getSprites()) {
+				for (Sprite s: GameFight.getInstance().getSprites()) {
 					if (s instanceof SpriteHelper)
 						continue;
 					if (s.getInfo().getType() == Type.L)
@@ -259,7 +259,7 @@ public class GameState {
 	}
 
 	
-	public void enter(StateMachine sm) {
+	public void enter(GameFight sm) {
 		for (String spriteId: spriteIdStateMap.keySet()) {
 			if (sm.getGlobalEvents().isAssertSpecial(spriteId, Flag.intro)) {
 				spriteIdStateMap.put(spriteId, Roundstate.INTRO);
@@ -303,7 +303,7 @@ public class GameState {
 	public void setRoundTime(int roundTime) {
 		this.roundTime = roundTime;
 	}
-	public void init(StateMachine sm) {
+	public void init(GameFight sm) {
 		setRoundState(0);
 		setRoundsExisted(0);
 		roundno = 0;

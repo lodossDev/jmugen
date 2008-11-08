@@ -7,14 +7,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.core.GameState.WinType;
 import org.lee.mugen.fight.section.elem.SimpleElement;
 import org.lee.mugen.fight.section.elem.Start;
 import org.lee.mugen.fight.section.elem.Type;
 import org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns.Roundstate;
+import org.lee.mugen.util.MugenRandom;
 
 public class Round extends SimpleElement implements Section, Cloneable {
+	
+	public static void main(String[] args) {
+		for (int i = 0; i < 100; i++) {
+			int num = MugenRandom.getRandomNumber(0, 10);
+			System.out.println(num + " +       = " + 10);
+		}
+	}
 	public static class Match implements Cloneable {
 		int wins;
 		int maxdrawgames;
@@ -30,12 +38,35 @@ public class Round extends SimpleElement implements Section, Cloneable {
 		public void setMaxdrawgames(int maxdrawgames) {
 			this.maxdrawgames = maxdrawgames;
 		}
+		public void init() {
+			// TODO Auto-generated method stub
+			
+		}
 	}
 	public static class Sub implements Section, Cloneable {
 		int time;
+		int originalTime;
 		Type _default;
 		List<Type> round = new LinkedList<Type>();
 		int sndtime;
+		int originalSndtime;
+		
+		public void init() {
+			time = originalTime;
+			sndtime = originalSndtime;
+			if (_default != null)
+				_default.init();
+			for (Type t: round)
+				t.init();
+		}
+		
+		public int getOriginalSndtime() {
+			return originalSndtime;
+		}
+
+		public int getOriginalTime() {
+			return originalTime;
+		}
 		
 		public int getTime() {
 			return time;
@@ -62,22 +93,33 @@ public class Round extends SimpleElement implements Section, Cloneable {
 			this.sndtime = sndtime;
 		}
 		@Override
-		public void parse(String name, String value) {
+		public void parse(Object root, String name, String value) {
 			if (name.startsWith("default.")) {
 				if (_default == null) {
 					_default = new Type();
 				}
-				_default.setType(Type.getNext(name), _default, value);
+				_default.setType(Type.getNext(name), _default, value, root);
 				_default.parse(Type.getNext(name), value);
 			} else if (name.equals("time")) {
 				time = Integer.parseInt(value);
+				originalTime = time;
+			} else if (name.equals("sndtime")) {
+				sndtime = Integer.parseInt(value);
+				originalSndtime = sndtime;
 			} 
 			
 		}
 	}
 	public static class TimeTest {
 		int time;
+		int originalTime;
 
+		public int getOriginalTime() {
+			return originalTime;
+		}
+		public void init() {
+			time = originalTime;
+		}
 		public int getTime() {
 			return time;
 		}
@@ -91,6 +133,11 @@ public class Round extends SimpleElement implements Section, Cloneable {
 		int waittime;
 		int hittime;
 		int wintime;
+		
+		int originalWaittime;
+		int originalHittime;
+		int originalWintime;
+		
 		public int getWaittime() {
 			return waittime;
 		}
@@ -109,18 +156,26 @@ public class Round extends SimpleElement implements Section, Cloneable {
 		public void setWintime(int wintime) {
 			this.wintime = wintime;
 		}
+		@Override
+		public void init() {
+			super.init();
+			waittime = originalWaittime;
+			hittime = originalHittime;
+			wintime = originalWintime;
+		}
 		public void parse(String name, String value) {
 			if (name.equals("waittime")) {
 				waittime = Integer.parseInt(value);
+				originalWaittime = waittime;
 			} else if (name.equals("hittime")) {
 				hittime = Integer.parseInt(value);
-				
+				originalHittime = hittime;
 			} else if (name.equals("wintime")) {
 				wintime = Integer.parseInt(value);
-				
+				originalWintime = wintime;
 			} else if (name.equals("time")) {
 				time = Integer.parseInt(value);
-				
+				originalTime = time;
 			}
 			
 		}
@@ -145,17 +200,38 @@ public class Round extends SimpleElement implements Section, Cloneable {
 	Type draw;
 	
 
+	@Override
+	public void init() {
+		super.init();
+		match.init();
+		start.init();
+		round.init();
+		for (Type t: rounds.values())
+			t.init();
+		fight.init();
+		ctrl.init();
+		KO.init();
+		DKO.init();
+		TO.init();
+		slow.init();
+		over.init();
+		win.init();
+		win2.init();
+		draw.init();
+		
+	}
 	
-	public void parse(String name, String value) {
-		super.parse(name, value);
+	public void parse(Object root, String name, String value) {
+		super.parse(root, name, value);
 		if (name.equals("match.wins")) {
 			match.setWins(Integer.parseInt(value));
 		} else if (name.equals("match.maxdrawgames")) {
 			match.setMaxdrawgames(Integer.parseInt(value));
 		} else if (name.equals("start.waittime")) {
 			start.setTime(Integer.parseInt(value));
+			start.setOriginalTime(Integer.parseInt(value));
 		} else if (name.startsWith("round.")) {
-			round.parse(Type.getNext(name), value);
+			round.parse(root, Type.getNext(name), value);
 		} else if (Pattern.matches("round[0-9]+\\.", name)) {
 			String sNum = name.substring(5, name.indexOf("."));
 			int num = 0;
@@ -167,7 +243,7 @@ public class Round extends SimpleElement implements Section, Cloneable {
 				elem = new Type();
 				rounds.put(num, elem);
 			}
-			elem.setType(Type.getNext(name), elem, value);
+			elem.setType(Type.getNext(name), elem, value, root);
 			elem.parse(Type.getNext(name), value);
 			
 		} else if (name.equals("ctrl.time")) {
@@ -180,43 +256,43 @@ public class Round extends SimpleElement implements Section, Cloneable {
 			if (fight == null) {
 				fight = new Type();
 			}
-			fight.setType(Type.getNext(name), fight, value);
+			fight.setType(Type.getNext(name), fight, value, root);
 			fight.parse(Type.getNext(name), value);
 		} else if (name.startsWith("ko.")) {
 			if (KO == null) {
 				KO = new Type();
 			}
-			KO.setType(Type.getNext(name), KO, value);
+			KO.setType(Type.getNext(name), KO, value, root);
 			KO.parse(Type.getNext(name), value);
 		} else if (name.startsWith("dko.")) {
 			if (DKO == null) {
 				DKO = new Type();
 			}
-			DKO.setType(Type.getNext(name), DKO, value);
+			DKO.setType(Type.getNext(name), DKO, value, root);
 			DKO.parse(Type.getNext(name), value);
 		} else if (name.startsWith("to.")) {
 			if (TO == null) {
 				TO = new Type();
 			}
-			TO.setType(Type.getNext(name), TO, value);
+			TO.setType(Type.getNext(name), TO, value, root);
 			TO.parse(Type.getNext(name), value);
 		} else if (name.startsWith("win.")) {
 			if (win == null) {
 				win = new Type();
 			}
-			win.setType(Type.getNext(name), win, value);
+			win.setType(Type.getNext(name), win, value, root);
 			win.parse(Type.getNext(name), value);
 		} else if (name.startsWith("win2.")) {
 			if (win2 == null) {
 				win2 = new Type();
 			}
-			win2.setType(Type.getNext(name), win2, value);
+			win2.setType(Type.getNext(name), win2, value, root);
 			win2.parse(Type.getNext(name), value);
 		} else if (name.startsWith("draw.")) {
 			if (draw == null) {
 				draw = new Type();
 			}
-			draw.setType(Type.getNext(name), draw, value);
+			draw.setType(Type.getNext(name), draw, value, root);
 			draw.parse(Type.getNext(name), value);
 		}
 	}
@@ -311,19 +387,19 @@ public class Round extends SimpleElement implements Section, Cloneable {
 
 
 	public void process() {
-		if (StateMachine.getInstance().getGameState().getRoundState() <= Roundstate.COMBAT) {
+		if (GameFight.getInstance().getGameState().getRoundState() <= Roundstate.COMBAT) {
 			getStart().decrease();
 			if (getRound().getDefault() != null)
 				getRound().getDefault().decreaseDisplayTime();
 		}
 		
-		if (StateMachine.getInstance().getGameState().getRoundState() == Roundstate.VICTORY) {
-			if (StateMachine.getInstance().getGameState().getLastWin() == WinType.KO)
-				getKO().getType().process();
-			if (StateMachine.getInstance().getGameState().getLastWin() == WinType.DKO)
-				getDKO().getType().process();
-			if (StateMachine.getInstance().getGameState().getLastWin() == WinType.TO)
-				getTO().getType().process();
+		if (GameFight.getInstance().getGameState().getRoundState() == Roundstate.VICTORY) {
+			if (GameFight.getInstance().getGameState().getLastWin() == WinType.KO)
+				getKO().process();
+			if (GameFight.getInstance().getGameState().getLastWin() == WinType.DKO)
+				getDKO().process();
+			if (GameFight.getInstance().getGameState().getLastWin() == WinType.TO)
+				getTO().process();
 			
 		}
 	}

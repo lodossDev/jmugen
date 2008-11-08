@@ -1,6 +1,6 @@
 package org.lee.mugen.sprite.cns.type.function;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.renderer.PalFxSub;
 import org.lee.mugen.sprite.character.Sprite;
@@ -20,11 +20,11 @@ public class Allpalfx extends StateCtrlFunction {
 
 	@Override
 	public Object getValue(String spriteId, Valueable... params) {
-		PalFxSub fx = StateMachine.getInstance().getGlobalEvents().getBgpalfx();
+		PalFxSub fx = GameFight.getInstance().getGlobalEvents().getBgpalfx();
 		fx.init();
-		getValue(spriteId, StateMachine.getInstance().getGlobalEvents(), "bgpalfx", params);
+		getValue(spriteId, GameFight.getInstance().getGlobalEvents(), "bgpalfx", params);
 		
-		for (Sprite sprite: StateMachine.getInstance().getSprites()) {
+		for (Sprite sprite: GameFight.getInstance().getSprites()) {
 			fx = sprite.getPalfx();
 			fx.init();
 			getValue(spriteId, sprite, "palfx", params);

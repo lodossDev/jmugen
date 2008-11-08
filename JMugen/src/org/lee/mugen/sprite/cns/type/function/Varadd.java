@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.Functionable;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.character.Sprite;
@@ -48,7 +48,7 @@ public class Varadd extends StateCtrlFunction {
 				public void reset() {}
 
 				public Object getValue(String spriteId, Valueable... params) {
-					Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);
+					Sprite sprite = GameFight.getInstance().getSpriteInstance(spriteId);
 					final SpriteState spriteState = sprite.getSpriteState();
 					
 					spriteState.getVars().addSysVar(value, valueables[0]);
@@ -68,7 +68,7 @@ public class Varadd extends StateCtrlFunction {
 				public void reset() {}
 
 				public Object getValue(String spriteId, Valueable... params) {
-					Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);
+					Sprite sprite = GameFight.getInstance().getSpriteInstance(spriteId);
 					final SpriteState spriteState = sprite.getSpriteState();
 					
 					spriteState.getVars().addSysFVar(value, valueables[0]);
@@ -88,7 +88,7 @@ public class Varadd extends StateCtrlFunction {
 				public void reset() {}
 
 				public Object getValue(String spriteId, Valueable... params) {
-					Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);
+					Sprite sprite = GameFight.getInstance().getSpriteInstance(spriteId);
 					final SpriteState spriteState = sprite.getSpriteState();
 					
 					spriteState.getVars().addSysFVar(value, valueables[0]);
@@ -108,7 +108,7 @@ public class Varadd extends StateCtrlFunction {
 				public void reset() {}
 
 				public Object getValue(String spriteId, Valueable... params) {
-					Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);
+					Sprite sprite = GameFight.getInstance().getSpriteInstance(spriteId);
 					final SpriteState spriteState = sprite.getSpriteState();
 					
 					spriteState.getVars().addVar(value, valueables[0]);
@@ -128,7 +128,7 @@ public class Varadd extends StateCtrlFunction {
 				public void reset() {}
 
 				public Object getValue(String spriteId, Valueable... params) {
-					Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);
+					Sprite sprite = GameFight.getInstance().getSpriteInstance(spriteId);
 					final SpriteState spriteState = sprite.getSpriteState();					
 					spriteState.getVars().addVarFloat(value, valueables[0]);
 					return null;
@@ -168,7 +168,7 @@ public class Varadd extends StateCtrlFunction {
 		Valueable vf = vfIndex == -1? null: valueableParams[vfIndex] == null? null: valueableParams[vfIndex][0];
 		Valueable value = valueIndex == -1? null: valueableParams[valueIndex] == null? null: valueableParams[valueIndex][0];
 		
-		Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);
+		Sprite sprite = GameFight.getInstance().getSpriteInstance(spriteId);
 		
 		final SpriteState spriteState = sprite.getSpriteState();					
 		

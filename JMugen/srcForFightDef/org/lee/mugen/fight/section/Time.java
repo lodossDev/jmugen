@@ -1,6 +1,5 @@
 package org.lee.mugen.fight.section;
 
-import org.lee.mugen.fight.section.elem.FontType;
 import org.lee.mugen.fight.section.elem.SimpleElement;
 import org.lee.mugen.fight.section.elem.Type;
 
@@ -25,13 +24,13 @@ public class Time extends SimpleElement implements Section {
 	}
 	
 	@Override
-	public void parse(String name, String value) {
-		super.parse(name, value);
+	public void parse(Object root, String name, String value) {
+		super.parse(root, name, value);
 		if (name.startsWith("counter.")) {
 			if (counter == null) {
 				counter = new Type();
 			}
-			counter.setType(Type.getNext(name), counter, value);
+			counter.setType(Type.getNext(name), counter, value, root);
 			counter.parse(Type.getNext(name), value);
 		} else if (name.equalsIgnoreCase("framespercount")) {
 			framespercount = Integer.parseInt(value);

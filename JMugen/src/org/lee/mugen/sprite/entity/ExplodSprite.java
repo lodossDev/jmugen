@@ -1,13 +1,13 @@
 package org.lee.mugen.sprite.entity;
 
 import org.lee.mugen.core.FightEngine;
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.renderer.ImageContainer;
-import org.lee.mugen.sprite.background.Stage;
 import org.lee.mugen.sprite.base.AbstractSprite;
 import org.lee.mugen.sprite.baseForParse.ImageSpriteSFF;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.SpriteAnimManager;
+import org.lee.mugen.stage.Stage;
 import org.lee.mugen.util.MugenRandom;
 
 public class ExplodSprite extends AbstractSprite {
@@ -27,7 +27,7 @@ public class ExplodSprite extends AbstractSprite {
 	public PointF getPosToDraw() {
 		AbstractSprite sprite = this;
 		Postype postype = getExplod().getPostype();
-		Stage stage = StateMachine.getInstance().getInstanceOfStage();
+		Stage stage = GameFight.getInstance().getInstanceOfStage();
 		int _mvX = stage.getCamera().getX();
 		int _mvY = stage.getCamera().getY();
 		float xCam = _mvX + stage.getCamera().getWidth()/2f;
@@ -352,18 +352,18 @@ public class ExplodSprite extends AbstractSprite {
 
 	@Override
 	public boolean remove() {
-		if (!StateMachine.getInstance().getOtherSprites().contains(this))
+		if (!GameFight.getInstance().getOtherSprites().contains(this))
 			return true;
 		if (forceRemove)
 			return true;
 		try {
 			if (explod.isRemoveongethit()) {
 				if (explod.getSprite().getInfo().getLastHitdef() != null) {
-					if (explod.getSprite().getInfo().getLastHitdef().getLastTimeHitSomething() == StateMachine.getInstance().getGameState().getGameTime())
+					if (explod.getSprite().getInfo().getLastHitdef().getLastTimeHitSomething() == GameFight.getInstance().getGameState().getGameTime())
 					return true;
 				}
 			}
-			if (explod.isSupermove() && StateMachine.getInstance().getGlobalEvents().isSuperPause()
+			if (explod.isSupermove() && GameFight.getInstance().getGlobalEvents().isSuperPause()
 					&& explod.getRemovetime() != -2) {
 				return false;
 			}

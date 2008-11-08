@@ -12,7 +12,9 @@ public class Type implements Cloneable {
 		return name.substring(name.indexOf(".") + 1);
 	}
 	public void init() {
-		
+		displaytime = originalDisplaytime;
+		sndtime = originalSndtime;
+		starttime = originalStarttime;
 	}
 	public CommonType getType() {
 		return type;
@@ -20,15 +22,28 @@ public class Type implements Cloneable {
 
 	CommonType type;
 	Point offset = new Point();
+
+
 	int displaytime = -1;
+	int originalDisplaytime = -1;
 	int facing = 1;
 	int vfacing = 1;
 	SndType snd;
 	int sndtime;
+	int originalSndtime;
 	int layerno = 0;
-	PointF scale = new PointF(1,1);
+	PointF scale = new PointF(1, 1);
+	int starttime = 0;
+	int originalStarttime = 0;
+	
 	
 
+	public int getStarttime() {
+		return starttime;
+	}
+	public void setStarttime(int starttime) {
+		this.starttime = starttime;
+	}
 	public void decreaseDisplayTime() {
 		if (displaytime > 0)
 			displaytime--;
@@ -107,9 +122,12 @@ public class Type implements Cloneable {
 		}
 		if (name.equalsIgnoreCase("offset")) {
 			offset = (Point) BeanTools.getConvertersMap().get(Point.class).convert(value);
+		} else if (name.equalsIgnoreCase("starttime")) {
+			setStarttime((Integer) BeanTools.getConvertersMap().get(Integer.class).convert(value));
+			originalStarttime = getStarttime();
 		} else if (name.equalsIgnoreCase("displaytime")) {
 			setDisplaytime((Integer) BeanTools.getConvertersMap().get(Integer.class).convert(value));
-			
+			originalDisplaytime = getDisplaytime();
 		} else if (name.equalsIgnoreCase("facing")) {
 			facing = (Integer) BeanTools.getConvertersMap().get(Integer.class).convert(value);
 		} else if (name.equalsIgnoreCase("vfacing")) {
@@ -121,6 +139,7 @@ public class Type implements Cloneable {
 			snd.setNum(sndGrpNum[1]);
 		} else if (name.equalsIgnoreCase("sndtime")) {
 			sndtime = (Integer) BeanTools.getConvertersMap().get(Integer.class).convert(value);
+			originalSndtime = sndtime;
 		} else if (name.equalsIgnoreCase("layerno")) {
 			layerno = (Integer) BeanTools.getConvertersMap().get(Integer.class).convert(value);
 		} else if (name.equalsIgnoreCase("scale")) {
@@ -129,14 +148,23 @@ public class Type implements Cloneable {
 
 	}
 
-	public void setType(String name, Type elem, String value) {
+	public int getOriginalDisplaytime() {
+		return originalDisplaytime;
+	}
+	public int getOriginalSndtime() {
+		return originalSndtime;
+	}
+	public int getOriginalStarttime() {
+		return originalStarttime;
+	}
+	public void setType(String name, Type elem, String value, Object root) {
 
 		if (name.equalsIgnoreCase("anim") ) {
-			AnimType e = new AnimType();
+			AnimType e = new AnimType(root);
 			e.setAction(Integer.parseInt(value));
 			type = e;
 		} else if (name.equalsIgnoreCase("spr")) {
-			SprType e = new SprType();
+			SprType e = new SprType(root);
 			int[] grpNo = (int[]) BeanTools.getConvertersMap().get(int[].class).convert(value);
 			e.setSpritegrp(grpNo[0]);
 			e.setSpriteno(grpNo[1]);
@@ -158,6 +186,9 @@ public class Type implements Cloneable {
 			type = e;
 		}		
 							
+	}
+	public void process() {
+		getType().process();
 	}
 
 

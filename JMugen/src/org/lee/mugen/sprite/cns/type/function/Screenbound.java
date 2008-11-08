@@ -1,10 +1,9 @@
 package org.lee.mugen.sprite.cns.type.function;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.cns.eval.function.StateCtrlFunction;
 import org.lee.mugen.sprite.entity.ScreenboundSub;
-import org.lee.mugen.sprite.parser.Parser;
 
 public class Screenbound extends StateCtrlFunction {
 
@@ -19,7 +18,7 @@ public class Screenbound extends StateCtrlFunction {
     	fillBean(spriteId, screenboundSub);
     	if (!screenboundSub.isActivate())
     		screenboundSub.activate();
-    	StateMachine.getInstance().getSpriteInstance(spriteId).getInfo().setScreenbound(screenboundSub);
+    	GameFight.getInstance().getSpriteInstance(spriteId).getInfo().setScreenbound(screenboundSub);
     	return null;
     }
 }

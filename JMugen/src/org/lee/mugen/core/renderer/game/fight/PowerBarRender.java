@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.fight.section.Powerbar;
 import org.lee.mugen.fight.section.elem.PlayerPowerbar;
 import org.lee.mugen.fight.section.elem.Type;
@@ -19,10 +19,10 @@ import org.lee.mugen.sprite.cns.type.function.Assertspecial.Flag;
 public class PowerBarRender extends LifeBarRender {
 	@Override
 	public void render() {
-		if (StateMachine.getInstance().getGlobalEvents().isAssertSpecial(Flag.nobardisplay))
+		if (GameFight.getInstance().getGlobalEvents().isAssertSpecial(Flag.nobardisplay))
 			return;
 		
-		if (StateMachine.getInstance().getGameState().getRoundState() != Roundstate.COMBAT) {
+		if (GameFight.getInstance().getGameState().getRoundState() != Roundstate.COMBAT) {
 			thisCustompalFx.getMul().setA(0f);
 			return;
 		} else if (thisCustompalFx.getMul().getA() < 255) {
@@ -30,8 +30,8 @@ public class PowerBarRender extends LifeBarRender {
 		}
 		
 		MugenDrawer md = GraphicsWrapper.getInstance();
-		if (StateMachine.getInstance().getTeamOneMode() == TeamMode.SINGLE) {
-			Powerbar powerbar = StateMachine.getInstance().getFightDef().getPowerbar();
+		if (GameFight.getInstance().getTeamOneMode() == TeamMode.SINGLE) {
+			Powerbar powerbar = GameFight.getInstance().getFightdef().getPowerbar();
 			PlayerPowerbar plb = powerbar.getP1();
 			
 			List<Integer> order = new ArrayList<Integer>();
@@ -56,8 +56,8 @@ public class PowerBarRender extends LifeBarRender {
 			
 		}
 		
-		if (StateMachine.getInstance().getTeamTwoMode() == TeamMode.SINGLE) {
-			Powerbar powerbar = StateMachine.getInstance().getFightDef().getPowerbar();
+		if (GameFight.getInstance().getTeamTwoMode() == TeamMode.SINGLE) {
+			Powerbar powerbar = GameFight.getInstance().getFightdef().getPowerbar();
 			PlayerPowerbar plb = powerbar.getP2();
 			
 			List<Integer> order = new ArrayList<Integer>();

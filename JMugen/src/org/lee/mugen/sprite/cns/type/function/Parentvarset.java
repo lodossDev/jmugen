@@ -1,6 +1,6 @@
 package org.lee.mugen.sprite.cns.type.function;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.Valueable;
 
 public class Parentvarset extends Varset {
@@ -9,7 +9,7 @@ public class Parentvarset extends Varset {
     }
     @Override
     public Object getValue(String spriteId, Valueable... params) {
-    	return super.getValue(StateMachine.getInstance().getParentId(spriteId), params);
+    	return super.getValue(GameFight.getInstance().getParentId(spriteId), params);
     }
     
     @Override

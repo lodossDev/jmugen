@@ -1,6 +1,6 @@
 package org.lee.mugen.sprite.cns.type.function;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.cns.eval.function.StateCtrlFunction;
 import org.lee.mugen.sprite.entity.Shake;
@@ -16,7 +16,7 @@ public class Envshake extends StateCtrlFunction {
 		Shake envShake = new Shake();
 		getValue(spriteId, envShake, "", params);
 		
-		StateMachine.getInstance().getInstanceOfStage().getCamera().setEnvShake(envShake);
+		GameFight.getInstance().getInstanceOfStage().getCamera().setEnvShake(envShake);
 
 		return null;
 	}

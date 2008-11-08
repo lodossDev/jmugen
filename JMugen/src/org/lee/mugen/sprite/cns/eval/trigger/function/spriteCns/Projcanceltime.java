@@ -5,7 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.lee.mugen.core.FightEngine;
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.lang.Wrap;
 import org.lee.mugen.lang.Wrapper;
 import org.lee.mugen.parser.type.Valueable;
@@ -67,14 +67,14 @@ public class Projcanceltime extends SpriteCnsTriggerFunction {
 		Valueable value = new Valueable() {
 			public Object getValue(String spriteId, Valueable... params) {
 				List<ProjectileSub> projectiles;
-				FightEngine fightEngine = StateMachine.getInstance().getFightEngine();
+				FightEngine fightEngine = GameFight.getInstance().getFightEngine();
 
 				projectiles = fightEngine.getProjectiles(projid);
 		
 				long delay = Parser.getIntValue(value1.getValue().getValue(spriteId));
 				MathFunction func = firstOp.getValue();
 
-				long currentTime = StateMachine.getInstance().getGameState().getGameTime();
+				long currentTime = GameFight.getInstance().getGameState().getGameTime();
 				for (ProjectileSub projectile: projectiles) {
 					if (projectile.getLastTimeCancelByProjectile() == -1)
 						continue;

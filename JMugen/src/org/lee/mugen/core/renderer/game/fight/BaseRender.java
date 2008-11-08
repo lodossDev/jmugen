@@ -2,7 +2,7 @@ package org.lee.mugen.core.renderer.game.fight;
 
 import java.awt.Point;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.fight.section.Fightdef;
 import org.lee.mugen.fight.section.elem.AnimType;
 import org.lee.mugen.fight.section.elem.FontType;
@@ -13,7 +13,6 @@ import org.lee.mugen.renderer.MugenDrawer;
 import org.lee.mugen.renderer.Renderable;
 import org.lee.mugen.sprite.base.AbstractAnimManager.SpriteDrawProperties;
 import org.lee.mugen.sprite.baseForParse.ImageSpriteSFF;
-import org.lee.mugen.sprite.character.AnimElement;
 
 public class BaseRender implements Renderable {
 	protected int layer = 0;
@@ -59,20 +58,14 @@ public class BaseRender implements Renderable {
 		md.draw(drawProperties);
 	}
 	protected ImageSpriteSFF getImageSFF(Type type) {
-		Fightdef fightdef = StateMachine.getInstance().getFightDef();
+		Fightdef fightdef = GameFight.getInstance().getFightdef();
 		if (type.getType() instanceof AnimType) {
 			AnimType anim = (AnimType) type.getType();
-			AnimElement animElem = anim.getAnim().getCurrentImageSprite();
-			if (animElem.getAirData().getGrpNum() == -1)
-				return null;
-			return fightdef.getFiles().getSff().getGroupSpr(animElem.getAirData().getGrpNum()).getImgSpr(animElem.getAirData().getImgNum());
-//			dp = anim.getAnim().getSpriteDrawProperties();
+			return anim.getImage();
 		} else if (type.getType() instanceof SprType) {
 			SprType spr = (SprType) type.getType();
-			if (fightdef.getFiles().getSff().getGroupSpr(spr.getSpritegrp()) == null 
-					|| fightdef.getFiles().getSff().getGroupSpr(spr.getSpritegrp()).getImgSpr(spr.getSpriteno()) == null)
-				return null;
-			return fightdef.getFiles().getSff().getGroupSpr(spr.getSpritegrp()).getImgSpr(spr.getSpriteno());
+			
+			return spr.getImage();
 		}
 		return null;
 	}
@@ -85,8 +78,10 @@ public class BaseRender implements Renderable {
 		return null;
 	}
 	
-	
 	public void render(MugenDrawer md, Point pos, Type type) {
+		this.render(md, pos, type, 1f);
+	}
+	public void render(MugenDrawer md, Point pos, Type type, float alpha) {
 		
 		if (type.getLayerno() != layer)
 			return;
@@ -112,6 +107,7 @@ public class BaseRender implements Renderable {
 						false, sff.getImage());
 				drawProperties.setXScaleFactor(xScale);
 				drawProperties.setYScaleFactor(yScale);
+				drawProperties.setAlpha(alpha);
 				draw(md, drawProperties);
 			} else if (type.getFacing() == 1) {
 				DrawProperties drawProperties = new DrawProperties(
@@ -121,6 +117,8 @@ public class BaseRender implements Renderable {
 						false, sff.getImage());
 				drawProperties.setXScaleFactor(xScale);
 				drawProperties.setYScaleFactor(yScale);
+				drawProperties.setAlpha(alpha);
+
 				draw(md, drawProperties);
 			}
 			
@@ -130,7 +128,7 @@ public class BaseRender implements Renderable {
 			
 			int fontSens = font.getAlignmt().getCode();
 			
-			StateMachine.getInstance().getFightDef().getFiles().getFont().get(font.getFontno()).draw(pos.x + type.getOffset().x, pos.y + type.getOffset().y, md, text, fontSens);
+			GameFight.getInstance().getFightdef().getFiles().getFont().get(font.getFontno()).draw(pos.x + type.getOffset().x, pos.y + type.getOffset().y, md, text, fontSens);
 		}
 	}
 }

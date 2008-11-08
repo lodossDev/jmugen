@@ -9,7 +9,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileFilter;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.core.sound.SoundSystem;
 import org.lee.mugen.renderer.GameWindow;
 import org.lee.mugen.renderer.GraphicsWrapper;
@@ -21,7 +21,7 @@ public class TestFrame {
 
 	public static void launchUI() throws Exception {
 
-		final StateMachine statemachine = StateMachine.getInstance();
+		final GameFight statemachine = GameFight.getInstance();
 
 	    String nativeLF = UIManager.getSystemLookAndFeelClassName();
 	    
@@ -153,8 +153,8 @@ public class TestFrame {
 		statemachine.setTeamOneMode(TeamMode.SINGLE);
 		statemachine.setTeamTwoMode(TeamMode.SINGLE);
 		
-		statemachine.preloadSprite(StateMachine.TEAMSIDE_ONE, "1", p1, 0);
-		statemachine.preloadSprite(StateMachine.TEAMSIDE_TWO, "2", p2, 0);
+		statemachine.preloadSprite(GameFight.TEAMSIDE_ONE, "1", p1, 0);
+		statemachine.preloadSprite(GameFight.TEAMSIDE_TWO, "2", p2, 0);
 		
 
 		
@@ -202,15 +202,15 @@ public class TestFrame {
 				"kfm", "0", 
 				"kfm", "0",
 				"d4_ggxxac_China.def",
-				"ADX_S060.wav"
+//				"ADX_S060.wav"
 		};
 		
-		final StateMachine statemachine = StateMachine.getInstance();
+		final GameFight statemachine = GameFight.getInstance();
 //		statemachine.getGameState().setGameType(TeamMode.SINGLE); // TODO
 		statemachine.setTeamOneMode(TeamMode.SINGLE);
 		statemachine.setTeamTwoMode(TeamMode.SINGLE);
-		statemachine.preloadSprite(StateMachine.TEAMSIDE_ONE, "1", "resource/chars/" + args[0] + "/" + args[0] + ".def", Integer.parseInt(args[1]));
-		statemachine.preloadSprite(StateMachine.TEAMSIDE_TWO, "2", "resource/chars/" + args[2] + "/" + args[2] + ".def", Integer.parseInt(args[3]));
+		statemachine.preloadSprite(GameFight.TEAMSIDE_ONE, "1", "resource/chars/" + args[0] + "/" + args[0] + ".def", Integer.parseInt(args[1]));
+		statemachine.preloadSprite(GameFight.TEAMSIDE_TWO, "2", "resource/chars/" + args[2] + "/" + args[2] + ".def", Integer.parseInt(args[3]));
 
 		statemachine.preloadStage("resource/stages/" + args[4]);
 		if (args.length > 5)

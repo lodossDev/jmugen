@@ -1,6 +1,6 @@
 package org.lee.mugen.sprite.character.spiteCnsSubClass;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.sprite.character.Sprite;
 
 
@@ -75,7 +75,7 @@ public class VelSetSub implements Cloneable {
 
 	public float getXReal() {
 
-		Sprite spr = StateMachine.getInstance().getSpriteInstance(spriteId);
+		Sprite spr = GameFight.getInstance().getSpriteInstance(spriteId);
 		return spr.isFlip()? -x: x;
 	}
 

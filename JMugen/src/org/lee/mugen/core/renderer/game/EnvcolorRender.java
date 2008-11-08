@@ -1,10 +1,10 @@
 package org.lee.mugen.core.renderer.game;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.renderer.GraphicsWrapper;
 import org.lee.mugen.renderer.RGB;
 import org.lee.mugen.renderer.Renderable;
-import org.lee.mugen.sprite.background.Stage;
+import org.lee.mugen.stage.Stage;
 
 public class EnvcolorRender implements Renderable {
 
@@ -24,8 +24,8 @@ public class EnvcolorRender implements Renderable {
 	}
 
 	public void render() {
-		RGB rgb = StateMachine.getInstance().getGlobalEvents().getEnvcolor().getValue();
-		Stage stage = StateMachine.getInstance().getInstanceOfStage();
+		RGB rgb = GameFight.getInstance().getGlobalEvents().getEnvcolor().getValue();
+		Stage stage = GameFight.getInstance().getInstanceOfStage();
 		GraphicsWrapper.getInstance().setColor(rgb.getR(), rgb.getG(), rgb.getB());
 		GraphicsWrapper.getInstance().fillRect(0, 0, stage.getCamera().getWidth(), stage.getCamera().getHeight());
 		

@@ -1,9 +1,6 @@
 package org.lee.mugen.sprite.parser;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,13 +10,12 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.io.IOUtils;
+import org.lee.mugen.background.bgCtrlFunction.BgFunctionDef;
 import org.lee.mugen.parser.type.FloatValueable;
 import org.lee.mugen.parser.type.Functionable;
 import org.lee.mugen.parser.type.IntValueable;
 import org.lee.mugen.parser.type.StringValueable;
 import org.lee.mugen.parser.type.Valueable;
-import org.lee.mugen.sprite.background.bgCtrlFunction.BgFunctionDef;
 import org.lee.mugen.sprite.cns.eval.function.MathFunction;
 import org.lee.mugen.sprite.cns.eval.function.MathsFunctionDef;
 import org.lee.mugen.sprite.cns.eval.function.SpriteCnsFunctionDef;

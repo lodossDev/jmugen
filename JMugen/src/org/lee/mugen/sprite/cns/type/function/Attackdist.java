@@ -1,6 +1,6 @@
 package org.lee.mugen.sprite.cns.type.function;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub;
 import org.lee.mugen.sprite.cns.eval.function.StateCtrlFunction;
@@ -13,7 +13,7 @@ public class Attackdist extends StateCtrlFunction {
 
     @Override
     public Object getValue(String spriteId, Valueable... params) {
-    	StateMachine sm = StateMachine.getInstance();
+    	GameFight sm = GameFight.getInstance();
     	
     	HitDefSub hitDefSub = sm.getFightEngine().getFirstHitdefBySpriteHitter(spriteId);
     	if (hitDefSub != null) {

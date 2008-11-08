@@ -2,6 +2,11 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="srcForFightDef"/>
+	<classpathentry kind="src" path="srcIntro"/>
+	<classpathentry kind="src" path="srcSystem"/>
+	<classpathentry kind="src" path="srcSelect"/>
+	<classpathentry kind="src" path="srcStage"/>
+	<classpathentry kind="src" path="srcBackground"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/jl1.0.jar"/>
 	<classpathentry kind="lib" path="lib/mp3spi1.9.2.jar"/>
@@ -11,5 +16,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/JMugen.Render.Java"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JMugen.Render.Lwjgl"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JMugen.Render.jogl"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Syntax"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

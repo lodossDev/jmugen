@@ -3,7 +3,7 @@ package org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns;
 import java.util.Collection;
 
 import org.lee.mugen.core.FightEngine;
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.base.AbstractSprite;
 import org.lee.mugen.sprite.character.Sprite;
@@ -22,17 +22,17 @@ public class Numproj extends SpriteCnsTriggerFunction {
 	public Object getValue(String spriteId, Valueable... params) {
 		int count = 0;
 
-		FightEngine engine = StateMachine.getInstance().getFightEngine();
+		FightEngine engine = GameFight.getInstance().getFightEngine();
 		Collection<HitDefSub> hitdefs = engine.getHitdefBySpriteHitter(spriteId);
-		Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);
+		Sprite sprite = GameFight.getInstance().getSpriteInstance(spriteId);
 		for (HitDefSub hitdef : hitdefs) {
-			if ((hitdef instanceof ProjectileSub) && StateMachine.getInstance().getRoot((Sprite) hitdef.getSpriteHitter()) == sprite)
+			if ((hitdef instanceof ProjectileSub) && GameFight.getInstance().getRoot((Sprite) hitdef.getSpriteHitter()) == sprite)
 				count++;
 		}
-		for (AbstractSprite spr: StateMachine.getInstance().getOtherSprites()) {
+		for (AbstractSprite spr: GameFight.getInstance().getOtherSprites()) {
 			if (spr instanceof ProjectileSprite) {
 				ProjectileSprite proj = (ProjectileSprite) spr;
-				if (StateMachine.getInstance().getRoot(proj.getProjectileSub().getSpriteParent()) == sprite)
+				if (GameFight.getInstance().getRoot(proj.getProjectileSub().getSpriteParent()) == sprite)
 					count++;
 			}
 		}

@@ -1,7 +1,7 @@
 package org.lee.mugen.sprite.cns.type.function;
 
 import org.lee.mugen.core.FightEngine;
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.core.physics.PhysicsEngime;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.base.AbstractSprite;
@@ -24,8 +24,8 @@ public class Hitvelset extends StateCtrlFunction {
 		int yIndex = getParamIndex("y");
 
 		
-		Sprite sprHitted = StateMachine.getInstance().getSpriteInstance(spriteId);
-		HitDefSub hitdefFrom = StateMachine.getInstance().getSpriteInstance(spriteId).getInfo().getLastHitdef();
+		Sprite sprHitted = GameFight.getInstance().getSpriteInstance(spriteId);
+		HitDefSub hitdefFrom = GameFight.getInstance().getSpriteInstance(spriteId).getInfo().getLastHitdef();
 		
 		AbstractSprite sprHitter = hitdefFrom.getSpriteHitter();
 		

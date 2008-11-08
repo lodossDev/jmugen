@@ -1,6 +1,6 @@
 package org.lee.mugen.sprite.cns.type.function;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.SpriteCns;
@@ -15,7 +15,7 @@ public class Lifeset extends StateCtrlFunction {
 	
 	@Override
 	public Object getValue(String spriteId, Valueable... p) {
-		Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);
+		Sprite sprite = GameFight.getInstance().getSpriteInstance(spriteId);
 		
 		SpriteCns spriteInfo = sprite.getInfo();
 		int valueIndex = getParamIndex("value");

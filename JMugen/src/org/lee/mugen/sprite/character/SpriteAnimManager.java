@@ -2,7 +2,7 @@ package org.lee.mugen.sprite.character;
 
 import java.util.HashMap;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.air.AirParser;
 import org.lee.mugen.sprite.base.AbstractAnimManager;
 import org.lee.mugen.sprite.base.AbstractSprite;
@@ -81,7 +81,7 @@ public class SpriteAnimManager extends AbstractAnimManager {
 
 	public AnimGroup getCurrentGroupSprite(int action) {
 		if (changeAnim2) {
-			Sprite spr = StateMachine.getInstance().getSpriteInstance(StateMachine.getInstance().getRootId(spriteIdAnim));
+			Sprite spr = GameFight.getInstance().getSpriteInstance(GameFight.getInstance().getRootId(spriteIdAnim));
 			return spr.getSprAnimMng().getGroupSprite(action);
 		} else {
 			return groupSpriteMap.get(action);
@@ -91,7 +91,7 @@ public class SpriteAnimManager extends AbstractAnimManager {
 
 	public AnimGroup getGroupSprite(int action) {
 		if (changeAnim2) {
-			Sprite spr = StateMachine.getInstance().getSpriteInstance(spriteIdAnim);
+			Sprite spr = GameFight.getInstance().getSpriteInstance(spriteIdAnim);
 			return spr.getSprAnimMng().getGroupSprite(action);
 		} else {
 			return groupSpriteMap.get(action);
@@ -108,7 +108,7 @@ public class SpriteAnimManager extends AbstractAnimManager {
 		super.process();
 	}
 	private AbstractSprite getSprite() {
-		return StateMachine.getInstance().getSpriteInstance(spriteId);
+		return GameFight.getInstance().getSpriteInstance(spriteId);
 	}
 
 
@@ -124,7 +124,7 @@ public class SpriteAnimManager extends AbstractAnimManager {
 
 	public boolean isAnimExist(int anim) {
 		if (changeAnim2) {
-			Sprite spr = StateMachine.getInstance().getSpriteInstance(spriteIdAnim);
+			Sprite spr = GameFight.getInstance().getSpriteInstance(spriteIdAnim);
 			return spr.getSprAnimMng().isSelfAnimExist(anim);
 		} else {
 			return groupSpriteMap.containsKey(anim);

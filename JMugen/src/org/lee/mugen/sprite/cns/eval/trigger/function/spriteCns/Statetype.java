@@ -2,7 +2,7 @@ package org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns;
 
 import java.util.List;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.SpriteCns.Type;
@@ -44,7 +44,7 @@ public class Statetype extends SpriteCnsTriggerFunction {
 			Valueable v = new Valueable() {
 
 				public Object getValue(String spriteId, Valueable... params) {
-					final Sprite spr = StateMachine.getInstance().getSpriteInstance(spriteId);
+					final Sprite spr = GameFight.getInstance().getSpriteInstance(spriteId);
 					return spr.getInfo().getType().getBit() != type.getBit() ? 1: 0;
 				}
 				
@@ -58,7 +58,7 @@ public class Statetype extends SpriteCnsTriggerFunction {
 			Valueable v = new Valueable() {
 
 				public Object getValue(String spriteId, Valueable... params) {
-					final Sprite spr = StateMachine.getInstance().getSpriteInstance(spriteId);
+					final Sprite spr = GameFight.getInstance().getSpriteInstance(spriteId);
 					return spr.getInfo().getType().getBit() == type.getBit()? 1: 0;
 				}
 				

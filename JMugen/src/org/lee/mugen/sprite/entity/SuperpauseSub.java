@@ -3,7 +3,6 @@ package org.lee.mugen.sprite.entity;
 import java.awt.Point;
 
 import org.lee.mugen.sprite.character.Sprite;
-import org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub.Sound;
 
 public class SuperpauseSub {
 	public static final int DARKEN = 1;
@@ -36,7 +35,7 @@ public class SuperpauseSub {
 	private int time;
 	private Sparkno anim;
 	private boolean isUseSpriteAnim;
-	private Sound sound;
+	private SndGrpNum sound;
 	private Point pos;
 	private int movetime;
 	private int[] darken;
@@ -81,10 +80,10 @@ public class SuperpauseSub {
 	public void setPoweradd(int poweradd) {
 		this.poweradd = poweradd;
 	}
-	public Sound getSound() {
+	public SndGrpNum getSound() {
 		return sound;
 	}
-	public void setSound(Sound sound) {
+	public void setSound(SndGrpNum sound) {
 		this.sound = sound;
 	}
 	public int getTime() {

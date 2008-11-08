@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
-
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.Functionable;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.parser.CnsParse;
@@ -52,7 +50,7 @@ public class StateDef implements Cloneable {
 	private boolean isExecMainFunc = false;
 	public void execute(String spriteId) {
 		if (!isCompiled) {
-			Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);
+			Sprite sprite = GameFight.getInstance().getSpriteInstance(spriteId);
 			try {
 				getStateCtrls().clear();
 				executors.clear();
@@ -68,9 +66,9 @@ public class StateDef implements Cloneable {
 			
 			isCompiled = true;
 		}
-		if (StateMachine.getInstance().getSpriteInstance(spriteId) == null)
+		if (GameFight.getInstance().getSpriteInstance(spriteId) == null)
 			return; // case where helper is not add again
-		long time = StateMachine.getInstance().getSpriteInstance(spriteId).getSpriteState().getTimeInState();
+		long time = GameFight.getInstance().getSpriteInstance(spriteId).getSpriteState().getTimeInState();
 		
 		if (!isExecMainFunc) {
 			isExecMainFunc = true;

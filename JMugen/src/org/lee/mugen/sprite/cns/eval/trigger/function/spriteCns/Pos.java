@@ -2,7 +2,7 @@ package org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns;
 
 import java.util.List;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.StringValueable;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.character.Sprite;
@@ -21,7 +21,7 @@ public class Pos extends SpriteCnsTriggerFunction {
 	@Override
 	public Object getValue(String spriteId, Valueable... params) {
 		String p = params[0].getValue(spriteId).toString();
-		Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);
+		Sprite sprite = GameFight.getInstance().getSpriteInstance(spriteId);
 		SpriteCns spriteInfo = sprite.getInfo();
 
 		if ("x".equals(p)) {

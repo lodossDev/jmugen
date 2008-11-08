@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.cns.eval.function.StateCtrlFunction;
@@ -23,7 +23,7 @@ public class Makedust extends StateCtrlFunction {
 	
 	@Override
 	public Object getValue(String spriteId, Valueable...params) {
-		Sprite sprite = StateMachine.getInstance().getSpriteInstance(spriteId);
+		Sprite sprite = GameFight.getInstance().getSpriteInstance(spriteId);
 		
 		final boolean isFlip = sprite.isFlip();
 		float x = sprite.getInfo().getXPos();
@@ -84,7 +84,7 @@ public class Makedust extends StateCtrlFunction {
 			}
 			MakeDustSpriteManager manager = new MakeDustSpriteManager(sprite, spacing, pts.toArray(new PointF[pts.size()]));
 			
-			StateMachine.getInstance().addMakedustSpriteManager(manager);
+			GameFight.getInstance().addMakedustSpriteManager(manager);
 			MAKEDUSTMAP.put(spriteId, manager);
 
 		} else{

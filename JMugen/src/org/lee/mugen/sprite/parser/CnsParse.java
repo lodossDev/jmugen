@@ -13,7 +13,7 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.input.MugenCommands;
 import org.lee.mugen.parser.type.Functionable;
 import org.lee.mugen.parser.type.Valueable;
@@ -288,7 +288,7 @@ public class CnsParse {
 
 					public Object getValue(String spriteId, Valueable... params) {
 						try {
-							setSpriteInfoValue(spriteId, StateMachine.getInstance().getSpriteInstance(spriteId).getInfo(), prefix, name, values);
+							setSpriteInfoValue(spriteId, GameFight.getInstance().getSpriteInstance(spriteId).getInfo(), prefix, name, values);
 						} catch (Exception e) {
 							e.printStackTrace();
 							throw new IllegalStateException(
@@ -311,7 +311,7 @@ public class CnsParse {
 
 				public Object getValue(String spriteId, Valueable... params) {
 					try {
-						setSpriteInfoValue(spriteId, StateMachine.getInstance().getSpriteInstance(spriteId).getInfo(), prefix, name, values);
+						setSpriteInfoValue(spriteId, GameFight.getInstance().getSpriteInstance(spriteId).getInfo(), prefix, name, values);
 					} catch (Exception e) {
 						e.printStackTrace();
 						throw new IllegalStateException(

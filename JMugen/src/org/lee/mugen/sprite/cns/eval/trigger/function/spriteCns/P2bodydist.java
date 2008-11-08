@@ -3,7 +3,7 @@ package org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns;
 import java.awt.Rectangle;
 import java.util.List;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.StringValueable;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.character.Sprite;
@@ -23,11 +23,11 @@ public class P2bodydist extends SpriteCnsTriggerFunction {
 	}
 	
 	public static float getXDiff(String spriteId, Valueable... params) {
-		Sprite sprOne = StateMachine.getInstance().getSpriteInstance(spriteId);
+		Sprite sprOne = GameFight.getInstance().getSpriteInstance(spriteId);
 		Sprite sprTwo = null;
-		for (Sprite spr : StateMachine.getInstance().getSprites()) {
-			if (!spr.equals(sprOne) && !StateMachine.getInstance().getRoot(sprOne).equals(spr)
-					&& !StateMachine.getInstance().getRoot(sprOne).equals(StateMachine.getInstance().getRoot(spr))) {
+		for (Sprite spr : GameFight.getInstance().getSprites()) {
+			if (!spr.equals(sprOne) && !GameFight.getInstance().getRoot(sprOne).equals(spr)
+					&& !GameFight.getInstance().getRoot(sprOne).equals(GameFight.getInstance().getRoot(spr))) {
 				sprTwo = spr;
 			}
 		}
@@ -57,9 +57,9 @@ public class P2bodydist extends SpriteCnsTriggerFunction {
 		
 	}
 	private static float getYDiff(String spriteId, Valueable...params) {
-		Sprite sprOne = StateMachine.getInstance().getSpriteInstance(spriteId);
+		Sprite sprOne = GameFight.getInstance().getSpriteInstance(spriteId);
 		Sprite sprTwo = null;
-		for (Sprite spr : StateMachine.getInstance().getSprites()) {
+		for (Sprite spr : GameFight.getInstance().getSprites()) {
 			if (!spr.equals(sprOne)) {
 				sprTwo = spr;
 			}

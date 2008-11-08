@@ -1,6 +1,6 @@
 package org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.cns.eval.function.SpriteCnsTriggerFunction;
 
@@ -19,6 +19,6 @@ public class Roundstate extends SpriteCnsTriggerFunction {
 	@Override
 	public Object getValue(String spriteId, Valueable... p) {
 		
-		return StateMachine.getInstance().getGameState().getRoundState();
+		return GameFight.getInstance().getGameState().getRoundState();
 	}
 }

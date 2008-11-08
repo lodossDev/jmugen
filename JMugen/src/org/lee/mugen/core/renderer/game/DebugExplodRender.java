@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.renderer.GraphicsWrapper;
 import org.lee.mugen.renderer.Renderable;
 import org.lee.mugen.renderer.GameWindow.MouseCtrl;
@@ -43,7 +43,7 @@ public class DebugExplodRender implements Renderable {
 			MouseCtrl mouse = GraphicsWrapper.getInstance().getInstanceOfGameWindow().getMouseStatus();
 //			FontParser.getFontProducer().draw(100, 100, GraphicsWrapper.getInstance(), mouse.getX() + " " + mouse.getY());
 			List<ExplodSprite> explods = new ArrayList<ExplodSprite>();
-			for (AbstractSprite s: StateMachine.getInstance().getOtherSprites()) {
+			for (AbstractSprite s: GameFight.getInstance().getOtherSprites()) {
 				if (s instanceof ExplodSprite) {
 					ExplodSprite es = (ExplodSprite) s;
 //					if (!es.remove())
@@ -61,7 +61,7 @@ public class DebugExplodRender implements Renderable {
 				(sprite.getExplod().getSprite() instanceof SpriteHelper? 
 						"Helper name=" + ((SpriteHelper)sprite.getExplod().getSprite()).getHelperSub().getName() + " id=" + ((SpriteHelper)sprite.getExplod().getSprite()).getHelperSub().getId(): "") + 
 						" " + sprite.getExplod().getSprite().getSpriteState().getCurrentState().getId() + " - " +
-				"Spr " + (sprite.getExplod().getSprite() instanceof SpriteHelper? StateMachine.getInstance().getRootId(sprite.getExplod().getSprite()): sprite.getExplod().getSprite().getSpriteId())
+				"Spr " + (sprite.getExplod().getSprite() instanceof SpriteHelper? GameFight.getInstance().getRootId(sprite.getExplod().getSprite()): sprite.getExplod().getSprite().getSpriteId())
 				+ " - " + "IsProcess " + sprite.isProcess();
 
 				strings.add(line);

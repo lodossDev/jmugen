@@ -2,7 +2,7 @@ package org.lee.mugen.sprite.cns.type.function;
 
 import java.util.Collection;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.cns.eval.function.StateCtrlFunction;
 import org.lee.mugen.sprite.entity.ExplodSprite;
@@ -37,7 +37,7 @@ public class Modifyexplod extends StateCtrlFunction {
 		// Id must exist
     	int id = Parser.getIntValue(vId[0].getValue(spriteId));
     	
-    	Collection<ExplodSprite> explodSprites = StateMachine.getInstance().getExplodeSprites(id);
+    	Collection<ExplodSprite> explodSprites = GameFight.getInstance().getExplodeSprites(id);
     	
     	for (ExplodSprite explodSpr: explodSprites) {
     		if (explodSpr.getExplod().getSprite().getSpriteId().equals(spriteId))

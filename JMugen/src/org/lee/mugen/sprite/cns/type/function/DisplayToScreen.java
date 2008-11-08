@@ -2,7 +2,7 @@ package org.lee.mugen.sprite.cns.type.function;
 
 import java.awt.Point;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.core.renderer.game.ImageRender;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.cns.eval.function.StateCtrlFunction;
@@ -44,7 +44,7 @@ public class DisplayToScreen extends StateCtrlFunction {
 		fillBean(spriteId, sub);
 		try {
 			ImageRender ir = new ImageRender(sub.getValue(), FontParser.getFontProducer(), sub.getPos(), sub.time);
-			StateMachine.getInstance().addRender(ir);
+			GameFight.getInstance().addRender(ir);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

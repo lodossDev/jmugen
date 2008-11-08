@@ -1,6 +1,6 @@
 package org.lee.mugen.sprite.cns.type.function;
 
-import org.lee.mugen.core.StateMachine;
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.cns.eval.function.StateCtrlFunction;
 
@@ -11,7 +11,7 @@ public class Destroyself extends StateCtrlFunction {
     }
     @Override
     public Object getValue(String spriteId, Valueable... params) {
-    	StateMachine.getInstance().removeSpriteHelper(spriteId);
+    	GameFight.getInstance().removeSpriteHelper(spriteId);
     	return null;
     }
 }
