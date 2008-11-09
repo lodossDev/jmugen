@@ -201,7 +201,7 @@ public class TestFrame {
 		String[] args = new String[] {
 				"kfm", "0", 
 				"kfm", "0",
-				"d4_ggxxac_China.def",
+				"stage0.def",
 //				"ADX_S060.wav"
 		};
 		

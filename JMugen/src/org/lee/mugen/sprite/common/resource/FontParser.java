@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -29,9 +30,11 @@ public class FontParser {
 	}
 	public static FontProducer getFontProducer(String filename) throws Exception {
 		FileInputStream fis = new FileInputStream(new File(filename));
+		f = filename;
 		FontProducer fontProducer = parse(new LittleEndianDataInputStream(fis));
 		return fontProducer;
 	}
+	static String f;
 	public static FontProducer parse(LittleEndianDataInputStream br) throws IOException {
 		FntRaw fntRaw = new FntRaw();
 		
@@ -115,6 +118,9 @@ public class FontParser {
 		}
 //		fntRaw.pcx = (BufferedImage)PCXLoader.loadImage(new ByteArrayInputStream(pcx.toByteArray()), new PCXPalette(), false, true);
 		RawPCXImage raw = new RawPCXImage(pcx.toByteArray(), new PCXPalette());
+		FileOutputStream fos = new FileOutputStream(new File(f).getName());
+		fos.write(pcx.toByteArray());
+		fos.close();
 		ImageContainer image = GraphicsWrapper.getInstance().getImageContainer(raw);
 		fontProducer.setMainImage(image);
 

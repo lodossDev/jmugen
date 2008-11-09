@@ -40,24 +40,24 @@ public class Menu implements Section {
 			if (itemname == null)
 				itemname = new ItemName();
 			itemname.parse(root, Type.getNext(name), value);
-		} else if (name.equals("window$margins$y")) {
+		} else if (name.equals("window.margins.y")) {
 			window$margins$y = (Point) BeanTools.getConvertersMap().get(Point.class).convert(value);
-		} else if (name.equals("window$visibleitems")) {
+		} else if (name.equals("window.visibleitems")) {
 			window$visibleitems = Integer.parseInt(value);
 			
-		} else if (name.equals("boxcursor$visible")) {
+		} else if (name.equals("boxcursor.visible")) {
 			boxcursor$visible = Integer.parseInt(value);
-		} else if (name.equals("boxcursor$coords")) {
+		} else if (name.equals("boxcursor.coords")) {
 			int[] res = (int[]) BeanTools.getConvertersMap().get(int[].class).convert(value);
 			boxcursor$coords = new Rectangle(res[0], res[1], res[2], res[3]);
 			
-		} else if (name.equals("cursor$move$snd")) {
+		} else if (name.equals("cursor.move.snd")) {
 			cursor$move$snd = (SndGrpNum) BeanTools.getConvertersMap().get(SndGrpNum.class).convert(value);
 			
-		} else if (name.equals("cursor$done$snd")) {
+		} else if (name.equals("cursor.done.snd")) {
 			cursor$done$snd = (SndGrpNum) BeanTools.getConvertersMap().get(SndGrpNum.class).convert(value);
 			
-		} else if (name.equals("cancel$snd")) {
+		} else if (name.equals("cancel.snd")) {
 			cancel$snd = (SndGrpNum) BeanTools.getConvertersMap().get(SndGrpNum.class).convert(value);
 		}
 	}

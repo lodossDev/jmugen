@@ -2,9 +2,11 @@ package org.lee.mugen.core.renderer.game.system;
 
 import java.awt.Point;
 
+import org.lee.mugen.core.GameFight;
 import org.lee.mugen.core.renderer.game.fight.BaseRender;
 import org.lee.mugen.fight.section.elem.FontType;
 import org.lee.mugen.fight.system.MugenSystem;
+import org.lee.mugen.fight.system.elem.ItemName;
 import org.lee.mugen.renderer.GraphicsWrapper;
 import org.lee.mugen.renderer.MugenDrawer;
 
@@ -16,36 +18,47 @@ public class TitleInfoRender extends BaseRender {
 	}
 	@Override
 	public void render() {
+//		if (true)
+//			return;
 		MugenDrawer md = GraphicsWrapper.getInstance();
 		MugenSystem ms = MugenSystem.getInstance();
 		
-		FontType fontType = (FontType) ms.getTitleInfo().getMenu().getItem().getType();
 		Point pos = (Point) ms.getTitleInfo().getMenu().getPos().clone();
 			
-		String[] strs = {
-				ms.getTitleInfo().getMenu().getItemname().getArcade(),
-				ms.getTitleInfo().getMenu().getItemname().getVersus(),
-				ms.getTitleInfo().getMenu().getItemname().getTeamarcade(),
-				ms.getTitleInfo().getMenu().getItemname().getTeamversus(),
-				ms.getTitleInfo().getMenu().getItemname().getTeamcoop(),
-				ms.getTitleInfo().getMenu().getItemname().getSurvival(),
-				ms.getTitleInfo().getMenu().getItemname().getSurvivalcoop(),
-				ms.getTitleInfo().getMenu().getItemname().getTraining(),
-				ms.getTitleInfo().getMenu().getItemname().getWatch(),
-				ms.getTitleInfo().getMenu().getItemname().getOptions(),
-				ms.getTitleInfo().getMenu().getItemname().getExit()
-		};
+		ItemName itemName = ms.getTitleInfo().getMenu().getItemname();
+		String[] strs = itemName.getList();
+//		if (GameFight.getInstance().getSpriteInstance("1").getInfo().getCommand("\"holddown\"") != 0)
+//			itemName.increaseCurrentIndex();
+//		if (GameFight.getInstance().getSpriteInstance("1").getInfo().getCommand("\"holdup\"") != 0)
+//			itemName.decreaseCurrentIndex();
+		
+		itemName.setCurrentIndex(3);
+		
 		br.render();
-//		MugenSystem.getInstance().getTitleInfo().getMenu().getWindow$visibleitems()
-		index = 0;
-		for (int i = index; i < strs.length && i < index + 5; i++) {
-			fontType.setText(strs[i]);
-			render(md, pos, ms.getTitleInfo().getMenu().getItem());
-			pos.x += ms.getTitleInfo().getMenu().getItem().getSpacing().x;
-			pos.y += ms.getTitleInfo().getMenu().getItem().getSpacing().y;
+		int count = MugenSystem.getInstance().getTitleInfo().getMenu().getWindow$visibleitems();
+		int mul = itemName.getCurrentIndex() / count;
+		int base = mul == 0? 0: mul + itemName.getCurrentIndex()%count;
+			
+//		if (itemName.getCurrentIndex() > strs.length - count)
+//			base = mul;
+		for (int i = base; i < strs.length && i < base + count; i++) {
+			if (i == itemName.getCurrentIndex()) {
+				FontType fontType = (FontType) ms.getTitleInfo().getMenu().getItem().getActive().getType();
+				fontType.setText(strs[i]);
+				render(md, pos, ms.getTitleInfo().getMenu().getItem());
+				pos.x += ms.getTitleInfo().getMenu().getItem().getSpacing().x;
+				pos.y += ms.getTitleInfo().getMenu().getItem().getSpacing().y;
+				
+			} else {
+				FontType fontType = (FontType) ms.getTitleInfo().getMenu().getItem().getType();
+				fontType.setText(strs[i]);
+				render(md, pos, ms.getTitleInfo().getMenu().getItem());
+				pos.x += ms.getTitleInfo().getMenu().getItem().getSpacing().x;
+				pos.y += ms.getTitleInfo().getMenu().getItem().getSpacing().y;
+				
+			}
 		}
 		
 	}
-	int index = 0;
 	
 }
