@@ -3,18 +3,63 @@ package org.lee.mugen.fight.system.elem;
 import org.lee.mugen.fight.section.Section;
 
 public class ItemName implements Section {
-	private String arcade;
-	private String versus;
-	private String teamarcade;
-	private String teamversus;
-	private String teamcoop;
-	private String survival;
-	private String survivalcoop;
-	private String training;
-	private String watch;
-	private String options;
-	private String exit;
+	private static final int arcade = 0;
+	private static final int versus = 1;
+	private static final int teamarcade = 2;
+	private static final int teamversus = 3;
+	private static final int teamcoop = 4;
+	private static final int survival = 5;
+	private static final int survivalcoop = 6;
+	private static final int training = 7;
+	private static final int watch = 8;
+	private static final int options = 9;
+	private static final int exit = 10;
 
+	private String[] list = new String[11];
+	
+	public String[] getList() {
+		return list;
+	}
+	private int currentIndex;
+	private int lastIndex;
+	
+	public int getCurrentIndex() {
+		return currentIndex;
+	}
+	public void increaseCurrentIndex() {
+		lastIndex = this.currentIndex;
+		this.currentIndex++;
+		if (currentIndex > list.length - 1)
+			currentIndex = 0;
+	}
+	public void setCurrentIndex(int currentIndex) {
+		if (this.currentIndex == currentIndex)
+			return;
+		if (currentIndex < 0 || currentIndex > list.length)
+			return;
+		this.lastIndex = this.currentIndex;
+		this.currentIndex = currentIndex;
+	}
+	public void decreaseCurrentIndex() {
+		lastIndex = this.currentIndex;
+		this.currentIndex--;
+		if (currentIndex < 0)
+			currentIndex = list.length - 1;
+	}
+	public int getLastIndex() {
+		return lastIndex;
+	}
+	public void setList(String[] list) {
+		this.list = list;
+	}
+
+	private String getGoodString(int index) {
+		String word = list[index];
+		if (word.startsWith("\"") && word.endsWith("\""))
+			return word.substring(1, word.length() - 1);
+		return word;
+	}
+	
 	private String getGoodString(String word) {
 		if (word.startsWith("\"") && word.endsWith("\""))
 			return word.substring(1, word.length() - 1);
@@ -26,7 +71,7 @@ public class ItemName implements Section {
 	}
 
 	public void setArcade(String arcade) {
-		this.arcade = arcade;
+		list[ItemName.arcade] = arcade;
 	}
 
 	public String getVersus() {
@@ -34,7 +79,7 @@ public class ItemName implements Section {
 	}
 
 	public void setVersus(String versus) {
-		this.versus = versus;
+		list[ItemName.versus] = versus;
 	}
 
 	public String getTeamarcade() {
@@ -42,7 +87,7 @@ public class ItemName implements Section {
 	}
 
 	public void setTeamarcade(String teamarcade) {
-		this.teamarcade = teamarcade;
+		list[ItemName.teamarcade] = teamarcade;
 	}
 
 	public String getTeamversus() {
@@ -50,7 +95,7 @@ public class ItemName implements Section {
 	}
 
 	public void setTeamversus(String teamversus) {
-		this.teamversus = teamversus;
+		list[ItemName.teamversus] = teamversus;
 	}
 
 	public String getTeamcoop() {
@@ -58,7 +103,7 @@ public class ItemName implements Section {
 	}
 
 	public void setTeamcoop(String teamcoop) {
-		this.teamcoop = teamcoop;
+		list[ItemName.teamcoop] = teamcoop;
 	}
 
 	public String getSurvival() {
@@ -66,7 +111,7 @@ public class ItemName implements Section {
 	}
 
 	public void setSurvival(String survival) {
-		this.survival = survival;
+		list[ItemName.survival] = survival;
 	}
 
 	public String getSurvivalcoop() {
@@ -74,7 +119,7 @@ public class ItemName implements Section {
 	}
 
 	public void setSurvivalcoop(String survivalcoop) {
-		this.survivalcoop = survivalcoop;
+		list[ItemName.survivalcoop] = survivalcoop;
 	}
 
 	public String getTraining() {
@@ -82,7 +127,7 @@ public class ItemName implements Section {
 	}
 
 	public void setTraining(String training) {
-		this.training = training;
+		list[ItemName.training] = training;
 	}
 
 	public String getWatch() {
@@ -90,7 +135,7 @@ public class ItemName implements Section {
 	}
 
 	public void setWatch(String watch) {
-		this.watch = watch;
+		list[ItemName.watch] = watch;
 	}
 
 	public String getOptions() {
@@ -98,7 +143,7 @@ public class ItemName implements Section {
 	}
 
 	public void setOptions(String options) {
-		this.options = options;
+		list[ItemName.options] = options;
 	}
 
 	public String getExit() {
@@ -106,33 +151,33 @@ public class ItemName implements Section {
 	}
 
 	public void setExit(String exit) {
-		this.exit = exit;
+		list[ItemName.exit] = exit;
 	}
 
 	@Override
 	public void parse(Object root, String name, String value) throws Exception {
 		if (name.equals("arcade")) {
-			arcade = value;
+			list[ItemName.arcade] = getGoodString(value);
 		} else if (name.equals("versus")) {
-			versus = value;
+			list[ItemName.versus] = getGoodString(value);
 		} else if (name.equals("teamarcade")) {
-			teamarcade = value;
+			list[ItemName.teamarcade] = getGoodString(value);
 		} else if (name.equals("teamversus")) {
-			teamversus = value;
+			list[ItemName.teamversus] = getGoodString(value);
 		} else if (name.equals("teamcoop")) {
-			teamcoop = value;
+			list[ItemName.teamcoop] = getGoodString(value);
 		} else if (name.equals("survival")) {
-			survival = value;
+			list[ItemName.survival] = getGoodString(value);
 		} else if (name.equals("survivalcoop")) {
-			survivalcoop = value;
+			list[ItemName.survivalcoop] = getGoodString(value);
 		} else if (name.equals("training")) {
-			training = value;
+			list[ItemName.training] = getGoodString(value);
 		} else if (name.equals("watch")) {
-			watch = value;
+			list[ItemName.watch] = getGoodString(value);
 		} else if (name.equals("options")) {
-			options = value;
+			list[ItemName.options] = getGoodString(value);
 		} else if (name.equals("exit")) {
-			exit = value;
+			list[ItemName.exit] = getGoodString(value);
 		}
 	}
 

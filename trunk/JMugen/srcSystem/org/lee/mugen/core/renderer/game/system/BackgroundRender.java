@@ -3,7 +3,6 @@ package org.lee.mugen.core.renderer.game.system;
 import org.lee.mugen.background.BG;
 import org.lee.mugen.background.Background;
 import org.lee.mugen.core.GameFight;
-import org.lee.mugen.core.renderer.game.IBackgroundRenderer;
 import org.lee.mugen.fight.system.MugenSystem;
 import org.lee.mugen.parser.air.AirData;
 import org.lee.mugen.parser.air.AirData.TypeBlit;
@@ -12,69 +11,101 @@ import org.lee.mugen.renderer.GraphicsWrapper;
 import org.lee.mugen.renderer.ImageContainer;
 import org.lee.mugen.renderer.PalFxSub;
 import org.lee.mugen.renderer.RGB;
+import org.lee.mugen.renderer.Renderable;
 import org.lee.mugen.renderer.Trans;
 import org.lee.mugen.sprite.base.AbstractAnimManager;
 import org.lee.mugen.sprite.baseForParse.ImageSpriteSFF;
 import org.lee.mugen.sprite.baseForParse.SpriteSFF;
 import org.lee.mugen.sprite.entity.SuperpauseSub;
-import org.lee.mugen.stage.Stage;
 
-public class BackgroundRender implements IBackgroundRenderer {
-
+public class BackgroundRender implements Renderable {
 	private Background background;
+
 	public BackgroundRender(Background background) {
 		this.background = background;
 
 	}
 
+	private void drawTileY(ImageContainer img, BG bg, float x,
+			float y, float moveX, float moveY, int xStartForAll, Trans trans, boolean isHFlip, boolean isVFlip) {
+
+		int yTile = (int) bg.getTile().getY();
+		float startPosY = y + moveY;
+		if (yTile == 0) {
+//			drawImage(trans, img, (startPosY + (bg.getTilespacing().getY())
+//					* bg.getDelta().getX())
+//					+ xStartForAll, (y + moveY * bg.getDelta().getY()), isHFlip, isVFlip);
+		
+		} else if (yTile == 1) {
+			
+			startPosY = (y + moveY) % img.getHeight();
+			while (startPosY < 240) {
+				drawImage(trans, img, (startPosY + (bg.getTilespacing().getY())
+						* bg.getDelta().getX())
+						+ xStartForAll, (y + moveY * bg.getDelta().getY()), isHFlip, isVFlip);
+				startPosY += img.getHeight();
+			}
+			
+			startPosY = (y + moveY) % img.getHeight();
+			while (startPosY + img.getHeight() > 0) {
+				drawImage(trans, img, (startPosY + (bg.getTilespacing().getY())
+						* bg.getDelta().getX())
+						+ xStartForAll, (y + moveY * bg.getDelta().getY()), isHFlip, isVFlip);
+				startPosY -= img.getHeight();
+			}
+			
+			
+		} else {
+			startPosY = (y + moveY) % img.getHeight();
+			while (startPosY < 240 && yTile > 0) {
+				drawImage(trans, img, (x + (bg.getTilespacing().getY())
+						* bg.getDelta().getY())
+						+ xStartForAll, (startPosY + (bg.getTilespacing().getY())
+								* bg.getDelta().getY()), isHFlip, isVFlip);
+				startPosY += img.getHeight();
+				yTile--;
+			}
+		}
+	}
+	
 	private void drawTileXY(ImageContainer img, BG bg, float x,
-			float y, int width, float moveX, float moveY, int xStartForAll, Trans trans, boolean isHFlip, boolean isVFlip) {
+			float y, float moveX, float moveY, int xStartForAll, Trans trans, boolean isHFlip, boolean isVFlip) {
 		if (!bg.isEnable())
 			return;
 		int xTile = (int) bg.getTile().getX();
-		int yTile = (int) bg.getTile().getY();
-		x = x % img.getWidth();
-		float startPos = x + moveX;
+		float startPosX = x;
+		float startPosY = y;
 		if (xTile == 0) {
-			drawImage(trans, img, (startPos + (bg.getTilespacing().getX()) 
+			drawImage(trans, img, (startPosX + (bg.getTilespacing().getX()) + moveX
 					* bg.getDelta().getX())
 					+ xStartForAll, (y + moveY * bg.getDelta().getY()), isHFlip, isVFlip);
-			if (yTile > 1) {
-				drawImage(trans, img, (startPos + (bg.getTilespacing().getX())
-						* bg.getDelta().getX())
-						+ xStartForAll, (y + moveY * bg.getDelta().getY()) + img.getHeight(), isHFlip, isVFlip);
-			}
+			drawTileY(img, bg, startPosX, startPosY, moveX, moveY, xStartForAll, trans, isHFlip, isVFlip);
+		
 		}
+		startPosX = (startPosX + moveX) % img.getWidth();
+		startPosY = startPosY % img.getHeight();
 		
-//		startPos = startPos % width;
-		
-		while (startPos  <= width && (xTile > 0 || bg.getTile().getX() == 1)) {
-			drawImage(trans, img,  (startPos + (bg.getTilespacing().getX())
+		while (startPosX < 320 && (xTile > 0 || bg.getTile().getX() == 1)) {
+			drawImage(trans, img,  (startPosX + (bg.getTilespacing().getX())
 					* bg.getDelta().getX())
 					+ xStartForAll,  (y + moveY * bg.getDelta().getY()), isHFlip, isVFlip);
+			
 
+			drawTileY(img, bg, startPosX, startPosY, moveX, moveY, xStartForAll, trans, isHFlip, isVFlip);
 			
-			
-				drawImage(trans, img,  (startPos + (bg.getTilespacing().getX())
-						* bg.getDelta().getX())
-						+ xStartForAll,  (y + moveY * bg.getDelta().getY()) + img.getHeight(), isHFlip, isVFlip);
-			startPos += img.getWidth();
+			startPosX += img.getWidth();
 			xTile--;
 		}
 		if (bg.getTile().getX() == 1) {
-			startPos = x + moveX;
-//			startPos = startPos % width;
-			float originalPos = startPos % width;
-			System.out.println(startPos + img.getWidth());
-			startPos =  (startPos - img.getWidth());
-			while (startPos + img.getWidth() + xStartForAll + moveX>0) {
-				drawImage(trans, img,  (startPos + (bg.getTilespacing().getX())
-						* bg.getDelta().getX())
-						+ xStartForAll,  (y + moveY * bg.getDelta().getY()), isHFlip, isVFlip);
-				drawImage(trans, img,  (startPos + (bg.getTilespacing().getX())
-						* bg.getDelta().getX())
-						+ xStartForAll,  (y + moveY * bg.getDelta().getY()) + img.getHeight(), isHFlip, isVFlip);
-				startPos -= img.getWidth();
+			startPosX =  ((x - img.getWidth()) + moveX) % img.getWidth();
+			while (startPosX + img.getWidth() + xStartForAll > 0) {
+				drawImage(trans, img,
+						 (startPosX + (bg.getTilespacing().getX())
+								* bg.getDelta().getX())
+								+ xStartForAll,  (y + moveY
+								* bg.getDelta().getY()), isHFlip, isVFlip);
+				drawTileY(img, bg, startPosX, startPosY, moveX, moveY, xStartForAll, trans, isHFlip, isVFlip);
+				startPosX -= img.getWidth();
 			}
 
 		}
@@ -107,33 +138,24 @@ public class BackgroundRender implements IBackgroundRenderer {
 
 
 	public void render() {
+		int xStartForAll = 0;
+		background.process();
 		SpriteSFF sffSprite = background.getBgdef().getSpr();
 		if (sffSprite == null)
 			sffSprite = MugenSystem.getInstance().getFiles().getSpr();
-		
-		int xStartForAll = 0;
 
-//		background.process();
-		
 		if (background.getBgdef().getBgclearcolor() != null) {
 			RGB rgb = background.getBgdef().getBgclearcolor();
 			GraphicsWrapper.getInstance().setColor(rgb.getR(), rgb.getG(), rgb.getB());
-		
 			GraphicsWrapper.getInstance().fillRect(0, 0, 640, 480);
 		}
-
-
-		int i = 0;
-		for (BG bg : background.getBgs()) {
+		
+		for (BG bg : getBackground().getBgs()) {
 			if (bg.getLayerno() != layerDisplay)
 				continue;
-//			if (i != 1)
-//				continue;
-//			i++;
-//			xStartForAll = -(int) bg.getPos().getX();
-			float moveX = bg.getStart().getX() + MugenSystem.getInstance().getTitleInfo().getMenu().getPos().x;
-			float moveY = bg.getStart().getY();// + MugenSystem.getInstance().getTitleInfo().getMenu().getPos().y;//bg.getWidth().y;
-//			moveX = 160;
+			float moveX = MugenSystem.getInstance().getTitleInfo().getMenu().getPos().x;
+			float moveY = 0;//MugenSystem.getInstance().getTitleInfo().getMenu().getPos().y;
+
 			try {
 				if (bg.getBgType() == BG.Type.NORMAL
 						|| bg.getBgType() == BG.Type.NORM) {
@@ -153,12 +175,10 @@ public class BackgroundRender implements IBackgroundRenderer {
 
 
 					float x =  (bg.getPos().getX() - imgSprSff.getXAxis());
-					float y =  -bg.getPos().getY() - imgSprSff.getYAxis();
+					float y =  bg.getPos().getY() - imgSprSff.getYAxis() ;
 
-					drawTileXY(img, bg, x, y, 320, moveX, moveY,
+					drawTileXY(img, bg, x, y, moveX, moveY,
 							xStartForAll, bg.getBgTrans(), false, false);
-//					drawTileXY(img, bg, 0, 0, 0, 0, 0,
-//							xStartForAll, bg.getBgTrans(), false, false);
 
 				} else if (bg.getBgType() == BG.Type.ANIM && bg.getId() == null) {
 
@@ -186,12 +206,12 @@ public class BackgroundRender implements IBackgroundRenderer {
 					Trans trans = bg.getBgTrans();
 					trans = air.type == TypeBlit.ASD ? Trans.ADD: trans;
 					
-					drawTileXY(img, bg, x, y, bg.getWidth().x, moveX, moveY,
+					drawTileXY(img, bg, x, y, moveX, moveY,
 							xStartForAll, trans, isHFlip, isVFlip);
 
 				} else if (bg.getBgType() == BG.Type.ANIM && bg.getId() != null) {
 					
-					bg = background.getBgCtrlDefMap().get(bg.getId()).getBgCopys().get(bg.getOrder());
+					bg = getBackground().getBgCtrlDefMap().get(bg.getId()).getBgCopys().get(bg.getOrder());
 					if (!bg.isVisible())
 						continue;
 					AbstractAnimManager animMng = bg.getAnimManager();
@@ -218,7 +238,7 @@ public class BackgroundRender implements IBackgroundRenderer {
 					Trans trans = bg.getBgTrans();
 					trans = air.type == TypeBlit.ASD ? Trans.ADD: trans;
 					
-					drawTileXY(img, bg, x, y, bg.getWidth().x, moveX, moveY,
+					drawTileXY(img, bg, x, y, moveX, moveY,
 							xStartForAll, trans, isHFlip, isVFlip);
 					
 
@@ -231,21 +251,43 @@ public class BackgroundRender implements IBackgroundRenderer {
 					img = getImgProcessSuperpause(img);
 
 
-					float x =  (bg.getPos().getX() - imgSprSff.getXAxis());
+					float x =  (MugenSystem.getInstance().getTitleInfo().getMenu().getPos().x - imgSprSff.getXAxis());
 					float y =  bg.getPos().getY() - imgSprSff.getYAxis();
 
-
-					for (int v = 0; v < img.getHeight(); ++v) {
-						float deltaY = bg.getTopXscale()
-								+ (v * ((bg.getBottomXscale() - bg
-										.getTopXscale()) / img.getHeight()));
+					moveX = bg.getPos().getX();
+					moveY = 0;
+					
+					float percentScaleY = 100f/bg.getYscalestart();
+					float yAdv = percentScaleY;
+					int vOriginal = 0;
+					for (float v = 0; v < img.getHeight() * percentScaleY; v += yAdv) {
+						if (!bg.isEnable())
+							continue;
+//						bg.getPos().setX(bg.getPos().getX()%(img.getWidth()*.78f));
+						float deltaY = bg.getXscale().getX()
+								+ ((v) * ((bg.getXscale().getY() - bg.getXscale().getX()) / img.getHeight()));
 						deltaY = deltaY * bg.getDelta().getX();
 						float x1 = (x + (deltaY * moveX)) + xStartForAll;
 						float y2 = (y + moveY * bg.getDelta().getY()) + v;
-						if (!bg.isEnable())
-							continue;
-						drawImage(bg.getTrans(), img, x1, y2, x1 + img.getWidth(), y2 + 1,
-								0, v, img.getWidth(), v + 1);
+						
+
+						float width = img.getWidth() * deltaY;
+						
+						float startPosX =  (x1) % width*2;
+						while (startPosX + width + xStartForAll > 0) {
+							drawImage(bg.getTrans(), img, startPosX, y2, startPosX + width, (int)(y2 + yAdv),
+										0, (int)vOriginal, (int) width, (int)(vOriginal + 1));
+							startPosX -= width;
+						}
+						startPosX =  (x1) % width*2;
+						while (startPosX + xStartForAll < 320) {
+							drawImage(bg.getTrans(), img, startPosX, y2, startPosX + width, y2 + yAdv,
+										0, (int)vOriginal, (int) width, (int)(vOriginal + 1));
+							startPosX += width;
+						}
+						vOriginal++;
+//						drawImage(bg.getTrans(), img, x1%(img.getWidth()%320), y2, x1%(img.getWidth()%320) + img.getWidth(), y2 + 1,
+//								0, v, img.getWidth(), v + 1);
 					}
 				}
 
@@ -256,6 +298,10 @@ public class BackgroundRender implements IBackgroundRenderer {
 			}
 		}
 
+	}
+
+	public Background getBackground() {
+		return background;
 	}
 
 	private void drawImage(Trans trans, ImageContainer img, float xl, float yt, float xr,

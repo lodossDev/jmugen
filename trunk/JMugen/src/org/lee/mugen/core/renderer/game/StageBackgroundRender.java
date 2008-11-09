@@ -24,37 +24,86 @@ public class StageBackgroundRender implements IBackgroundRenderer {
 
 	}
 
+	private void drawTileY(ImageContainer img, BG bg, float x,
+			float y, float moveX, float moveY, int xStartForAll, Trans trans, boolean isHFlip, boolean isVFlip) {
+		Stage stage = GameFight.getInstance().getInstanceOfStage();
+		int yTile = (int) bg.getTile().getY();
+		float startPosY = y + moveY;
+		if (yTile == 0) {
+//			drawImage(trans, img, (startPosY + (bg.getTilespacing().getY())
+//					* bg.getDelta().getX())
+//					+ xStartForAll, (y + moveY * bg.getDelta().getY()), isHFlip, isVFlip);
+		
+		} else if (yTile == 1) {
+			
+			startPosY = (y + moveY) % img.getHeight();
+			while (startPosY < 240) {
+				drawImage(trans, img, (startPosY + (bg.getTilespacing().getY())
+						* bg.getDelta().getX())
+						+ xStartForAll, (y + moveY * bg.getDelta().getY()), isHFlip, isVFlip);
+				startPosY += img.getHeight();
+			}
+			
+			startPosY = (y + moveY) % img.getHeight();
+			while (startPosY + img.getHeight() > 0) {
+				drawImage(trans, img, (startPosY + (bg.getTilespacing().getY())
+						* bg.getDelta().getX())
+						+ xStartForAll, (y + moveY * bg.getDelta().getY()), isHFlip, isVFlip);
+				startPosY -= img.getHeight();
+			}
+			
+			
+		} else {
+			startPosY = (y + moveY) % img.getHeight();
+			while (startPosY < 240 && yTile > 0) {
+				drawImage(trans, img, (startPosY + (bg.getTilespacing().getY())
+						* bg.getDelta().getX())
+						+ xStartForAll, (y + moveY * bg.getDelta().getY()), isHFlip, isVFlip);
+				startPosY += img.getHeight();
+				yTile--;
+			}
+		}
+	}
+	
 	private void drawTileXY(ImageContainer img, BG bg, float x,
-			float y, int width, float moveX, float moveY, int xStartForAll, Trans trans, boolean isHFlip, boolean isVFlip) {
+			float y, float moveX, float moveY, int xStartForAll, Trans trans, boolean isHFlip, boolean isVFlip) {
 		if (!bg.isEnable())
 			return;
 		Stage stage = GameFight.getInstance().getInstanceOfStage();
 		int xTile = (int) bg.getTile().getX();
-		float startPos = x;
+		float startPosX = x;
+		float startPosY = y;
 		if (xTile == 0) {
-			drawImage(trans, img, (startPos + (bg.getTilespacing().getX()) + moveX
+			drawImage(trans, img, (startPosX + (bg.getTilespacing().getX()) + moveX
 					* bg.getDelta().getX())
 					+ xStartForAll, (y + moveY * bg.getDelta().getY()), isHFlip, isVFlip);
-		}
-		startPos = startPos % width;
+			drawTileY(img, bg, startPosX, startPosY, moveX, moveY, xStartForAll, trans, isHFlip, isVFlip);
 		
-		while (startPos < width && (xTile > 0 || bg.getTile().getX() == 1)) {
-			drawImage(trans, img,  (startPos + (bg.getTilespacing().getX()) + moveX
+		}
+		startPosX = startPosX % img.getWidth()  + moveX;
+		startPosY = startPosY % img.getHeight();
+		
+		while (startPosX < 320 && (xTile > 0 || bg.getTile().getX() == 1)) {
+			drawImage(trans, img,  (startPosX + (bg.getTilespacing().getX())
 					* bg.getDelta().getX())
 					+ xStartForAll,  (y + moveY * bg.getDelta().getY()), isHFlip, isVFlip);
-			startPos += img.getWidth();
+			
+
+			drawTileY(img, bg, startPosX, startPosY, moveX, moveY, xStartForAll, trans, isHFlip, isVFlip);
+			
+			startPosX += img.getWidth();
 			xTile--;
 		}
 		if (bg.getTile().getX() == 1) {
-			startPos =  (x - img.getWidth());
-			while (startPos + img.getWidth() + xStartForAll > stage.getCamera()
-					.getBoundleft() - xStartForAll*2) {
+			startPosX =  (x - img.getWidth()) + moveX;
+			while (startPosX + img.getWidth() + xStartForAll > 0) {
 				drawImage(trans, img,
-						 (startPos + (bg.getTilespacing().getX()) + moveX
+						 (startPosX + (bg.getTilespacing().getX())
 								* bg.getDelta().getX())
 								+ xStartForAll,  (y + moveY
 								* bg.getDelta().getY()), isHFlip, isVFlip);
-				startPos -= img.getWidth();
+				drawTileY(img, bg, startPosX, startPosY, moveX, moveY, xStartForAll, trans, isHFlip, isVFlip);
+				startPosX -= img.getWidth();
 			}
 
 		}
@@ -93,8 +142,6 @@ public class StageBackgroundRender implements IBackgroundRenderer {
 		int xStartForAll = (int) (stage.getCamera().getWidth()/2 * 1f/stage.getScaling().getXscale());
 
 		
-		int width = (Math.abs(stage.getCamera().getBoundleft()) + Math
-				.abs(stage.getCamera().getBoundright())) + stage.getCamera().getWidth();
 		float _mvX = stage.getCamera().getX();
 		float _mvY = stage.getCamera().getY();
 
@@ -129,7 +176,7 @@ public class StageBackgroundRender implements IBackgroundRenderer {
 					float x =  (bg.getPos().getX() - imgSprSff.getXAxis());
 					float y =  bg.getPos().getY() - imgSprSff.getYAxis();
 
-					drawTileXY(img, bg, x, y, width, moveX, moveY,
+					drawTileXY(img, bg, x, y, moveX, moveY,
 							xStartForAll, bg.getBgTrans(), false, false);
 
 				} else if (bg.getBgType() == BG.Type.ANIM && bg.getId() == null) {
@@ -158,7 +205,7 @@ public class StageBackgroundRender implements IBackgroundRenderer {
 					Trans trans = bg.getBgTrans();
 					trans = air.type == TypeBlit.ASD ? Trans.ADD: trans;
 					
-					drawTileXY(img, bg, x, y, width, moveX, moveY,
+					drawTileXY(img, bg, x, y, moveX, moveY,
 							xStartForAll, trans, isHFlip, isVFlip);
 
 				} else if (bg.getBgType() == BG.Type.ANIM && bg.getId() != null) {
@@ -190,7 +237,7 @@ public class StageBackgroundRender implements IBackgroundRenderer {
 					Trans trans = bg.getBgTrans();
 					trans = air.type == TypeBlit.ASD ? Trans.ADD: trans;
 					
-					drawTileXY(img, bg, x, y, width, moveX, moveY,
+					drawTileXY(img, bg, x, y, moveX, moveY,
 							xStartForAll, trans, isHFlip, isVFlip);
 					
 
@@ -208,9 +255,9 @@ public class StageBackgroundRender implements IBackgroundRenderer {
 
 
 					for (int v = 0; v < img.getHeight(); ++v) {
-						float deltaY = bg.getTopXscale()
-								+ (v * ((bg.getBottomXscale() - bg
-										.getTopXscale()) / img.getHeight()));
+						float deltaY = bg.getXscale().getX()
+								+ (v * ((bg.getXscale().getY() - bg
+										.getXscale().getX()) / img.getHeight()));
 						deltaY = deltaY * bg.getDelta().getX();
 						float x1 = (x + (deltaY * moveX)) + xStartForAll;
 						float y2 = (y + moveY * bg.getDelta().getY()) + v;

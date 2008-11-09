@@ -9,7 +9,6 @@ import org.lee.mugen.sprite.base.AbstractAnimManager;
 import org.lee.mugen.sprite.character.AnimGroup;
 import org.lee.mugen.sprite.entity.PointF;
 import org.lee.mugen.sprite.entity.SprGrpNum;
-import org.lee.mugen.stage.Stage;
 
 public class BG implements Cloneable {
 	// type = ? "Normal"/"Parallax" (def: "normal")
@@ -19,8 +18,8 @@ public class BG implements Cloneable {
 	private int order = -1;
 	private int actionno = 0;
 
-	private int bottomWidth = 0;
-	private float bottomXscale = 0;
+
+	
 	private String debugbg;
 	private boolean enable = true;
 	private boolean visible = true;
@@ -73,7 +72,7 @@ public class BG implements Cloneable {
 
 	// Parallax-only:
 	// xscale = ?, ? Top xscale, bottom xscale (float)
-	private float topXscale = 0;
+	private PointF xscale = new PointF(1f, 2f);
 	// trans = ? Transparency settings: "none"/"add"/"add1"/"sub"" (def: "none")
 	private Trans trans = Trans.NONE;
 	private Type type = Type.NORMAL;
@@ -99,19 +98,14 @@ public class BG implements Cloneable {
 	private float yscaledelta;
 	// yscalestart = ? Starting y-scale (float, in percent) (def: 100)
 	private float yscalestart;
-	private Point width;
 
-	public Point getWidth() {
-		return width;
-	}
+	private Point width = new Point();
 
-	public void setWidth(Point width) {
-		this.width = width;
-	}
+	
 	private PointF pos = new PointF();
 
 	public void init() {
-//		pos = new PointF(start);
+		pos = new PointF(start);
 		getAnimManager().setAction(actionno);
 	}
 	
@@ -152,13 +146,6 @@ public class BG implements Cloneable {
 		return window;
 	}
 
-	public int getBottomWidth() {
-		return bottomWidth;
-	}
-
-	public float getBottomXscale() {
-		return bottomXscale;
-	}
 
 	public String getDebugbg() {
 		return debugbg;
@@ -245,9 +232,6 @@ public class BG implements Cloneable {
 		return topWidth;
 	}
 
-	public float getTopXscale() {
-		return topXscale;
-	}
 
 	// ////////////////////////////////////////////////////////////
 
@@ -268,13 +252,6 @@ public class BG implements Cloneable {
 		p2Alpha = ((Number) params[1]).intValue();
 	}
 
-	public void setBottomWidth(int bottomWidth) {
-		this.bottomWidth = bottomWidth;
-	}
-
-	public void setBottomXscale(int bottomXscale) {
-		this.bottomXscale = bottomXscale;
-	}
 
 	public void setDebugbg(String debugbg) {
 		this.debugbg = debugbg;
@@ -304,9 +281,6 @@ public class BG implements Cloneable {
 		this.topWidth = topWidth;
 	}
 
-	public void setTopXscale(int topXscale) {
-		this.topXscale = topXscale;
-	}
 
 	public void setTrans(String trans) {
 		this.trans = Trans.valueOf(trans.toUpperCase());
@@ -329,12 +303,6 @@ public class BG implements Cloneable {
 		window.height = height;
 	}
 
-	public void setXscale(Object... params) {
-		if (params.length > 0)
-			topXscale = ((Number) params[0]).floatValue();
-		if (params.length > 1)
-			bottomXscale = ((Number) params[1]).floatValue();
-	}
 
 	public void setYscaledelta(float yscaledelta) {
 		this.yscaledelta = yscaledelta;
@@ -412,10 +380,23 @@ public class BG implements Cloneable {
 		return window;
 	}
 
-	public void setBottomXscale(float bottomXscale) {
-		this.bottomXscale = bottomXscale;
-	}
 	private AbstractAnimManager anim;
+
+	public PointF getXscale() {
+		return xscale;
+	}
+
+	public void setXscale(PointF xscale) {
+		this.xscale = xscale;
+	}
+
+	public Point getWidth() {
+		return width;
+	}
+
+	public void setWidth(Point width) {
+		this.width = width;
+	}
 
 	public AbstractAnimManager getAnimManager() {
 		if (anim == null) {

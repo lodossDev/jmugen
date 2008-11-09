@@ -212,8 +212,7 @@ public class Background {
 					&& getBgCtrlDefMap().get(bg.getId()) != null) {
 				getBgCtrlDefMap().get(bg.getId()).process();
 			} else {
-//				if (bg.getType() != BG.Type.PARALLAX)
-					bg.process();
+				bg.process();
 			}
 		}
 	}

@@ -23,14 +23,17 @@ public class Item extends Type {
 		super.parse(name, value);
 		if (name.equalsIgnoreCase("spacing")) {
 			spacing = (Point) BeanTools.getConvertersMap().get(Point.class).convert(value);
-		} else if (name.equals("active")) {
-			active = new Type();
+		} else if (name.startsWith("active.")) {
+			if (active == null)
+				active = new Type();
 			active.setType(getNext(name), active, value, ms);
-		} else if (name.equals("active2")) {
-			active2 = new Type();
+		} else if (name.startsWith("active2.")) {
+			if (active2 == null)
+				active2 = new Type();
 			active2.setType(getNext(name), active2, value, ms);
-		} else if (name.equals("cursor")) {
-			cursor = new Type();
+		} else if (name.startsWith("cursor")) {
+			if (cursor == null)
+				cursor = new Type();
 			cursor.setType(getNext(name), cursor, value, ms);
 		}
 	}
