@@ -99,11 +99,19 @@ public class BG implements Cloneable {
 	private float yscaledelta;
 	// yscalestart = ? Starting y-scale (float, in percent) (def: 100)
 	private float yscalestart;
+	private Point width;
 
+	public Point getWidth() {
+		return width;
+	}
+
+	public void setWidth(Point width) {
+		this.width = width;
+	}
 	private PointF pos = new PointF();
 
 	public void init() {
-		pos = new PointF(start);
+//		pos = new PointF(start);
 		getAnimManager().setAction(actionno);
 	}
 	
@@ -160,12 +168,15 @@ public class BG implements Cloneable {
 	float xMul = 1;
 	boolean isInit = false;
 	public void process() {
-		if (!isInit)
+		if (!isInit) {
 			init();
+			isInit = true;
+		}
 		if (!enable)
 			return;
 		
 		float x = getVelocity().getX();
+				
 		if (sinXTime != 0) {
 			xMul = (xMul>0? 1f: -1f) / (sinXTime/4f);
 			x += (sinYAmp * Math.sin(sinXTimeLine)) * xMul;

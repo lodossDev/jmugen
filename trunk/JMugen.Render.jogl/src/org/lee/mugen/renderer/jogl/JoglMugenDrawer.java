@@ -236,6 +236,7 @@ public class JoglMugenDrawer extends MugenDrawer {
 			gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
 
 			float type = 0;
+			gl.glColor4f(1f, 1f, 1f, dp.getAlpha());
 			if (dp.getTrans() == Trans.ADD) {
 				gl.glTexEnvi(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_MODULATE);
 				gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_DST_ALPHA);
@@ -248,14 +249,21 @@ public class JoglMugenDrawer extends MugenDrawer {
 				gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_DST_ALPHA);
 				type = 2;
 			} else if (dp.getTrans() == Trans.SUB) {
-				gl.glTexEnvi(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_SUBTRACT);
-				gl.glBlendFunc(GL.GL_ONE_MINUS_DST_COLOR, GL.GL_ONE_MINUS_SRC_ALPHA);
-				gl.glBlendFunc(GL.GL_ONE_MINUS_DST_ALPHA, GL.GL_ONE_MINUS_SRC_COLOR);
-				gl.glBlendFunc(GL.GL_DST_COLOR, GL.GL_ONE);
+				
+				gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_COMBINE);
+				gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_COMBINE_RGB, GL.GL_SUBTRACT);
+				gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_COMBINE_ALPHA, GL.GL_SUBTRACT);
+				gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_SRC0_RGB, GL.GL_PREVIOUS);
+				gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_SRC1_RGB, GL.GL_TEXTURE);
+				gl.glBlendFunc (GL.GL_DST_COLOR, GL.GL_SRC_COLOR);
 				type = 3;
+				float coef = 0.33f;
+				gl.glColor4f(coef, coef, coef, dp.getAlpha());
+				
 			}
-			gl.glColor4f(1f, 1f, 1f, dp.getAlpha());
+			
 			drawImage(xlDst, xrDst, ytDst, ybDst, xlSrc, xrSrc, ytSrc, ybSrc, dp);
+			
 		}
 
 		gl.glDisable(GL.GL_ALPHA_TEST);
@@ -339,7 +347,7 @@ public class JoglMugenDrawer extends MugenDrawer {
 	        gl.glTexCoord2f(tx2, ty2); gl.glVertex3f(x+w, y+h, 0f);
 	        gl.glTexCoord2f(tx2, ty1); gl.glVertex3f(x+w, y  , 0f);
 	        gl.glTexCoord2f(tx1, ty1); gl.glVertex3f(x  , y  , 0f);
-			
+	        gl.glEnd();
 			return;
 		}
 		Texture texture = (Texture) dp.getIc().getImg();
@@ -427,13 +435,12 @@ public class JoglMugenDrawer extends MugenDrawer {
 
 	@Override
 	public void fillRect(float x1, float y1, float width, float height) {
-		getJoglTextureDrawer().fillRect(x1, y1, width, height);
 		GL gl = getGl();
 		if (gl == null)
 			return;
 		
 		gl.glDisable(GL.GL_TEXTURE_2D);
-		gl.glColor4f(rgba.getA(), rgba.getG(), rgba.getB(), rgba.getA());
+		gl.glColor4f(rgba.getR(), rgba.getG(), rgba.getB(), rgba.getA());
 
 		gl.glBegin(GL.GL_QUADS);
 		gl.glVertex2f(x1, y1);
@@ -486,7 +493,6 @@ public class JoglMugenDrawer extends MugenDrawer {
 
 	@Override
 	public void setColor(float r, float g, float b, float a) {
-		getJoglTextureDrawer().setColor(r, g, b, a);
 		GL gl = getGl();
 		if (gl == null)
 			return;
@@ -496,11 +502,11 @@ public class JoglMugenDrawer extends MugenDrawer {
 
 	@Override
 	public void setColor(float r, float g, float b) {
-		getJoglTextureDrawer().setColor(r, g, b);
 		GL gl = getGl();
 		if (gl == null)
 			return;
 		gl.glColor3f(r / 255f, g / 255f, b / 255f);
+		rgba = new RGB(r, g, b, 1f);
 
 	}	
 

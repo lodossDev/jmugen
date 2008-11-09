@@ -70,13 +70,6 @@ public class FontParser {
 		List<GroupText> grpsText = Parser.getGroupTextMap(text, true);
 		for (GroupText grp: grpsText) {
 			if (grp.getSection().equalsIgnoreCase("def")) {
-				/*
-				Size = 5,8
-				Spacing = 1,1
-				Colors = 1
-				Offset = 0,0
-				Type = Variable
-				 */
 				String[] strsSize = grp.getKeyValues().get("size").replaceAll(" ", "").split(",");
 				fontProducer.setSize(new Dimension(Integer.parseInt(strsSize[0]), Integer.parseInt(strsSize[1])));
 				

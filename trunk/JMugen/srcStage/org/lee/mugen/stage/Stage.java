@@ -61,7 +61,9 @@ public class Stage {
 		String bgctrldefRegex = " *bgctrldef +" + "(.*) *";
 	    String bgCtrlRegex = " *bgctrl +" + "([a-zA-Z0-9\\.\\ \\-\\_]*) *";
 		background = new Background(this, getCurrentDir(), bgdefRegex, bgRegex, bgctrldefRegex, bgCtrlRegex);
-
+		background.parse(this, groups);
+		
+		
 		for (GroupText grp: groups) {
 			if (grp.getSection().equals("info")) {
 				info = new Info();
@@ -70,18 +72,25 @@ public class Stage {
 				camera = new Camera(this);
 				parse(camera, grp);
 			} else if (grp.getSection().equals("playerinfo")) {
+				playerInfo = new PlayerInfo(this);
 				parse(playerInfo, grp);
 			} else if (grp.getSection().equals("scaling")) {
+				scaling = new Scaling(this);
 				parse(scaling, grp);
 			} else if (grp.getSection().equals("bound")) {
+				bound = new Bound(this);
 				parse(bound, grp);
 			} else if (grp.getSection().equals("stageinfo")) {
+				stageInfo = new StageInfo(this);
 				parse(stageInfo, grp);
 			} else if (grp.getSection().equals("shadow")) {
+				shadow = new Shadow(this);
 				parse(shadow, grp);
 			} else if (grp.getSection().equals("reflection")) {
+				reflection = new Reflection(this);
 				parse(reflection, grp);
 			} else if (grp.getSection().equals("music")) {
+				music = new Music(this);
 				parse(music, grp);
 			}
 		}

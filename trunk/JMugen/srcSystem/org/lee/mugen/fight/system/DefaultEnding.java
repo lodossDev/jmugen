@@ -1,5 +1,7 @@
 package org.lee.mugen.fight.system;
 
-public class DefaultEnding {
+
+public class DefaultEnding extends GameOverScreen {
+
 
 }

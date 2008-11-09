@@ -437,24 +437,6 @@ public class JoglGameWindow implements GameWindow, GLEventListener {
 			}});
 		
 	}
-	int index = 0;
-	int y;
-	String[] files = {"1.jpg", "2.jpg", "3.jpg", "4.jpg", };
-	BufferedImage[] images = null;
-	{
-		images = new BufferedImage[4];
-		int i = 0;
-		try {
-			images[i] = ImageIO.read(new File(files[i++])); 
-			images[i] = ImageIO.read(new File(files[i++])); 
-			images[i] = ImageIO.read(new File(files[i++])); 
-			images[i] = ImageIO.read(new File(files[i++])); 
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	boolean addIntro;
 	@Override
 	public void display(GLAutoDrawable drawable) {
 		_gl = drawable.getGL();

@@ -58,6 +58,21 @@ public class Parser {
 		}
 		throw new IllegalArgumentException("File not exist");
 	}
+	public static String getExistFile(File currentDir, String filename) {
+		File result = new File(currentDir, filename);
+		
+		if (result.exists()) {
+			return result.getAbsolutePath();
+		}
+		
+		for (File base: SEARCH_DIR_FOR) {
+			result = new File(base, filename);
+			if (result.exists()) {
+				return result.getAbsolutePath();
+			}
+		}
+		throw new IllegalArgumentException("File not exist");
+	}
 	public static interface AccessorParser {
 
 		void parse(GroupText grp) throws Exception;
@@ -313,7 +328,7 @@ public class Parser {
 		return getGroupTextMap(src, false);
 	}
 	public static List<GroupText> getGroupTextMap(String src, boolean caseSensitive) {
-		StringTokenizer strToken = new StringTokenizer(caseSensitive? src: src.toLowerCase(), "\r\n");
+		StringTokenizer strToken = new StringTokenizer(src, "\r\n");
     
         List<GroupText> result = new ArrayList<GroupText>();
         
@@ -343,8 +358,15 @@ public class Parser {
                     if (!regexIsCommentOrEmpty.matcher(line).matches()) {
                     	line = line.replaceAll(S_END, "");
                     	if (line.indexOf("=") != -1) {
-                        	String[] kv = getSeparateKeyValue(line, caseSensitive);
-                        	groupText.getKeyValues().put(kv[0].toLowerCase(), kv[1] == null? "": caseSensitive? kv[1]: kv[1].toLowerCase());
+                        	String[] kv = getSeparateKeyValue(line, true);
+                        	kv[1] = kv[1] == null? "": kv[1];
+                        	if (!kv[1].startsWith("\"") || !kv[1].endsWith("\"")) {
+                        		if (!caseSensitive)
+                        			kv[1] = kv[1].toLowerCase();
+                        	} else {
+                        		System.out.println();
+                        	}
+                        	groupText.getKeyValues().put(kv[0].toLowerCase(), kv[1]);
                         	groupText.getKeysOrdered().add(kv[0].toLowerCase());
                     	}
                     	groupText.appendText(line);
@@ -352,18 +374,25 @@ public class Parser {
                     if (strToken.hasMoreTokens())
                     line = strToken.nextToken().replaceAll(S_END, "");
                 } while (!P_SECTION_REGEX.matcher(line).find() && strToken.hasMoreTokens());
-                
-                if (!strToken.hasMoreTokens()) {
+            	
+            	 if (!strToken.hasMoreTokens()) {
                 	if (P_SECTION_REGEX.matcher(line).find()) {
                 		processLine = false;
                 	} else if (!regexIsCommentOrEmpty.matcher(line).matches()) {
                     	line = line.replaceAll(S_END, "");
                     	if (line.indexOf("=") != -1) {
-                        	String[] kv = getSeparateKeyValue(line, caseSensitive);
-                        	groupText.getKeyValues().put(kv[0].toLowerCase(), kv[1] == null? "": caseSensitive? kv[1]: kv[1].toLowerCase());
+                        	String[] kv = getSeparateKeyValue(line, true);
+                        	kv[1] = kv[1] == null? "": kv[1];
+                        	if (!kv[1].startsWith("\"") || !kv[1].endsWith("\"")) {
+                        		if (!caseSensitive)
+                        			kv[1] = kv[1].toLowerCase();
+                        	} else {
+                        		System.out.println();
+                        	}
+                        	groupText.getKeyValues().put(kv[0].toLowerCase(), kv[1]);
                         	groupText.getKeysOrdered().add(kv[0].toLowerCase());
-                        	groupText.appendText(line);
                     	}
+                    	groupText.appendText(line);
                     }
                     
                 } else {

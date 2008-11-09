@@ -1,9 +1,10 @@
-package org.lee.mugen.fight.system;
+package org.lee.mugen.fight.system.elem;
 
 import java.awt.Point;
 
 import org.lee.mugen.fight.section.Section;
 import org.lee.mugen.fight.section.elem.Type;
+import org.lee.mugen.fight.system.MugenSystem;
 import org.lee.mugen.parser.air.Rectangle;
 import org.lee.mugen.sprite.entity.SndGrpNum;
 import org.lee.mugen.util.BeanTools;
@@ -28,14 +29,16 @@ public class Menu implements Section {
 	public void parse(Object root, String name, String value) throws Exception {
 		ms = (MugenSystem) root;
 		if (name.startsWith("item.")) {
-			item = new Item(ms);
+			if (item == null)
+				item = new Item(ms);
 
 			item.setType(Type.getNext(name), item, value, ms);
 			item.parse(Type.getNext(name), value);
 		} else if (name.equals("pos")) {
 			pos = (Point) BeanTools.getConvertersMap().get(Point.class).convert(value);
 		} else if (name.startsWith("itemname")) {
-			itemname = new ItemName();
+			if (itemname == null)
+				itemname = new ItemName();
 			itemname.parse(root, Type.getNext(name), value);
 		} else if (name.equals("window$margins$y")) {
 			window$margins$y = (Point) BeanTools.getConvertersMap().get(Point.class).convert(value);

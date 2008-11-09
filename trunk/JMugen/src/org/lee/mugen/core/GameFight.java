@@ -16,7 +16,7 @@ import java.util.Map;
 
 import org.lee.mugen.core.command.SpriteCmdProcess;
 import org.lee.mugen.core.renderer.game.AfterimageRender;
-import org.lee.mugen.core.renderer.game.BackgroundRender;
+import org.lee.mugen.core.renderer.game.StageBackgroundRender;
 import org.lee.mugen.core.renderer.game.CnsRender;
 import org.lee.mugen.core.renderer.game.DebugExplodRender;
 import org.lee.mugen.core.renderer.game.DebugRender;
@@ -28,7 +28,9 @@ import org.lee.mugen.core.renderer.game.SpriteShadowRender;
 import org.lee.mugen.core.renderer.game.fight.FightdefRender;
 import org.lee.mugen.core.renderer.game.fight.RoundRender;
 import org.lee.mugen.core.renderer.game.intro.IntroRender;
+import org.lee.mugen.core.renderer.game.system.TitleInfoRender;
 import org.lee.mugen.fight.section.Fightdef;
+import org.lee.mugen.fight.system.MugenSystem;
 import org.lee.mugen.input.CmdProcDispatcher;
 import org.lee.mugen.input.ISpriteCmdProcess;
 import org.lee.mugen.renderer.GameWindow;
@@ -221,7 +223,7 @@ public class GameFight implements Game {
 		if (instanceOfStage != null)
 			instanceOfStage.free();
 		instanceOfStage = new Stage(stage);
-		addRender(new BackgroundRender());
+		addRender(new StageBackgroundRender());
 
 	}
 
@@ -391,8 +393,8 @@ public class GameFight implements Game {
 		synchronized (renderableList) {
 			while (!renderableListTemp.isEmpty()) {
 				Renderable r = renderableListTemp.pollLast();
-				if (r instanceof BackgroundRender) {
-					backgroundRenderList.add((BackgroundRender) r);
+				if (r instanceof StageBackgroundRender) {
+					backgroundRenderList.add((StageBackgroundRender) r);
 					return;
 				}
 				if (!renderableList.contains(r))
@@ -454,6 +456,7 @@ public class GameFight implements Game {
 			return o1.getPriority() - o2.getPriority();
 		}
 	};
+	private Fightdef fightdef;
 
 	public void orderRenderList() {
 		Collections.sort(renderableList, _DEFAULT_COMPARATOR_FOR_RENDERER);
@@ -469,7 +472,7 @@ public class GameFight implements Game {
 		return fightdef;
 	}
 	public void setFightDef(Fightdef fightDef) {
-		this.fightdef = fightDef;
+		this.fightdef  = fightDef;
 	}
 	////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////
@@ -478,8 +481,9 @@ public class GameFight implements Game {
 		setWindow(container);
 
 		loadingText += "\nloading Fight.def";
-		
-		fightdef.init();
+		if (fightdef != null)
+			fightdef.free();
+		fightdef = new Fightdef("resource/data/fight.def");
 		try {
 			
 			loadSprites();
@@ -500,8 +504,11 @@ public class GameFight implements Game {
 			
 			addRender(new FightdefRender());
 			addRender(new RoundRender());
-			addRender(new IntroRender());
+//			addRender(new IntroRender());
+			
+			addRender(new TitleInfoRender());
 
+			MugenSystem ms = MugenSystem.getInstance();
 
 
 //			addRender(new SpriteRender(new TypeSprite(getFightDef().getLifebar().getP1().getFront(), getFightDef().getLifebar().getP1().getPos())));
@@ -625,7 +632,7 @@ public class GameFight implements Game {
 	
 	public void render() {
 		
-		BackgroundRender br = (BackgroundRender) backgroundRenderList.get(0);
+		StageBackgroundRender br = (StageBackgroundRender) backgroundRenderList.get(0);
 		br.setLayerDisplay(0);
 		
 		if (!globalEvents.getEnvcolor().isUse()) {
