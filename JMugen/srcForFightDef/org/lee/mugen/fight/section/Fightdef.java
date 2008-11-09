@@ -222,5 +222,10 @@ public class Fightdef {
 		
 	}
 
+	public void free() {
+		getSpriteSff().free();
+		
+	}
+
 
 }

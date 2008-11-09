@@ -98,7 +98,7 @@ public class FaceRender extends BaseRender {
 		
 		int fontSens = font.getAlignmt().getCode();
 		md.scale(p.getName().getScale().getX(), p.getName().getScale().getY());
-		GameFight.getInstance().getFightdef().getFiles().getFont().get(font.getFontno()).
+		font.getFont().get(font.getFontno()).
 				draw((int)(pos.x*1f/p.getName().getScale().getX()), (int)(pos.y*1f/p.getName().getScale().getY()),
 						md, name, fontSens);
 		md.scale(1f/p.getName().getScale().getX(), 1f/p.getName().getScale().getY());

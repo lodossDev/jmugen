@@ -9,7 +9,7 @@ public abstract class CommonType implements Cloneable {
 		} else if (type.equalsIgnoreCase("spr")) {
 			result = new SprType(root);
 		} else if (type.equalsIgnoreCase("font")) {
-			result = new FontType();
+			result = new FontType(root);
 		}
 		return result;
 	}

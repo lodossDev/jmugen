@@ -35,7 +35,7 @@ public class Combo extends SimpleElement implements Section {
 			originalDisplaytime = displaytime;
 		} else if (name.equals("text.")) {
 			if (text == null) {
-				text = new FontType();
+				text = new FontType(root);
 			}
 			text.parse(Type.getNext(name), value);
 		} else if (name.equals("start.")) {

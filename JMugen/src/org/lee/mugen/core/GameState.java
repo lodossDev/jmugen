@@ -27,7 +27,7 @@ public class GameState {
 	GameState() {
 	}
 	
-	private static int DEFAULT_TIME = 99 * 60;
+	public static int DEFAULT_TIME = 99 * 60;
 	
 	
 	public static int getDefaultTime() {
@@ -297,7 +297,7 @@ public class GameState {
 	}
 	
 	public int getRoundTime() {
-		return DEFAULT_TIME;//roundTime;
+		return DEFAULT_TIME + 1;//roundTime;
 	}
 
 	public void setRoundTime(int roundTime) {

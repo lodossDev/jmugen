@@ -12,6 +12,7 @@ import org.lee.mugen.parser.air.AirParser;
 import org.lee.mugen.parser.type.StringValueable;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.base.AbstractAnimManager;
+import org.lee.mugen.sprite.baseForParse.SpriteSFF;
 import org.lee.mugen.sprite.cns.eval.function.StateCtrlFunction;
 import org.lee.mugen.sprite.parser.ExpressionFactory;
 import org.lee.mugen.sprite.parser.Parser.GroupText;
@@ -45,6 +46,7 @@ public class Background {
 		this.bgctrldefRegex = bgctrldefRegex;
 		this.bgCtrlRegex = bgCtrlRegex;
 		this.currentDir = currentDir;
+		root = parent;
 	}
 
 	public File getCurrentDir() {
@@ -70,6 +72,8 @@ public class Background {
 		for (GroupText grp : groups) {
 			if (bgdefPattern.matcher(grp.getSection()).find()) {
 				bgdef = new BGdef();
+				for (String key: grp.getKeysOrdered())
+					bgdef.parse(this, key, grp.getKeyValues().get(key));
 			} else if (animGrpPattern.matcher(grp.getSection()).find()) {
 				airParser.parseGroup(grp);
 			} else if (bgPattern.matcher(grp.getSection()).find()
@@ -208,7 +212,8 @@ public class Background {
 					&& getBgCtrlDefMap().get(bg.getId()) != null) {
 				getBgCtrlDefMap().get(bg.getId()).process();
 			} else {
-				bg.process();
+//				if (bg.getType() != BG.Type.PARALLAX)
+					bg.process();
 			}
 		}
 	}

@@ -55,7 +55,7 @@ public class Camera implements Section {
 		} else if (name.equals("boundlow")) {
 			boundlow = Integer.parseInt(value);
 		} else if (name.equals("verticalfollow")) {
-			verticalfollow = Integer.parseInt(value);
+			verticalfollow = Float.parseFloat(value);
 		} else if (name.equals("floortension")) {
 			floortension = Integer.parseInt(value);
 		} else if (name.equals("tension")) {

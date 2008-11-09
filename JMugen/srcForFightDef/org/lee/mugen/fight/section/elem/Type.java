@@ -148,6 +148,7 @@ public class Type implements Cloneable {
 
 	}
 
+
 	public int getOriginalDisplaytime() {
 		return originalDisplaytime;
 	}
@@ -171,7 +172,7 @@ public class Type implements Cloneable {
 			type = e;
 			
 		} else if (name.equalsIgnoreCase("font")) {
-			FontType e = new FontType();
+			FontType e = new FontType(root);
 			int[] nba = (int[]) BeanTools.getConvertersMap().get(int[].class).convert(value);
 			int fontno = nba[0];
 			e.setFontno(fontno);

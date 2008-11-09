@@ -14,6 +14,7 @@ import org.lee.mugen.snd.SndReader;
 import org.lee.mugen.sprite.baseForParse.SpriteSFF;
 import org.lee.mugen.sprite.common.resource.FontParser;
 import org.lee.mugen.sprite.common.resource.FontProducer;
+import org.lee.mugen.sprite.parser.Parser;
 
 public class Files implements Section {
 	private MugenSystem root;
@@ -24,10 +25,11 @@ public class Files implements Section {
 	private Intro intro$storyboard;
 	private Select select;
 	private Fightdef fight;
-	private Map<Integer, FontProducer> fonts = new HashMap<Integer, FontProducer>();
+	private Map<Integer, FontProducer> font = new HashMap<Integer, FontProducer>();
 
 	private String getFile(MugenSystem root, String value) {
-		return new File(this.root.getCurrentDir().getAbsolutePath(), value).getAbsolutePath();
+		String file = Parser.getExistFile(this.root.getCurrentDir(), value);
+		return file;
 	}
 	@Override
 	public void parse(Object root, String name, String value) throws Exception {
@@ -35,7 +37,7 @@ public class Files implements Section {
 		
 		if (name.equals("spr")) {
 			SffReader sffReader = new SffReader(getFile(this.root, value), null);
-			spr = new SpriteSFF(sffReader, true, true);
+			spr = new SpriteSFF(sffReader, true, false);
 		} else if (name.equals("snd")) {
 			snd = SndReader.parse(getFile(this.root, value));
 		} else if (name.equals("logo.storyboard")) {
@@ -45,13 +47,21 @@ public class Files implements Section {
 		} else if (name.equals("fight")) {
 			fight = new Fightdef(getFile(this.root, value));
 		} else if (name.startsWith("font")) {
-			String sNum = name.substring(4, name.indexOf("."));
+
+			String sNum = "";
+			
+			if (name.indexOf(".") != -1)
+				sNum = name.substring(4, name.indexOf("."));
+			else
+				sNum = name.substring(4);
+
 			int num = 0;
 			if (sNum.length() > 0) {
 				num = Integer.parseInt(sNum);
 			}
+			
 			FontProducer fontProducer = FontParser.getFontProducer(getFile(this.root, value));
-			fonts.put(num, fontProducer);
+			font.put(num, fontProducer);
 			
 		}
 	}
@@ -97,11 +107,11 @@ public class Files implements Section {
 	public void setFight(Fightdef fight) {
 		this.fight = fight;
 	}
-	public Map<Integer, FontProducer> getFonts() {
-		return fonts;
+	public Map<Integer, FontProducer> getFont() {
+		return font;
 	}
-	public void setFonts(Map<Integer, FontProducer> fonts) {
-		this.fonts = fonts;
+	public void setFont(Map<Integer, FontProducer> fonts) {
+		this.font = fonts;
 	}
 	
 	

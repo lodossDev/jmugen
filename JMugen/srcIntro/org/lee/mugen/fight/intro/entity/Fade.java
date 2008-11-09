@@ -41,4 +41,8 @@ public class Fade {
 	public void init() {
 		time = originalTime;
 	}
+	public void decrease() {
+		if (time > 0)
+			time--;
+	}
 }

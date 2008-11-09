@@ -1,4 +1,4 @@
-package org.lee.mugen.fight.system;
+package org.lee.mugen.fight.system.elem;
 
 import org.lee.mugen.fight.section.Section;
 
@@ -15,8 +15,14 @@ public class ItemName implements Section {
 	private String options;
 	private String exit;
 
+	private String getGoodString(String word) {
+		if (word.startsWith("\"") && word.endsWith("\""))
+			return word.substring(1, word.length() - 1);
+		return word;
+	}
+	
 	public String getArcade() {
-		return arcade;
+		return getGoodString(arcade);
 	}
 
 	public void setArcade(String arcade) {
@@ -24,7 +30,7 @@ public class ItemName implements Section {
 	}
 
 	public String getVersus() {
-		return versus;
+		return getGoodString(versus);
 	}
 
 	public void setVersus(String versus) {
@@ -32,7 +38,7 @@ public class ItemName implements Section {
 	}
 
 	public String getTeamarcade() {
-		return teamarcade;
+		return getGoodString(teamarcade);
 	}
 
 	public void setTeamarcade(String teamarcade) {
@@ -40,7 +46,7 @@ public class ItemName implements Section {
 	}
 
 	public String getTeamversus() {
-		return teamversus;
+		return getGoodString(teamversus);
 	}
 
 	public void setTeamversus(String teamversus) {
@@ -48,7 +54,7 @@ public class ItemName implements Section {
 	}
 
 	public String getTeamcoop() {
-		return teamcoop;
+		return getGoodString(teamcoop);
 	}
 
 	public void setTeamcoop(String teamcoop) {
@@ -56,7 +62,7 @@ public class ItemName implements Section {
 	}
 
 	public String getSurvival() {
-		return survival;
+		return getGoodString(survival);
 	}
 
 	public void setSurvival(String survival) {
@@ -64,7 +70,7 @@ public class ItemName implements Section {
 	}
 
 	public String getSurvivalcoop() {
-		return survivalcoop;
+		return getGoodString(survivalcoop);
 	}
 
 	public void setSurvivalcoop(String survivalcoop) {
@@ -72,7 +78,7 @@ public class ItemName implements Section {
 	}
 
 	public String getTraining() {
-		return training;
+		return getGoodString(training);
 	}
 
 	public void setTraining(String training) {
@@ -80,7 +86,7 @@ public class ItemName implements Section {
 	}
 
 	public String getWatch() {
-		return watch;
+		return getGoodString(watch);
 	}
 
 	public void setWatch(String watch) {
@@ -88,7 +94,7 @@ public class ItemName implements Section {
 	}
 
 	public String getOptions() {
-		return options;
+		return getGoodString(options);
 	}
 
 	public void setOptions(String options) {
@@ -96,7 +102,7 @@ public class ItemName implements Section {
 	}
 
 	public String getExit() {
-		return exit;
+		return getGoodString(exit);
 	}
 
 	public void setExit(String exit) {

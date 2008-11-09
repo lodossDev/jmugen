@@ -1,5 +1,11 @@
 package org.lee.mugen.fight.section.elem;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.lee.mugen.sprite.base.AbstractAnimManager;
+import org.lee.mugen.sprite.character.AnimGroup;
+import org.lee.mugen.sprite.common.resource.FontProducer;
 import org.lee.mugen.util.BeanTools;
 
 public class FontType extends CommonType {
@@ -32,18 +38,33 @@ public class FontType extends CommonType {
 	ALIGNMT alignmt = ALIGNMT.left;
 	
 	String text;
+	Object root;
+	private Map<Integer, FontProducer> font;
 
-	public FontType(int fontno, int fontbank, int alignmt) {
-		this(fontno, fontbank, ALIGNMT.getValue(alignmt));
+	public FontType(Object root, int fontno, int fontbank, int alignmt) {
+		this(root, fontno, fontbank, ALIGNMT.getValue(alignmt));
 	}
 	
-	public FontType(int fontno, int fontbank, ALIGNMT alignmt) {
+	public FontType(Object root, int fontno, int fontbank, ALIGNMT alignmt) {
 		this.fontno = fontno;
 		this.fontbank = fontbank;
 		this.alignmt = alignmt;
+		this.root = root;
 	}
-	
-	public FontType() {
+	public Map<Integer, FontProducer> getFont() {
+		if (font == null) {
+			try {
+				Object files = root.getClass().getMethod("getFiles").invoke(root);
+				font = (Map<Integer, FontProducer>) files.getClass().getMethod("getFont").invoke(files);
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return font;
+	}
+	public FontType(Object root) {
+		this.root = root;
 	}
 
 	public int getFontno() {

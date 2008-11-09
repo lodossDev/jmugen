@@ -127,8 +127,15 @@ public class BaseRender implements Renderable {
 			String text = font.getText();
 			
 			int fontSens = font.getAlignmt().getCode();
+
+			xScale = type.getScale().getX();
+			yScale = type.getScale().getY();
 			
-			GameFight.getInstance().getFightdef().getFiles().getFont().get(font.getFontno()).draw(pos.x + type.getOffset().x, pos.y + type.getOffset().y, md, text, fontSens);
+			md.scale(xScale, yScale);
+			font.getFont().get(font.getFontno()).
+					draw((int)(pos.x*1f/xScale), (int)(pos.y*1f/yScale),
+							md, text, fontSens);
+			md.scale(1f/xScale, 1f/yScale);
 		}
 	}
 }
