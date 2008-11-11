@@ -1,19 +1,20 @@
 package org.lee.mugen.fight.system.elem;
 
 import org.lee.mugen.fight.section.Section;
+import org.lee.mugen.fight.system.MugenSystem;
 
 public class ItemName implements Section {
-	private static final int arcade = 0;
-	private static final int versus = 1;
-	private static final int teamarcade = 2;
-	private static final int teamversus = 3;
-	private static final int teamcoop = 4;
-	private static final int survival = 5;
-	private static final int survivalcoop = 6;
-	private static final int training = 7;
-	private static final int watch = 8;
-	private static final int options = 9;
-	private static final int exit = 10;
+	public static final int arcade = 0;
+	public static final int versus = 1;
+	public static final int teamarcade = 2;
+	public static final int teamversus = 3;
+	public static final int teamcoop = 4;
+	public static final int survival = 5;
+	public static final int survivalcoop = 6;
+	public static final int training = 7;
+	public static final int watch = 8;
+	public static final int options = 9;
+	public static final int exit = 10;
 
 	private String[] list = new String[11];
 	
@@ -29,22 +30,36 @@ public class ItemName implements Section {
 	public void increaseCurrentIndex() {
 		lastIndex = this.currentIndex;
 		this.currentIndex++;
-		if (currentIndex > list.length - 1)
-			currentIndex = 0;
+		while (currentIndex > getLast())
+			first++;
+		if (currentIndex > list.length - 1) {
+			setCurrentIndex(0);
+		}
+		
+
 	}
 	public void setCurrentIndex(int currentIndex) {
 		if (this.currentIndex == currentIndex)
 			return;
 		if (currentIndex < 0 || currentIndex > list.length)
 			return;
-		this.lastIndex = this.currentIndex;
-		this.currentIndex = currentIndex;
+		this.currentIndex = 0;
+//		this.lastIndex = 0;
+		first = 0;
+		
+		while (this.currentIndex != currentIndex)
+			increaseCurrentIndex();
 	}
 	public void decreaseCurrentIndex() {
 		lastIndex = this.currentIndex;
 		this.currentIndex--;
-		if (currentIndex < 0)
-			currentIndex = list.length - 1;
+		while (currentIndex < first)
+			first--;
+		if (currentIndex < 0) {
+			setCurrentIndex(list.length - 1);
+			
+		}
+
 	}
 	public int getLastIndex() {
 		return lastIndex;
@@ -52,7 +67,14 @@ public class ItemName implements Section {
 	public void setList(String[] list) {
 		this.list = list;
 	}
-
+	private int first = 0;
+	private int getLast() {
+		return first + MugenSystem.getInstance().getTitleInfo().getMenu().getWindow$visibleitems() - 1;
+	}
+	public int startIndex() {
+		return first;
+	}
+	
 	private String getGoodString(int index) {
 		String word = list[index];
 		if (word.startsWith("\"") && word.endsWith("\""))

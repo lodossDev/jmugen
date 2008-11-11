@@ -127,7 +127,7 @@ public class PalFxSub {
 		return time;
 	}
 	public boolean isNoPalFx() {
-		return time < 0;
+		return time <= 0;
 	}
 	public void setTime(int time) {
 		this.time = time;

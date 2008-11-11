@@ -22,7 +22,7 @@ public class SpriteDef {
 	private Arcade arcade = new Arcade();
 	private List<GroupText> cnsGroups;
 	private static final Pattern MULTIPLE_OUT_BEAN = Pattern.compile("(^.*pal|^.*st)([0-9]*)$", Pattern.CASE_INSENSITIVE);
-	public static SpriteDef parseSpriteDef(String def, String spriteId)
+	public static SpriteDef parseSpriteDef(String def)
 			throws Exception {
 
 		SpriteDef spriteDef = new SpriteDef();
@@ -150,6 +150,8 @@ public class SpriteDef {
 		}
 
 		public String getName() {
+			if (name.startsWith("\"") && name.endsWith("\""))
+				return name.substring(1, name.length()- 1);
 			return name;
 		}
 
@@ -292,6 +294,10 @@ public class SpriteDef {
 
 	public String getParentPath() {
 		return parentPath;
+	}
+	
+	public String getParentName() {
+		return new File(parentPath).getParentFile().getName();
 	}
 
 	public void setParentPath(String path) {

@@ -1,7 +1,8 @@
 package org.lee.mugen.renderer;
 
 import java.awt.Color;
-import java.awt.Rectangle;
+
+import org.lee.mugen.object.Rectangle;
 
 
 public abstract class MugenDrawer {
@@ -37,11 +38,12 @@ public abstract class MugenDrawer {
 		setColor(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
 		
 	}
-	public void draw(Rectangle r) {
+	public void draw(java.awt.Rectangle r) {
 		drawRect(r.x, r.y, r.width, r.height);
 		
 	}
 	public abstract void setColor(float r, float g, float b);
 	public abstract void setColor(float r, float g, float b, float a);
-	
+	public abstract ImageContainer getImageContainer(Object imageData, int colors);
+	public abstract void setClip(Rectangle r);
 }

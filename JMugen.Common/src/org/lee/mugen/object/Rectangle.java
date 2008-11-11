@@ -1,11 +1,14 @@
-package org.lee.mugen.parser.air;
+package org.lee.mugen.object;
 
-public class Rectangle {
+public class Rectangle implements Cloneable {
 	public Rectangle(int x1, int y1, int x2, int y2) {
 		this.x1 = x1;
 		this.y1 = y1;
 		this.x2 = x2;
 		this.y2 = y2;
+	}
+	public Rectangle() {
+		// TODO Auto-generated constructor stub
 	}
 	private int x1;
 	private int y1;
@@ -47,5 +50,13 @@ public class Rectangle {
 		this.x2 == r.x2 &&
 		this.y2 == r.y2;
 	}
-	
+	@Override
+	public Object clone() {
+		try {
+			return super.clone();
+			
+		} catch (Exception e) {
+			throw new IllegalStateException();
+		}
+	}
 }

@@ -15,5 +15,6 @@ public interface ISpriteCmdProcess {
 	
 	public abstract int[] getKeys();
 	
+	
 
 }

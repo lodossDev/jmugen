@@ -1,9 +1,11 @@
 package org.lee.mugen.core.renderer.game.system;
 
+
 import org.lee.mugen.background.BG;
 import org.lee.mugen.background.Background;
 import org.lee.mugen.core.GameFight;
 import org.lee.mugen.fight.system.MugenSystem;
+import org.lee.mugen.object.Rectangle;
 import org.lee.mugen.parser.air.AirData;
 import org.lee.mugen.parser.air.AirData.TypeBlit;
 import org.lee.mugen.renderer.DrawProperties;
@@ -16,7 +18,6 @@ import org.lee.mugen.renderer.Trans;
 import org.lee.mugen.sprite.base.AbstractAnimManager;
 import org.lee.mugen.sprite.baseForParse.ImageSpriteSFF;
 import org.lee.mugen.sprite.baseForParse.SpriteSFF;
-import org.lee.mugen.sprite.entity.SuperpauseSub;
 
 public class BackgroundRender implements Renderable {
 	private Background background;
@@ -28,9 +29,10 @@ public class BackgroundRender implements Renderable {
 
 	private void drawTileY(ImageContainer img, BG bg, float x,
 			float y, float moveX, float moveY, int xStartForAll, Trans trans, boolean isHFlip, boolean isVFlip) {
-
+		Rectangle r = bg.getWindow();
 		int yTile = (int) bg.getTile().getY();
 		float startPosY = y + moveY;
+		
 		if (yTile == 0) {
 //			drawImage(trans, img, (startPosY + (bg.getTilespacing().getY())
 //					* bg.getDelta().getX())
@@ -40,17 +42,14 @@ public class BackgroundRender implements Renderable {
 			
 			startPosY = (y + moveY) % img.getHeight();
 			while (startPosY < 240) {
-				drawImage(trans, img, (startPosY + (bg.getTilespacing().getY())
-						* bg.getDelta().getX())
-						+ xStartForAll, (y + moveY * bg.getDelta().getY()), isHFlip, isVFlip);
+				drawImage(trans, img, x, (startPosY + (bg.getTilespacing().getY())
+						* bg.getDelta().getY()), isHFlip, isVFlip);
 				startPosY += img.getHeight();
 			}
 			
 			startPosY = (y + moveY) % img.getHeight();
 			while (startPosY + img.getHeight() > 0) {
-				drawImage(trans, img, (startPosY + (bg.getTilespacing().getY())
-						* bg.getDelta().getX())
-						+ xStartForAll, (y + moveY * bg.getDelta().getY()), isHFlip, isVFlip);
+				drawImage(trans, img, x, (y + moveY * bg.getDelta().getY()), isHFlip, isVFlip);
 				startPosY -= img.getHeight();
 			}
 			
@@ -58,9 +57,7 @@ public class BackgroundRender implements Renderable {
 		} else {
 			startPosY = (y + moveY) % img.getHeight();
 			while (startPosY < 240 && yTile > 0) {
-				drawImage(trans, img, (x + (bg.getTilespacing().getY())
-						* bg.getDelta().getY())
-						+ xStartForAll, (startPosY + (bg.getTilespacing().getY())
+				drawImage(trans, img, x, (startPosY + (bg.getTilespacing().getY())
 								* bg.getDelta().getY()), isHFlip, isVFlip);
 				startPosY += img.getHeight();
 				yTile--;
@@ -79,31 +76,50 @@ public class BackgroundRender implements Renderable {
 			drawImage(trans, img, (startPosX + (bg.getTilespacing().getX()) + moveX
 					* bg.getDelta().getX())
 					+ xStartForAll, (y + moveY * bg.getDelta().getY()), isHFlip, isVFlip);
-			drawTileY(img, bg, startPosX, startPosY, moveX, moveY, xStartForAll, trans, isHFlip, isVFlip);
-		
-		}
-		startPosX = (startPosX + moveX) % img.getWidth();
-		startPosY = startPosY % img.getHeight();
-		
-		while (startPosX < 320 && (xTile > 0 || bg.getTile().getX() == 1)) {
-			drawImage(trans, img,  (startPosX + (bg.getTilespacing().getX())
-					* bg.getDelta().getX())
-					+ xStartForAll,  (y + moveY * bg.getDelta().getY()), isHFlip, isVFlip);
-			
 
 			drawTileY(img, bg, startPosX, startPosY, moveX, moveY, xStartForAll, trans, isHFlip, isVFlip);
+		
+		} else if (xTile > 1) {
+			startPosX = (startPosX + moveX) % img.getWidth();
+			startPosY = startPosY % img.getHeight();
 			
-			startPosX += img.getWidth();
-			xTile--;
-		}
-		if (bg.getTile().getX() == 1) {
+			while (startPosX < 320 && (xTile > 0 || bg.getTile().getX() == 1)) {
+				float xDraw = (startPosX + (bg.getTilespacing().getX())
+										* bg.getDelta().getX())
+										+ xStartForAll;
+				float yDraw = (y + moveY * bg.getDelta().getY());
+				if (bg.getTile().getY() > 0)
+					yDraw = (y + moveY) % img.getHeight();
+				drawImage(trans, img, xDraw,  yDraw, isHFlip, isVFlip);
+				drawTileY(img, bg, xDraw, startPosY, moveX, moveY, xStartForAll, trans, isHFlip, isVFlip);
+				
+				startPosX += img.getWidth();
+				xTile--;
+			}
+		} else if (bg.getTile().getX() == 1) {
 			startPosX =  ((x - img.getWidth()) + moveX) % img.getWidth();
+			while (startPosX < 320) {
+				float xDraw = (startPosX + (bg.getTilespacing().getX())
+						* bg.getDelta().getX())
+						+ xStartForAll;
+				float yDraw = (y + moveY * bg.getDelta().getY());
+				if (bg.getTile().getY() > 0)
+					yDraw = (y + moveY) % img.getHeight();
+				drawImage(trans, img, xDraw,  yDraw, isHFlip, isVFlip);
+				drawTileY(img, bg, startPosX, startPosY, moveX, moveY, xStartForAll, trans, isHFlip, isVFlip);
+				startPosX += img.getWidth();
+			}
+			
+			startPosX =  ((x - img.getWidth()) + moveX) % img.getWidth();
+			startPosX -= img.getWidth();
 			while (startPosX + img.getWidth() + xStartForAll > 0) {
-				drawImage(trans, img,
-						 (startPosX + (bg.getTilespacing().getX())
-								* bg.getDelta().getX())
-								+ xStartForAll,  (y + moveY
-								* bg.getDelta().getY()), isHFlip, isVFlip);
+				float xDraw = (startPosX + (bg.getTilespacing().getX())
+						* bg.getDelta().getX())
+						+ xStartForAll;
+				float yDraw = (y + moveY * bg.getDelta().getY());
+				if (bg.getTile().getY() > 0)
+					yDraw = (y + moveY) % img.getHeight();
+				drawImage(trans, img, xDraw,  yDraw, isHFlip, isVFlip);
 				drawTileY(img, bg, startPosX, startPosY, moveX, moveY, xStartForAll, trans, isHFlip, isVFlip);
 				startPosX -= img.getWidth();
 			}
@@ -138,24 +154,27 @@ public class BackgroundRender implements Renderable {
 
 
 	public void render() {
+		
 		int xStartForAll = 0;
-		background.process();
+
 		SpriteSFF sffSprite = background.getBgdef().getSpr();
 		if (sffSprite == null)
 			sffSprite = MugenSystem.getInstance().getFiles().getSpr();
-
+		
 		if (background.getBgdef().getBgclearcolor() != null) {
 			RGB rgb = background.getBgdef().getBgclearcolor();
 			GraphicsWrapper.getInstance().setColor(rgb.getR(), rgb.getG(), rgb.getB());
 			GraphicsWrapper.getInstance().fillRect(0, 0, 640, 480);
-		}
-		
+		}		
+
 		for (BG bg : getBackground().getBgs()) {
 			if (bg.getLayerno() != layerDisplay)
 				continue;
+
 			float moveX = MugenSystem.getInstance().getTitleInfo().getMenu().getPos().x;
 			float moveY = 0;//MugenSystem.getInstance().getTitleInfo().getMenu().getPos().y;
-
+			org.lee.mugen.object.Rectangle r = bg.getWindow();
+			GraphicsWrapper.getInstance().setClip(r);
 			try {
 				if (bg.getBgType() == BG.Type.NORMAL
 						|| bg.getBgType() == BG.Type.NORM) {
@@ -170,9 +189,6 @@ public class BackgroundRender implements Renderable {
 					ImageSpriteSFF imgSprSff = sffSprite.getGroupSpr(grpno)
 							.getImgSpr(imgno);
 					ImageContainer img = (ImageContainer) imgSprSff.getImage();
-					img = getImgProcessSuperpause(img);
-
-
 
 					float x =  (bg.getPos().getX() - imgSprSff.getXAxis());
 					float y =  bg.getPos().getY() - imgSprSff.getYAxis() ;
@@ -195,7 +211,6 @@ public class BackgroundRender implements Renderable {
 					if (imgSprSff == null)
 						continue;
 					ImageContainer img = (ImageContainer) imgSprSff.getImage();
-					img = getImgProcessSuperpause(img);
 
 					boolean isVFlip = air.isMirrorV();
 					boolean isHFlip = air.isMirrorH();
@@ -226,7 +241,6 @@ public class BackgroundRender implements Renderable {
 					ImageSpriteSFF imgSprSff = sffSprite.getGroupSpr(grpno)
 							.getImgSpr(imgno);
 					ImageContainer img = (ImageContainer) imgSprSff.getImage();
-					img = getImgProcessSuperpause(img);
 
 					
 					float x =  (bg.getPos().getX() - imgSprSff.getXAxis() + air.getXOffSet());
@@ -248,7 +262,6 @@ public class BackgroundRender implements Renderable {
 					ImageSpriteSFF imgSprSff = sffSprite.getGroupSpr(grpno)
 							.getImgSpr(imgno);
 					ImageContainer img = (ImageContainer) imgSprSff.getImage();
-					img = getImgProcessSuperpause(img);
 
 
 					float x =  (MugenSystem.getInstance().getTitleInfo().getMenu().getPos().x - imgSprSff.getXAxis());
@@ -297,7 +310,7 @@ public class BackgroundRender implements Renderable {
 				continue;
 			}
 		}
-
+		GraphicsWrapper.getInstance().setClip(null);
 	}
 
 	public Background getBackground() {
@@ -319,17 +332,7 @@ public class BackgroundRender implements Renderable {
 		
 	}
 
-	private ImageContainer getImgProcessSuperpause(ImageContainer img) {
-		if (GameFight.getInstance().getGlobalEvents().isSuperPause()) {
-			SuperpauseSub superpause = GameFight.getInstance().getGlobalEvents().getSuperpause();
-			for (int type: superpause.getDarken()) {
-//				img = superpause.getFilter(type).filter(img, null);
-			}
-		}
 
-		return img;
-	}
-	
 	public int getPriority() {
 		return 100;
 	}

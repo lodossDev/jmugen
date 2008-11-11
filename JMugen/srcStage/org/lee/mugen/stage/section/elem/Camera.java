@@ -213,6 +213,8 @@ public class Camera implements Section {
 		boolean canMoveX = true;
 		boolean canMoveY = true;
 		for (Sprite s: GameFight.getInstance().getSprites()) {
+			if (s instanceof SpriteHelper)
+				continue;
 			canMoveX &= s.getInfo().getScreenbound().isCamCanMoveX();
 			canMoveY &= s.getInfo().getScreenbound().isCamCanMoveY();
 		}

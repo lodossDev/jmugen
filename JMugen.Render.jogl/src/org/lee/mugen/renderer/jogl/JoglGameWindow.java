@@ -10,6 +10,7 @@ import static javax.media.opengl.GL.GL_TEXTURE_ENV_MODE;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -148,8 +149,6 @@ public class JoglGameWindow implements GameWindow, GLEventListener {
 		
 		@Override
 		public void keyPressed(KeyEvent e) {
-			if (e.getKeyCode() == KeyEvent.VK_ESCAPE)
-				System.exit(0);
 			
 		}
 		@Override
@@ -452,8 +451,13 @@ public class JoglGameWindow implements GameWindow, GLEventListener {
 				callback.update(1);
 				
 				_gl.glPushMatrix();
-				callback.render();
-
+				Game another = callback.getNext();
+				if (another != callback) {
+					another.init(this);
+					callback = another;
+				} else {
+					callback.render();
+				}
 		        _gl.glEnd();
 		        
 
@@ -466,6 +470,8 @@ public class JoglGameWindow implements GameWindow, GLEventListener {
 				mouse.setRightPress(false);
 				mouse.setLeftRelease(false);
 				mouse.setRightRelease(false);
+				
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -487,6 +493,38 @@ public class JoglGameWindow implements GameWindow, GLEventListener {
 			int height) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void addActionListener(final MugenKeyListener key) {
+		canvas.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				key.action(e.getKeyCode(), true);
+				
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				key.action(e.getKeyCode(), false);
+				
+			}
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
+	}
+
+	@Override
+	public void clearListener() {
+		for (KeyListener kl : canvas.getKeyListeners())
+			canvas.removeKeyListener(kl);
+		canvas.addKeyListener(debugEventManager);
 	}
 	
 	

@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.lee.mugen.background.Background;
 import org.lee.mugen.fight.section.Section;
+import org.lee.mugen.sprite.baseForParse.SpriteSFF;
 import org.lee.mugen.sprite.parser.Parser;
 import org.lee.mugen.sprite.parser.Parser.GroupText;
 
@@ -27,6 +28,9 @@ public class MugenSystem {
 			}
 		}
 		return instance;
+	}
+	public SpriteSFF getSpriteSff() {
+		return getFiles().getSpr();
 	}
 	
 	public File getCurrentDir() {
@@ -74,7 +78,7 @@ public class MugenSystem {
 
 	public Background buildBackground(String prefix) {
 		String bgdefRegex = " *" + prefix + "bgdef *";
-		String bgRegex = "( *" + prefix + "bg +" + "(.*)\\s*)|(" + prefix + "bg)";
+		String bgRegex = " *" + prefix + "bg +" + "(.*)\\s*|" + prefix + "bg";
 		String bgctrldefRegex = " *" + prefix + "bgctrldef +" + "(.*) *";
 	    String bgCtrlRegex = " *" + prefix + "bgctrl +" + "([a-zA-Z0-9\\.\\ \\-\\_]*) *";
 	    

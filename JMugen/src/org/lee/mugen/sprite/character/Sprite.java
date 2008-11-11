@@ -193,8 +193,7 @@ public class Sprite extends AbstractSprite implements Cloneable {
 			definition = spriteDef;
 			this.spriteId = spriteId;
 			log("Load air data");
-			AirParser airParser = new AirParser(new File(definition
-					.getParentPath(), definition.getFiles().getAnim())
+			AirParser airParser = new AirParser(new File(definition.getParentPath(), definition.getFiles().getAnim())
 					.getAbsolutePath());
 			log("End load air data");
 			

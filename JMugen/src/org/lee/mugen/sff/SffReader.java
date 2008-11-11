@@ -19,10 +19,10 @@ import org.lee.mugen.io.LittleEndianDataInputStream;
  *
  */
 public class SffReader {
-    public class PcxFile {
+    public static class PcxFile {
         public ByteArrayOutputStream pcxStream = new ByteArrayOutputStream();
     };
-    public class SffHeader {
+    public static class SffHeader {
         public char[] signature = new char[12];
         public int verhi; // 1
         public int verlo; // 1
@@ -51,7 +51,7 @@ public class SffReader {
             br.readChars(comment);
         }
     }
-    public class SubFileHeader {
+    public static class SubFileHeader {
         public int nextPosition;
         public int subFileLen; //4 //not including SubHeader
         public int xAxis; // 2
@@ -80,11 +80,11 @@ public class SffReader {
     public ArrayList<SffReader.SubFileHeader> SubFileList = new ArrayList<SffReader.SubFileHeader>();
     protected SffHeader sffHeader;
     
-    private void seek(InputStream fs, long skip) throws IOException {
+    private static void seek(InputStream fs, long skip) throws IOException {
     	fs.reset();
     	fs.skip(skip);
     }
-    private long getPosition(long len, long available) {
+    private static long getPosition(long len, long available) {
     	return len - available;
     }
     
@@ -185,5 +185,96 @@ public class SffReader {
         in.close();
     }
 
+    public static byte[] getImage(InputStream in, int grp, int num, byte[] useThisPal) throws IOException {
+
+    	boolean isForceUSeDefPal = useThisPal != null && useThisPal.length == 768;
+    	ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    	IOUtils.copy(in, baos);
+    	ByteArrayInputStream fs = new ByteArrayInputStream(baos.toByteArray());
+    	
+    	LittleEndianDataInputStream br = new LittleEndianDataInputStream(fs);
+    	baos.close();
+    	baos = null;
+    	long len = fs.available();
+        ArrayList<SffReader.SubFileHeader> SubFileList = new ArrayList<SffReader.SubFileHeader>();
+        SffHeader sffHeader;
+        sffHeader = new SffHeader(br);
+        sffHeader.subHeaderSize = 512;
+
+        seek(br, 512);
+        
+        SubFileHeader subFileHead = new SubFileHeader(br);
+
+        byte[] prevPalette = isForceUSeDefPal? useThisPal: new byte[PCXPalette.PALETTE_SIZE];
+
+        byte[] bytes = new byte[PCXLoader.HEADER_SIZE];
+        if (subFileHead.subFileLen > 0) {
+        	br.read(bytes);
+
+            subFileHead.pcxFile.pcxStream.write(bytes);
+            int iRead = (int)(subFileHead.nextPosition - (len - br.available()));
+            bytes = new byte[iRead];
+            br.read(bytes);
+            if (isForceUSeDefPal) {
+            	System.arraycopy(prevPalette, 0, bytes, (int) (bytes.length - PCXPalette.PALETTE_SIZE), PCXPalette.PALETTE_SIZE);
+            	
+            }
+            subFileHead.pcxFile.pcxStream.write(bytes);
+        	if (grp == subFileHead.grpNumber && num == subFileHead.imgNumber) {
+        		return subFileHead.pcxFile.pcxStream.toByteArray();
+        	}
+            bytes = subFileHead.pcxFile.pcxStream.toByteArray();
+           	System.arraycopy(bytes, (int) (bytes.length - PCXPalette.PALETTE_SIZE), prevPalette, 0, PCXPalette.PALETTE_SIZE);
+        }
+        if (useThisPal == null)
+        	useThisPal = prevPalette.clone();
+
+        int next = subFileHead.nextPosition;
+        boolean enter = false;
+
+        while (next != 0 && next < len) {
+        	enter = true;
+            SubFileList.add(subFileHead);
+            seek(br, next);
+            subFileHead = new SubFileHeader(br);
+            if (subFileHead.subFileLen > 0) {
+                //int iRead = subFileHead.subFileLen - PcxReader.HEADER_SIZE - rewindPalette;
+                int iRead = (int)(subFileHead.nextPosition - getPosition(len, br.available()));
+                
+                bytes = new byte[iRead];
+                br.read(bytes);
+
+                if (subFileHead.isSamePalAsPrev) {
+                    subFileHead.pcxFile.pcxStream.write(bytes);
+                    subFileHead.pcxFile.pcxStream.write(prevPalette);
+                	if (grp == subFileHead.grpNumber && num == subFileHead.imgNumber) {
+                		return subFileHead.pcxFile.pcxStream.toByteArray();
+                	}
+
+                } else {
+                	if (isForceUSeDefPal)
+                		System.arraycopy(prevPalette, 0, bytes, (int) (bytes.length - PCXPalette.PALETTE_SIZE), PCXPalette.PALETTE_SIZE);
+                	else if (subFileHead.grpNumber != 9000)
+                		System.arraycopy(bytes, (int) (bytes.length - PCXPalette.PALETTE_SIZE), prevPalette, 0, PCXPalette.PALETTE_SIZE);
+                    subFileHead.pcxFile.pcxStream.write(bytes);
+                	if (grp == subFileHead.grpNumber && num == subFileHead.imgNumber) {
+                		return subFileHead.pcxFile.pcxStream.toByteArray();
+                	}
+//                    if (!isForceUSeDefPal) {
+//                        bytes = subFileHead.pcxFile.pcxStream.toByteArray();
+//                        System.arraycopy(bytes, (int) (bytes.length - PCXPalette.PALETTE_SIZE), prevPalette, 0, PCXPalette.PALETTE_SIZE);
+//                    	
+//                    }
+                }
+            } else if (subFileHead.subFileLen == 0) {
+                subFileHead.pcxFile = null;
+            }
+            next = subFileHead.nextPosition;
+        }
+        if (enter)
+        	SubFileList.add(subFileHead);
+        in.close();
+        return null;
+    }
 
 }

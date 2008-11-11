@@ -30,11 +30,9 @@ public class FontParser {
 	}
 	public static FontProducer getFontProducer(String filename) throws Exception {
 		FileInputStream fis = new FileInputStream(new File(filename));
-		f = filename;
 		FontProducer fontProducer = parse(new LittleEndianDataInputStream(fis));
 		return fontProducer;
 	}
-	static String f;
 	public static FontProducer parse(LittleEndianDataInputStream br) throws IOException {
 		FntRaw fntRaw = new FntRaw();
 		
@@ -81,7 +79,7 @@ public class FontParser {
 				
 				String strColors = grp.getKeyValues().get("colors");
 				//TODO
-				fontProducer.setColors(new Color(Integer.parseInt(strColors)));
+				fontProducer.setColors(Integer.parseInt(strColors));
 				
 				String[] strsOffset = grp.getKeyValues().get("offset").replaceAll(" ", "").split(",");
 				fontProducer.setOffset(new Dimension(Integer.parseInt(strsOffset[0]), Integer.parseInt(strsOffset[1])));
@@ -118,11 +116,7 @@ public class FontParser {
 		}
 //		fntRaw.pcx = (BufferedImage)PCXLoader.loadImage(new ByteArrayInputStream(pcx.toByteArray()), new PCXPalette(), false, true);
 		RawPCXImage raw = new RawPCXImage(pcx.toByteArray(), new PCXPalette());
-		FileOutputStream fos = new FileOutputStream(new File(f).getName());
-		fos.write(pcx.toByteArray());
-		fos.close();
-		ImageContainer image = GraphicsWrapper.getInstance().getImageContainer(raw);
-		fontProducer.setMainImage(image);
+		fontProducer.setImage(raw);
 
 		
 		return fontProducer;

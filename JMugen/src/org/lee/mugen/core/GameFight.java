@@ -2,6 +2,7 @@ package org.lee.mugen.core;
 
 import static org.lee.mugen.util.Logger.log;
 
+import java.awt.event.KeyEvent;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,7 +17,6 @@ import java.util.Map;
 
 import org.lee.mugen.core.command.SpriteCmdProcess;
 import org.lee.mugen.core.renderer.game.AfterimageRender;
-import org.lee.mugen.core.renderer.game.StageBackgroundRender;
 import org.lee.mugen.core.renderer.game.CnsRender;
 import org.lee.mugen.core.renderer.game.DebugExplodRender;
 import org.lee.mugen.core.renderer.game.DebugRender;
@@ -25,9 +25,9 @@ import org.lee.mugen.core.renderer.game.MakedustRender;
 import org.lee.mugen.core.renderer.game.ProjectileRender;
 import org.lee.mugen.core.renderer.game.SpriteRender;
 import org.lee.mugen.core.renderer.game.SpriteShadowRender;
+import org.lee.mugen.core.renderer.game.StageBackgroundRender;
 import org.lee.mugen.core.renderer.game.fight.FightdefRender;
 import org.lee.mugen.core.renderer.game.fight.RoundRender;
-import org.lee.mugen.core.renderer.game.intro.IntroRender;
 import org.lee.mugen.core.renderer.game.system.TitleInfoRender;
 import org.lee.mugen.fight.section.Fightdef;
 import org.lee.mugen.fight.system.MugenSystem;
@@ -37,6 +37,7 @@ import org.lee.mugen.renderer.GameWindow;
 import org.lee.mugen.renderer.GraphicsWrapper;
 import org.lee.mugen.renderer.MugenTimer;
 import org.lee.mugen.renderer.Renderable;
+import org.lee.mugen.renderer.GameWindow.MugenKeyListener;
 import org.lee.mugen.sprite.base.AbstractSprite;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.SpriteDef;
@@ -99,7 +100,7 @@ public class GameFight implements Game {
 	private GameWindow gameWindows;
 	private FightEngine _fightEngine = new FightEngine();
 	private GameState gameState = new GameState();
-	private GameGlobalEvents globalEvents;
+	private GameGlobalEvents globalEvents = new GameGlobalEvents();
 	private Stage instanceOfStage;
 	
 // Preload	
@@ -120,21 +121,21 @@ public class GameFight implements Game {
 	protected static class SpriteLoader {
 
 		private String spriteId;
-		private String def;
+		private SpriteDef def;
 		private int pal;
 		private int teamSide;
 		
-		public SpriteLoader(String spriteId, String def, int pal, int teamSide) {
+		public SpriteLoader(String spriteId, SpriteDef def, int pal, int teamSide) {
 			this.spriteId = spriteId;
 			this.def = def;
 			this.pal = pal;
 			this.teamSide = teamSide;
 		}
 		
-		public String getDef() {
+		public SpriteDef getDef() {
 			return def;
 		}
-		public void setDef(String def) {
+		public void setDef(SpriteDef def) {
 			this.def = def;
 		}
 		public int getPal() {
@@ -201,6 +202,9 @@ public class GameFight implements Game {
 			stateMachine = new GameFight();
 		}
 		return stateMachine;
+	}
+	public static void clear() {
+		stateMachine = null;
 	}
 	
 	// global events Events 
@@ -310,7 +314,7 @@ public class GameFight implements Game {
 	
 
 
-	public void preloadSprite(int teamSide, String spriteId, String def, int pal) {
+	public void preloadSprite(int teamSide, String spriteId, SpriteDef def, int pal) {
 		SpriteLoader sl = new SpriteLoader(spriteId, def, pal, teamSide);
 		spriteLoader.add(sl);
 	}
@@ -331,7 +335,7 @@ public class GameFight implements Game {
 		Sprite spr = _spriteMap.get(sprLoader.getSpriteId());
 		if (spr == null) {
 			log("Load Sprite def");
-			SpriteDef sprDef = SpriteDef.parseSpriteDef(sprLoader.getDef(), sprLoader.getSpriteId());
+			SpriteDef sprDef = sprLoader.getDef();
 			log("End Load Sprite def");
 
 			spriteDefs.put(sprLoader.getSpriteId(), sprDef);
@@ -356,7 +360,7 @@ public class GameFight implements Game {
 				teamSide = TEAMSIDE_TWO;
 			}
 			
-			SpriteDef sprDef = SpriteDef.parseSpriteDef(sprLoader.getDef(), sprLoader.getSpriteId());
+			SpriteDef sprDef = sprLoader.getDef();
 			spriteDefs.put(sprLoader.getSpriteId(), sprDef);
 			spr = new Sprite(sprLoader.getSpriteId(), sprDef, sprLoader.getPal());
 			
@@ -477,9 +481,27 @@ public class GameFight implements Game {
 	////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////
 	List<CnsRender> cnsRenderList = new ArrayList<CnsRender>();
+	boolean addListener;
+	boolean freeNow;
 	public void init(GameWindow container) throws Exception {
 		setWindow(container);
+		next = null;
+		freeNow = false;
+		if (!addListener) {
+			container.addActionListener(new MugenKeyListener() {
 
+				@Override
+				public void action(int key, boolean isPress) {
+					if (KeyEvent.VK_ESCAPE == key) {
+						freeNow = true;
+					}
+					
+				}
+
+			});
+			addListener = true;
+		}
+		
 		loadingText += "\nloading Fight.def";
 		if (fightdef != null)
 			fightdef.free();
@@ -491,7 +513,6 @@ public class GameFight implements Game {
 			loadingText += "\nloading Stage ";
 
 			loadStage();
-			globalEvents = new GameGlobalEvents();
 			
 			addRender(new SpriteShadowRender(getSpriteInstance("1"), false));
 			addRender(new SpriteShadowRender(getSpriteInstance("2"), false));
@@ -504,9 +525,7 @@ public class GameFight implements Game {
 			
 			addRender(new FightdefRender());
 			addRender(new RoundRender());
-//			addRender(new IntroRender());
 			
-			addRender(new TitleInfoRender());
 
 			MugenSystem ms = MugenSystem.getInstance();
 
@@ -538,9 +557,12 @@ public class GameFight implements Game {
 
 
 	public void update(int delta) throws Exception {
+		if (freeNow) {
+			next = GameSelect.getInstance();
+			return;
+		}
 		if (!getGlobalEvents().canUpdate())
 			return;
-		
 		for (Iterator<AbstractSprite> iter = getOtherSprites().iterator(); iter.hasNext();) {
 			AbstractSprite spr = iter.next();
 			if (spr.remove()) {
@@ -1126,7 +1148,7 @@ public class GameFight implements Game {
 			int x = 10;
 			int y = 10;
 			for (String s: strSpriteInfos) {
-				fp.draw(x, y+=fp.getSize().height, GraphicsWrapper.getInstance(), s);
+				fp.draw(0, x, y+=fp.getSize().height, GraphicsWrapper.getInstance(), s);
 				addX = Math.max(addX, s.length());
 			}
 			aTime++;
@@ -1135,5 +1157,22 @@ public class GameFight implements Game {
 		}
 
 	}
-	
+	Game next;
+	@Override
+	public Game getNext() throws Exception {
+		return next == null? this: next;
+	}
+	@Override
+	public void reInit(GameWindow container) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+	public void preloadSprite(int teamside, String spriteId, String sprDef,
+			int pal) throws Exception {
+		SpriteDef def = SpriteDef.parseSpriteDef(sprDef);
+		
+		preloadSprite(teamside, spriteId, def, pal);
+		
+	}
+
 }

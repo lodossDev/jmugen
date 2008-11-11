@@ -36,8 +36,26 @@ public class Varadd extends StateCtrlFunction {
     }
 	
 	public void addParam(String name, Valueable[] param) {
-		
-		if (Varset.isMatch(Varset.P_SYSVAR_REG, name)) {
+		if (Varset.isMatch(Varset.P_SYSVAR_F_REG, name)) {
+			Matcher m = Varset.P_SYSVAR_F_REG.matcher(name);
+			m.find();
+			final String value = m.group(1);
+			String[] tokens = ExpressionFactory.expression2Tokens(value);
+			final Valueable[] valueables = param;//ExpressionFactory.evalExpression(tokens, getSpriteId());
+			
+			Functionable functionable = new Functionable() {
+				public void reset() {}
+
+				public Object getValue(String spriteId, Valueable... params) {
+					Sprite sprite = GameFight.getInstance().getSpriteInstance(spriteId);
+					final SpriteState spriteState = sprite.getSpriteState();
+					
+					spriteState.getVars().addSysFVar(value, valueables[0]);
+					return null;
+				}};
+			listOfValFSet.add(functionable);
+			return;
+		} else if (Varset.isMatch(Varset.P_SYSVAR_REG, name)) {
 			Matcher m = Varset.P_SYSVAR_REG.matcher(name);
 			m.find();
 			final String value = m.group(1);
@@ -56,9 +74,8 @@ public class Varadd extends StateCtrlFunction {
 				}};
 			listOfValSet.add(functionable);
 			return;
-		}
-		if (Varset.isMatch(Varset.P_SYSVAR_F_REG, name)) {
-			Matcher m = Varset.P_SYSVAR_F_REG.matcher(name);
+		} else if (Varset.isMatch(Varset.P_VAR_F_REG, name)) {
+			Matcher m = Varset.P_VAR_F_REG.matcher(name);
 			m.find();
 			final String value = m.group(1);
 			String[] tokens = ExpressionFactory.expression2Tokens(value);
@@ -69,35 +86,13 @@ public class Varadd extends StateCtrlFunction {
 
 				public Object getValue(String spriteId, Valueable... params) {
 					Sprite sprite = GameFight.getInstance().getSpriteInstance(spriteId);
-					final SpriteState spriteState = sprite.getSpriteState();
-					
-					spriteState.getVars().addSysFVar(value, valueables[0]);
+					final SpriteState spriteState = sprite.getSpriteState();					
+					spriteState.getVars().addVarFloat(value, valueables[0]);
 					return null;
 				}};
 			listOfValFSet.add(functionable);
 			return;
-		}
-		if (Varset.isMatch(Varset.P_SYSVAR_F_REG, name)) {
-			Matcher m = Varset.P_SYSVAR_F_REG.matcher(name);
-			m.find();
-			final String value = m.group(1);
-			String[] tokens = ExpressionFactory.expression2Tokens(value);
-			final Valueable[] valueables = param;//ExpressionFactory.evalExpression(tokens, getSpriteId());
-			
-			Functionable functionable = new Functionable() {
-				public void reset() {}
-
-				public Object getValue(String spriteId, Valueable... params) {
-					Sprite sprite = GameFight.getInstance().getSpriteInstance(spriteId);
-					final SpriteState spriteState = sprite.getSpriteState();
-					
-					spriteState.getVars().addSysFVar(value, valueables[0]);
-					return null;
-				}};
-			listOfValFSet.add(functionable);
-			return;
-		}
-		if (Varset.isMatch(Varset.P_VAR_REG, name)) {
+		} else if (Varset.isMatch(Varset.P_VAR_REG, name)) {
 			Matcher m = Varset.P_VAR_REG.matcher(name);
 			m.find();
 			final String value = m.group(1);
@@ -117,25 +112,7 @@ public class Varadd extends StateCtrlFunction {
 			listOfValFSet.add(functionable);
 			return;
 		}
-		if (Varset.isMatch(Varset.P_VAR_F_REG, name)) {
-			Matcher m = Varset.P_VAR_F_REG.matcher(name);
-			m.find();
-			final String value = m.group(1);
-			String[] tokens = ExpressionFactory.expression2Tokens(value);
-			final Valueable[] valueables = param;//ExpressionFactory.evalExpression(tokens, getSpriteId());
-			
-			Functionable functionable = new Functionable() {
-				public void reset() {}
 
-				public Object getValue(String spriteId, Valueable... params) {
-					Sprite sprite = GameFight.getInstance().getSpriteInstance(spriteId);
-					final SpriteState spriteState = sprite.getSpriteState();					
-					spriteState.getVars().addVarFloat(value, valueables[0]);
-					return null;
-				}};
-			listOfValFSet.add(functionable);
-			return;
-		}
 		int index = getParamIndex(name);
 		if (index == -1) {
 			Logger.log("This line can't be compile in Varset >> " + name);
@@ -176,6 +153,7 @@ public class Varadd extends StateCtrlFunction {
 		if (v != null) {
 			final int intValue = Parser.getIntValue(value.getValue(spriteId));
 			int intV = Parser.getIntValue(v.getValue(spriteId));
+
 			spriteState.getVars().addVar(String.valueOf(intV), new Valueable() {
 
 				public Object getValue(String spriteId, Valueable... params) {

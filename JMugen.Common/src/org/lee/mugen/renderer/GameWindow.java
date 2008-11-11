@@ -1,7 +1,10 @@
 package org.lee.mugen.renderer;
 
+import java.awt.event.ActionListener;
+
 import org.lee.mugen.core.Game;
 import org.lee.mugen.input.ISpriteCmdProcess;
+import org.lee.mugen.input.Key;
 
 /**
  * The window in which the game will be displayed. This interface exposes just
@@ -98,6 +101,12 @@ public interface GameWindow {
 		
 		
 	}
+	public static interface MugenKeyListener {
+		public void action(int key, boolean isPress);
+	}
+
+	public void addActionListener(MugenKeyListener al);
+	public void clearListener();
 	
 	// TODO : add getTimer and add Timer interface
 }

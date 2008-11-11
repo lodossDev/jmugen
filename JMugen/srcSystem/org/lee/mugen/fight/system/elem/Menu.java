@@ -5,7 +5,7 @@ import java.awt.Point;
 import org.lee.mugen.fight.section.Section;
 import org.lee.mugen.fight.section.elem.Type;
 import org.lee.mugen.fight.system.MugenSystem;
-import org.lee.mugen.parser.air.Rectangle;
+import org.lee.mugen.object.Rectangle;
 import org.lee.mugen.sprite.entity.SndGrpNum;
 import org.lee.mugen.util.BeanTools;
 

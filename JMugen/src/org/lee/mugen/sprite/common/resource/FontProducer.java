@@ -5,7 +5,9 @@ import java.awt.Dimension;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.lee.mugen.imageIO.RawPCXImage;
 import org.lee.mugen.renderer.DrawProperties;
+import org.lee.mugen.renderer.GraphicsWrapper;
 import org.lee.mugen.renderer.ImageContainer;
 import org.lee.mugen.renderer.MugenDrawer;
 
@@ -15,13 +17,33 @@ public class FontProducer {
 	
 	private Dimension size;
 	private Dimension spacing;
-	private Color colors;
+	private int colors;
 	private Dimension offset;
 	private String type;
 
-	private ImageContainer mainImage;
+	private Map<Integer, ImageContainer> fontBankMap = new HashMap<Integer, ImageContainer>();
+	private RawPCXImage image;
 	
-	Map<Character, Desc> map = new HashMap<Character, Desc>();
+	private ImageContainer getImageByBankno(int bankno) {
+		ImageContainer ic = fontBankMap.get(bankno);
+		if (ic == null) {
+			ic = GraphicsWrapper.getInstance().getImageContainer(image, colors * bankno - (colors * bankno > 0? 0: 0));
+		
+			fontBankMap.put(bankno, ic);
+		}
+		
+		return ic;
+	}
+	
+	public RawPCXImage getImage() {
+		return image;
+	}
+
+	public void setImage(RawPCXImage image) {
+		this.image = image;
+	}
+
+	private Map<Character, Desc> map = new HashMap<Character, Desc>();
 	private int computeString(String line) {
 		int len = 0;
 		for (char c: line.toCharArray()) {
@@ -43,27 +65,33 @@ public class FontProducer {
 				max = computeString(line);
 		return max;
 	}
-	public void draw(int xpos, int ypos, MugenDrawer md, String s) {
-		drawLeftToRight(xpos, ypos, md, s);
+	public void draw(int bankno, int xpos, int ypos, MugenDrawer md, String s) {
+		drawLeftToRight(xpos, ypos, md, s, bankno);
 	}
-	public void draw(int xpos, int ypos, MugenDrawer md, String s, int sens) {
+	public void draw(int bankno, int xpos, int ypos, MugenDrawer md, String s, int sens) {
 		if (sens > 0) {
-			drawLeftToRight(xpos, ypos, md, s);
+			drawLeftToRight(xpos, ypos, md, s, bankno);
 		} else if (sens < 0) {
-			drawRightToLeft(xpos, ypos, md, s);
+			drawRightToLeft(xpos, ypos, md, s, bankno);
 		} else {
-			drawCenter(xpos, ypos, md, s);
+			drawCenter(xpos, ypos, md, s, bankno);
 		}
 	}
-
 	
-	public ImageContainer getMainImage() {
-		return mainImage;
-	}
+//	public void draw(int xpos, int ypos, MugenDrawer md, String s) {
+//		drawLeftToRight(xpos, ypos, md, s, 0);
+//	}
+//	public void draw(int xpos, int ypos, MugenDrawer md, String s, int sens) {
+//		if (sens > 0) {
+//			drawLeftToRight(xpos, ypos, md, s, 0);
+//		} else if (sens < 0) {
+//			drawRightToLeft(xpos, ypos, md, s, 0);
+//		} else {
+//			drawCenter(xpos, ypos, md, s, 0);
+//		}
+//	}
+	
 
-	public void setMainImage(ImageContainer mainImage) {
-		this.mainImage = mainImage;
-	}
 
 	public String getName() {
 		return name;
@@ -89,11 +117,11 @@ public class FontProducer {
 		this.spacing = spacing;
 	}
 
-	public Color getColors() {
+	public int getColors() {
 		return colors;
 	}
 
-	public void setColors(Color colors) {
+	public void setColors(int colors) {
 		this.colors = colors;
 	}
 
@@ -121,7 +149,7 @@ public class FontProducer {
 		this.map = map;
 	}
 
-	public void drawLeftToRight(int x, int y, MugenDrawer md, String s) {
+	public void drawLeftToRight(int x, int y, MugenDrawer md, String s, int bankno) {
 		String[] lines = s.split("\n");
 		int width = getMaxWidth(lines);
 		int height = lines.length * (size.height + (lines.length > 1? spacing.height: 0));
@@ -139,7 +167,7 @@ public class FontProducer {
 						xposTemp, xposTemp + pt.width, y, y - size.height, 
 						pt.x , pt.x + pt.width, size.height, 0, 
 						false, false,
-						mainImage);
+						getImageByBankno(bankno));
 				md.draw(dp);
 				xposTemp += (pt.width + spacing.width);
 			}
@@ -149,7 +177,7 @@ public class FontProducer {
 	}
 	
 	
-	public void drawRightToLeft(int x, int y, MugenDrawer md, String s) {
+	public void drawRightToLeft(int x, int y, MugenDrawer md, String s, int bankno) {
 		String[] lines = s.split("\n");
 		int width = getMaxWidth(lines);
 		int height = lines.length * (size.height + (lines.length > 1? spacing.height: 0));
@@ -167,7 +195,7 @@ public class FontProducer {
 						xposTemp, xposTemp + pt.width, y, y - size.height, 
 						pt.x , pt.x + pt.width, size.height, 0, 
 						false, false,
-						mainImage);
+						getImageByBankno(bankno));
 				md.draw(dp);
 				xposTemp += (pt.width + spacing.width);
 			}
@@ -176,7 +204,7 @@ public class FontProducer {
 		
 	}
 	
-	public void drawCenter(int x, int y, MugenDrawer md, String s) {
+	public void drawCenter(int x, int y, MugenDrawer md, String s, int bankno) {
 		
 		if (s == null)
 			s = "";
@@ -197,7 +225,7 @@ public class FontProducer {
 						xposTemp, xposTemp + pt.width, y, y - size.height, 
 						pt.x , pt.x + pt.width, size.height, 0, 
 						false, false,
-						mainImage);
+						getImageByBankno(bankno));
 				md.draw(dp);
 				xposTemp += (pt.width + spacing.width);
 			}

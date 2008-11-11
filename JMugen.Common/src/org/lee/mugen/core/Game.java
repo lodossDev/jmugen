@@ -26,6 +26,7 @@ public interface Game {
 	 * @throws Exception Throw to indicate an internal error
 	 */
 	public void init(GameWindow container) throws Exception;
+	public void reInit(GameWindow container) throws Exception;
 	
 	/**
 	 * Update the game logic here. No rendering should take place in this method
@@ -46,6 +47,8 @@ public interface Game {
  	 * @throws Exception Throw to indicate a internal error
 	 */
 	public void render() throws Exception;
+	
+	public Game getNext() throws Exception;
 	
 	
 	public void addRender(Renderable r);

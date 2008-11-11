@@ -1,5 +1,6 @@
 package org.lee.mugen.input;
 
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -60,6 +61,50 @@ public class CmdProcDispatcher {
 	final int xyz;
 	
 	
+	public int getUp() {
+		return up;
+	}
+
+	public int getDown() {
+		return down;
+	}
+
+	public int getBack() {
+		return back;
+	}
+
+	public int getA() {
+		return a;
+	}
+
+	public int getB() {
+		return b;
+	}
+
+	public int getC() {
+		return c;
+	}
+
+	public int getX() {
+		return x;
+	}
+
+	public int getY() {
+		return y;
+	}
+
+	public int getZ() {
+		return z;
+	}
+
+	public int getAbc() {
+		return abc;
+	}
+
+	public int getXyz() {
+		return xyz;
+	}
+
 	public CmdProcDispatcher(
 			final int up, 
 			final int down, 
@@ -83,24 +128,6 @@ public class CmdProcDispatcher {
 		this.xyz = xyz;
 		
 		keyCodeToKeyMap = new HashMap<Integer, Key>();
-//		{
-//			@Override
-//			public Key get(Object pkey) {
-//				if (pkey == null)
-//					return null;
-//				int key = new Integer(pkey.toString());
-//				if (sprite.getInfo().isFlip()) {
-//					if (key == back)
-//						key = forward;
-//					else if (key == forward)
-//						key = back;
-//					return super.get(key);
-//				} else {
-//					return super.get(key);
-//					
-//				}
-//			}
-//		};
 		keyCodeToKeyMap.put(up, Key.U);
 		keyCodeToKeyMap.put(down, Key.D);
 		keyCodeToKeyMap.put(back, Key.B);
@@ -110,22 +137,6 @@ public class CmdProcDispatcher {
 		
 		keyLockFactory = 
 			new EnumMap<Key, KeyLockCommand>(Key.class);
-//		{
-//
-//				@Override
-//				public KeyLockCommand get(Object key) {
-//					if (sprite.getInfo().isFlip()) {
-//						Key k = inverseMap.get(key);
-//						if (k == null)
-//							return super.get(key);
-//						return super.get(k);
-//					} else {
-//						return super.get(key);
-//						
-//					}
-//				}
-//			
-//		};
 
 		keyCodeToKeyMap.put(a, Key.a);
 		keyCodeToKeyMap.put(b, Key.b);
@@ -232,13 +243,6 @@ public class CmdProcDispatcher {
 	private void releaseDir(int keyCode, long tick, boolean isFlip) {
 		if (diseable)
 			return;
-//		if (isFlip) {
-//			if (keyCode == back)
-//				keyCode = forward;
-//			else if (keyCode == forward)
-//				keyCode = back;
-//		}
-
 		Key key = keyCodeToKeyMap.get(keyCode);
 		releaseDir(key, tick);
 	}
@@ -386,7 +390,6 @@ public class CmdProcDispatcher {
 	 * @see org.lee.mugen.core.command.ICmdProcDispatcher#press(int, long, boolean)
 	 */
 	public boolean press(int keyCode, long tick, boolean isFlip) {
-
 		pressDir(keyCode, tick, isFlip);
 		if (abc == keyCode) {
 			press(this.a, tick, isFlip);
@@ -581,7 +584,13 @@ public class CmdProcDispatcher {
 
 		};
 	}
+	public int getForward() {
+		return forward;
+	}
+
 	public static Map<String, CmdProcDispatcher> getSpriteDispatcherMap() {
 		return spriteDispatcherMap;
 	}
+
+
 }
