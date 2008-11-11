@@ -34,8 +34,9 @@ public class Files implements Section {
 	@Override
 	public void parse(Object root, String name, String value) throws Exception {
 		this.root = (MugenSystem) root;
-		
-		if (name.equals("spr")) {
+		if (name.equals("select")) {
+			select = new Select(getFile((MugenSystem) root, value));
+		} else if (name.equals("spr")) {
 			SffReader sffReader = new SffReader(getFile(this.root, value), null);
 			spr = new SpriteSFF(sffReader, true, false);
 		} else if (name.equals("snd")) {

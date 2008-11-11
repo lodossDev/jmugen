@@ -9,6 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.lee.mugen.lang.Wrapper;
+import org.lee.mugen.object.Rectangle;
 import org.lee.mugen.parser.air.AirData.TypeBlit;
 import org.lee.mugen.sprite.parser.Parser;
 import org.lee.mugen.sprite.parser.Parser.GroupText;

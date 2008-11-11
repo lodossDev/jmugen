@@ -1,9 +1,9 @@
 package org.lee.mugen.background;
 
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.util.HashMap;
 
+import org.lee.mugen.object.Rectangle;
 import org.lee.mugen.renderer.Trans;
 import org.lee.mugen.sprite.base.AbstractAnimManager;
 import org.lee.mugen.sprite.character.AnimGroup;
@@ -76,7 +76,7 @@ public class BG implements Cloneable {
 	// trans = ? Transparency settings: "none"/"add"/"add1"/"sub"" (def: "none")
 	private Trans trans = Trans.NONE;
 	private Type type = Type.NORMAL;
-	private final Rectangle window = new Rectangle();
+	private org.lee.mugen.object.Rectangle window;
 	// start = ?, ? Starting location (integer) (def: 0, 0)
 	private PointF start = new PointF();
 	// tile = ?, ? Tiling: xtile, ytile (int): 0 - off, 1 - infinite,
@@ -291,16 +291,8 @@ public class BG implements Cloneable {
 		this.type = Type.valueOf(type.toUpperCase());
 	}
 
-	public void setWindow(Object... params) {
-		int x = ((Number) params[0]).intValue();
-		int y = ((Number) params[1]).intValue();
-		int width = ((Number) params[2]).intValue();
-		int height = ((Number) params[3]).intValue();
-
-		window.x = x;
-		window.y = y;
-		window.width = width;
-		window.height = height;
+	public void setWindow(Rectangle r) {
+		window = (Rectangle) r.clone();
 	}
 
 
@@ -376,7 +368,7 @@ public class BG implements Cloneable {
 		this.delta = delta;
 	}
 
-	public Rectangle getWindow() {
+	public org.lee.mugen.object.Rectangle getWindow() {
 		return window;
 	}
 

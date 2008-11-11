@@ -108,7 +108,7 @@ public class PhysicsEngime {
 	}
 	
 	private static Rectangle getGlobalWidthRect(Sprite spr) {
-		if (spr.getInfo().getYPos() < 0 && getGlobalClsn2ect(spr) == null) {
+		if (spr.getInfo().getYPos() < 0 && getGlobalClsn2ect(spr) != null) {
 			return getGlobalClsn2ect(spr);
 		}
 

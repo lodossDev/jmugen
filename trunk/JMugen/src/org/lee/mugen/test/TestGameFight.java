@@ -16,7 +16,7 @@ import org.lee.mugen.renderer.GraphicsWrapper;
 import org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns.Teammode.TeamMode;
 import org.lee.mugen.util.debugger.SpriteDebugerUI;
 
-public class TestFrame {
+public class TestGameFight {
 
 
 	public static void launchUI() throws Exception {
@@ -199,7 +199,7 @@ public class TestFrame {
 	    
 	    
 		String[] args = new String[] {
-				"kfm", "0", 
+				"cvsryu", "0", 
 				"kfm", "0",
 				"stage0.def",
 //				"ADX_S060.wav"

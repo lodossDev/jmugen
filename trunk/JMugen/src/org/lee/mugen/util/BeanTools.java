@@ -1,6 +1,7 @@
 package org.lee.mugen.util;
 
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
@@ -49,6 +50,78 @@ public class BeanTools {
 
 	private static Map<Class, Converter> convertersMap = new HashMap<Class, Converter>();
 
+	private static Converter<Rectangle> rectangleConverter = new Converter<Rectangle>() {
+
+		public Rectangle convert(Object o) {
+			if (o instanceof String) {
+				String[] params = o.toString().replaceAll(" ", "").split(",");
+				int x = Integer.parseInt(params[0]);
+				int y = Integer.parseInt(params[1]);
+				int width = Integer.parseInt(params[2]);
+				int height = Integer.parseInt(params[3]);
+
+				Rectangle result = new Rectangle();
+				result.x = x;
+				result.y = y;
+				result.width = width;
+				result.height = height;
+				return result;
+			} else if (o.getClass().isArray()) {
+				Object[] params = (Object[]) o;
+				int x = ((Number) params[0]).intValue();
+				int y = ((Number) params[1]).intValue();
+				int width = ((Number) params[2]).intValue();
+				int height = ((Number) params[3]).intValue();
+
+				Rectangle result = new Rectangle();
+				result.x = x;
+				result.y = y;
+				result.width = width;
+				result.height = height;
+				return result;
+			}
+			throw new IllegalArgumentException();
+			
+		}
+		
+	};
+	
+	private static Converter<org.lee.mugen.object.Rectangle> mugenRectangleConverter = new Converter<org.lee.mugen.object.Rectangle>() {
+
+		public org.lee.mugen.object.Rectangle convert(Object o) {
+			if (o instanceof String) {
+				String[] params = o.toString().replaceAll(" ", "").split(",");
+				int x = Integer.parseInt(params[0]);
+				int y = Integer.parseInt(params[1]);
+				int x1 = Integer.parseInt(params[2]);
+				int y1 = Integer.parseInt(params[3]);
+
+				org.lee.mugen.object.Rectangle result = new org.lee.mugen.object.Rectangle();
+				result.setX1(x);
+				result.setX2(x1);
+				result.setY1(y);
+				result.setY2(y1);
+				return result;
+			} else if (o.getClass().isArray()) {
+				Object[] params = (Object[]) o;
+				int x = ((Number) params[0]).intValue();
+				int y = ((Number) params[1]).intValue();
+				int x1 = ((Number) params[2]).intValue();
+				int y1 = ((Number) params[3]).intValue();
+
+				org.lee.mugen.object.Rectangle result = new org.lee.mugen.object.Rectangle();
+				result.setX1(x);
+				result.setX2(x1);
+				result.setY1(y);
+				result.setY2(y1);
+				return result;
+			}
+			throw new IllegalArgumentException();
+			
+		}
+		
+	};
+	
 	private static Converter<Sinadd> sinaddClassConverter = new Converter<Sinadd>() {
 
 		public Sinadd convert(Object o) {
@@ -788,6 +861,8 @@ public class BeanTools {
 	static {
 		
 		
+		convertersMap.put(org.lee.mugen.object.Rectangle.class, mugenRectangleConverter);
+		convertersMap.put(Rectangle.class, rectangleConverter);
 		convertersMap.put(Sinadd.class, sinaddClassConverter);
 		convertersMap.put(BG.Type.class, bg$TypeClassConverter);
 //		convertersMap.put(ReversalAttrClass.class, reversalAttrClassConverter);
@@ -910,6 +985,7 @@ public class BeanTools {
 			}
 			Object o = converter.convert(value); //use spriteId for dynamic value
 			mW.invoke(bean, o);
+			o = converter.convert(value); 
 		}
 	}
 		

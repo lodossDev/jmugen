@@ -14,12 +14,44 @@ public class Select {
 	private ExtraStages extraStages;
 	private Options options;
 	
+	public Characters getCharacters() {
+		return characters;
+	}
+
+	public void setCharacters(Characters characters) {
+		this.characters = characters;
+	}
+
+	public ExtraStages getExtraStages() {
+		return extraStages;
+	}
+
+	public void setExtraStages(ExtraStages extraStages) {
+		this.extraStages = extraStages;
+	}
+
+	public Options getOptions() {
+		return options;
+	}
+
+	public void setOptions(Options options) {
+		this.options = options;
+	}
+
+	public String getFilename() {
+		return filename;
+	}
+
+	public void setFilename(String filename) {
+		this.filename = filename;
+	}
+
 	private String filename;
 	public Select(String filename) throws Exception {
 		this.filename = filename;
 		parse();
 	}
-	
+
 	private void parse() throws Exception {
 		String src = IOUtils.toString(new FileInputStream(filename), "utf-8");
 		List<GroupText> groups = Parser.getGroupTextMap(src);
@@ -41,8 +73,9 @@ public class Select {
 
 	private void parse(Section section, GroupText grp) throws Exception {
 		StringTokenizer token = new StringTokenizer(grp.getText().toString(), "\r\n");
-		for (String line = token.nextToken(); token.hasMoreTokens();) {
-			section.parse(this, line, null);
+		while (token.hasMoreTokens()) {
+			section.parse(this, token.nextToken(), null);
+			
 		}
 	}
 }

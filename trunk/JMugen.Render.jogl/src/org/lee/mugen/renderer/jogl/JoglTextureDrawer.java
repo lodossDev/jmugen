@@ -24,6 +24,7 @@ public class JoglTextureDrawer {
 	public TextureRenderer getBackBuffer() {
 		if (backBuffer == null) {
 			backBuffer = new TextureRenderer(640,480,true);
+			backBuffer.setSmoothing(false);
 		}
 		return backBuffer;
 	}

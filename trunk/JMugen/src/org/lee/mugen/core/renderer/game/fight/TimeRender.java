@@ -38,13 +38,14 @@ public class TimeRender extends BaseRender {
 		}
 		if (counter.getLayerno() != layer)
 			return;
+		FontType font = (FontType) counter.getType();
 		Point pos = GameFight.getInstance().getFightdef().getTime().getPos();
-		Integer fontIdx = ((FontType)counter.getType()).getFontno();
+		Integer fontIdx = font.getFontno();
 		
-		Integer fontSens = ((FontType)counter.getType()).getAlignmt().getCode();
+		Integer fontSens = font.getAlignmt().getCode();
 		md.scale(counter.getScale().getX(), counter.getScale().getY());
-		((FontType)counter.getType()).getFont().get(fontIdx).
-				draw((int)(pos.x*1f/counter.getScale().getX()), (int)(pos.y*1f/counter.getScale().getY()),
+		font.getFont().get(fontIdx).
+				draw(font.getFontbank(), (int)(pos.x*1f/counter.getScale().getX()), (int)(pos.y*1f/counter.getScale().getY()),
 						md, display, fontSens);
 		md.scale(1f/counter.getScale().getX(), 1f/counter.getScale().getY());
 	}

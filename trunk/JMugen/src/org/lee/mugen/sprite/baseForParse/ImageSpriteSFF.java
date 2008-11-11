@@ -3,7 +3,7 @@ package org.lee.mugen.sprite.baseForParse;
 import java.io.IOException;
 
 import org.lee.mugen.imageIO.RawPCXImage;
-import org.lee.mugen.parser.air.Rectangle;
+import org.lee.mugen.object.Rectangle;
 import org.lee.mugen.renderer.GraphicsWrapper;
 import org.lee.mugen.renderer.ImageContainer;
 

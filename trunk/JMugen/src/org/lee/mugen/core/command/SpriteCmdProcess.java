@@ -1,7 +1,9 @@
 package org.lee.mugen.core.command;
 
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.lee.mugen.core.GameFight;
@@ -18,6 +20,7 @@ import org.lee.mugen.sprite.character.SpriteCns;
  *
  */
 public class SpriteCmdProcess implements org.lee.mugen.input.ISpriteCmdProcess {
+
 	private List<String> spriteIds = new ArrayList<String>();
 	private CmdProcDispatcher dispatcher;
 	private List<MugenCommands> cmds;
@@ -137,7 +140,5 @@ public class SpriteCmdProcess implements org.lee.mugen.input.ISpriteCmdProcess {
 	public int[] getKeys() {
 		return dispatcher.getKeys();
 	}
-
-
 
 }

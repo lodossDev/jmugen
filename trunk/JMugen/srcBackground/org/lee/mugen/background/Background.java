@@ -12,11 +12,9 @@ import org.lee.mugen.parser.air.AirParser;
 import org.lee.mugen.parser.type.StringValueable;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.base.AbstractAnimManager;
-import org.lee.mugen.sprite.baseForParse.SpriteSFF;
 import org.lee.mugen.sprite.cns.eval.function.StateCtrlFunction;
 import org.lee.mugen.sprite.parser.ExpressionFactory;
 import org.lee.mugen.sprite.parser.Parser.GroupText;
-import org.lee.mugen.stage.Stage;
 import org.lee.mugen.util.BeanTools;
 import org.lee.mugen.util.MugenTools;
 
@@ -76,16 +74,13 @@ public class Background {
 					bgdef.parse(this, key, grp.getKeyValues().get(key));
 			} else if (animGrpPattern.matcher(grp.getSection()).find()) {
 				airParser.parseGroup(grp);
-			} else if (bgPattern.matcher(grp.getSection()).find()
-					|| "bg".equals(grp.getSection())) {
+			} else if (bgPattern.matcher(grp.getSection()).find()) {
 				String bgName;
-				if (!"bg".equalsIgnoreCase(grp.getSection())) {
-					Matcher m = bgPattern.matcher(grp.getSection());
-					m.find();
-					bgName = m.group(1);
-				} else {
-					bgName = "";
-				}
+				
+				Matcher m = bgPattern.matcher(grp.getSection());
+				m.find();
+				bgName = m.group(1);
+				
 				BG bg = new BG(this);
 
 				bg.setName(bgName);

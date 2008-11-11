@@ -1,5 +1,7 @@
 package org.lee.mugen.parser.air;
 
+import org.lee.mugen.object.Rectangle;
+
 
 
 public class AirData extends BasicActionData {

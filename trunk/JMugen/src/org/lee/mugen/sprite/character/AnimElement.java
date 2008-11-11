@@ -1,8 +1,8 @@
 package org.lee.mugen.sprite.character;
 
 
+import org.lee.mugen.object.Rectangle;
 import org.lee.mugen.parser.air.AirData;
-import org.lee.mugen.parser.air.Rectangle;
 
 public class AnimElement {
     private AirData _airData;

@@ -21,7 +21,7 @@ public abstract class AbstractSprite {
 		return GameFight.getInstance().getFightdef().getFiles().getFightfx();
 	}
 	public static List<Rectangle> replaceCns(AbstractSprite spr, int xAxis,
-			int yAxis, org.lee.mugen.parser.air.Rectangle[] rects) {
+			int yAxis, org.lee.mugen.object.Rectangle[] rects) {
 
 		boolean isFlip = spr.isFlip();
 
@@ -35,7 +35,7 @@ public abstract class AbstractSprite {
 		}
 		float xoffset = spr.getSprAnimMng().getCurrentImageSprite()
 				.getXOffSet() * spr.getXScale();
-		for (org.lee.mugen.parser.air.Rectangle r : rects) {
+		for (org.lee.mugen.object.Rectangle r : rects) {
 
 			float xTopLeft = (Math.min((isFlip ? -1 : 1) * r.getX1(),
 					(isFlip ? -1 : 1) * r.getX2()));
@@ -72,10 +72,6 @@ public abstract class AbstractSprite {
 							- xAxis* spr.getXScale() + xoffset : xAxis* spr.getXScale() - xoffset));
 			result.add(jr);
 
-//			jr.x = (int) (jr.x * spr.getXScale());
-//			jr.y = (int) (jr.y * spr.getYScale());
-//			jr.width = (int) (jr.width * spr.getXScale());
-//			jr.height = (int) (jr.height * spr.getYScale());
 		}
 		return result;
 
@@ -93,7 +89,7 @@ public abstract class AbstractSprite {
 
 	protected SpriteSFF spriteSFF;
 
-	protected List<Rectangle> getCns(org.lee.mugen.parser.air.Rectangle[] rects) {
+	protected List<Rectangle> getCns(org.lee.mugen.object.Rectangle[] rects) {
 		ImageSpriteSFF img = getCurrentImageSpriteSFF();
 
 		int xAxis = img == null? 0: img.getXAxis();

@@ -49,7 +49,26 @@ public class Varset extends StateCtrlFunction {
 	private List<Functionable> listOfValFSet = new ArrayList<Functionable>();
 	
 	public void addParam(String name, Valueable[] param) {
-		if (isMatch(P_SYSVAR_REG, name)) {
+		if (isMatch(P_SYSVAR_F_REG, name)) {
+			Matcher m = (P_SYSVAR_F_REG).matcher(name);
+			m.find();
+			final String value = m.group(1);
+			String[] tokens = ExpressionFactory.expression2Tokens(value);
+			final Valueable[] valueables = param;//ExpressionFactory.evalExpression(tokens, getSpriteId());
+			
+			Functionable functionable = new Functionable() {
+				public void reset() {}
+
+				public Object getValue(String spriteId, Valueable... params) {
+					Sprite sprite = GameFight.getInstance().getSpriteInstance(spriteId);
+					final SpriteState spriteState = sprite.getSpriteState();
+					
+					spriteState.getVars().setSysFVar(value, valueables[0]);
+					return null;
+				}};
+			listOfValFSet.add(functionable);
+			return;
+		} else if (isMatch(P_SYSVAR_REG, name)) {
 			Matcher m = (P_SYSVAR_REG).matcher(name);
 			m.find();
 			final String value = m.group(1);
@@ -68,68 +87,7 @@ public class Varset extends StateCtrlFunction {
 				}};
 			listOfValSet.add(functionable);
 			return;
-		}
-		if (isMatch(P_SYSVAR_F_REG, name)) {
-			Matcher m = (P_SYSVAR_F_REG).matcher(name);
-			m.find();
-			final String value = m.group(1);
-			String[] tokens = ExpressionFactory.expression2Tokens(value);
-			final Valueable[] valueables = param;//ExpressionFactory.evalExpression(tokens, getSpriteId());
-			
-			Functionable functionable = new Functionable() {
-				public void reset() {}
-
-				public Object getValue(String spriteId, Valueable... params) {
-					Sprite sprite = GameFight.getInstance().getSpriteInstance(spriteId);
-					final SpriteState spriteState = sprite.getSpriteState();
-					
-					spriteState.getVars().setSysFVar(value, valueables[0]);
-					return null;
-				}};
-			listOfValFSet.add(functionable);
-			return;
-		}
-		if (isMatch(P_SYSVAR_F_REG, name)) {
-			Matcher m = (P_SYSVAR_F_REG).matcher(name);
-			m.find();
-			final String value = m.group(1);
-			String[] tokens = ExpressionFactory.expression2Tokens(value);
-			final Valueable[] valueables = param;//ExpressionFactory.evalExpression(tokens, getSpriteId());
-			
-			Functionable functionable = new Functionable() {
-				public void reset() {}
-
-				public Object getValue(String spriteId, Valueable... params) {
-					Sprite sprite = GameFight.getInstance().getSpriteInstance(spriteId);
-					final SpriteState spriteState = sprite.getSpriteState();
-					
-					spriteState.getVars().setSysFVar(value, valueables[0]);
-					return null;
-				}};
-			listOfValFSet.add(functionable);
-			return;
-		}
-		if (isMatch(P_VAR_REG, name)) {
-			Matcher m = (P_VAR_REG).matcher(name);
-			m.find();
-			final String value = m.group(1);
-			String[] tokens = ExpressionFactory.expression2Tokens(value);
-			final Valueable[] valueables = param;//ExpressionFactory.evalExpression(tokens, getSpriteId());
-			
-			Functionable functionable = new Functionable() {
-				public void reset() {}
-
-				public Object getValue(String spriteId, Valueable... params) {
-					Sprite sprite = GameFight.getInstance().getSpriteInstance(spriteId);
-					final SpriteState spriteState = sprite.getSpriteState();
-					
-					spriteState.getVars().setVar(value, valueables[0]);
-					return null;
-				}};
-			listOfValFSet.add(functionable);
-			return;
-		}
-		if (isMatch(P_VAR_F_REG, name)) {
+		} else if (isMatch(P_VAR_F_REG, name)) {
 			Matcher m = (P_VAR_F_REG).matcher(name);
 			m.find();
 			final String value = m.group(1);
@@ -148,7 +106,26 @@ public class Varset extends StateCtrlFunction {
 				}};
 			listOfValFSet.add(functionable);
 			return;
+		} else if (isMatch(P_VAR_REG, name)) {
+			Matcher m = (P_VAR_REG).matcher(name);
+			m.find();
+			final String value = m.group(1);
+			String[] tokens = ExpressionFactory.expression2Tokens(value);
+			final Valueable[] valueables = param;//ExpressionFactory.evalExpression(tokens, getSpriteId());
+			
+			Functionable functionable = new Functionable() {
+				public void reset() {}
+
+				public Object getValue(String spriteId, Valueable... params) {
+					Sprite sprite = GameFight.getInstance().getSpriteInstance(spriteId);
+					final SpriteState spriteState = sprite.getSpriteState();
+					spriteState.getVars().setVar(value, valueables[0]);
+					return null;
+				}};
+			listOfValFSet.add(functionable);
+			return;
 		}
+		
 		int index = getParamIndex(name);
 		if (index == -1) {
 			Logger.log("This line can't be compile in Varset >> " + name);
@@ -194,6 +171,7 @@ public class Varset extends StateCtrlFunction {
 		if (v != null) {
 			final int intValue = Parser.getIntValue(value.getValue(spriteId));
 			int intV = Parser.getIntValue(v.getValue(spriteId));
+
 			spriteState.getVars().setVar(intV + "", new Valueable() {
 
 				public Object getValue(String spriteId, Valueable... params) {

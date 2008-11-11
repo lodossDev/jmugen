@@ -1120,7 +1120,7 @@ public class FightEngine {
 	public static boolean hasAttackRect(AbstractSprite sprite) {
 		if (sprite.getSprAnimMng().getCurrentImageSprite() == null)
 			return false;
-		org.lee.mugen.parser.air.Rectangle[] r = sprite.getSprAnimMng()
+		org.lee.mugen.object.Rectangle[] r = sprite.getSprAnimMng()
 				.getCurrentImageSprite().getAtacksRec();
 		return r != null && r.length > 0;
 	}

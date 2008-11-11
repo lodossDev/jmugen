@@ -23,7 +23,7 @@ public class SimpleElement {
 	}
 	
 	public void parse(Object root, String name, String value) {
-		if (name.equalsIgnoreCase("pos")) {
+		if (name.equalsIgnoreCase("pos") || name.equalsIgnoreCase("offset")) {
 			pos = (Point) BeanTools.getConvertersMap().get(Point.class).convert(value);
 		} else if (name.startsWith("bg")) {
 			String sNum = name.substring(2, name.indexOf("."));

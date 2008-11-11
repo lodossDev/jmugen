@@ -85,7 +85,8 @@ public class BaseRender implements Renderable {
 		
 		if (type.getLayerno() != layer)
 			return;
-		
+		if (pos == null)
+			pos = new Point();
 		float xScale = 1;
 		float yScale = 1;
 		
@@ -133,7 +134,7 @@ public class BaseRender implements Renderable {
 			
 			md.scale(xScale, yScale);
 			font.getFont().get(font.getFontno()).
-					draw((int)(pos.x*1f/xScale), (int)(pos.y*1f/yScale),
+					draw(font.getFontbank(), (int)(pos.x*1f/xScale) + type.getOffset().x, (int)(pos.y*1f/yScale) + type.getOffset().y,
 							md, text, fontSens);
 			md.scale(1f/xScale, 1f/yScale);
 		}
