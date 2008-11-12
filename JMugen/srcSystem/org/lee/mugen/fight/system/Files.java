@@ -1,6 +1,5 @@
 package org.lee.mugen.fight.system;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 

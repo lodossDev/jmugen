@@ -32,11 +32,12 @@ public class Background {
 
 	// private String _END = "(?:(?: *;.*$)|(?: *$))";
 	private String bgdefRegex = " *bgdef *";
-	private String bgRegex = "( *bg +" + "(.*)\\s*)|(bg)";
+	private String bgRegex = "( *bg +" + "(.*)\\s*)|(\\bbg\\b)";
 	private String bgctrldefRegex = " *bgctrldef +" + "(.*) *";
 	private String bgCtrlRegex = " *bgctrl +" + "([a-zA-Z0-9\\.\\ \\-\\_]*) *";
 	public static final String _GRP_ACTION_REGEX = " *begin action +(\\d*) *";
 
+	private boolean forceImage;
 	public Background(Object parent, File currentDir, String bgdefRegex,
 			String bgRegex, String bgctrldefRegex, String bgCtrlRegex) {
 		this.bgdefRegex = bgdefRegex;
@@ -45,6 +46,14 @@ public class Background {
 		this.bgCtrlRegex = bgCtrlRegex;
 		this.currentDir = currentDir;
 		root = parent;
+	}
+
+	public boolean isForceImage() {
+		return forceImage;
+	}
+
+	public void setForceImage(boolean forceImage) {
+		this.forceImage = forceImage;
 	}
 
 	public File getCurrentDir() {
@@ -71,9 +80,17 @@ public class Background {
 			if (bgdefPattern.matcher(grp.getSection()).find()) {
 				bgdef = new BGdef();
 				for (String key: grp.getKeysOrdered())
-					bgdef.parse(this, key, grp.getKeyValues().get(key));
+					bgdef.parse(this, key, grp.getKeyValues().get(key), forceImage);
 			} else if (animGrpPattern.matcher(grp.getSection()).find()) {
 				airParser.parseGroup(grp);
+			} else if (bgCtrlDefPattern.matcher(grp.getSection()).find()) {
+
+				parentBGCtrlDef = BGCtrlDef.parseBGCtrlDef(this, grp
+						.getSection(), grp);
+				bgCtrlDefMap.put(parentBGCtrlDef.getCtrlid(), parentBGCtrlDef);
+			} else if (bgCtrlPattern.matcher(grp.getSection()).find()) {
+				BGCtrlDef.BGCtrl.parseBGCtrl(parentBGCtrlDef, parentBGCtrlDef
+						.getId(), grp.getSection(), grp);
 			} else if (bgPattern.matcher(grp.getSection()).find()) {
 				String bgName;
 				
@@ -95,15 +112,7 @@ public class Background {
 					bg.setOrder(list.size());
 					list.add(bg);
 				}
-			} else if (bgCtrlDefPattern.matcher(grp.getSection()).find()) {
-
-				parentBGCtrlDef = BGCtrlDef.parseBGCtrlDef(this, grp
-						.getSection(), grp);
-				bgCtrlDefMap.put(parentBGCtrlDef.getCtrlid(), parentBGCtrlDef);
-			} else if (bgCtrlPattern.matcher(grp.getSection()).find()) {
-				BGCtrlDef.BGCtrl.parseBGCtrl(parentBGCtrlDef, parentBGCtrlDef
-						.getId(), grp.getSection(), grp);
-			}
+			} 
 		}
 		anim = new AbstractAnimManager(airParser);
 		StateCtrlFunction.endOfParsing();
@@ -142,6 +151,8 @@ public class Background {
 
 			try {
 				if (objectValues.length == 1) {
+					if (key.equals("ctrlid"))
+						System.out.println();
 					BeanTools.setObject(bean, (parent == null
 							|| parent.trim().length() == 0 ? "" : parent + ".")
 							+ key, objectValues[0]);
@@ -199,9 +210,13 @@ public class Background {
 	public String getBgCtrlRegex() {
 		return bgCtrlRegex;
 	}
-
+	boolean isInit = false;
 	public void process() {
 		for (BG bg : getBgs()) {
+			if (!bg.isInit()) {
+				bg.init();
+				bg.setInit(true);
+			}
 
 			if (bg.getId() != null
 					&& getBgCtrlDefMap().get(bg.getId()) != null) {

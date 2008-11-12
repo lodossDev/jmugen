@@ -12,7 +12,7 @@ public class Backedgedist extends SpriteCnsTriggerFunction {
 		super("backedgedist", new String[] {});
 	}
 	public static float compute(Sprite sprite) {
-		Stage stage = GameFight.getInstance().getInstanceOfStage();
+		Stage stage = GameFight.getInstance().getStage();
 		int _mvX = stage.getCamera().getX();
 		if (sprite.isFlip()) {
 			float x = -_mvX + stage.getCamera().getWidth()/2 - (sprite.getInfo().getXPos() - sprite.getInfo().getWidth().getBack());

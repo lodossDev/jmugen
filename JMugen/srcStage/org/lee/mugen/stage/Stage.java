@@ -22,9 +22,14 @@ import org.lee.mugen.stage.section.elem.StageInfo;
 
 public class Stage {
 	private String filename;
-	
+	private boolean forceImage;
 	public Stage(String filename) throws Exception {
 		this.filename = filename;
+		parse();
+	}
+	public Stage(String filename, boolean forceBufferedimage) throws Exception {
+		this.filename = filename;
+		this.forceImage = forceBufferedimage;
 		parse();
 	}
 	
@@ -54,13 +59,14 @@ public class Stage {
 	
 	private void parse() throws Exception {
 		String src = IOUtils.toString(new BufferedReader(new FileReader(filename)));
-		List<GroupText> groups = Parser.getGroupTextMap(src);
+		List<GroupText> groups = Parser.getGroupTextMap(src, true);
 		
 		String bgdefRegex = " *bgdef *";
 		String bgRegex = "( *bg +" + "(.*)\\s*)|(bg)";
 		String bgctrldefRegex = " *bgctrldef +" + "(.*) *";
 	    String bgCtrlRegex = " *bgctrl +" + "([a-zA-Z0-9\\.\\ \\-\\_]*) *";
 		background = new Background(this, getCurrentDir(), bgdefRegex, bgRegex, bgctrldefRegex, bgCtrlRegex);
+		background.setForceImage(forceImage);
 		background.parse(this, groups);
 		
 		

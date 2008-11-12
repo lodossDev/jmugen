@@ -17,7 +17,7 @@ public class Visible extends StateCtrlFunction {
 
 	@Override
 	public Object getValue(String bgId, Valueable... params) {
-		Stage stage = GameFight.getInstance().getInstanceOfStage();
+		Stage stage = GameFight.getInstance().getStage();
 		ArrayList<BG> bgs = stage.getBackground().getBgCtrlDefMap().get(new Integer(bgId))
 				.getBgCopys();
 

@@ -12,7 +12,7 @@ public class Time extends SpriteCnsTriggerFunction {
 	}
 	@Override
 	public Object getValue(String bgId, Valueable... params) {
-		Stage stage = GameFight.getInstance().getInstanceOfStage();
+		Stage stage = GameFight.getInstance().getStage();
 		int time = stage.getBackground().getBgCtrlDefMap().get(new Integer(bgId)).getCounttime();
 		
 		return time;

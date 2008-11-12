@@ -108,7 +108,7 @@ public class BaseRender implements Renderable {
 						false, sff.getImage());
 				drawProperties.setXScaleFactor(xScale);
 				drawProperties.setYScaleFactor(yScale);
-				drawProperties.setAlpha(alpha);
+				drawProperties.setAlpha(alpha * type.getAlpha());
 				draw(md, drawProperties);
 			} else if (type.getFacing() == 1) {
 				DrawProperties drawProperties = new DrawProperties(
@@ -118,24 +118,29 @@ public class BaseRender implements Renderable {
 						false, sff.getImage());
 				drawProperties.setXScaleFactor(xScale);
 				drawProperties.setYScaleFactor(yScale);
-				drawProperties.setAlpha(alpha);
+				drawProperties.setAlpha(alpha * type.getAlpha());
 
 				draw(md, drawProperties);
 			}
 			
 		} else if (type.getType() instanceof FontType) {
+			
 			FontType font = (FontType) type.getType();
 			String text = font.getText();
 			
 			int fontSens = font.getAlignmt().getCode();
-
 			xScale = type.getScale().getX();
 			yScale = type.getScale().getY();
 			
 			md.scale(xScale, yScale);
 			font.getFont().get(font.getFontno()).
-					draw(font.getFontbank(), (int)(pos.x*1f/xScale) + type.getOffset().x, (int)(pos.y*1f/yScale) + type.getOffset().y,
-							md, text, fontSens);
+				draw(
+							font.getFontbank(), 
+							(int)(pos.x*1f/xScale) + type.getOffset().x, 
+							(int)(pos.y*1f/yScale) + type.getOffset().y,
+							md, 
+							text, 
+							fontSens, alpha * type.getAlpha());
 			md.scale(1f/xScale, 1f/yScale);
 		}
 	}

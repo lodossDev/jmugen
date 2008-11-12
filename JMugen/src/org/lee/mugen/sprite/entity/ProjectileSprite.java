@@ -154,7 +154,7 @@ x positif s'éloigne du centre de l'écran alors qu'un offset x négatif s'en ra
 		}
 		
 		// remove by Projedgebound
-		Camera cam = GameFight.getInstance().getInstanceOfStage().getCamera();
+		Camera cam = GameFight.getInstance().getStage().getCamera();
 		Point pt = new Point((int)getRealXPos() + cam.getX(), (int)getRealYPos() + cam.getY());
 		remove = remove || projectileSub.getProjedgebound() + Math.pow(320*320 + 240*240, 0.5)< pt.distance(new Point(cam.getX(), cam.getY()));
 		

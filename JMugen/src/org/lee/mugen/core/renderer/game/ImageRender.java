@@ -46,7 +46,7 @@ public class ImageRender implements Renderable {
 
 	public void render() {
 		time--;
-		fp.draw(0, point.x, point.y, GraphicsWrapper.getInstance(), str, sens);
+		fp.draw(0, point.x, point.y, GraphicsWrapper.getInstance(), str, sens, 1f);
 	}
 
 	public void setPriority(int p) {

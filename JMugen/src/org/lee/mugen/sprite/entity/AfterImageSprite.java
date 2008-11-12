@@ -44,13 +44,13 @@ public class AfterImageSprite extends AbstractSprite {
 		}
 		
 		public int getXToDraw() {
-			Stage stage = GameFight.getInstance().getInstanceOfStage();
+			Stage stage = GameFight.getInstance().getStage();
 			int _mvX = stage.getCamera().getX();
 			return x + stage.getCamera().getWidth()/2 + _mvX;
 		}
 		
 		public int getYToDraw() {
-			Stage stage = GameFight.getInstance().getInstanceOfStage();
+			Stage stage = GameFight.getInstance().getStage();
 			int _mvY = stage.getCamera().getY();
 			return y + stage.getStageinfo().getZoffset() + _mvY;
 		}

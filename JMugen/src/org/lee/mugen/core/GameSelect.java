@@ -3,17 +3,25 @@ package org.lee.mugen.core;
 import java.awt.Point;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.lee.mugen.core.renderer.game.StageBackgroundRender;
 import org.lee.mugen.core.renderer.game.select.SelectRender;
 import org.lee.mugen.fight.select.Characters;
 import org.lee.mugen.fight.system.MugenSystem;
+import org.lee.mugen.fight.system.elem.StageDisplay;
 import org.lee.mugen.input.CmdProcDispatcher;
 import org.lee.mugen.renderer.GameWindow;
 import org.lee.mugen.renderer.Renderable;
+import org.lee.mugen.renderer.jogl.JoglMugenDrawer;
 import org.lee.mugen.sprite.character.SpriteDef;
 import org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns.Teammode.TeamMode;
+import org.lee.mugen.stage.Stage;
 
 public class GameSelect implements Game {
+	public Stage getStage() {
+		return stage;
+	}
 	private static final GameSelect instance = new GameSelect();
 	public static GameSelect getInstance() {
 		return instance;
@@ -54,15 +62,20 @@ public class GameSelect implements Game {
 	}
 
 	private Point position = new Point();
-	private boolean fireOne;
-	private boolean fireTwo;
+	private boolean fireSpriteOne;
+	private boolean fireSpriteTwo;
 	
+	private boolean fireStage;
+	
+	public boolean isFireStage() {
+		return fireStage;
+	}
 	public boolean isFireOne() {
-		return fireOne;
+		return fireSpriteOne;
 	}
 
 	public boolean isFireTwo() {
-		return fireTwo;
+		return fireSpriteTwo;
 	}
 
 	private Point position2 = new Point();
@@ -85,6 +98,7 @@ public class GameSelect implements Game {
 			position2.y += y;
 	}
 
+
 	
 	public Point getPosition2() {
 		return position2;
@@ -93,6 +107,7 @@ public class GameSelect implements Game {
 	public void init(GameWindow container) throws Exception {
 		next = null;
 		selectRender = new SelectRender(this);
+
 		container.clearListener();
 		reInit(container);
 		container.clearListener();
@@ -102,60 +117,119 @@ public class GameSelect implements Game {
 			public void action(int key, boolean isPress) {
 				long now = System.currentTimeMillis();
 				
-				if (!isPress)
+				if (!isPress || now - lastPress < 100)
 					return;
 				
 				CmdProcDispatcher cmdOne = CmdProcDispatcher.getSpriteDispatcherMap().get("1");
-				if (cmdOne.getDown() == key && !fireOne) {
+				if (cmdOne.getDown() == key && !fireSpriteOne) {
 					lastPress = System.currentTimeMillis();
 					addToPositionOne(1, 0);
 				
-				} else if (cmdOne.getUp() == key && !fireOne) {
+				} else if (cmdOne.getUp() == key && !fireSpriteOne) {
 					lastPress = System.currentTimeMillis();
 					addToPositionOne(-1, 0);
-				} else if (cmdOne.getBack() == key && !fireOne) {
+				} else if (cmdOne.getBack() == key && !fireSpriteOne) {
 					lastPress = System.currentTimeMillis();
 					addToPositionOne(0, -1);
-				} else if (cmdOne.getForward() == key && !fireOne) {
+				} else if (cmdOne.getForward() == key && !fireSpriteOne) {
 					lastPress = System.currentTimeMillis();
 					addToPositionOne(0, 1);
-				} else if (isButton(cmdOne, key)) {
+				}
+				////////
+				else if (cmdOne.getBack() == key && fireSpriteOne && !fireStage && !processStage) {
+					lastPress = System.currentTimeMillis();
+					indexOfStage--;
+					if (indexOfStage < 0)
+						indexOfStage = MugenSystem.getInstance().getFiles().getSelect().getExtraStages().getStages().size() - 1;
+					changeStage = true;
+				} else if (cmdOne.getForward() == key && fireSpriteOne && !fireStage && !processStage) {
+					lastPress = System.currentTimeMillis();
+					indexOfStage++;
+					if (indexOfStage > MugenSystem.getInstance().getFiles().getSelect().getExtraStages().getStages().size() - 1)
+						indexOfStage = 0;
+					changeStage = true;
+				} else if (isButtonConfirm(cmdOne, key) && !processStage && fireSpriteOne) {
+					lastPress = System.currentTimeMillis();
+					fireStage = true;
+				} else if (isButtonCancel(cmdOne, key) && !processStage && fireSpriteOne && fireStage) {
+					lastPress = System.currentTimeMillis();
+					fireStage = false;
+				} else if (isButtonConfirm(cmdOne, key) && !fireSpriteOne) {
 					if (getSelectedSprite(position) != null)
-						fireOne = !fireOne;
+						fireSpriteOne = true;
+				} else if (isButtonCancel(cmdOne, key) && fireSpriteOne) {
+					if (getSelectedSprite(position) != null)
+						fireSpriteOne = false;
 				}
 				
+				
+				//////////////////////////////////////////////////
+				
 				CmdProcDispatcher cmdTwo = CmdProcDispatcher.getSpriteDispatcherMap().get("2");
-				if (cmdTwo.getDown() == key && !fireTwo) {
+				if (cmdTwo.getDown() == key && !fireSpriteTwo) {
 					lastPress = System.currentTimeMillis();
 					addToPositionTwo(1, 0);
 				
-				} else if (cmdTwo.getUp() == key && !fireTwo) {
+				} else if (cmdTwo.getUp() == key && !fireSpriteTwo) {
 					lastPress = System.currentTimeMillis();
 					addToPositionTwo(-1, 0);
-				} else if (cmdTwo.getBack() == key && !fireTwo) {
+				} else if (cmdTwo.getBack() == key && !fireSpriteTwo) {
 					lastPress = System.currentTimeMillis();
 					addToPositionTwo(0, -1);
-				} else if (cmdTwo.getForward() == key && !fireTwo) {
+				} else if (cmdTwo.getForward() == key && !fireSpriteTwo) {
 					lastPress = System.currentTimeMillis();
 					addToPositionTwo(0, 1);
-				} else if (isButton(cmdTwo, key)) {
+				} else if (isButtonConfirm(cmdTwo, key) && !fireSpriteTwo) {
 					if (getSelectedSprite(position2) != null)
-						fireTwo = !fireTwo;
+						fireSpriteTwo = true;
+				} else if (isButtonCancel(cmdTwo, key) & !fireStage) {
+					if (getSelectedSprite(position2) != null)
+						fireSpriteTwo = false;
 				}
 					
-				
+				else if (cmdTwo.getBack() == key && fireSpriteTwo && !fireStage && !processStage) {
+					lastPress = System.currentTimeMillis();
+					indexOfStage--;
+					if (indexOfStage < 0)
+						indexOfStage = MugenSystem.getInstance().getFiles().getSelect().getExtraStages().getStages().size() - 1;
+					changeStage = true;
+				} else if (cmdTwo.getForward() == key && fireSpriteTwo && !fireStage && !processStage) {
+					lastPress = System.currentTimeMillis();
+					indexOfStage++;
+					if (indexOfStage > MugenSystem.getInstance().getFiles().getSelect().getExtraStages().getStages().size() - 1)
+						indexOfStage = 0;
+					changeStage = true;
+				} else if (isButtonConfirm(cmdTwo, key) && !processStage && fireSpriteTwo) {
+					lastPress = System.currentTimeMillis();
+					fireStage = true;
+				} else if (isButtonCancel(cmdTwo, key) && !processStage && fireSpriteTwo && fireStage) {
+					lastPress = System.currentTimeMillis();
+					fireStage = false;
+				}  else if (isButtonConfirm(cmdTwo, key) && !fireSpriteTwo) {
+					if (getSelectedSprite(position2) != null)
+						fireSpriteTwo = true;
+				} else if (isButtonCancel(cmdTwo, key)) {
+					if (getSelectedSprite(position2) != null)
+						fireSpriteTwo = false;
+				}
 				
 			}
-			private boolean isButton(CmdProcDispatcher cmdOne, int key) {
+
+			private boolean isButtonCancel(CmdProcDispatcher cmdOne, int key) {
+				boolean result = 
+					cmdOne.getX() == key
+					|| cmdOne.getY() == key
+					|| cmdOne.getZ() == key
+					|| cmdOne.getXyz() == key;
+				return result;
+			}
+			
+			private boolean isButtonConfirm(CmdProcDispatcher cmdOne, int key) {
 				boolean result = 
 					cmdOne.getA() == key
 					|| cmdOne.getB() == key
 					|| cmdOne.getB() == key
-					|| cmdOne.getX() == key
-					|| cmdOne.getY() == key
-					|| cmdOne.getZ() == key
-					|| cmdOne.getAbc() == key
-					|| cmdOne.getXyz() == key;
+					|| cmdOne.getAbc() == key;
 				return result;
 			}});
 
@@ -171,13 +245,23 @@ public class GameSelect implements Game {
 		// TODO Auto-generated method stub
 		
 	}
-
+	Stage stage = null;
+	StageBackgroundRender stageBackgroundRender;
+	int indexOfStage;
+	boolean changeStage;
 	@Override
 	public void reInit(GameWindow container) throws Exception {
-//		position = (Point) MugenSystem.getInstance().getSelectInfo().getP1().getCursor().getStartcell().clone();
-//		position2 = (Point) MugenSystem.getInstance().getSelectInfo().getP2().getCursor().getStartcell().clone();	
-		fireOne = false;
-		fireTwo = false;
+		position = (Point) MugenSystem.getInstance().getSelectInfo().getP1().getCursor().getStartcell().clone();
+		position2 = (Point) MugenSystem.getInstance().getSelectInfo().getP2().getCursor().getStartcell().clone();	
+		fireSpriteOne = false;
+		fireSpriteTwo = false;
+		if (stage != null)
+			stage.free();
+		stage = null;
+		stageBackgroundRender = null;
+		indexOfStage = 0;
+		changeStage = true;
+		fireStage = false;
 	}
 
 	@Override
@@ -210,24 +294,68 @@ public class GameSelect implements Game {
 		}
 		return null;
 	}
+	boolean processStage;
+	AtomicBoolean threadStart = new AtomicBoolean();
+	class ChangeStageThread extends Thread {
+		@Override
+		public void run() {
+			try {
+				String path = "resource/" + MugenSystem.getInstance().getFiles().getSelect().getExtraStages().getStages().get(indexOfStage);
+				Stage newStage = new Stage(path);
+				oldStageToDelete = stage;
+				stage = newStage;
+				StageBackgroundRender newStageBackgroundRender = new StageBackgroundRender(stage);
+				JoglMugenDrawer.prepareImageToTextPreparer();
+				stageBackgroundRender = newStageBackgroundRender;
+				stage.getCamera().setForcePos(true);
+				changeStage = false;
+				processStage = false;
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} finally {
+				threadStart.set(false);
+			}
+		}
+	};
+	Stage oldStageToDelete;
 	@Override
 	public void update(int delta) throws Exception {
+		if (changeStage) {
+			processStage = true;
+			if (!threadStart.get()) {
+				threadStart.set(true);
+				new ChangeStageThread().start();
+				
+			}
+			
+		} else {
+			if (oldStageToDelete != null) {
+				oldStageToDelete.free();
+				oldStageToDelete = null;
+			}
+			StageDisplay stageDisplay = MugenSystem.getInstance().getSelectInfo().getStagedisplay();
+			stage.getCamera().setX(stageDisplay.getCamera().x);
+			stage.getCamera().setY(stageDisplay.getCamera().y);
+			stage.process();
+
+		}
 		MugenSystem.getInstance().getSelectBackground().process();
-		if (fireOne && fireTwo) {
+		if (fireSpriteOne && fireSpriteTwo && fireStage && !changeStage) {
 			GameFight.clear();
 			final GameFight gameFight = GameFight.getInstance();
 			gameFight.setTeamOneMode(TeamMode.SINGLE);
 			gameFight.setTeamTwoMode(TeamMode.SINGLE);
 			
 			String spr = getSelectedSprite(position);
-			SpriteDef def = MugenSystem.getInstance().getFiles().getSelect().getCharacters().getCharactersMap().get(spr);
+			SpriteDef def = MugenSystem.getInstance().getFiles().getSelect().getCharacters().getSpritedef(spr);
 			gameFight.preloadSprite(GameFight.TEAMSIDE_ONE, "1", def, 0);
 
 			spr = getSelectedSprite(position2);
-			def = MugenSystem.getInstance().getFiles().getSelect().getCharacters().getCharactersMap().get(spr);
+			def = MugenSystem.getInstance().getFiles().getSelect().getCharacters().getSpritedef(spr);
 			gameFight.preloadSprite(GameFight.TEAMSIDE_TWO, "2", def, 0);
 
-			gameFight.preloadStage("resource/stages/stage0.def");
+			gameFight.setStage(stage);
 			
 			next = gameFight;
 			
@@ -236,6 +364,9 @@ public class GameSelect implements Game {
 	}
 
 	
+	public StageBackgroundRender getStageBackgroundRender() {
+		return stageBackgroundRender;
+	}
 	private SelectRender selectRender;
 	
 	private String nextMode;

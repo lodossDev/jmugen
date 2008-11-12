@@ -14,6 +14,7 @@ import org.lee.mugen.core.sound.SoundSystem;
 import org.lee.mugen.renderer.GameWindow;
 import org.lee.mugen.renderer.GraphicsWrapper;
 import org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns.Teammode.TeamMode;
+import org.lee.mugen.stage.Stage;
 import org.lee.mugen.util.debugger.SpriteDebugerUI;
 
 public class TestGameFight {
@@ -158,7 +159,7 @@ public class TestGameFight {
 		
 
 		
-		statemachine.preloadStage(stage);
+		statemachine.setStage(new Stage(stage));
 		if (music != null)
 			SoundSystem.SoundBackGround.playMusic(music);
 
@@ -199,10 +200,10 @@ public class TestGameFight {
 	    
 	    
 		String[] args = new String[] {
-				"cvsryu", "0", 
+				"kfm", "0", 
 				"kfm", "0",
-				"stage0.def",
-//				"ADX_S060.wav"
+				"kenstageDG.def",
+				"ADX_S060.wav"
 		};
 		
 		final GameFight statemachine = GameFight.getInstance();
@@ -212,12 +213,13 @@ public class TestGameFight {
 		statemachine.preloadSprite(GameFight.TEAMSIDE_ONE, "1", "resource/chars/" + args[0] + "/" + args[0] + ".def", Integer.parseInt(args[1]));
 		statemachine.preloadSprite(GameFight.TEAMSIDE_TWO, "2", "resource/chars/" + args[2] + "/" + args[2] + ".def", Integer.parseInt(args[3]));
 
-		statemachine.preloadStage("resource/stages/" + args[4]);
-		if (args.length > 5)
-			SoundSystem.SoundBackGround.playMusic("resource/sound/" + args[5]);
+
 
 		
 		GraphicsWrapper.init();
+		statemachine.setStage("resource/stages/" + args[4]);
+		if (args.length > 5)
+			SoundSystem.SoundBackGround.playMusic("resource/sound/" + args[5]);
 		final GameWindow gameWindow = GraphicsWrapper.getInstance().getInstanceOfGameWindow();
 		gameWindow.setGameWindowCallback(statemachine);
 		SpriteDebugerUI debugerUI = new SpriteDebugerUI();

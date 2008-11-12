@@ -8,9 +8,16 @@ import org.lee.mugen.fight.section.elem.Type;
 import org.lee.mugen.fight.system.elem.Cell;
 import org.lee.mugen.fight.system.elem.PlayerSelectInfo;
 import org.lee.mugen.fight.system.elem.Stage;
+import org.lee.mugen.fight.system.elem.StageDisplay;
 import org.lee.mugen.util.BeanTools;
 
 public class SelectInfo implements Section {
+
+	public StageDisplay getStagedisplay() {
+		return stagedisplay;
+	}
+
+
 
 	private Fade fadein;
 	private Fade fadeout;
@@ -25,6 +32,7 @@ public class SelectInfo implements Section {
 	PlayerSelectInfo p2;
 	boolean random$move$snd$cancel;
 	Stage stage;
+	StageDisplay stagedisplay;
 	Type cancel;
 	Type portrait;
 	Type title;
@@ -34,11 +42,11 @@ public class SelectInfo implements Section {
 	
 	@Override
 	public void parse(Object root, String name, String value) throws Exception {
-		if (name.startsWith("fadein")) {
+		if (name.startsWith("fadein.")) {
 			if (fadein == null)
 				fadein = new Fade();
 			fadein.parse(Type.getNext(name), value);
-		} else if (name.startsWith("fadeout")) {
+		} else if (name.startsWith("fadeout.")) {
 			if (fadeout == null)
 				fadeout = new Fade();
 			fadeout.parse(Type.getNext(name), value);
@@ -54,24 +62,28 @@ public class SelectInfo implements Section {
 			showemptyboxes = Integer.parseInt(value) != 0;
 		} else if (name.equals("moveoveremptyboxes")) {
 			moveoveremptyboxes = Integer.parseInt(value) != 0;
-		} else if (name.startsWith("cell")) {
+		} else if (name.startsWith("cell.")) {
 			if (cell == null)
 				cell = new Cell();
 			cell.parse(root, Type.getNext(name), value);
-		} else if (name.startsWith("p1")) {
+		} else if (name.startsWith("p1.")) {
 			if (p1 == null)
 				p1 = new PlayerSelectInfo();
 			p1.parse(root, Type.getNext(name), value);
-		} else if (name.startsWith("p2")) {
+		} else if (name.startsWith("p2.")) {
 			if (p2 == null)
 				p2 = new PlayerSelectInfo();
 			p2.parse(root, Type.getNext(name), value);
 		} else if (name.equals("random.move.snd.cancel")) {
 			random$move$snd$cancel = Integer.parseInt(value) != 0;
-		} else if (name.startsWith("stage")) {
+		} else if (name.startsWith("stage.")) {
 			if (stage == null)
 				stage = new Stage();
 			stage.parse(root, Type.getNext(name), value);
+		}  else if (name.startsWith("stagedisplay.")) {
+			if (stagedisplay == null)
+				stagedisplay = new StageDisplay();
+			stagedisplay.parse(root, Type.getNext(name), value);
 		} else if (name.startsWith("cancel")) {
 			if (cancel == null)
 				cancel = new Type();

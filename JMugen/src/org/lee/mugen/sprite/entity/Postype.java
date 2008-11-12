@@ -18,7 +18,7 @@ public enum Postype {
 	public PointF computePos(AbstractSprite p1, AbstractSprite p2, PointF offset, int facing) {
 		Postype postype = this;
 		offset = new PointF(offset);
-		Stage stage = GameFight.getInstance().getInstanceOfStage();
+		Stage stage = GameFight.getInstance().getStage();
 		int _mvX = stage.getCamera().getX();
 		int _mvY = stage.getCamera().getY();
 		float x = _mvX + stage.getCamera().getWidth()/2f;

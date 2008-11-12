@@ -1,5 +1,8 @@
 package org.lee.mugen.stage.section.elem;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.lee.mugen.fight.section.Section;
 import org.lee.mugen.stage.Stage;
 
@@ -58,11 +61,13 @@ public class StageInfo implements Section {
 	}
 
 
-
+	static Pattern intPattern = Pattern.compile("([0-9]+)");
 	@Override
 	public void parse(Object root, String name, String value) throws Exception {
 		if (name.equals("zoffset")) {
-			zoffset = Integer.parseInt(value);
+			Matcher m = intPattern.matcher(value);
+			m.find();
+			zoffset = Integer.parseInt(m.group(1));
 		} else if (name.equals("autoturn")) {
 			autoturn = Integer.parseInt(value) != 0;
 		} else if (name.equals("resetbg")) {

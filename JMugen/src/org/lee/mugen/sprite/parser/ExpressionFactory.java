@@ -178,7 +178,7 @@ public class ExpressionFactory {
 	
 	private static Pattern P_OPEN_BRACET_GRP_REGEX = Pattern.compile(_OPEN_BRACET_GRP_REGEX);
 
-	private static final Pattern P_FLOAT_REGEX = Pattern.compile(_FLOAT_REGEX);
+	public static final Pattern P_FLOAT_REGEX = Pattern.compile(_FLOAT_REGEX);
 	private static final Pattern P_SPECIAL_OPERATOR_REGEX = Pattern.compile(_SPECIAL_OPERATOR_REGEX);
 	private static final Pattern P_OPERATOR_REGEX = Pattern.compile(_OPERATOR_REGEX);
 	private static final Pattern P_TRIGGER_MATHS_FUNCTION_REGEX = Pattern.compile(_TRIGGER_MATHS_FUNCTION_REGEX, Pattern.CASE_INSENSITIVE);

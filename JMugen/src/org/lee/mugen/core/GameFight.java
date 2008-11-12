@@ -30,6 +30,7 @@ import org.lee.mugen.core.renderer.game.fight.FightdefRender;
 import org.lee.mugen.core.renderer.game.fight.RoundRender;
 import org.lee.mugen.core.renderer.game.system.TitleInfoRender;
 import org.lee.mugen.fight.section.Fightdef;
+import org.lee.mugen.fight.select.ExtraStages;
 import org.lee.mugen.fight.system.MugenSystem;
 import org.lee.mugen.input.CmdProcDispatcher;
 import org.lee.mugen.input.ISpriteCmdProcess;
@@ -102,9 +103,6 @@ public class GameFight implements Game {
 	private GameState gameState = new GameState();
 	private GameGlobalEvents globalEvents = new GameGlobalEvents();
 	private Stage instanceOfStage;
-	
-// Preload	
-	private String stage;
 	
 	
 	// Sprite Player Management
@@ -217,21 +215,17 @@ public class GameFight implements Game {
 	
 	// Stage
 
-	public void preloadStage(String fileDef) throws FileNotFoundException,
-			IOException {
-		stage = fileDef;
-	}
-
-	private void loadStage() throws Exception {
+	public void setStage(Stage stage) throws Exception {
 		removeBackgroundRender();
 		if (instanceOfStage != null)
 			instanceOfStage.free();
-		instanceOfStage = new Stage(stage);
-		addRender(new StageBackgroundRender());
-
+		instanceOfStage = stage;
+		instanceOfStage.getCamera().setForcePos(false);
+		addRender(new StageBackgroundRender(instanceOfStage));
+		reloadStage = false;
 	}
 
-	public Stage getInstanceOfStage() {
+	public Stage getStage() {
 		return instanceOfStage;
 	}
 	
@@ -483,10 +477,12 @@ public class GameFight implements Game {
 	List<CnsRender> cnsRenderList = new ArrayList<CnsRender>();
 	boolean addListener;
 	boolean freeNow;
+	boolean reloadStage;
 	public void init(GameWindow container) throws Exception {
 		setWindow(container);
 		next = null;
 		freeNow = false;
+		container.clearListener();
 		if (!addListener) {
 			container.addActionListener(new MugenKeyListener() {
 
@@ -494,6 +490,29 @@ public class GameFight implements Game {
 				public void action(int key, boolean isPress) {
 					if (KeyEvent.VK_ESCAPE == key) {
 						freeNow = true;
+					} else if (KeyEvent.VK_F1 == key) {
+						reloadStage = true;
+						stage = instanceOfStage.getFilename();
+					} else if (KeyEvent.VK_F2 == key && !isPress) {
+						
+						String newStage = stage.substring("resource/".length());
+						LinkedList<String> list = MugenSystem.getInstance().getFiles().getSelect().getExtraStages().getStages();
+						int index = list.indexOf(newStage);
+						index--;
+						if (index < 0)
+							index = list.size() - 1;
+						stage = "resource/" + list.get(index);
+						reloadStage = true;
+					} else if (KeyEvent.VK_F3 == key && !isPress) {
+						
+						String newStage = stage.substring("resource/".length());
+						LinkedList<String> list = MugenSystem.getInstance().getFiles().getSelect().getExtraStages().getStages();
+						int index = list.indexOf(newStage);
+						index++;
+						if (index > list.size() - 1)
+							index = 0;
+						stage = "resource/" + list.get(index);
+						reloadStage = true;
 					}
 					
 				}
@@ -509,11 +528,10 @@ public class GameFight implements Game {
 		try {
 			
 			loadSprites();
-			
+			if (instanceOfStage == null)
+				instanceOfStage = new Stage(stage);
 			loadingText += "\nloading Stage ";
 
-			loadStage();
-			
 			addRender(new SpriteShadowRender(getSpriteInstance("1"), false));
 			addRender(new SpriteShadowRender(getSpriteInstance("2"), false));
 			
@@ -542,7 +560,10 @@ public class GameFight implements Game {
 
 		for (Sprite s : getSprites()) {
 			if (spriteCmdProcessMap.get(s) == null) {
-				SpriteCmdProcess scp = new SpriteCmdProcess(CmdProcDispatcher.getSpriteDispatcherMap().get(s.getSpriteId()));
+				CmdProcDispatcher cmd = CmdProcDispatcher.getSpriteDispatcherMap().get(s.getSpriteId());
+				if (cmd != null)
+				cmd.clear();
+				SpriteCmdProcess scp = new SpriteCmdProcess(cmd);
 				scp.addSprite(s.getSpriteId());
 				spriteCmdProcessMap.put(s.getSpriteId(), scp);
 				((GameWindow)container).addSpriteKeyProcessor(scp);
@@ -553,13 +574,27 @@ public class GameFight implements Game {
 	}
 
 	
-
-
+	private String stage;
+	public void setStage(String stage) {
+		this.stage = stage;
+		reloadStage = true;
+	}
 
 	public void update(int delta) throws Exception {
 		if (freeNow) {
 			next = GameSelect.getInstance();
 			return;
+		}
+		if (reloadStage) {
+			Integer x = null;
+			if (instanceOfStage != null && instanceOfStage.getCamera() != null) {
+				x = instanceOfStage.getCamera().getXNoShaKe();
+			}
+			
+			setStage(new Stage(this.stage));
+			if (x != null)
+				instanceOfStage.getCamera().setX(x);
+
 		}
 		if (!getGlobalEvents().canUpdate())
 			return;
@@ -738,7 +773,11 @@ public class GameFight implements Game {
 		return getRoot(spr);
 	}
 	public String getRootId(Sprite sprite) {
-		return getRoot(sprite).getSpriteId();
+		Sprite root = getRoot(sprite);
+		if (root != null)
+			return getRoot(sprite).getSpriteId();
+		else
+			return null;
 	}
 	public String getRootId(String spriteId) {
 		Sprite spr = getSpriteInstance(spriteId);
@@ -1004,7 +1043,7 @@ public class GameFight implements Game {
 	
 	private void initRound() {
 		getFightdef().rezet();
-		getInstanceOfStage().getCamera().init();
+		getStage().getCamera().init();
 		
 		for (AbstractSprite s: getOtherSprites()) {
 			removeRender(s);
@@ -1020,9 +1059,9 @@ public class GameFight implements Game {
 			_spriteHelperRemoveList.addAll(getHelpersIds(getSpriteInstance(s.getSpriteId())));
 			helperManagement();
 			if (getTeamOne().get(s.getSpriteId()) != null)
-				s.getInfo().setXPos(getInstanceOfStage().getPlayerinfo().getP1startx());
+				s.getInfo().setXPos(getStage().getPlayerinfo().getP1startx());
 			else
-				s.getInfo().setXPos(getInstanceOfStage().getPlayerinfo().getP2startx());
+				s.getInfo().setXPos(getStage().getPlayerinfo().getP2startx());
 			s.getInfo().setYPos(0);
 			s.getSpriteState().clearVars();
 
@@ -1174,5 +1213,6 @@ public class GameFight implements Game {
 		preloadSprite(teamside, spriteId, def, pal);
 		
 	}
+
 
 }

@@ -74,7 +74,7 @@ public class DebugRender implements Renderable {
 
 			Sprite sprite = current;
 			SpriteCns sprInfo = sprite.getInfo();
-			Stage stage = GameFight.getInstance().getInstanceOfStage();
+			Stage stage = GameFight.getInstance().getStage();
 			int _mvX = stage.getCamera().getX();
 			int _mvY = stage.getCamera().getY();
 			int x = 10;

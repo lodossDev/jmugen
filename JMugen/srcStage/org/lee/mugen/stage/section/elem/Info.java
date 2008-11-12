@@ -11,6 +11,8 @@ public class Info implements Section {
 	private String author = "";
 	
 	public String getName() {
+		if (name.startsWith("\"") && name.endsWith("\""))
+			return name.substring(1, name.length() - 1);
 		return name;
 	}
 

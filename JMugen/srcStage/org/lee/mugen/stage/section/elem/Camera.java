@@ -3,6 +3,7 @@ package org.lee.mugen.stage.section.elem;
 
 import java.awt.Rectangle;
 import java.util.Random;
+import java.util.regex.Matcher;
 
 import org.lee.mugen.core.GameFight;
 import org.lee.mugen.core.physics.PhysicsEngime;
@@ -10,10 +11,22 @@ import org.lee.mugen.fight.section.Section;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.SpriteHelper;
 import org.lee.mugen.sprite.entity.Shake;
+import org.lee.mugen.sprite.parser.ExpressionFactory;
 import org.lee.mugen.stage.Stage;
 
 
 public class Camera implements Section {
+	public boolean isForcePos() {
+		return forcePos;
+	}
+
+
+
+	public void setForcePos(boolean forcePos) {
+		this.forcePos = forcePos;
+	}
+
+	private boolean forcePos = false;
 	private int width = 320;
 	private int height = 240;
 	private Stage parent = null;
@@ -55,7 +68,9 @@ public class Camera implements Section {
 		} else if (name.equals("boundlow")) {
 			boundlow = Integer.parseInt(value);
 		} else if (name.equals("verticalfollow")) {
-			verticalfollow = Float.parseFloat(value);
+			Matcher m = ExpressionFactory.P_FLOAT_REGEX.matcher(value);
+			m.find();
+			verticalfollow = Float.parseFloat(m.group(1));
 		} else if (name.equals("floortension")) {
 			floortension = Integer.parseInt(value);
 		} else if (name.equals("tension")) {
@@ -210,6 +225,9 @@ public class Camera implements Section {
 
 
 	public void process() {
+		if (forcePos) {
+			return;
+		}
 		boolean canMoveX = true;
 		boolean canMoveY = true;
 		for (Sprite s: GameFight.getInstance().getSprites()) {
@@ -279,9 +297,16 @@ public class Camera implements Section {
 				ySpr = (int) Math.min(ySpr, spr.getInfo().getYPos());
 			}
 			int yDiff = yCam - ySpr;
-			float yAdd = highestSpr.getInfo().getVelset().getY()/2;
-			if (ySpr == 0 && highestSpr.getInfo().getVelset().getY() == 0 && yCam != 0)
-				yAdd = highestSpr.getInfo().getVelset().getY()/2 + 1;
+			float yAdd = 0;
+			if (highestSpr != null) {
+				yAdd = highestSpr.getInfo().getVelset().getY()/2;
+				if (ySpr == 0 && highestSpr.getInfo().getVelset().getY() == 0 && yCam != 0)
+					yAdd = highestSpr.getInfo().getVelset().getY()/2 + 1;
+			}
+			
+			
+			
+			
 			if (yDiff < 0 && canMoveY)
 				setY((int) (yCam + yAdd));
 			
@@ -316,7 +341,7 @@ public class Camera implements Section {
 			minMax[0] = (int) Math.min(s.getInfo().getXPos(), minMax[0]);
 			minMax[1] = (int) Math.max(s.getInfo().getXPos(), minMax[1]);
 		}
-		return new int[] {minMax[0], minMax[1]};}
+		return new int[] {minMax[0]==null?0:minMax[0], minMax[1]==null?0:minMax[1]};}
 	
 	private int[] getMinMaxForYSprite() {
 		Integer[] minMax = new Integer[2];

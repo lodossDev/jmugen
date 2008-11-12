@@ -19,7 +19,7 @@ public class Fallenvshake extends StateCtrlFunction {
     public Object getValue(String spriteId, Valueable... params) {
     	HitDefSub lastHitdef = GameFight.getInstance().getSpriteInstance(spriteId).getInfo().getLastHitdef();
     	if (lastHitdef != null && lastHitdef.getFall().getEnvshake().getTime() > 0) {
-    		GameFight.getInstance().getInstanceOfStage().getCamera().setEnvShake(lastHitdef.getFall().getEnvshake());
+    		GameFight.getInstance().getStage().getCamera().setEnvShake(lastHitdef.getFall().getEnvshake());
     	}
     	
     	return null;

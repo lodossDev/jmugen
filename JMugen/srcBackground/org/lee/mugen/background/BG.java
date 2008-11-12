@@ -60,8 +60,8 @@ public class BG implements Cloneable {
 	private int mask = 0;
 	private String name = "";
 	// alpha
-	private int p1Alpha;
-	private int p2Alpha;
+	private int alpha1 = 256;
+	private int alpha2 = 256;
 	private Object parent = null;
 
 	// spriteno = ?, ? Sprite group and number: groupno, imgno (req'd)
@@ -84,7 +84,7 @@ public class BG implements Cloneable {
 	private PointF tile = new PointF();
 
 	// tilespacing = ?, ? Tiling: x, y (int) : space between tiles (def: 0, 0)
-	private PointF tilespacing = new PointF();
+	private PointF tilespacing;
 
 	// velocity = ?, ? Velocity: x, y (float): speed background moves (def: 0,
 	// 0)
@@ -152,13 +152,17 @@ public class BG implements Cloneable {
 	}
 	int time = 0;
 	float yMul = 1;
+	public boolean isInit() {
+		return isInit;
+	}
+
+	public void setInit(boolean isInit) {
+		this.isInit = isInit;
+	}
 	float xMul = 1;
 	boolean isInit = false;
 	public void process() {
-		if (!isInit) {
-			init();
-			isInit = true;
-		}
+
 		if (!enable)
 			return;
 		
@@ -216,13 +220,7 @@ public class BG implements Cloneable {
 		return name;
 	}
 
-	public int getP1Alpha() {
-		return p1Alpha;
-	}
 
-	public int getP2Alpha() {
-		return p2Alpha;
-	}
 
 	public SprGrpNum getSpriteno() {
 		return spriteno;
@@ -247,11 +245,19 @@ public class BG implements Cloneable {
 		this.actionno = actionno;
 //		animManager.setAction(actionno);
 	}
-	public void setAlpha(Object... params) {
-		p1Alpha = ((Number) params[0]).intValue();
-		p2Alpha = ((Number) params[1]).intValue();
+	public void setAlpha(int[] alpha) {
+		alpha1 = alpha[0];
+		if (alpha.length > 1)
+			alpha2 = alpha[1];
+		
 	}
 
+	public float getAlphaOne() {
+		return (float)alpha1/256f;
+	}
+	public int[] getAlpha() {
+		return new int[] {alpha1, alpha2};
+	}
 
 	public void setDebugbg(String debugbg) {
 		this.debugbg = debugbg;
@@ -342,6 +348,9 @@ public class BG implements Cloneable {
 
 	public void setTilespacing(PointF tilespacing) {
 		this.tilespacing = tilespacing;
+		if (!tilespacing.isYSetted()) {
+			this.tilespacing.setY(this.tilespacing.getX());
+		}
 	}
 
 	public PointF getVelocity() {

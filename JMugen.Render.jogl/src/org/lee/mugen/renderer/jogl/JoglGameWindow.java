@@ -370,7 +370,7 @@ public class JoglGameWindow implements GameWindow, GLEventListener {
 			e.printStackTrace();
 		}
 
-		loadingInitThread.start();
+		loadingInitThread.run();
 		canvas.requestFocus();
 		canvas.addKeyListener(debugEventManager);
 		canvas.addMouseListener(new MouseListener() {
@@ -454,6 +454,7 @@ public class JoglGameWindow implements GameWindow, GLEventListener {
 				Game another = callback.getNext();
 				if (another != callback) {
 					another.init(this);
+					JoglMugenDrawer.createImageToTextPreparer();
 					callback = another;
 				} else {
 					callback.render();

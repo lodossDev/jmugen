@@ -35,6 +35,7 @@ public class Type implements Cloneable {
 	PointF scale = new PointF(1, 1);
 	int starttime = 0;
 	int originalStarttime = 0;
+	float alpha = 1f;
 	
 	
 
@@ -144,11 +145,16 @@ public class Type implements Cloneable {
 			layerno = (Integer) BeanTools.getConvertersMap().get(Integer.class).convert(value);
 		} else if (name.equalsIgnoreCase("scale")) {
 			scale = (PointF) BeanTools.getConvertersMap().get(PointF.class).convert(value);
+		} else if (name.equalsIgnoreCase("alpha")) {
+			alpha = (Float) BeanTools.getConvertersMap().get(Float.class).convert(value);
 		}
 
 	}
 
 
+	public float getAlpha() {
+		return alpha;
+	}
 	public int getOriginalDisplaytime() {
 		return originalDisplaytime;
 	}
@@ -183,6 +189,8 @@ public class Type implements Cloneable {
 			if (nba.length > 2) {
 				int alignmt = nba[2];
 				e.setAlignmt(ALIGNMT.getValue(alignmt));
+			} else {
+				e.setAlignmt(ALIGNMT.center);
 			}
 			type = e;
 		}		

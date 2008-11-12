@@ -17,22 +17,26 @@ public class Stage implements Section {
 	public void parse(Object root, String name, String value) throws Exception {
 		if (name.equals("pos")) {
 			pos = (Point) BeanTools.getConvertersMap().get(Point.class).convert(value);
-		} else if (name.startsWith("move")) {
+		} else if (name.startsWith("move.")) {
 			if (move == null)
 				move = new Type();
 			move.setType(Type.getNext(name), move, value, root);
-		} else if (name.startsWith("done")) {
+			move.parse(Type.getNext(name), value);
+		} else if (name.startsWith("done.")) {
 			if (done == null)
 				done = new Type();
 			done.setType(Type.getNext(name), done, value, root);
-		} else if (name.startsWith("active")) {
+			done.parse(Type.getNext(name), value);
+		} else if (name.startsWith("active.")) {
 			if (active == null)
 				active = new Type();
 			active.setType(Type.getNext(name), active, value, root);
-		} else if (name.startsWith("active2")) {
+			active.parse(Type.getNext(name), value);
+		} else if (name.startsWith("active2.")) {
 			if (active2 == null)
 				active2 = new Type();
 			active2.setType(Type.getNext(name), active2, value, root);
+			active2.parse(Type.getNext(name), value);
 		}
 		
 	}
