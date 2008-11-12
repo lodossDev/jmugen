@@ -98,7 +98,7 @@ public class PhysicsEngime {
 		}
 		int x = 0;
 		int y = 0;
-		Stage stage = GameFight.getInstance().getInstanceOfStage();
+		Stage stage = GameFight.getInstance().getStage();
 		int _mvX = stage.getCamera().getXNoShaKe();
 		int _mvY = stage.getCamera().getYNoShake();
 		x = _mvX + stage.getCamera().getWidth()/2;
@@ -169,9 +169,9 @@ public class PhysicsEngime {
 
 				if (r1.x > r2.x && sprOne.getRealXPos() > sprTwo.getRealXPos())
 					mul = -mul;
-//				sprTwo.getInfo().addXPos(r1.intersection(r2).width * mul);
-				sprTwo.getInfo().addXPos(r1.intersection(r2).width/2f * mul);
-				sprOne.getInfo().addXPos(r1.intersection(r2).width/2f * mul);
+				sprTwo.getInfo().addXPos(r1.intersection(r2).width * mul);
+//				sprTwo.getInfo().addXPos(r1.intersection(r2).width/2f * mul);
+//				sprOne.getInfo().addXPos(r1.intersection(r2).width/2f * mul);
 				checkGoodPositionInScreen(sprTwo);
 			}
 			r1 = getGlobalClsn2ect(sprOne);
@@ -217,9 +217,9 @@ public class PhysicsEngime {
 
 				if (sprOne.getRealXPos() > sprTwo.getRealXPos())
 					mul = -mul;
-				
-				sprTwo.getInfo().addXPos(r1.intersection(r2).width/2f * mul);
-				sprOne.getInfo().addXPos(r1.intersection(r2).width/2f * mul);
+				sprTwo.getInfo().addXPos(r1.intersection(r2).width * mul);
+//				sprTwo.getInfo().addXPos(r1.intersection(r2).width/2f * mul);
+//				sprOne.getInfo().addXPos(r1.intersection(r2).width/2f * mul);
 				checkGoodPositionInScreen(sprTwo);
 			}
 			r1 = getGlobalWidthRect(sprOne);
@@ -250,7 +250,7 @@ public class PhysicsEngime {
 	private static Rectangle getRectEdge(Sprite spr) {
 
 		boolean isFlip = spr.isFlip();
-		Stage stage = GameFight.getInstance().getInstanceOfStage();
+		Stage stage = GameFight.getInstance().getStage();
 		float _mvX = stage.getCamera().getXNoShaKe();
 		float _mvY = stage.getCamera().getYNoShake();
 

@@ -42,7 +42,7 @@ public class CnsRender implements Renderable {
 	public void render() {
 		MugenDrawer g = GraphicsWrapper.getInstance();
 		boolean isFlip = sprite.isFlip();
-		Stage stage = GameFight.getInstance().getInstanceOfStage();
+		Stage stage = GameFight.getInstance().getStage();
 		int _mvX = stage.getCamera().getX();
 		int _mvY = stage.getCamera().getY();
 	

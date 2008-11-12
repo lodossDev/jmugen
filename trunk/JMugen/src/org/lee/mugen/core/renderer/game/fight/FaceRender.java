@@ -91,7 +91,6 @@ public class FaceRender extends BaseRender {
 		if (p.getName().getLayerno() != layer)
 			return;
 		String name = GameFight.getInstance().getSpriteInstance(id).getDefinition().getInfo().getName();
-		name = name.substring(1, name.length() - 1);
 		MugenDrawer md = GraphicsWrapper.getInstance();
 		Point pos = p.getPos();
 		FontType font = (FontType) p.getName().getType();
@@ -100,7 +99,7 @@ public class FaceRender extends BaseRender {
 		md.scale(p.getName().getScale().getX(), p.getName().getScale().getY());
 		font.getFont().get(font.getFontno()).
 				draw(font.getFontbank(), (int)(pos.x*1f/p.getName().getScale().getX()), (int)(pos.y*1f/p.getName().getScale().getY()),
-						md, name, fontSens);
+						md, name, fontSens, p.getName().getAlpha());
 		md.scale(1f/p.getName().getScale().getX(), 1f/p.getName().getScale().getY());
 	}
 	

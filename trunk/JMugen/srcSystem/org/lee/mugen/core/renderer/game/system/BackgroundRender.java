@@ -26,12 +26,14 @@ public class BackgroundRender implements Renderable {
 		this.background = background;
 
 	}
-
 	private void drawTileY(ImageContainer img, BG bg, float x,
-			float y, float moveX, float moveY, int xStartForAll, Trans trans, boolean isHFlip, boolean isVFlip) {
+			float y, float moveX, float moveY, int xStartForAll, 
+			Trans trans, boolean isHFlip, boolean isVFlip) {
 		Rectangle r = bg.getWindow();
 		int yTile = (int) bg.getTile().getY();
-		float startPosY = y + moveY;
+		float startPosY = y ;
+		float deltaY = bg.getDelta().getY();
+		float deltaX = bg.getDelta().getX();
 		
 		if (yTile == 0) {
 //			drawImage(trans, img, (startPosY + (bg.getTilespacing().getY())
@@ -39,26 +41,28 @@ public class BackgroundRender implements Renderable {
 //					+ xStartForAll, (y + moveY * bg.getDelta().getY()), isHFlip, isVFlip);
 		
 		} else if (yTile == 1) {
-			
-			startPosY = (y + moveY) % img.getHeight();
+			float tileSpacingY = bg.getTilespacing() == null? img.getHeight(): bg.getTilespacing().getY();
+			startPosY = y + tileSpacingY;
 			while (startPosY < 240) {
-				drawImage(trans, img, x, (startPosY + (bg.getTilespacing().getY())
-						* bg.getDelta().getY()), isHFlip, isVFlip);
-				startPosY += img.getHeight();
+				drawImage(trans, img, x, startPosY, isHFlip, isVFlip);
+				startPosY += tileSpacingY;
 			}
 			
-			startPosY = (y + moveY) % img.getHeight();
+			startPosY = y - tileSpacingY;
 			while (startPosY + img.getHeight() > 0) {
-				drawImage(trans, img, x, (y + moveY * bg.getDelta().getY()), isHFlip, isVFlip);
-				startPosY -= img.getHeight();
+				drawImage(trans, img, x, startPosY, isHFlip, isVFlip);
+				startPosY -= tileSpacingY;
 			}
 			
 			
 		} else {
-			startPosY = (y + moveY) % img.getHeight();
+			float tilespacingY = bg.getTilespacing() == null? img.getHeight(): bg.getTilespacing().getY();
+			
+			startPosY = (y + moveY) % tilespacingY;
+			yTile--;
 			while (startPosY < 240 && yTile > 0) {
-				drawImage(trans, img, x, (startPosY + (bg.getTilespacing().getY())
-								* bg.getDelta().getY()), isHFlip, isVFlip);
+				drawImage(trans, img, x, (startPosY + (tilespacingY)
+								* deltaY), isHFlip, isVFlip);
 				startPosY += img.getHeight();
 				yTile--;
 			}
@@ -66,64 +70,69 @@ public class BackgroundRender implements Renderable {
 	}
 	
 	private void drawTileXY(ImageContainer img, BG bg, float x,
-			float y, float moveX, float moveY, int xStartForAll, Trans trans, boolean isHFlip, boolean isVFlip) {
+			float y, float moveX, float moveY, int xStartForAll, 
+			Trans trans, boolean isHFlip, boolean isVFlip) {
 		if (!bg.isEnable())
 			return;
 		int xTile = (int) bg.getTile().getX();
 		float startPosX = x;
-		float startPosY = y;
+		float tileSpacingX = (bg.getTilespacing() == null? img.getWidth() : bg.getTilespacing().getX());
+		float tileSpacingY = (bg.getTilespacing() == null? img.getHeight() : bg.getTilespacing().getY());
+		float deltaY = bg.getDelta().getY();
+		float deltaX = bg.getDelta().getX();
 		if (xTile == 0) {
-			drawImage(trans, img, (startPosX + (bg.getTilespacing().getX()) + moveX
-					* bg.getDelta().getX())
-					+ xStartForAll, (y + moveY * bg.getDelta().getY()), isHFlip, isVFlip);
-
-			drawTileY(img, bg, startPosX, startPosY, moveX, moveY, xStartForAll, trans, isHFlip, isVFlip);
-		
-		} else if (xTile > 1) {
-			startPosX = (startPosX + moveX) % img.getWidth();
-			startPosY = startPosY % img.getHeight();
+			startPosX = x + moveX * deltaX + xStartForAll;
 			
-			while (startPosX < 320 && (xTile > 0 || bg.getTile().getX() == 1)) {
-				float xDraw = (startPosX + (bg.getTilespacing().getX())
-										* bg.getDelta().getX())
-										+ xStartForAll;
-				float yDraw = (y + moveY * bg.getDelta().getY());
-				if (bg.getTile().getY() > 0)
-					yDraw = (y + moveY) % img.getHeight();
-				drawImage(trans, img, xDraw,  yDraw, isHFlip, isVFlip);
-				drawTileY(img, bg, xDraw, startPosY, moveX, moveY, xStartForAll, trans, isHFlip, isVFlip);
+			float yDraw = (y + moveY * deltaY);
+			if (bg.getTile().getY() > 0)
+				yDraw = (y + moveY * deltaY) % (tileSpacingY);
+			drawImage(trans, img, startPosX,  yDraw, isHFlip, isVFlip);
+
+			drawTileY(img, bg, startPosX, yDraw + img.getHeight(), moveX, moveY, xStartForAll, trans, isHFlip, isVFlip);
+			startPosX += tileSpacingX;
+
+		} else if (xTile > 1) {
+			startPosX = (x + moveX * deltaX + xStartForAll) % img.getWidth();
+			
+			while (startPosX < 320f) {
 				
-				startPosX += img.getWidth();
-				xTile--;
+				float yDraw = (y + moveY * deltaY);
+				if (bg.getTile().getY() > 0)
+					yDraw = (y + moveY * deltaY) % (tileSpacingY);
+				drawImage(trans, img, startPosX,  yDraw, isHFlip, isVFlip);
+
+				drawTileY(img, bg, startPosX, yDraw, moveX, moveY, xStartForAll, trans, isHFlip, isVFlip);
+				startPosX += tileSpacingX;
+
 			}
 		} else if (bg.getTile().getX() == 1) {
-			startPosX =  ((x - img.getWidth()) + moveX) % img.getWidth();
-			while (startPosX < 320) {
-				float xDraw = (startPosX + (bg.getTilespacing().getX())
-						* bg.getDelta().getX())
-						+ xStartForAll;
-				float yDraw = (y + moveY * bg.getDelta().getY());
+			
+			startPosX =  (x + moveX * deltaX + xStartForAll) % (tileSpacingX);
+//			startPosX = 300;
+			while (startPosX < 320f) {
+				
+				float yDraw = (y + moveY * deltaY);
 				if (bg.getTile().getY() > 0)
-					yDraw = (y + moveY) % img.getHeight();
-				drawImage(trans, img, xDraw,  yDraw, isHFlip, isVFlip);
-				drawTileY(img, bg, startPosX, startPosY, moveX, moveY, xStartForAll, trans, isHFlip, isVFlip);
-				startPosX += img.getWidth();
+					yDraw = (y + moveY * deltaY) % (tileSpacingY);
+				drawImage(trans, img, startPosX,  yDraw, isHFlip, isVFlip);
+
+				drawTileY(img, bg, startPosX, yDraw, moveX, moveY, xStartForAll, trans, isHFlip, isVFlip);
+				startPosX += tileSpacingX;
 			}
 			
-			startPosX =  ((x - img.getWidth()) + moveX) % img.getWidth();
-			startPosX -= img.getWidth();
-			while (startPosX + img.getWidth() + xStartForAll > 0) {
-				float xDraw = (startPosX + (bg.getTilespacing().getX())
-						* bg.getDelta().getX())
-						+ xStartForAll;
-				float yDraw = (y + moveY * bg.getDelta().getY());
+			startPosX =  (x + moveX * deltaX + xStartForAll) % (tileSpacingX);
+			startPosX -= tileSpacingX;
+			while (startPosX + img.getWidth() > 0) {
+				
+				float yDraw = (y + moveY * deltaY);
 				if (bg.getTile().getY() > 0)
-					yDraw = (y + moveY) % img.getHeight();
-				drawImage(trans, img, xDraw,  yDraw, isHFlip, isVFlip);
-				drawTileY(img, bg, startPosX, startPosY, moveX, moveY, xStartForAll, trans, isHFlip, isVFlip);
-				startPosX -= img.getWidth();
-			}
+					yDraw = (y + moveY * bg.getDelta().getY()) % (tileSpacingY);
+				drawImage(trans, img, startPosX,  yDraw, isHFlip, isVFlip);
 
+				drawTileY(img, bg, startPosX, yDraw, moveX, moveY, xStartForAll, trans, isHFlip, isVFlip);
+				startPosX -= tileSpacingX;
+				
+			}
 		}
 
 	}

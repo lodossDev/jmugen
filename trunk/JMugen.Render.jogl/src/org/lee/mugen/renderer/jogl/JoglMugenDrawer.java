@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.media.opengl.GL;
-import javax.media.opengl.glu.GLU;
 
 import org.lee.mugen.imageIO.PCXLoader;
 import org.lee.mugen.imageIO.RawPCXImage;
@@ -35,7 +34,9 @@ import org.lee.mugen.util.Logger;
 import com.sun.opengl.util.j2d.TextureRenderer;
 import com.sun.opengl.util.texture.Texture;
 import com.sun.opengl.util.texture.TextureCoords;
+import com.sun.opengl.util.texture.TextureData;
 import com.sun.opengl.util.texture.TextureIO;
+import com.sun.opengl.util.texture.spi.TextureProvider;
 
 public class JoglMugenDrawer extends MugenDrawer {
 	private JoglGameWindow gameWindow = new JoglGameWindow();
@@ -127,6 +128,7 @@ public class JoglMugenDrawer extends MugenDrawer {
 		GL gl = getGl();
 		if (gl == null)
 			return;
+		
 		Texture texture = (Texture) dp.getIc().getImg();
 		float xlDst = dp.getXLeftDst();
 		float xrDst = dp.getXRightDst();
@@ -155,22 +157,22 @@ public class JoglMugenDrawer extends MugenDrawer {
 		}
 		if (dp.getPalfx() != null) {
 			float type = 0;
-//			if (dp.getTrans() == Trans.ADD) {
-//				gl.glTexEnvi(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_SUBTRACT);
-//				gl.glBlendFunc(GL.GL_ONE_MINUS_DST_COLOR, GL.GL_ONE_MINUS_SRC_ALPHA);
-//				type = 1;
-//			} else if (dp.getTrans() == Trans.ADD1) {
-//				gl.glTexEnvi(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_MODULATE);
-//				gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_DST_ALPHA);
-//
-//				type = 2;
-//			} else if (dp.getTrans() == Trans.SUB) {
-//				gl.glTexEnvi(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_SUBTRACT);
-//				gl.glBlendFunc(GL.GL_ONE_MINUS_DST_COLOR, GL.GL_ONE_MINUS_SRC_ALPHA);
-//				gl.glBlendFunc(GL.GL_ONE_MINUS_DST_ALPHA, GL.GL_ONE_MINUS_SRC_COLOR);
-//				gl.glBlendFunc(GL.GL_DST_COLOR, GL.GL_ONE);
-//				type = 3;
-//			}
+			if (dp.getTrans() == Trans.ADD) {
+				gl.glTexEnvi(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_SUBTRACT);
+				gl.glBlendFunc(GL.GL_ONE_MINUS_DST_COLOR, GL.GL_ONE_MINUS_SRC_ALPHA);
+				type = 1;
+			} else if (dp.getTrans() == Trans.ADD1) {
+				gl.glTexEnvi(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_MODULATE);
+				gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_DST_ALPHA);
+
+				type = 2;
+			} else if (dp.getTrans() == Trans.SUB) {
+				gl.glTexEnvi(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_SUBTRACT);
+				gl.glBlendFunc(GL.GL_ONE_MINUS_DST_COLOR, GL.GL_ONE_MINUS_SRC_ALPHA);
+				gl.glBlendFunc(GL.GL_ONE_MINUS_DST_ALPHA, GL.GL_ONE_MINUS_SRC_COLOR);
+				gl.glBlendFunc(GL.GL_DST_COLOR, GL.GL_ONE);
+				type = 3;
+			}
 			float alpha = (float) (Math.PI * dp.getPalfx().getTimeActivate() / dp
 					.getPalfx().getSinadd().getPeriod());
 
@@ -194,7 +196,7 @@ public class JoglMugenDrawer extends MugenDrawer {
 			float type = 0;
 			if (dp.getImageProperties().getTrans() == Trans.ADD) {
 				gl.glTexEnvi(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_MODULATE);
-				gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_DST_ALPHA);
+				gl.glBlendFunc(GL.GL_SRC_COLOR, GL.GL_DST_ALPHA);
 				type = 1;
 			} else if (dp.getImageProperties().getTrans() == Trans.ADD1) {
 				gl.glTexEnvi(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_MODULATE);
@@ -235,13 +237,11 @@ public class JoglMugenDrawer extends MugenDrawer {
 			gl.glColor4f(1f, 1f, 1f, dp.getAlpha());
 			if (dp.getTrans() == Trans.ADD) {
 				gl.glTexEnvi(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_MODULATE);
-				gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_DST_ALPHA);
-
+				gl.glBlendFunc(GL.GL_SRC_COLOR, GL.GL_DST_ALPHA);
+				
 				type = 1;
 			} else if (dp.getTrans() == Trans.ADD1) {
 
-//				gl.glTexEnvi(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_SUBTRACT);
-//				gl.glBlendFunc(GL.GL_ONE_MINUS_DST_COLOR, GL.GL_ONE_MINUS_SRC_ALPHA);
 				gl.glTexEnvi(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_MODULATE);
 				gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_DST_ALPHA);
 				type = 2;
@@ -399,8 +399,11 @@ public class JoglMugenDrawer extends MugenDrawer {
 			scale(0.5f, 0.5f); // This scale help me to see out of screen
 			gl.glTranslated(160, 240, 0);
 		}
-
 		
+//		
+//		float coef = 1.5f;
+//		scale(coef, coef);
+//		gl.glTranslated(0, -120*(coef-1), 0);
 		processRotationProperties(dp.getAngleDrawProperties());
 
 		drawWithPropertiesColor(dp);
@@ -526,7 +529,7 @@ public class JoglMugenDrawer extends MugenDrawer {
 				} else if (imageStatus.get() == DATA) {
 					try {
 						
-						Texture texture = TextureIO.newTexture((BufferedImage)img, false);
+						Texture texture = TextureIO.newTexture((TextureData)img);
 						texture.setTexParameteri(GL.GL_TEXTURE_WRAP_S, GL.GL_CLAMP_TO_EDGE);
 						texture.setTexParameteri(GL.GL_TEXTURE_WRAP_T, GL.GL_CLAMP_TO_EDGE);
 						texture.setTexParameteri(GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
@@ -592,9 +595,9 @@ public class JoglMugenDrawer extends MugenDrawer {
 					RawPCXImage pcx = (RawPCXImage) img;
 					
 					try {
-						BufferedImage image = (BufferedImage) PCXLoader.loadImage(new ByteArrayInputStream(pcx.getData()), pcx.getPalette(), false, true);
-//						TextureData data = TextureIO.newTextureData(image, false);
-						img = image;
+						BufferedImage image = (BufferedImage) PCXLoader.loadImageColorIndexed(new ByteArrayInputStream(pcx.getData()), pcx.getPalette(), false, true);
+						img = TextureIO.newTextureData(image, false);
+//						img = image;
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -611,7 +614,7 @@ public class JoglMugenDrawer extends MugenDrawer {
 	
 	
 	//////////////////////
-	private static final int LIST_IMG_TO_PROCESS_COUNT = 0;
+	private static final int LIST_IMG_TO_PROCESS_COUNT = 1;
 	private static final int LIST_IMG_TO_PROCESS_THREAD_YELD_TIME = 0;
 	private static List<ImageContainerText>[] IMAGE_TO_PROCESS_LIST = null;
 	private static boolean[] jobFinish = new boolean[LIST_IMG_TO_PROCESS_COUNT];
@@ -619,6 +622,7 @@ public class JoglMugenDrawer extends MugenDrawer {
 	
 	
 	private static void addToImageToProcess(ImageContainerText img) {
+		
 		if (IMAGE_TO_PROCESS_LIST == null) {
 			IMAGE_TO_PROCESS_LIST = new List[LIST_IMG_TO_PROCESS_COUNT];
 			for (int i = 0; i < LIST_IMG_TO_PROCESS_COUNT; i++) {
@@ -637,9 +641,11 @@ public class JoglMugenDrawer extends MugenDrawer {
 
 	private static void prepareImageToProcess(List<ImageContainerText> list) {
 		Collections.sort(list, IMAGE_CONTAINER_COMPARATOR);
-		for (Iterator<ImageContainerText> iter = list.iterator(); iter.hasNext();) {
+		LinkedList<ImageContainerText> alist = new LinkedList<ImageContainerText>();
+		alist.addAll(list);
+		list.removeAll(alist);
+		for (Iterator<ImageContainerText> iter = alist.iterator(); iter.hasNext();) {
 			iter.next().prepareImageToTexture();
-			iter.remove();
 			if (LIST_IMG_TO_PROCESS_THREAD_YELD_TIME > 0) {
 				try {
 					Thread.sleep(LIST_IMG_TO_PROCESS_THREAD_YELD_TIME);
@@ -650,6 +656,7 @@ public class JoglMugenDrawer extends MugenDrawer {
 				
 			}
 		}
+		
 	}
 	private static Comparator<ImageContainerText> IMAGE_CONTAINER_COMPARATOR = new Comparator<ImageContainerText>() {
 
@@ -657,20 +664,35 @@ public class JoglMugenDrawer extends MugenDrawer {
 		public int compare(ImageContainerText o1, ImageContainerText o2) {
 			return -(o1.getWidth() * o1.getHeight()) + (o2.getWidth() * o2.getHeight());
 		}};
-	public static void createImageToTextPreparer() {
-		
-		for (int i = 0;IMAGE_TO_PROCESS_LIST != null && i < IMAGE_TO_PROCESS_LIST.length; ++i) {
-			final int pos = i;
-			new Thread() {
-				@Override
-				public void run() {
-					prepareImageToProcess(IMAGE_TO_PROCESS_LIST[pos]);
-					jobFinish[pos] = true;
-				}
-			}.start();
+		public static void createImageToTextPreparer() {
 			
+			for (int i = 0;IMAGE_TO_PROCESS_LIST != null && i < IMAGE_TO_PROCESS_LIST.length; ++i) {
+				final int pos = i;
+				new Thread() {
+					@Override
+					public void run() {
+						prepareImageToProcess(IMAGE_TO_PROCESS_LIST[pos]);
+						jobFinish[pos] = true;
+					}
+				}.run();
+				
+			}
 		}
-	}
+		
+		public static void prepareImageToTextPreparer() {
+			
+			for (int i = 0;IMAGE_TO_PROCESS_LIST != null && i < IMAGE_TO_PROCESS_LIST.length; ++i) {
+				final int pos = i;
+				new Thread() {
+					@Override
+					public void run() {
+						prepareImageToProcess(IMAGE_TO_PROCESS_LIST[pos]);
+						jobFinish[pos] = true;
+					}
+				}.run();
+				
+			}
+		}
 	
 	public static void newThreadJob() {
 		jobFinish = new boolean[LIST_IMG_TO_PROCESS_COUNT];
@@ -688,24 +710,32 @@ public class JoglMugenDrawer extends MugenDrawer {
 
 	@Override
 	public ImageContainer getImageContainer(Object imageData) {
-		RawPCXImage pcx = (RawPCXImage) imageData;
-		
-		PCXHeader header = null;
+		if (imageData instanceof RawPCXImage) {
+			RawPCXImage pcx = (RawPCXImage) imageData;
+			
+			PCXHeader header = null;
 
-    	byte[] data = pcx.getData();
-        
-        try {
-			header = new PCXHeader(data);
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+	    	byte[] data = pcx.getData();
+	        
+	        try {
+				header = new PCXHeader(data);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+	        int width = header.xmax - header.xmin + 1;
+	        int height = header.ymax - header.ymin + 1;
+	        
+	        ImageContainerText result = new ImageContainerText(pcx , width, height);
+	        addToImageToProcess(result);
+	        return result;
+		} else if (imageData instanceof BufferedImage) {
+			
+			return null;
 		}
-        int width = header.xmax - header.xmin + 1;
-        int height = header.ymax - header.ymin + 1;
-        
-        ImageContainerText result = new ImageContainerText(pcx , width, height);
-        addToImageToProcess(result);
-		return result;
+		throw new IllegalArgumentException();
+
+		
 			
 			
 	}
@@ -748,8 +778,8 @@ public class JoglMugenDrawer extends MugenDrawer {
 			
 			gl.glMatrixMode(GL.GL_PROJECTION);
 			gl.glLoadIdentity();
-			gl.glOrtho(0, xr-xl, yb-yt, 0, -10000, 10000);
-			gl.glViewport(xl, 0, xr-xl, yb-yt);
+			gl.glOrtho(0, xr-xl, (yb-yt), 0, -10000, 10000);
+			gl.glViewport(xl, 480 - yb, xr-xl, (yb-yt));
 //			
 			gl.glScaled(2f, 2f, 0);
 			

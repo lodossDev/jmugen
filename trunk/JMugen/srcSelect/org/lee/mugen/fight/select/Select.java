@@ -54,7 +54,7 @@ public class Select {
 
 	private void parse() throws Exception {
 		String src = IOUtils.toString(new FileInputStream(filename), "utf-8");
-		List<GroupText> groups = Parser.getGroupTextMap(src);
+		List<GroupText> groups = Parser.getGroupTextMap(src, true, true);
 
 		for (GroupText grp: groups) {
 			if (grp.getSection().equals("characters")) {

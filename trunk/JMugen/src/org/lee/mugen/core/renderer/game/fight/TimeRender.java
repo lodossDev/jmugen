@@ -46,7 +46,7 @@ public class TimeRender extends BaseRender {
 		md.scale(counter.getScale().getX(), counter.getScale().getY());
 		font.getFont().get(fontIdx).
 				draw(font.getFontbank(), (int)(pos.x*1f/counter.getScale().getX()), (int)(pos.y*1f/counter.getScale().getY()),
-						md, display, fontSens);
+						md, display, fontSens, counter.getAlpha());
 		md.scale(1f/counter.getScale().getX(), 1f/counter.getScale().getY());
 	}
 

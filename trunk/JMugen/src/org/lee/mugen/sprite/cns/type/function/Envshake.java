@@ -16,7 +16,7 @@ public class Envshake extends StateCtrlFunction {
 		Shake envShake = new Shake();
 		getValue(spriteId, envShake, "", params);
 		
-		GameFight.getInstance().getInstanceOfStage().getCamera().setEnvShake(envShake);
+		GameFight.getInstance().getStage().getCamera().setEnvShake(envShake);
 
 		return null;
 	}

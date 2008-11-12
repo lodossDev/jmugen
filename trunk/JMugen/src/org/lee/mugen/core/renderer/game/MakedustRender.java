@@ -20,7 +20,7 @@ public class MakedustRender implements IMakedustRender {
 	}
 
 	public void render() {
-		Stage stage = GameFight.getInstance().getInstanceOfStage();
+		Stage stage = GameFight.getInstance().getStage();
 		int _mvX = stage.getCamera().getX();
 		int _mvY = stage.getCamera().getY();
 		int x = _mvX + stage.getCamera().getWidth() / 2;

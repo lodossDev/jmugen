@@ -25,7 +25,7 @@ public class Screenpos extends SpriteCnsTriggerFunction {
 	public Object getValue(String spriteId, Valueable... params) {
 		String p = params[0].getValue(spriteId).toString();
 		Sprite sprite = GameFight.getInstance().getSpriteInstance(spriteId);
-		final Stage stage = GameFight.getInstance().getInstanceOfStage();
+		final Stage stage = GameFight.getInstance().getStage();
 		
 		if ("x".equals(p)) {
 			return getPosRelativeToScreen(stage, sprite.getRealXPos(), sprite.getRealYPos()).getX();

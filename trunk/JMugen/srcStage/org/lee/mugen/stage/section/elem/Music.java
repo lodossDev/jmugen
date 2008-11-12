@@ -2,6 +2,7 @@ package org.lee.mugen.stage.section.elem;
 
 import org.lee.mugen.fight.section.Section;
 import org.lee.mugen.stage.Stage;
+import org.lee.mugen.util.MugenTools;
 
 public class Music implements Section {
 	private Stage parent = null;
@@ -42,7 +43,8 @@ public class Music implements Section {
 		if (name.equals("bgmusic")) {
 			this.bgmusic = value;
 		} else if (name.equals("bgvolume")) {
-			bgvolume = Integer.parseInt(value);
+			if (!MugenTools.isEmpty(value))
+				bgvolume = Integer.parseInt(value);
 		}
 		
 	}

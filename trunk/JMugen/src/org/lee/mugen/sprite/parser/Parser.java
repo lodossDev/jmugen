@@ -227,6 +227,10 @@ public class Parser {
 		private String section;
 		private String sectionRaw;
 		private List<String> keysOrdered = new LinkedList<String>();
+		private List<String> originalKeysOrdered = new LinkedList<String>();
+		public List<String> getOriginalKeysOrdered() {
+			return originalKeysOrdered;
+		}
 		public List<String> getKeysOrdered() {
 			return keysOrdered;
 		}
@@ -328,6 +332,9 @@ public class Parser {
 		return getGroupTextMap(src, false);
 	}
 	public static List<GroupText> getGroupTextMap(String src, boolean caseSensitive) {
+		return getGroupTextMap(src, caseSensitive, false);
+	}
+	public static List<GroupText> getGroupTextMap(String src, boolean caseSensitive, boolean keyCaseSensistive) {
 		StringTokenizer strToken = new StringTokenizer(src, "\r\n");
     
         List<GroupText> result = new ArrayList<GroupText>();
@@ -359,6 +366,9 @@ public class Parser {
                     	line = line.replaceAll(S_END, "");
                     	if (line.indexOf("=") != -1) {
                         	String[] kv = getSeparateKeyValue(line, true);
+                        	groupText.getOriginalKeysOrdered().add(kv[0]);
+                        	if (!keyCaseSensistive)
+                        		kv[0] = kv[0].toLowerCase();
                         	kv[1] = kv[1] == null? "": kv[1];
                         	if (!kv[1].startsWith("\"") || !kv[1].endsWith("\"")) {
                         		if (!caseSensitive)
@@ -366,8 +376,9 @@ public class Parser {
                         	} else {
                         		System.out.println();
                         	}
-                        	groupText.getKeyValues().put(kv[0].toLowerCase(), kv[1]);
-                        	groupText.getKeysOrdered().add(kv[0].toLowerCase());
+                        	
+                        	groupText.getKeyValues().put(kv[0], kv[1]);
+                        	groupText.getKeysOrdered().add(kv[0]);
                     	}
                     	groupText.appendText(line);
                     }
@@ -382,6 +393,9 @@ public class Parser {
                     	line = line.replaceAll(S_END, "");
                     	if (line.indexOf("=") != -1) {
                         	String[] kv = getSeparateKeyValue(line, true);
+                        	groupText.getOriginalKeysOrdered().add(kv[0]);
+                        	if (!keyCaseSensistive)
+                        		kv[0] = kv[0].toLowerCase();
                         	kv[1] = kv[1] == null? "": kv[1];
                         	if (!kv[1].startsWith("\"") || !kv[1].endsWith("\"")) {
                         		if (!caseSensitive)
@@ -389,8 +403,8 @@ public class Parser {
                         	} else {
                         		System.out.println();
                         	}
-                        	groupText.getKeyValues().put(kv[0].toLowerCase(), kv[1]);
-                        	groupText.getKeysOrdered().add(kv[0].toLowerCase());
+                        	groupText.getKeyValues().put(kv[0], kv[1]);
+                        	groupText.getKeysOrdered().add(kv[0]);
                     	}
                     	groupText.appendText(line);
                     }

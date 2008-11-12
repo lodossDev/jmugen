@@ -226,7 +226,7 @@ public class FightEngine {
 			
 			
 			// envshake
-    		GameFight.getInstance().getInstanceOfStage().getCamera().setEnvShake(hitdef.getEnvshake());
+    		GameFight.getInstance().getStage().getCamera().setEnvShake(hitdef.getEnvshake());
 			
 			
 
@@ -287,7 +287,7 @@ public class FightEngine {
 //			sprite.getInfo().addLife(-10);
 
 			// envshake
-    		GameFight.getInstance().getInstanceOfStage().getCamera().setEnvShake(hitdef.getEnvshake());
+    		GameFight.getInstance().getStage().getCamera().setEnvShake(hitdef.getEnvshake());
 
 			
 			drawSparkHit(hitdef, sprite, wrap.getValue());
@@ -335,7 +335,7 @@ public class FightEngine {
 
 
 			// envshake
-    		GameFight.getInstance().getInstanceOfStage().getCamera().setEnvShake(hitdef.getEnvshake());
+    		GameFight.getInstance().getStage().getCamera().setEnvShake(hitdef.getEnvshake());
 
 			
 			drawSparkHit(hitdef, sprite);
@@ -1253,7 +1253,15 @@ public class FightEngine {
 			}
 		}
 		for (Sprite s: GameFight.getInstance().getSprites()) {
-			if (s.getInfo().getLastHitdef() != null && !s.equals(sprite) && s.getInfo().getLastHitdef().getSpriteHitter().equals(sprite))
+			AbstractSprite sprToCompare = s.getInfo().getLastHitdef().getSpriteHitter();
+			if (sprToCompare instanceof ProjectileSprite) {
+				ProjectileSprite p = (ProjectileSprite) sprToCompare;
+				sprToCompare = p.getProjectileSub().getSpriteParent();
+			}
+			if (sprToCompare instanceof SpriteHelper)
+				sprToCompare = GameFight.getInstance().getRoot((Sprite) sprToCompare);
+				
+			if (s.getInfo().getLastHitdef() != null && !s.equals(sprite) && sprToCompare.equals(sprite))
 				return s;
 		}
 		return null;

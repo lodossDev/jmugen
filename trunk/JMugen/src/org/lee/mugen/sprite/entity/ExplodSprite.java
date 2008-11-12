@@ -27,7 +27,7 @@ public class ExplodSprite extends AbstractSprite {
 	public PointF getPosToDraw() {
 		AbstractSprite sprite = this;
 		Postype postype = getExplod().getPostype();
-		Stage stage = GameFight.getInstance().getInstanceOfStage();
+		Stage stage = GameFight.getInstance().getStage();
 		int _mvX = stage.getCamera().getX();
 		int _mvY = stage.getCamera().getY();
 		float xCam = _mvX + stage.getCamera().getWidth()/2f;

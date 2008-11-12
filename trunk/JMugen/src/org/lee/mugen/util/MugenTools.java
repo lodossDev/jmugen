@@ -5,6 +5,9 @@ public class MugenTools {
 	public static boolean isEmpty(Object o) {
 		return o == null;
 	}
+	public static boolean isEmpty(String o) {
+		return o == null || o.length() == 0;
+	}
 	
 	public static boolean isEmpty(Object[] o) {
 		return o == null || o.length == 0;

@@ -60,7 +60,7 @@ public class SpriteShadowRender implements Renderable {
 		ImageContainer img = null;
 		img = (ImageContainer) sprite.getCurrentImage();
 		
-		Stage stage = GameFight.getInstance().getInstanceOfStage();
+		Stage stage = GameFight.getInstance().getStage();
 		int _mvX = stage.getCamera().getX();
 		int _mvY = stage.getCamera().getY();
 	
@@ -113,7 +113,7 @@ public class SpriteShadowRender implements Renderable {
 		
 		if (img == null)
 			return;
-		Stage stage = GameFight.getInstance().getInstanceOfStage();
+		Stage stage = GameFight.getInstance().getStage();
 		int _mvX = stage.getCamera().getX();
 		int _mvY = stage.getCamera().getY();
 	
@@ -143,10 +143,11 @@ public class SpriteShadowRender implements Renderable {
         		img);
         drawProperties.setXScaleFactor(1f  * sprite.getXScale());
         drawProperties.setYScaleFactor(0.25f * sprite.getYScale());
-        drawProperties.setTrans(Trans.SUB);
+        drawProperties.setTrans(Trans.ADD);
+//        drawProperties.setAlpha(0.1f);
         
         PalFxSub fx = new PalFxSub();
-        fx.setMul(new RGB(0,0,0,50));
+        fx.setMul(new RGB(0,0,0,40f));
         fx.setColor(0);
         drawProperties.setPalfx(fx);
         if (drawProperties.getYTopDst() < stage.getStageinfo().getZoffset())

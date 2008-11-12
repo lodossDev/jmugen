@@ -31,7 +31,7 @@ public class SparkhitRender extends SpriteRender {
 	public void render() {
 		float xScale = sprite.getXScale();
 		float yScale = sprite.getYScale();
-		Stage stage = GameFight.getInstance().getInstanceOfStage();
+		Stage stage = GameFight.getInstance().getStage();
 		int _mvX = stage.getCamera().getX();
 		int _mvY = stage.getCamera().getY();
 		int x = _mvX + stage.getCamera().getWidth() / 2;

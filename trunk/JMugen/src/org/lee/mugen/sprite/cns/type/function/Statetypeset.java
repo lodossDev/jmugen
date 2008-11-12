@@ -10,7 +10,7 @@ public class Statetypeset extends StateCtrlFunction {
 
 	// TODO : Statetypeset
 	public Statetypeset() {
-		super("statetypeset", new String[] {"physics", "statetype", "movetype"});
+		super("statetypeset", new String[] {"physics", "statetype", "movetype", "value"});
 	}
 	@Override
 	public Object getValue(String spriteId, Valueable... p) {
@@ -29,6 +29,15 @@ public class Statetypeset extends StateCtrlFunction {
 		int statetypeIndex = getParamIndex("statetype");
 		if (valueableParams[statetypeIndex] != null) {
 			Valueable statetype = valueableParams[statetypeIndex][0];
+			if (statetype != null) {
+				String fstatetype = statetype.getValue(spriteId).toString().toUpperCase();
+				sprInfo.setType(fstatetype);
+			}		
+		}
+		
+		int valueIndex = getParamIndex("value");
+		if (valueableParams[valueIndex] != null) {
+			Valueable statetype = valueableParams[valueIndex][0];
 			if (statetype != null) {
 				String fstatetype = statetype.getValue(spriteId).toString().toUpperCase();
 				sprInfo.setType(fstatetype);

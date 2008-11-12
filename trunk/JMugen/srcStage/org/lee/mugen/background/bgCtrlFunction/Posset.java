@@ -22,7 +22,7 @@ public class Posset extends StateCtrlFunction {
 	}
 	@Override
 	public Object getValue(String bgId, Valueable... params) {
-		Stage stage = GameFight.getInstance().getInstanceOfStage();
+		Stage stage = GameFight.getInstance().getStage();
 		ArrayList<BG> bgs = stage.getBackground().getBgCtrlDefMap().get(new Integer(bgId)).getBgCopys();
 
 		for (BG bg: bgs) {
@@ -32,7 +32,7 @@ public class Posset extends StateCtrlFunction {
 				Valueable x = valueableParams[xIndex][0];
 				if (x != null) {
 					float fx = Parser.getFloatValue(x.getValue(bgId));
-					bg.getPos().addX(fx);
+					bg.getPos().setX(fx);
 				}
 			}
 			int yIndex = getParamIndex("y");
@@ -40,11 +40,12 @@ public class Posset extends StateCtrlFunction {
 				Valueable y = valueableParams[yIndex][0];
 				if (y != null) {
 					float fy = Parser.getFloatValue(y.getValue(bgId));
-					bg.getPos().addY(fy);
+					bg.getPos().setY(fy);
 				}		
 			}
 		}
 
 		return null;
 	}
+
 }

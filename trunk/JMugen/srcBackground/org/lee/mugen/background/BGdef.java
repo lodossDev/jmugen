@@ -32,11 +32,15 @@ public class BGdef {
 
 
 	
-	public void parse(Background root, String name, String value) throws FileNotFoundException, IOException {
+	public void parse(Background root, String name, String value, boolean forceImage) throws FileNotFoundException, IOException {
 		if (name.equals("spr")) {
+			File file = new File(root.getCurrentDir(), value);
+			if (!file.exists())
+				file = new File(root.getCurrentDir().getParentFile(), value);
+				
 			SffReader sffreader = 
-				new SffReader(new File(root.getCurrentDir(), value).getAbsolutePath(), null);
-			spr = new SpriteSFF(sffreader, true);
+				new SffReader(file.getAbsolutePath(), null);
+			spr = new SpriteSFF(sffreader, true, forceImage);
 		} else if (name.equals("debugbg")) {
 			debugbg = Integer.parseInt(value);
 		} else if (name.equals("bgclearcolor")) {

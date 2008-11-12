@@ -25,7 +25,7 @@ public class EnvcolorRender implements Renderable {
 
 	public void render() {
 		RGB rgb = GameFight.getInstance().getGlobalEvents().getEnvcolor().getValue();
-		Stage stage = GameFight.getInstance().getInstanceOfStage();
+		Stage stage = GameFight.getInstance().getStage();
 		GraphicsWrapper.getInstance().setColor(rgb.getR(), rgb.getG(), rgb.getB());
 		GraphicsWrapper.getInstance().fillRect(0, 0, stage.getCamera().getWidth(), stage.getCamera().getHeight());
 		

@@ -35,6 +35,10 @@ public class CmdProcDispatcher {
 
 	private List<SingleCmdProcessor> mugenKeyEvents = Collections.synchronizedList(new LinkedList<SingleCmdProcessor>());
 
+	public void clear() {
+		mugenKeyEvents.clear();
+	}
+	
 //	private Sprite sprite;
 	static final Map<Key, Key> inverseMap = new HashMap<Key, Key>();
 	static { 

@@ -14,7 +14,7 @@ public class Frontedgebodydist extends SpriteCnsTriggerFunction {
 	}
 
 	public static float compute(AbstractSprite sprite) {
-		Stage stage = GameFight.getInstance().getInstanceOfStage();
+		Stage stage = GameFight.getInstance().getStage();
 		int _mvX = stage.getCamera().getX();
 		if (sprite.isFlip()) {
 			float x = _mvX + stage.getCamera().getWidth()/2f + sprite.getRealXPos();

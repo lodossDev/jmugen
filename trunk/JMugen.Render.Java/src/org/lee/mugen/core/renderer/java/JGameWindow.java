@@ -13,6 +13,7 @@ import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -21,6 +22,7 @@ import org.lee.framework.swing.WindowsUtils;
 import org.lee.mugen.core.Game;
 import org.lee.mugen.core.Game.DebugAction;
 import org.lee.mugen.imageIO.ImageScale2x;
+import org.lee.mugen.input.CmdProcDispatcher;
 import org.lee.mugen.input.ISpriteCmdProcess;
 import org.lee.mugen.renderer.GameWindow;
 import org.lee.mugen.renderer.MugenTimer;
@@ -65,6 +67,80 @@ public class JGameWindow extends Canvas implements GameWindow {
 		this.height = height;
 		
 	}
+	private void initKeys() throws IllegalArgumentException, SecurityException, IllegalAccessException, NoSuchFieldException {
+		ResourceBundle bundle = ResourceBundle.getBundle("keys");
+		
+		// P1
+		String prefix = "VK_";
+		
+		CmdProcDispatcher cd1 = new CmdProcDispatcher(
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P1.UP").toUpperCase()).getInt(null), 
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P1.DOWN").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P1.LEFT").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P1.RIGHT").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P1.A").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P1.B").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P1.C").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P1.X").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P1.Y").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P1.Z").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P1.ABC").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P1.XYZ").toUpperCase()).getInt(null));	
+		
+		
+		CmdProcDispatcher.getSpriteDispatcherMap().put("1", cd1);
+		
+		
+		CmdProcDispatcher cd2 = new CmdProcDispatcher(
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P2.UP").toUpperCase()).getInt(null), 
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P2.DOWN").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P2.LEFT").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P2.RIGHT").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P2.A").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P2.B").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P2.C").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P2.X").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P2.Y").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P2.Z").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P2.ABC").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P2.XYZ").toUpperCase()).getInt(null));	
+		
+		CmdProcDispatcher.getSpriteDispatcherMap().put("2", cd2);
+		
+		CmdProcDispatcher cd3 = new CmdProcDispatcher(
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P3.UP").toUpperCase()).getInt(null), 
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P3.DOWN").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P3.LEFT").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P3.RIGHT").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P3.A").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P3.B").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P3.C").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P3.X").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P3.Y").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P3.Z").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P3.ABC").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P3.XYZ").toUpperCase()).getInt(null));	
+		
+		
+		CmdProcDispatcher.getSpriteDispatcherMap().put("3", cd3);
+		
+		
+		CmdProcDispatcher cd4 = new CmdProcDispatcher(
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P4.UP").toUpperCase()).getInt(null), 
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P4.DOWN").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P4.LEFT").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P4.RIGHT").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P4.A").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P4.B").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P4.C").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P4.X").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P4.Y").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P4.Z").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P4.ABC").toUpperCase()).getInt(null),
+				KeyEvent.class.getDeclaredField(prefix + bundle.getString("P4.XYZ").toUpperCase()).getInt(null));	
+		CmdProcDispatcher.getSpriteDispatcherMap().put("4", cd4);
+	}
+	
 	private Map<Integer, Boolean> keyMapPress = new HashMap<Integer, Boolean>();
 	private boolean isKeyPress(int key) {
 		return keyMapPress.get(key) == null? false: keyMapPress.get(key);
@@ -113,7 +189,12 @@ public class JGameWindow extends Canvas implements GameWindow {
 		frame.setResizable(false);
 		WindowsUtils.centerScreen(frame);
 		frame.setVisible(true);
-		
+		try {
+			initKeys();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		frame.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				System.exit(0);
@@ -154,8 +235,6 @@ public class JGameWindow extends Canvas implements GameWindow {
 	protected void gameLoop() throws Exception {
 		
 		while (gameRunning) {
-			debugEventManager.process(callback);
-
 			if (getTimer().getFramerate() == 0) {
 				getTimer().sleep(1000 / 60);
 				continue;
@@ -282,47 +361,56 @@ public class JGameWindow extends Canvas implements GameWindow {
 	
 	private DebugEventManager debugEventManager = new DebugEventManager();
 	
-	private class DebugEventManager {
+	private class DebugEventManager implements KeyListener {
 		private Map<DebugAction, int[]> actionKeyMap = new HashMap<DebugAction, int[]>();
-		private Map<DebugAction, Boolean> actionPressMap = new HashMap<DebugAction, Boolean>();
+		private Map<DebugAction, Boolean> actionCtrl = new HashMap<DebugAction, Boolean>();
 		
 		public DebugEventManager() {
-			addAction(DebugAction.SWICTH_PLAYER_DEBUG_INFO, new int[] {KeyEvent.VK_CONTROL, KeyEvent.VK_D});
+			addAction(DebugAction.SWICTH_PLAYER_DEBUG_INFO, new int[] {KeyEvent.VK_D}, true);
+			addAction(DebugAction.EXPLOD_DEBUG_INFO, new int[] {KeyEvent.VK_E}, true);
 			addAction(DebugAction.INIT_PLAYER, new int[] {KeyEvent.VK_SPACE});
-			addAction(DebugAction.SHOW_HIDE_CNS, new int[] {KeyEvent.VK_CONTROL, KeyEvent.VK_C});
-			addAction(DebugAction.SHOW_HIDE_ATTACK_CNS, new int[] {KeyEvent.VK_CONTROL, KeyEvent.VK_X});
-			addAction(DebugAction.INCREASE_FPS, new int[] {KeyEvent.VK_CONTROL, KeyEvent.VK_ADD});
-			addAction(DebugAction.DECREASE_FPS, new int[] {KeyEvent.VK_CONTROL, KeyEvent.VK_SUBTRACT});
-			addAction(DebugAction.RESET_FPS, new int[] {KeyEvent.VK_CONTROL, KeyEvent.VK_MULTIPLY});
-
-			addAction(DebugAction.DEBUG_PAUSE, new int[] {KeyEvent.VK_CONTROL, KeyEvent.VK_P});
-			addAction(DebugAction.PAUSE_PLUS_ONE_FRAME, new int[] {KeyEvent.VK_CONTROL, KeyEvent.VK_A});
-
+			addAction(DebugAction.SHOW_HIDE_CNS, new int[] {KeyEvent.VK_C}, true);
+			addAction(DebugAction.SHOW_HIDE_ATTACK_CNS, new int[] {KeyEvent.VK_X}, true);
+			addAction(DebugAction.INCREASE_FPS, new int[] {KeyEvent.VK_ADD}, true);
+			addAction(DebugAction.DECREASE_FPS, new int[] {KeyEvent.VK_SUBTRACT}, true);
+			addAction(DebugAction.RESET_FPS, new int[] {KeyEvent.VK_MULTIPLY}, true);
+			addAction(DebugAction.DEBUG_PAUSE, new int[] {KeyEvent.VK_P}, true);
+			addAction(DebugAction.PAUSE_PLUS_ONE_FRAME, new int[] {KeyEvent.VK_A}, true);
 			addAction(DebugAction.DISPLAY_HELP, new int[] {KeyEvent.VK_F1});
 
 			
 		}
-		
 		private void addAction(DebugAction action, int[] keys) {
+			addAction(action, keys, false);
+		}
+		private void addAction(DebugAction action, int[] keys, boolean ctrl) {
 			actionKeyMap.put(action, keys);
-			actionPressMap.put(action, false);
+			actionCtrl.put(action, ctrl);
 		}
 		
-		public void process(Game callback) {
-			for (DebugAction action: actionKeyMap.keySet()) {
-				boolean isAllKeyOk = true;
-				for (int key: actionKeyMap.get(action)) {
-					isAllKeyOk = isAllKeyOk && isKeyPress(key);
-				}
-				if (isAllKeyOk) {
-					actionPressMap.put(action, true);
-				} else if (actionPressMap.get(action)) {
-					actionPressMap.put(action, false);
-					callback.onDebugAction(action);
+		@Override
+		public void keyPressed(KeyEvent e) {
+			
+		}
+		@Override
+		public void keyReleased(KeyEvent e) {
+			for (DebugAction action : actionKeyMap.keySet()) {
+				if (e.getKeyCode() == actionKeyMap.get(action)[0]) {
+
+					if (actionCtrl.get(action).booleanValue()
+							&& e.isControlDown()) {
+						callback.onDebugAction(action);
+					} else if (!actionCtrl.get(action).booleanValue()) {
+						callback.onDebugAction(action);
+					}
 				}
 			}
 		}
-
+		@Override
+		public void keyTyped(KeyEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
 		
 	}
 
@@ -330,5 +418,17 @@ public class JGameWindow extends Canvas implements GameWindow {
 	public MouseCtrl getMouseStatus() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	@Override
+	public void addActionListener(final MugenKeyListener key) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void clearListener() {
+		for (KeyListener kl : getKeyListeners())
+			removeKeyListener(kl);
+		addKeyListener(debugEventManager);
+		
 	}
 }
