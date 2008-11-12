@@ -1,8 +1,8 @@
 ; Definitions of system screens
+; "Big" motif - for use with M.U.G.E.N 2001.11.14
 
-; *** DO NOT MODIFY OR OVERWRITE THIS FILE ***
-; To customize, make a copy of this file in a subdirectory of your
-; motif's name. See readme.txt for details on motifs.
+; This is a copy of system.def from the data/ directory.
+; See readme.txt for details on motifs.
 
 ; *2001.11.14 NEW* symbolizes any new functionality added for the 2001.11.14
 ; version of M.U.G.E.N.
@@ -13,7 +13,7 @@
 
 ;----------------------------
 [Info]
-name = "Default"          ;Name of motif
+name = "Big"              ;Name of motif
 author = "Elecbyte"       ;Motif author name
 
 ;----------------------------
@@ -133,19 +133,20 @@ trans = add
 
 ;-------------------------------------------------------------------
 ;Character select definition
+;*** This group is changed for big motif ***
 [Select Info]
 fadein.time = 10
 fadeout.time = 10
-rows = 2
-columns = 5
-wrapping = 0              ;1 to let cursor wrap around
-pos = 90,170              ;Position to draw to
-showemptyboxes = 0        ;1 to show empty boxes
-moveoveremptyboxes = 0    ;1 to allow cursor to move over empty boxes
+rows = 6
+columns = 10
+wrapping = 1              ;1 to let cursor wrap around
+pos = 17,24               ;Position to draw to
+showEmptyBoxes = 1
+moveOverEmptyBoxes = 1
 cell.size = 27,27         ;x,y size of each cell (in pixels)
-cell.spacing = 2          ;Space between each cell
+cell.spacing = 2          ;space between each cell
 cell.bg.spr = 150,0       ;Note: Don't use animation for cells
-cell.random.spr = 151,0   ;Icon for random select (don't use animation)
+cell.random.spr = 180,0   ;Icon for random select (don't use animation)
 cell.random.switchtime = 4;Time to wait before changing to another random portrait
 p1.cursor.startcell = 0,0
 p1.cursor.active.spr = 160,0
@@ -161,30 +162,40 @@ p2.cursor.move.snd = 100,0
 p2.cursor.done.snd = 100,1
 p2.random.move.snd = 100,0
 random.move.snd.cancel = 0;1 to have random move sound cancel itself when played repeatedly
-stage.move.snd = 100,0
+
+;Stage select
+stage.pos = 160,216
+stage.active.font = 3,0,0
+stage.active2.font = 3,2  ;Second font color for blinking
+stage.done.font = 3,0
+stage.done.alpha = 0.5
 stage.done.snd = 100,1
+stage.move.snd = 100,0
+
+stagedisplay.enable = 1
+stagedisplay.pos = 100, 197 ; (320 - 400 * 0.3)/2, 
+stagedisplay.rectangle = 0, 0, 400, 240
+stagedisplay.scale = 0.3, 0.3
+stagedisplay.camera = 40, -40 ;(400 - 320)/2
+
+
 cancel.snd = 100,2
 portrait.offset = 0,0
 portrait.scale = 1,1
 title.offset = 159,13     ;Position of title (Arcade Mode, etc)
 title.font = 3,0,0        ;Font of title (-1 for none)
 ;Big portraits
-p1.face.offset = 18,13    ;Position to put big portrait
-p1.face.scale = 1,1
+p1.face.offset = 1,193    ;Position to put big portrait
+p1.face.scale = .35, .33
 p1.face.facing = 1
-p2.face.offset = 301,13
-p2.face.scale = 1,1
+p2.face.offset = 318,193
+p2.face.scale = .35, .33
 p2.face.facing = -1
 ;Name
-p1.name.offset = 10,162   ;Position to put name
+p1.name.offset = 3,236    ;Position to put name
 p1.name.font = 3,4,1      ;Set to -1 for no display
-p2.name.offset = 309,162
+p2.name.offset = 316,236
 p2.name.font = 3,1,-1
-;Stage select
-stage.pos = 160,237
-stage.active.font = 3,0,0
-stage.active2.font = 3,2  ;Second font color for blinking
-stage.done.font = 3,0
 ;Team menu
 teammenu.move.wrapping = 1
 p1.teammenu.pos = 20, 30
@@ -249,11 +260,11 @@ velocity = -1, -1
 type  = normal
 spriteno = 100,1
 layerno = 0
-start = 0, 166
+start = 0, 0
 delta = 0,0
-tile  = 1,0
+tile  = 1,1
 trans = sub
-window = 85,0, 235,239
+window = 14,21, 305,196
 velocity = -1, 0
 
 [SelectBG 2.A] ;Title background
@@ -395,7 +406,7 @@ fadeout.time = 64
 ;This screen shows up after the Win Screen.
 ;It will not be displayed if the winning character has an ending.
 [Default Ending]
-enabled = 0               ;Set to 1 to show default ending, 0 to disable
+enabled = 0               ;Set to 1 to show credits, 0 to disable
 storyboard =              ;Default ending storyboard filename
 
 ;-------------------------------------------------------------------
