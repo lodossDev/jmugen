@@ -1,16 +1,6 @@
 package org.lee.mugen.renderer.jogl;
 
-import static javax.media.opengl.GL.GL_BLEND;
-import static javax.media.opengl.GL.GL_MODULATE;
-import static javax.media.opengl.GL.GL_ONE;
-import static javax.media.opengl.GL.GL_ONE_MINUS_SRC_ALPHA;
-import static javax.media.opengl.GL.GL_TEXTURE_ENV;
-import static javax.media.opengl.GL.GL_TEXTURE_ENV_MODE;
-
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -18,18 +8,17 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import javax.imageio.ImageIO;
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLCanvas;
 import javax.media.opengl.GLCapabilities;
+import javax.media.opengl.GLDrawableFactory;
 import javax.media.opengl.GLEventListener;
+import javax.media.opengl.GLPbuffer;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
@@ -41,10 +30,6 @@ import org.lee.mugen.input.ISpriteCmdProcess;
 import org.lee.mugen.renderer.GameWindow;
 import org.lee.mugen.renderer.GraphicsWrapper;
 import org.lee.mugen.renderer.MugenTimer;
-
-import com.sun.opengl.util.j2d.TextureRenderer;
-import com.sun.opengl.util.texture.Texture;
-import com.sun.opengl.util.texture.TextureCoords;
 
 public class JoglGameWindow implements GameWindow, GLEventListener {
 	
@@ -67,12 +52,10 @@ public class JoglGameWindow implements GameWindow, GLEventListener {
 		public void run() {
 			try {
 				callback.init(JoglGameWindow.this);
+				JoglMugenDrawer.createImageToTextPreparer();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-
-			
-			JoglMugenDrawer.createImageToTextPreparer();
 			isFinishInit = true;
 		}
 	};
@@ -85,6 +68,11 @@ public class JoglGameWindow implements GameWindow, GLEventListener {
 		setTitle("JMugen");
 		width = 640;
 		height = 480;
+//		GLPbuffer sharedPbuffer;
+//		sharedPbuffer = GLDrawableFactory.getFactory().createGLPbuffer(
+//				new GLCapabilities(), null, 1, 1, null);
+//		sharedPbuffer.display();
+
 	}
 
 	/* */
@@ -331,14 +319,16 @@ public class JoglGameWindow implements GameWindow, GLEventListener {
             	System.exit(0);
             }
         });
+
         frame.pack();
         WindowsUtils.centerScreen(frame);
         frame.setVisible(true);
 
         animator.start();
         
+        
 	}
-
+	boolean isFinishTextureLoading;
 	
 	/*
 	 * 
@@ -443,6 +433,7 @@ public class JoglGameWindow implements GameWindow, GLEventListener {
 		if (!isFinishInit) {
 			callback.displayPendingScreeen();
 		} else {
+			JoglMugenDrawer.createImageToTextPreparer();
 			try {
 				_gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT
 						| GL.GL_ACCUM_BUFFER_BIT);

@@ -9,6 +9,5 @@ void main (void)
 
     vec4 result = base - blend;
          result = clamp(result, 0.0, 1.0);
-
     gl_FragColor = mix(base, result, Opacity);
 }

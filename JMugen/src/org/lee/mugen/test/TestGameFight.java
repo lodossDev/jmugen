@@ -229,10 +229,10 @@ public class TestGameFight {
 		gameWindow.start();
 		Method m = gameWindow.getClass().getDeclaredMethod("isFinishInit");
 
-		while (!(Boolean)m.invoke(gameWindow))
-			Thread.sleep(1000);
-		debugerUI.setVisible(true);
-		ExpressionTester.lanch();
+//		while (!(Boolean)m.invoke(gameWindow))
+//			Thread.sleep(1000);
+//		debugerUI.setVisible(true);
+//		ExpressionTester.lanch();
 
 	}
 
