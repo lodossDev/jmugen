@@ -39,17 +39,19 @@ public class JMugenDrawer extends MugenDrawer {
 		JGameWindow window = (JGameWindow) getInstanceOfGameWindow();
 		Graphics2D g = (Graphics2D) window.getDrawGraphics();
 		g.scale(xScale, yScale);
+		BufferedImage img = (BufferedImage) dp.getIc().getImg();
+		g.setClip((int)dp.getXLeftDst(), (int)dp.getYTopDst(), img.getWidth(), img.getHeight());
 		
 		Composite composite = null;
 		if (dp.getTrans() == Trans.ADD) {
-			composite = MiscComposite.getInstance(MiscComposite.ADD, 1f);
-//			composite = AlphaComposite.getInstance(AlphaComposite.SRC_ATOP);
+//			composite = MiscComposite.getInstance(MiscComposite.ADD, 1f);
+			composite = AlphaComposite.getInstance(AlphaComposite.SRC_ATOP);
 		} else if (dp.getTrans() == Trans.ADD1) {
-			composite = MiscComposite.getInstance(MiscComposite.ADD, 1f);
-//			composite = AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 0.5f);
+//			composite = MiscComposite.getInstance(MiscComposite.ADD, 1f);
+			composite = AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 0.5f);
 		} else if (dp.getTrans() == Trans.SUB) {
-			composite = MiscComposite.getInstance(MiscComposite.SUBTRACT, 0.5f);
-//			composite = AlphaComposite.getInstance(AlphaComposite.DST_OUT);
+//			composite = MiscComposite.getInstance(MiscComposite.SUBTRACT, 0.5f);
+			composite = AlphaComposite.getInstance(AlphaComposite.DST_OUT);
 
 		}
 		
@@ -58,7 +60,7 @@ public class JMugenDrawer extends MugenDrawer {
 			g.setComposite(composite);
 		}
 		
-		BufferedImage img = (BufferedImage) dp.getIc().getImg();
+
 //		float data[] = { 0.0625f, 0.125f, 0.0625f, 0.125f, 0.25f, 0.125f,
 //		        0.0625f, 0.125f, 0.0625f };
 //		    Kernel kernel = new Kernel(3, 3, data);
@@ -153,7 +155,7 @@ public class JMugenDrawer extends MugenDrawer {
 		RawPCXImage pcx = (RawPCXImage) imageData;
 		BufferedImage image = null;
 		try {
-			image = (BufferedImage) PCXLoader.loadImage(new ByteArrayInputStream(
+			image = (BufferedImage) PCXLoader.loadImageColorIndexed(new ByteArrayInputStream(
 					pcx.getData()), pcx.getPalette(), false, true);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
