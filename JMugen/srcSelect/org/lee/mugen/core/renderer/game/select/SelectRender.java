@@ -175,7 +175,7 @@ public class SelectRender extends BaseRender {
 		////////////
 		// Stage
 		StageDisplay stageDisplay = MugenSystem.getInstance().getSelectInfo().getStagedisplay();
-		if (gs.getStageBackgroundRender() != null && stageDisplay != null && stageDisplay.isEnable()) {
+		if (stageDisplay != null && gs.getStageBackgroundRender() != null && stageDisplay != null && stageDisplay.isEnable()) {
 			
 			
 			int width = stageDisplay.getRectangle().width;

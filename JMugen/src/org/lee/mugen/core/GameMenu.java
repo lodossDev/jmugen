@@ -54,10 +54,16 @@ public class GameMenu implements Game {
 	
 	
 	boolean fire;
+	private float lastIndexForMove = 0;
+	private int incIndexForMove = 0;
+	private int lastStartIndex = 0;
+	private float speedSwitch = 0.1f;
 	
 	@Override
 	public void init(GameWindow container) throws Exception {
-		render = new TitleInfoRender();
+		render = new TitleInfoRender(this);
+		fire = false;
+		next = null;
 		container.addActionListener(new GameWindow.MugenKeyListener() {
 			long lastPress = 0;
 			@Override
@@ -71,9 +77,11 @@ public class GameMenu implements Game {
 					CmdProcDispatcher cmdOne = CmdProcDispatcher.getSpriteDispatcherMap().get(id);
 					if (cmdOne.getDown() == key) {
 						lastPress = System.currentTimeMillis();
+						lastStartIndex = MugenSystem.getInstance().getTitleInfo().getMenu().getItemname().startIndex();
 						MugenSystem.getInstance().getTitleInfo().getMenu().getItemname().increaseCurrentIndex();
 					} else if (cmdOne.getUp() == key) {
 						lastPress = System.currentTimeMillis();
+						lastStartIndex = MugenSystem.getInstance().getTitleInfo().getMenu().getItemname().startIndex();
 						MugenSystem.getInstance().getTitleInfo().getMenu().getItemname().decreaseCurrentIndex();
 					} else if (isButton(cmdOne, key)) {
 						fire = true;
@@ -96,12 +104,54 @@ public class GameMenu implements Game {
 				return result;
 			}});
 	}
-	
+	int time = 0;
 	@Override
 	public void update(int delta) throws Exception {
+		if (fire) {
+			selectNext();
+			return;
+			
+		}
+		speedSwitch = 0.3f;
 		Background br = MugenSystem.getInstance().getTitleBackground();
 		br.process();
-		selectNext();
+		int startIndex = MugenSystem.getInstance().getTitleInfo().getMenu().getItemname().startIndex();
+		if (lastStartIndex + lastIndexForMove < startIndex) {
+			lastIndexForMove += speedSwitch;
+			incIndexForMove -= speedSwitch * 10;
+			if (lastStartIndex + lastIndexForMove > lastStartIndex + 1) {
+				lastStartIndex = lastStartIndex + 1;
+				lastIndexForMove = 0f;
+				incIndexForMove = 0;
+			}
+		
+		} else if (lastStartIndex + lastIndexForMove > startIndex) {
+			lastIndexForMove -= speedSwitch;
+			incIndexForMove += speedSwitch * 10;
+			if (lastStartIndex + lastIndexForMove < lastStartIndex - 1) {
+				lastStartIndex = lastStartIndex - 1;
+				lastIndexForMove = 0f;
+				incIndexForMove = 0;
+			}
+		} else {
+			incIndexForMove = 0;
+			lastIndexForMove = 0;
+			lastStartIndex = MugenSystem.getInstance().getTitleInfo().getMenu().getItemname().startIndex();
+		}
+//		lastIndexForMove = ((int)(lastIndexForMove * 100))/100f;
+		time++;
+	}
+
+	public int getTime() {
+		return time;
+	}
+
+	public int getaddPixel() {
+		return incIndexForMove;
+	}
+
+	public int getLastStartIndex() {
+		return lastStartIndex;
 	}
 
 	private void selectNext() {
@@ -109,7 +159,8 @@ public class GameMenu implements Game {
 			int index = MugenSystem.getInstance().getTitleInfo().getMenu().getItemname().getCurrentIndex();
 			switch (index) {
 			case ItemName.arcade:
-				
+				next = GameSelect.getInstance();
+				GameSelect.getInstance().setTilte("arcade");
 				break;
 			case ItemName.versus:
 				
@@ -145,20 +196,26 @@ public class GameMenu implements Game {
 			default:
 				break;
 			}
-			
+			fire = false;
 		}
 	}
 	
+	Game next;
 	@Override
 	public Game getNext() throws Exception {
-		// TODO Auto-generated method stub
-		return this;
+		return next == null?this: next;
 	}
 
 	@Override
 	public void reInit(GameWindow container) throws Exception {
 		fire = false;
 		MugenSystem.getInstance().getTitleInfo().getMenu().getItemname().setCurrentIndex(0);
+	}
+	static GameMenu instance;
+	public static GameMenu getInstance() {
+		if (instance == null)
+			instance = new GameMenu();
+		return instance;
 	}
 
 }

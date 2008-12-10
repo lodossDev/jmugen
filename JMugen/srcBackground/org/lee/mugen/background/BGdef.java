@@ -33,6 +33,8 @@ public class BGdef {
 
 	
 	public void parse(Background root, String name, String value, boolean forceImage) throws FileNotFoundException, IOException {
+		if (value.indexOf('\\') != -1)
+			value = value.replaceAll("\\\\", "/");
 		if (name.equals("spr")) {
 			File file = new File(root.getCurrentDir(), value);
 			if (!file.exists())
