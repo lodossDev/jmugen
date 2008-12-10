@@ -1,6 +1,7 @@
 package org.lee.mugen.core;
 
 import java.awt.Point;
+import java.awt.event.KeyEvent;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -103,6 +104,7 @@ public class GameSelect implements Game {
 	public Point getPosition2() {
 		return position2;
 	}
+	public boolean backToMenu = false;
 	@Override
 	public void init(GameWindow container) throws Exception {
 		next = null;
@@ -119,7 +121,9 @@ public class GameSelect implements Game {
 				
 				if (!isPress || now - lastPress < 100)
 					return;
-				
+				if (KeyEvent.VK_ESCAPE == key) {
+					backToMenu = true;
+				}
 				CmdProcDispatcher cmdOne = CmdProcDispatcher.getSpriteDispatcherMap().get("1");
 				if (cmdOne.getDown() == key && !fireSpriteOne) {
 					lastPress = System.currentTimeMillis();
@@ -262,6 +266,7 @@ public class GameSelect implements Game {
 		indexOfStage = 0;
 		changeStage = true;
 		fireStage = false;
+		backToMenu = false;
 	}
 
 	@Override
@@ -304,10 +309,14 @@ public class GameSelect implements Game {
 				Stage newStage = new Stage(path);
 				oldStageToDelete = stage;
 				stage = newStage;
-				StageBackgroundRender newStageBackgroundRender = new StageBackgroundRender(stage);
-				JoglMugenDrawer.prepareImageToTextPreparer();
-				stageBackgroundRender = newStageBackgroundRender;
-				stage.getCamera().setForcePos(true);
+				StageDisplay stageDisplay = MugenSystem.getInstance().getSelectInfo().getStagedisplay();
+				if (stageDisplay != null) {
+					StageBackgroundRender newStageBackgroundRender = new StageBackgroundRender(stage);
+					JoglMugenDrawer.prepareImageToTextPreparer();
+					stageBackgroundRender = newStageBackgroundRender;
+					stage.getCamera().setForcePos(true);
+					
+				}
 				changeStage = false;
 				processStage = false;
 			} catch (Exception e) {
@@ -321,6 +330,10 @@ public class GameSelect implements Game {
 	Stage oldStageToDelete;
 	@Override
 	public void update(int delta) throws Exception {
+		if (backToMenu) {
+			next = GameMenu.getInstance();
+			return;
+		}
 		if (changeStage) {
 			processStage = true;
 			if (!threadStart.get()) {
@@ -335,9 +348,11 @@ public class GameSelect implements Game {
 				oldStageToDelete = null;
 			}
 			StageDisplay stageDisplay = MugenSystem.getInstance().getSelectInfo().getStagedisplay();
-			stage.getCamera().setX(stageDisplay.getCamera().x);
-			stage.getCamera().setY(stageDisplay.getCamera().y);
-			stage.process();
+			if (stageDisplay != null) {
+				stage.getCamera().setX(stageDisplay.getCamera().x);
+				stage.getCamera().setY(stageDisplay.getCamera().y);
+				stage.process();
+			}
 
 		}
 		MugenSystem.getInstance().getSelectBackground().process();
@@ -370,4 +385,8 @@ public class GameSelect implements Game {
 	private SelectRender selectRender;
 	
 	private String nextMode;
+	String title = "";
+	public void setTilte(String title) {
+		this.title = title;		
+	}
 }

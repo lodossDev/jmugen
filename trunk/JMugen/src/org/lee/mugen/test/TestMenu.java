@@ -6,7 +6,7 @@ import org.lee.mugen.renderer.GraphicsWrapper;
 
 public class TestMenu {
 	public static void main(String[] args) throws Exception {
-		GameMenu gameMenu = new GameMenu();
+		GameMenu gameMenu = GameMenu.getInstance();
 		
 		GraphicsWrapper.init();
 		final GameWindow gameWindow = GraphicsWrapper.getInstance().getInstanceOfGameWindow();
