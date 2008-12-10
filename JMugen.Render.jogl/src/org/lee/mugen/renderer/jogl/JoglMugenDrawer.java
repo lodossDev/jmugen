@@ -28,10 +28,9 @@ import org.lee.mugen.renderer.ImageContainer;
 import org.lee.mugen.renderer.MugenDrawer;
 import org.lee.mugen.renderer.RGB;
 import org.lee.mugen.renderer.Trans;
-import org.lee.mugen.renderer.jogl.shader.BlendShader;
 import org.lee.mugen.renderer.jogl.shader.AfterImageShader;
+import org.lee.mugen.renderer.jogl.shader.BlendShader;
 import org.lee.mugen.renderer.jogl.shader.PalFxShader;
-import org.lee.mugen.renderer.jogl.shader.SubShader;
 import org.lee.mugen.util.Logger;
 
 import com.sun.opengl.util.j2d.TextureRenderer;
@@ -183,33 +182,48 @@ public class JoglMugenDrawer extends MugenDrawer {
 				* texture.getHeight();
 
 		ImageContainer ic = dp.getIc();
-		if (dp.getTrans() == Trans.ADD1) {
-			gl.glTexEnvi(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_ADD);
-			gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_DST_ALPHA);
-		} else if (dp.getTrans() == Trans.ADD) {
-			gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_DST_ALPHA);
-		} else if (dp.getTrans() == Trans.ADDALPHA) {
-			gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
-			gl.glColor4f(1f, 1f, 1f, 0.5f);
+		float type = 0;
+		Trans trans = dp.getTrans();
+		if (dp.getImageProperties() != null) { 
+			// Afterimage
+			trans = dp.getImageProperties().getTrans();
 		}
-		if (dp.getPalfx() != null) {
-			float type = 0;
-			if (dp.getTrans() == Trans.ADD) {
-				gl.glTexEnvi(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_SUBTRACT);
-				gl.glBlendFunc(GL.GL_ONE_MINUS_DST_COLOR, GL.GL_ONE_MINUS_SRC_ALPHA);
-				type = 1;
-			} else if (dp.getTrans() == Trans.ADD1) {
-				gl.glTexEnvi(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_MODULATE);
-				gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_DST_ALPHA);
+		
+		if (trans == Trans.ADD) {
+			gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_MODULATE);
+//			gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_COMBINE_RGB, GL.GL_ADD);
+//			gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_COMBINE_ALPHA, GL.GL_ADD);
+//			gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_SRC0_RGB, GL.GL_PREVIOUS);
+//			gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_SRC1_RGB, GL.GL_TEXTURE);
+			gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_DST_ALPHA);
+			type = 1;
+		} else if (trans == Trans.ADD1) {
+			gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_MODULATE);
+//			gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_COMBINE_RGB, GL.GL_ADD);
+//			gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_COMBINE_ALPHA, GL.GL_ADD);
+//			gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_SRC0_RGB, GL.GL_PREVIOUS);
+//			gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_SRC1_RGB, GL.GL_TEXTURE);
+			gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_DST_ALPHA);
+			type = 2;
+		} else if (trans == Trans.SUB) {
+			gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_COMBINE);
+			gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_COMBINE_RGB, GL.GL_SUBTRACT);
+			gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_COMBINE_ALPHA, GL.GL_SUBTRACT);
+			gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_SRC0_RGB, GL.GL_PREVIOUS);
+			gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_SRC1_RGB, GL.GL_TEXTURE);
+			gl.glBlendFunc(GL.GL_DST_COLOR, GL.GL_SRC_ALPHA);
+			drawImage(xlDst, xrDst, ytDst, ybDst, xlSrc, xrSrc, ytSrc, ybSrc, dp);
+			drawImage(xlDst, xrDst, ytDst, ybDst, xlSrc, xrSrc, ytSrc, ybSrc, dp);
+			drawImage(xlDst, xrDst, ytDst, ybDst, xlSrc, xrSrc, ytSrc, ybSrc, dp);
 
-				type = 2;
-			} else if (dp.getTrans() == Trans.SUB) {
-				gl.glTexEnvi(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_SUBTRACT);
-				gl.glBlendFunc(GL.GL_ONE_MINUS_DST_COLOR, GL.GL_ONE_MINUS_SRC_ALPHA);
-				gl.glBlendFunc(GL.GL_ONE_MINUS_DST_ALPHA, GL.GL_ONE_MINUS_SRC_COLOR);
-				gl.glBlendFunc(GL.GL_DST_COLOR, GL.GL_ONE);
-				type = 3;
-			}
+			type = 3;
+		} else {
+	        gl.glTexEnvi(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_REPLACE);
+	        gl.glBlendFunc(GL.GL_ONE, GL.GL_ONE_MINUS_SRC_ALPHA);
+			
+		}
+
+		if (dp.getPalfx() != null) {
 			float alpha = (float) (Math.PI * dp.getPalfx().getTimeActivate() / dp
 					.getPalfx().getSinadd().getPeriod());
 
@@ -219,10 +233,6 @@ public class JoglMugenDrawer extends MugenDrawer {
 					.sin(2 * alpha));
 			int bPlus = (int) (dp.getPalfx().getSinadd().getAmpl_b() * Math
 					.sin(2 * alpha));
-
-
-//			gl.glTexEnvi(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_SUBTRACT);
-//			gl.glBlendFunc(GL.GL_SRC_COLOR, GL.GL_DST_COLOR);
 			
 			RGB ampl = new RGB(rPlus, gPlus, bPlus, 255f);
 			RGB bits = new RGB(1f/255f, 1f/255f, 1f/255f, 1f/255f);
@@ -230,41 +240,11 @@ public class JoglMugenDrawer extends MugenDrawer {
 					dp.getPalfx().getAdd().mul(bits),
 					dp.getPalfx().getMul().mul(bits),
 					ampl.mul(bits), dp.getAlpha());
-//			AddShader addShader = getAddShader();
-//			addShader.render(gl, 0.5f);
 			drawImage(xlDst, xrDst, ytDst, ybDst, xlSrc, xrSrc, ytSrc, ybSrc, dp);
-//			addShader.endRender(gl);
-
 			getPalFxShader().endRender(gl);
 
 		} else if (dp.getImageProperties() != null) {
-			float type = 0;
-			if (dp.getImageProperties().getTrans() == Trans.ADD) {
-				gl.glTexEnvi(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_MODULATE);
-				gl.glBlendFunc(GL.GL_SRC_COLOR, GL.GL_DST_ALPHA);
-				
-//				gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_COMBINE);
-//				gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_COMBINE_RGB, GL.GL_ADD);
-//				gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_COMBINE_ALPHA, GL.GL_ADD);
-//				gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_SRC0_RGB, GL.GL_PREVIOUS);
-//				gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_SRC1_RGB, GL.GL_TEXTURE);
-//				gl.glBlendFunc(GL.GL_SRC_COLOR, GL.GL_DST_ALPHA);
-				type = 1;
-			} else if (dp.getImageProperties().getTrans() == Trans.ADD1) {
-				gl.glTexEnvi(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_MODULATE);
-				gl.glBlendFunc(GL.GL_ONE_MINUS_DST_COLOR, GL.GL_ONE_MINUS_SRC_ALPHA);
-				type = 2;
-			} else if (dp.getImageProperties().getTrans() == Trans.SUB) {
-				gl.glTexEnvi(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_MODULATE);
-//				gl.glBlendFunc(GL.GL_ONE_MINUS_DST_COLOR, GL.GL_ONE_MINUS_SRC_ALPHA);
-//				gl.glBlendFunc(GL.GL_ONE_MINUS_DST_ALPHA, GL.GL_ONE_MINUS_SRC_COLOR);
-				gl.glBlendFunc(GL.GL_DST_COLOR, GL.GL_ONE);
-				type = 3;
-			}
-			
-			
 			RGB bits = new RGB(1f/255f, 1f/255f, 1f/255f, 1f);
-			
 			getAfterImageShader().render(gl,
 					dp.getImageProperties().getPalbright().mul(bits), 
 					dp.getImageProperties().getPalcontrast().mul(bits), 
@@ -272,176 +252,17 @@ public class JoglMugenDrawer extends MugenDrawer {
 					dp.getImageProperties().getPaladd().mul(bits),
 					dp.getImageProperties().getPalmul(),
 					type,
-					dp.getAlpha()
+					2f
 				);
-			
 			drawImage(xlDst, xrDst, ytDst, ybDst, xlSrc, xrSrc, ytSrc, ybSrc, dp);
 			getAfterImageShader().endRender(gl);			
-
-			
 		} else {
-
-			gl.glTexEnvi(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE,
-					GL.GL_MODULATE);
-			gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
-
-			float type = 0;
-			gl.glColor4f(1f, 1f, 1f, dp.getAlpha());
-			if (dp.getTrans() == Trans.ADD) {
-				// Render to Texture Base
-				RenderToTexture(getBackend());
-
-				texture.bind();
-				drawImage(xlDst, xrDst, ytDst, ybDst, xlSrc, xrSrc, ytSrc, ybSrc, dp);
-				
-				RenderToTexture(getBackend2());
-				
-				
-				
-				
-////				//
-				gl.glPushMatrix();
-				gl.glLoadIdentity();
-				gl.glViewport(0, 0, 640, 480);
-//				gl.glOrtho(0, 640, 480, 0, -1, 1);
-				getBackend().bind();
-				DrawProperties dpBack = new DrawProperties(0, 0, false, true, new ImageContainer(getBackend2(), 640, 480));
-				xlDst = dpBack.getXLeftDst();
-				xrDst = dpBack.getXRightDst();
-				ytDst = dpBack.getYTopDst();
-				ybDst = dpBack.getYBottomDst();
-
-				texture = (Texture) dpBack.getIc().getImg();
-				
-				xlSrc = (dpBack.getXLeftSrc() / texture.getImageWidth())
-						* texture.getWidth();
-				xrSrc = (dpBack.getXRightSrc() / texture.getImageWidth())
-						* texture.getWidth();
-
-				ytSrc = (dpBack.getYTopSrc() / texture.getImageHeight())
-						* texture.getHeight();
-				ybSrc = (dpBack.getYBottomSrc() / texture.getImageHeight())
-						* texture.getHeight();
-				
-				
-				gl.glScaled(0.5, 0.5, 1);
-				getBlendShader("add").render(gl, 1f, getBackend(), getBackend2());
-				drawImage(xlDst, xrDst, ytDst, ybDst, xlSrc, xrSrc, ytSrc, ybSrc, dpBack);
-				getBlendShader("add").endRender(gl);
-				
-				
-				
-				gl.glPopMatrix();
-
-			} else if (dp.getTrans() == Trans.ADD1) {
-
-				gl.glTexEnvi(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_MODULATE);
-				gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_DST_ALPHA);
-				drawImage(xlDst, xrDst, ytDst, ybDst, xlSrc, xrSrc, ytSrc, ybSrc, dp);
-				type = 2;
-			} else if (dp.getTrans() == Trans.SUB) {
-
-				// Render to Texture Base
-				RenderToTexture(getBackend());
-
-				texture.bind();
-				drawImage(xlDst, xrDst, ytDst, ybDst, xlSrc, xrSrc, ytSrc, ybSrc, dp);
-				
-//				RenderToTexture(getBackend2());
-				
-				gl.glPushMatrix();
-				
-				gl.glLoadIdentity();
-				
-//				gl.glViewport(0, 0, 640, 480);
-//				gl.glOrtho(0, 640, 640, 0, -10000, 10000);
-				getBackend2().bind();
-				gl.glCopyTexImage2D(GL.GL_TEXTURE_2D, 0, GL.GL_RGBA, 0, 0, 640, 480, 0);
-				gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // Set The Clear Color To
-				gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT
-						| GL.GL_ACCUM_BUFFER_BIT);
-				gl.glPopMatrix();
-				
-				
-////				//
-				gl.glPushMatrix();
-				gl.glLoadIdentity();
-				gl.glViewport(0, 0, 640, 480);
-//				gl.glOrtho(0, 640, 480, 0, -1, 1);
-				getBackend().bind();
-				DrawProperties dpBack = new DrawProperties(0, 0, false, true, new ImageContainer(getBackend2(), 640, 480));
-				xlDst = dpBack.getXLeftDst();
-				xrDst = dpBack.getXRightDst();
-				ytDst = dpBack.getYTopDst();
-				ybDst = dpBack.getYBottomDst();
-
-				texture = (Texture) dpBack.getIc().getImg();
-				
-				xlSrc = (dpBack.getXLeftSrc() / texture.getImageWidth())
-						* texture.getWidth();
-				xrSrc = (dpBack.getXRightSrc() / texture.getImageWidth())
-						* texture.getWidth();
-
-				ytSrc = (dpBack.getYTopSrc() / texture.getImageHeight())
-						* texture.getHeight();
-				ybSrc = (dpBack.getYBottomSrc() / texture.getImageHeight())
-						* texture.getHeight();
-				
-				gl.glScaled(0.5, 0.5, 1);
-				getBlendShader("substract").render(gl, 0.5f, getBackend(), getBackend2());
-				drawImage(
-						xlDst + dp.getXLeftDst(), 
-						xrDst + (640 - dp.getXRightDst()), 
-						ytDst + dp.getYTopDst(), 
-						ybDst + dp.getYBottomDst(), 
-						
-						xlSrc + dp.getXLeftDst(), 
-						xrSrc + (640 - dp.getXRightDst()), 
-						ytSrc - dp.getYTopDst(), 
-						ybSrc - dp.getYBottomDst(), 
-						
-						dpBack);
-				
-				
-				getBlendShader("substract").endRender(gl);
-				
-				
-				
-				gl.glPopMatrix();
-				
-				
-			} else {
-				drawImage(xlDst, xrDst, ytDst, ybDst, xlSrc, xrSrc, ytSrc, ybSrc, dp);
-				
-				
-//
-
-
-			}
-			
+			drawImage(xlDst, xrDst, ytDst, ybDst, xlSrc, xrSrc, ytSrc, ybSrc, dp);
 		}
 
 		gl.glDisable(GL.GL_ALPHA_TEST);
 	}
 
-	private void RenderToTexture(Texture tex) {
-		GL gl = getGl();
-		if (gl == null)
-			return;
-		
-		gl.glPushMatrix();
-		
-		gl.glLoadIdentity();
-		
-//		gl.glViewport(0, 0, 640, 480);
-//		gl.glOrtho(0, 640, 640, 0, -10000, 10000);
-		tex.bind();
-		gl.glCopyTexImage2D(GL.GL_TEXTURE_2D, 0, GL.GL_RGBA, 0, 0, 640, 480, 0);
-		gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // Set The Clear Color To
-		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT
-				| GL.GL_ACCUM_BUFFER_BIT);
-		gl.glPopMatrix();
-	}
 	
 	private void processRotationProperties(AngleDrawProperties dp) {
 		GL gl = getGl();
@@ -451,11 +272,8 @@ public class JoglMugenDrawer extends MugenDrawer {
 			gl.glTranslatef(dp.getXAnchor(), dp.getYAnchor(), 0);
 			gl.glRotatef(dp.getAngleset(), 0, 0, 1);
 			gl.glTranslatef(-dp.getXAnchor(), -dp.getYAnchor(), 0);
-
 		}
 	}
-	
-	///
 	
 	@Override
 	public GameWindow getInstanceOfGameWindow() {
@@ -637,7 +455,9 @@ public class JoglMugenDrawer extends MugenDrawer {
 		GL gl = getGl();
 		if (gl == null)
 			return;
-		
+        gl.glTexEnvi(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_REPLACE);
+        gl.glBlendFunc(GL.GL_ONE, GL.GL_ONE_MINUS_SRC_ALPHA);
+
 		gl.glDisable(GL.GL_TEXTURE_2D);
 		gl.glColor4f(rgba.getR(), rgba.getG(), rgba.getB(), rgba.getA());
 
@@ -667,6 +487,7 @@ public class JoglMugenDrawer extends MugenDrawer {
 		if (gl == null)
 			return;
 		gl.glColor4f(r / 255f, g / 255f, b / 255f, a / 255f);
+		rgba = new RGB(r, g, b, a);
 
 	}
 
@@ -974,11 +795,11 @@ public class JoglMugenDrawer extends MugenDrawer {
 			gl.glScaled(2f, 2f, 0);
 			
 		} else {
-//			gl.glMatrixMode(GL.GL_PROJECTION);
-//			gl.glLoadIdentity();
-//			gl.glViewport(0, 0, 640, 480);
-//			gl.glOrtho(0, 640, 640, 0, -10000, 10000);
-//			gl.glScaled((float) 640 / 320, (float) 640 / 240, 0);
+			gl.glMatrixMode(GL.GL_PROJECTION);
+			gl.glLoadIdentity();
+			gl.glViewport(0, 0, 640, 480);
+			gl.glOrtho(0, 640, 640, 0, -10000, 10000);
+			gl.glScaled((float) 640 / 320, (float) 640 / 240, 0);
 		}
 		
 	}
