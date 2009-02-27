@@ -10,9 +10,9 @@ import java.io.InputStream;
  */
 public class PCXPalette {
 	public static final int PALETTE_SIZE = 3 * 256;
-    public int[] r = new int[256];
-    public int[] g = new int[256];
-    public int[] b = new int[256];
+    public byte[] r = new byte[256];
+    public byte[] g = new byte[256];
+    public byte[] b = new byte[256];
     
     /** 
      * Creates new PCX Palette 
@@ -22,17 +22,17 @@ public class PCXPalette {
     public PCXPalette(InputStream in) throws IOException {
         in.skip(in.available() - PALETTE_SIZE);
         for (int i = 0; i < 256; i++) {
-            r[i] = (int) in.read();
-            g[i] = (int) in.read();
-            b[i] = (int) in.read();       
+            r[i] = (byte) in.read();
+            g[i] = (byte) in.read();
+            b[i] = (byte) in.read();       
         }
     }
     public void load(InputStream in) throws IOException {
         in.skip(in.available() - PALETTE_SIZE);
         for (int i = 0; i < 256; i++) {
-            r[i] = (int) in.read();
-            g[i] = (int) in.read();
-            b[i] = (int) in.read();       
+            r[i] = (byte) in.read();
+            g[i] = (byte) in.read();
+            b[i] = (byte) in.read();       
         }
     }
     public PCXPalette() {

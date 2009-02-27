@@ -71,5 +71,6 @@ public interface Game {
 	
 	// TODO : delete this
 	public void displayPendingScreeen();
+	public void free();
 
 }
