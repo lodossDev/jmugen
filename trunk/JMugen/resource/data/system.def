@@ -172,7 +172,8 @@ stage.done.alpha = 0.5
 stage.done.snd = 100,1
 stage.move.snd = 100,0
 
-stagedisplay.enable = 1
+;I add this
+stagedisplay.enable = 0
 stagedisplay.pos = 100, 197 ; (320 - 400 * 0.3)/2, 
 stagedisplay.rectangle = 0, 0, 400, 240
 stagedisplay.scale = 0.3, 0.3
