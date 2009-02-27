@@ -1,6 +1,5 @@
 package org.lee.mugen.core.renderer.java;
 
-import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Graphics2D;
@@ -9,8 +8,10 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
+import org.lee.mugen.imageIO.ByteArrayBuilder;
 import org.lee.mugen.imageIO.PCXLoader;
 import org.lee.mugen.imageIO.RawPCXImage;
+import org.lee.mugen.imageIO.PCXLoader.PCXHeader;
 import org.lee.mugen.object.Rectangle;
 import org.lee.mugen.renderer.AngleDrawProperties;
 import org.lee.mugen.renderer.DrawProperties;
@@ -19,7 +20,7 @@ import org.lee.mugen.renderer.ImageContainer;
 import org.lee.mugen.renderer.MugenDrawer;
 import org.lee.mugen.renderer.Trans;
 
-import com.jhlabs.composite.MiscComposite;
+import composite.BlendComposite;
 
 public class JMugenDrawer extends MugenDrawer {
 	
@@ -44,19 +45,18 @@ public class JMugenDrawer extends MugenDrawer {
 		
 		Composite composite = null;
 		if (dp.getTrans() == Trans.ADD) {
-//			composite = MiscComposite.getInstance(MiscComposite.ADD, 1f);
-			composite = AlphaComposite.getInstance(AlphaComposite.SRC_ATOP);
+			composite = BlendComposite.Add;
+//			composite = AlphaComposite.getInstance(AlphaComposite.SRC_ATOP);
 		} else if (dp.getTrans() == Trans.ADD1) {
-//			composite = MiscComposite.getInstance(MiscComposite.ADD, 1f);
-			composite = AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 0.5f);
+			composite = BlendComposite.Add;
+//			composite = AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 0.5f);
 		} else if (dp.getTrans() == Trans.SUB) {
-//			composite = MiscComposite.getInstance(MiscComposite.SUBTRACT, 0.5f);
-			composite = AlphaComposite.getInstance(AlphaComposite.DST_OUT);
+			composite = BlendComposite.Subtract.derive(0.5f);
+//			composite = AlphaComposite.getInstance(AlphaComposite.DST_OUT);
 
 		}
-		
 		if (composite != null) {
-			g.setComposite(AlphaComposite.getInstance( AlphaComposite.SRC_OVER, 0.5f ));
+//			g.setComposite(AlphaComposite.getInstance( AlphaComposite.SRC_OVER, 0.5f ));
 			g.setComposite(composite);
 		}
 		
@@ -153,16 +153,33 @@ public class JMugenDrawer extends MugenDrawer {
 	@Override
 	public ImageContainer getImageContainer(Object imageData) {
 		RawPCXImage pcx = (RawPCXImage) imageData;
-		BufferedImage image = null;
-		try {
-			image = (BufferedImage) PCXLoader.loadImageColorIndexed(new ByteArrayInputStream(
-					pcx.getData()), pcx.getPalette(), false, true);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		PCXHeader header = null;
 
-		return new ImageContainer(image, image.getWidth(), image.getHeight());
+		try {
+			header = new PCXHeader(pcx.getData());
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		int width = header.xmax - header.xmin + 1;
+		int height = header.ymax - header.ymin + 1;
+		return new ImageContainer(imageData, width, height) {
+			@Override
+			public Object getImg() {
+				if (img instanceof BufferedImage) {
+					return img;
+				}
+				RawPCXImage pcx = (RawPCXImage) img;
+				BufferedImage image = null;
+				try {
+					image = (BufferedImage) PCXLoader.loadImageColorIndexed(new ByteArrayInputStream(
+							pcx.getData()), pcx.getPalette(), false, true);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return img = image;
+			}
+		};
 		
 	}
 

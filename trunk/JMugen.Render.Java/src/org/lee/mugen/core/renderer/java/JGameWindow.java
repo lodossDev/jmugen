@@ -27,6 +27,8 @@ import org.lee.mugen.input.ISpriteCmdProcess;
 import org.lee.mugen.renderer.GameWindow;
 import org.lee.mugen.renderer.MugenTimer;
 
+import sun.awt.windows.ThemeReader;
+
 public class JGameWindow extends Canvas implements GameWindow {
 
 	
@@ -209,7 +211,7 @@ public class JGameWindow extends Canvas implements GameWindow {
 			callback.init(this);
 		}
 
-		normalBuffer = new BufferedImage(640, 480, BufferedImage.TYPE_INT_ARGB);
+		normalBuffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 		imgScale2x = new ImageScale2x(normalBuffer);
 
 
@@ -218,15 +220,14 @@ public class JGameWindow extends Canvas implements GameWindow {
 
 	public Graphics2D getDrawGraphics() {
 		Graphics2D g = (Graphics2D) normalBuffer.createGraphics();
-		g.scale(2, 2);
-		
+		g.scale(width/320, height/240);
 		return g;
 	}
 	
 	public Graphics2D getDebugDrawGraphics() {
 		return gStrategy;
 	}
-	
+	int lack = 0;
 	/**
 	 * Run the main game loop. This method keeps rendering the scene
 	 * and requesting that the callback update its screen.
@@ -248,6 +249,13 @@ public class JGameWindow extends Canvas implements GameWindow {
 
 			if (callback != null) {
 				callback.update(1);
+				if (lack-- > 0)
+					continue;
+//				synchronized (getTimer()) {
+					lack = getTimer().sleep();
+					
+//				}
+
 				Graphics2D g = (Graphics2D) getDrawGraphics();
 				g.setColor(Color.BLACK);
 				g.fillRect(0, 0, 320, 240);
@@ -273,86 +281,70 @@ public class JGameWindow extends Canvas implements GameWindow {
 	}
 	
 	private MugenTimer mugenTimer = new MugenTimer() {
-		long lasttime = System.currentTimeMillis();
+		long lastTime = 0;
 
 		long ONE = 1000 / 60;
-		private long framerate = ONE;
-		private long lastTime = 0;//System.currentTimeMillis();
+		private long frameRate = ONE;
 		int frame = 0;
 		int fps = 0;
+		int TIME_TO_LISTEN_FPS = 500;
 		
-		/* (non-Javadoc)
-		 * @see org.lee.mugen.core.MugenTimer#getFramerate()
-		 */
-		public long getFramerate() {
-			return framerate;
-		}
-		/* (non-Javadoc)
-		 * @see org.lee.mugen.core.MugenTimer#setFramerate(long)
-		 */
-		public void setFramerate(long famerate) {
-			this.framerate = famerate;
-		}
-		/* (non-Javadoc)
-		 * @see org.lee.mugen.core.MugenTimer#sleep()
-		 */
-//		public void sleep() {
-//			long temp = SystemTimer.getTime();
-//			if (temp - lastTime < getFramerate())
-//				SystemTimer.sleep(getFramerate() - (temp - lastTime));
-//			// work out how long its been since the last update, this
-//			// will be used to calculate how far the entities should
-//			// move this loop
-//			long delta = SystemTimer.getTime() - lastTime;
-//			lastTime = SystemTimer.getTime();
-//			fps += delta;
-//			frame++;
-//			
-//			// update our FPS counter if a second has passed
-//			if (fps >= 1000) {
-////				window.setTitle(windowTitle+" (FPS: "+fps+")");
-//				fps = 0;
-//				fpsToDisplay = frame;
-//				frame = 0;
-//			}
-////			frame++;
-////			long temp = System.currentTimeMillis();
-////			long diff = temp - lastTime;
-////			if (diff >= 1000) {
-////				lastTime = System.currentTimeMillis();
-////				fps = frame;
-////				fpsToDisplay = fps;
-////				frame = 0;
-////			}
-////			
-////			if (temp - lasttime < getFramerate()) {
-////				synchronized (this) {
-////					try {
-////						wait(getFramerate() - (temp - lasttime));
-////					} catch (InterruptedException e) {
-////					}
-////				}
-////			}
-//			lasttime = temp;
-//		}
-		int fpsToDisplay = 0;
-		/* (non-Javadoc)
-		 * @see org.lee.mugen.core.MugenTimer#getFps()
-		 */
+		@Override
 		public int getFps() {
-			if (framerate == 0)
-				return 0;
-			return fpsToDisplay;
+			// TODO Auto-generated method stub
+			return 0;
 		}
-		public void sleep(long ms) {
-//			SystemTimer.sleep(ms);		
+
+		@Override
+		public long getFramerate() {
+			return frameRate;
+		}
+
+		@Override
+		public void setFramerate(long famerate) {
+			this.frameRate = famerate;
+		}
+
+		private long lastTimeForComputeFPS = 0;
+		private void listen() {
+			frame++;
+			long currentTime = System.currentTimeMillis();
+			long diff = currentTime - lastTimeForComputeFPS;
+			if (diff > TIME_TO_LISTEN_FPS) {
+				fps = (int) (frame/(diff / 1000f));
+				frame = 0;
+				lastTimeForComputeFPS = System.currentTimeMillis();
+				
+			}
 		}
 		@Override
-		public void sleep() {
+		public int sleep() {
+			listen();
+			long currentTime = System.currentTimeMillis();
+			long diff = currentTime - lastTime;
+			int lack = 0;
+			if (diff < frameRate && (frameRate - diff) > 0) {
+				try {
+					Thread.sleep((frameRate - diff));
+//					System.out.println("wait " + (frameRate - diff));
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} else {
+				lack = (int) ((diff - frameRate)/frameRate);
+//				System.out.println("lack " + (diff - frameRate));
+				lastTime = System.currentTimeMillis();
+				
+			}
+			return lack;
+		}
+
+		@Override
+		public void sleep(long ms) {
 			// TODO Auto-generated method stub
 			
-		}
-	};
+		}};
 	public MugenTimer getTimer() {
 		return mugenTimer;
 	}
