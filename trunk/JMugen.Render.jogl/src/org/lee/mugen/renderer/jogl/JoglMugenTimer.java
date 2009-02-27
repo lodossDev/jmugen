@@ -23,9 +23,9 @@ public class JoglMugenTimer implements MugenTimer {
 	}
 
 	@Override
-	public void sleep() {
+	public int sleep() {
 		// TODO Auto-generated method stub
-		
+		return 0;
 	}
 
 	@Override
