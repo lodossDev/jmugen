@@ -7,7 +7,7 @@ public interface MugenTimer {
 
 	public abstract void setFramerate(long famerate);
 
-	public abstract void sleep();
+	public abstract int sleep();
 	public abstract void sleep(long ms);
 
 	public abstract int getFps();
