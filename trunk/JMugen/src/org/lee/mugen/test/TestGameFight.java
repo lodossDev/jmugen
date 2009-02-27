@@ -202,8 +202,8 @@ public class TestGameFight {
 		String[] args = new String[] {
 				"kfm", "0", 
 				"kfm", "0",
-				"kenstageDG.def",
-				"ADX_S060.wav"
+				"kfm.def",
+//				"ADX_S060.wav"
 		};
 		
 		final GameFight statemachine = GameFight.getInstance();
@@ -227,7 +227,7 @@ public class TestGameFight {
 
 		
 		gameWindow.start();
-		Method m = gameWindow.getClass().getDeclaredMethod("isFinishInit");
+//		Method m = gameWindow.getClass().getDeclaredMethod("isFinishInit");
 
 //		while (!(Boolean)m.invoke(gameWindow))
 //			Thread.sleep(1000);
