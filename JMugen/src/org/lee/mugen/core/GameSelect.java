@@ -312,7 +312,7 @@ public class GameSelect implements Game {
 				StageDisplay stageDisplay = MugenSystem.getInstance().getSelectInfo().getStagedisplay();
 				if (stageDisplay != null) {
 					StageBackgroundRender newStageBackgroundRender = new StageBackgroundRender(stage);
-					JoglMugenDrawer.prepareImageToTextPreparer();
+					JoglMugenDrawer.createImageToTextPreparer();
 					stageBackgroundRender = newStageBackgroundRender;
 					stage.getCamera().setForcePos(true);
 					
@@ -388,5 +388,10 @@ public class GameSelect implements Game {
 	String title = "";
 	public void setTilte(String title) {
 		this.title = title;		
+	}
+	@Override
+	public void free() {
+		// TODO Auto-generated method stub
+		
 	}
 }

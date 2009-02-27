@@ -1213,6 +1213,11 @@ public class GameFight implements Game {
 		preloadSprite(teamside, spriteId, def, pal);
 		
 	}
+	@Override
+	public void free() {
+		// TODO Auto-generated method stub
+		
+	}
 
 
 }

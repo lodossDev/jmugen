@@ -218,4 +218,10 @@ public class GameMenu implements Game {
 		return instance;
 	}
 
+	@Override
+	public void free() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
