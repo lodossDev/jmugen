@@ -196,7 +196,9 @@ public final class BlendComposite implements Composite {
 
 		public void dispose() {
 		}
-		private void composeSrcArgbDstArgb(Raster src, Raster dstIn, WritableRaster dstOut) {
+
+		private void composeSrcArgbDstArgb(Raster src, Raster dstIn,
+				WritableRaster dstOut) {
 			int width = Math.min(src.getWidth(), dstIn.getWidth());
 			int height = Math.min(src.getHeight(), dstIn.getHeight());
 
@@ -205,37 +207,44 @@ public final class BlendComposite implements Composite {
 			int[] srcPixel = new int[4];
 			int[] dstPixel = new int[4];
 			int[] srcPixels = null;
-			srcPixels = (int[]) src.getDataElements(0, 0, width, height, srcPixels);
+			srcPixels = (int[]) src.getDataElements(0, 0, width, height,
+					srcPixels);
 
 			int[] dstPixels = null;
-			dstPixels = (int[]) dstIn.getDataElements(0, 0, width, height, dstPixels);
+			dstPixels = (int[]) dstIn.getDataElements(0, 0, width, height,
+					dstPixels);
 			int len = Math.min(dstPixels.length, srcPixels.length);
 			for (int i = 0; i < len; i++) {
 				int pixel = srcPixels[i];
-                srcPixel[0] = (pixel >> 16) & 0xFF;
-                srcPixel[1] = (pixel >>  8) & 0xFF;
-                srcPixel[2] = (pixel      ) & 0xFF;
-                srcPixel[3] = (pixel >> 24) & 0xFF;
+				srcPixel[0] = (pixel >> 16) & 0xFF;
+				srcPixel[1] = (pixel >> 8) & 0xFF;
+				srcPixel[2] = (pixel) & 0xFF;
+				srcPixel[3] = (pixel >> 24) & 0xFF;
 
-                pixel = dstPixels[i];
-                dstPixel[0] = (pixel >> 16) & 0xFF;
-                dstPixel[1] = (pixel >>  8) & 0xFF;
-                dstPixel[2] = (pixel      ) & 0xFF;
-                dstPixel[3] = (pixel >> 24) & 0xFF;
+				pixel = dstPixels[i];
+				dstPixel[0] = (pixel >> 16) & 0xFF;
+				dstPixel[1] = (pixel >> 8) & 0xFF;
+				dstPixel[2] = (pixel) & 0xFF;
+				dstPixel[3] = (pixel >> 24) & 0xFF;
 				int[] result = blender.blend(srcPixel, dstPixel);
 				// mixes the result with the opacity
-				dstPixels[i] = 	((int) (dstPixel[3] + (result[3] - dstPixel[3]) * alpha) & 0xFF) << 24 |
-				                ((int) (dstPixel[0] + (result[0] - dstPixel[0]) * alpha) & 0xFF) << 16 |
-				                ((int) (dstPixel[1] + (result[1] - dstPixel[1]) * alpha) & 0xFF) <<  8 |
-				                 (int) (dstPixel[2] + (result[2] - dstPixel[2]) * alpha) & 0xFF;
+				dstPixels[i] = ((int) (dstPixel[3] + (result[3] - dstPixel[3])
+						* alpha) & 0xFF) << 24
+						| ((int) (dstPixel[0] + (result[0] - dstPixel[0])
+								* alpha) & 0xFF) << 16
+						| ((int) (dstPixel[1] + (result[1] - dstPixel[1])
+								* alpha) & 0xFF) << 8
+						| (int) (dstPixel[2] + (result[2] - dstPixel[2])
+								* alpha) & 0xFF;
 			}
 			dstOut.setDataElements(0, 0, width, height, dstPixels);
 		}
+
 		public void compose(Raster src, Raster dstIn, WritableRaster dstOut) {
 			if (src.getSampleModel().getDataType() != DataBuffer.TYPE_INT
 					|| dstIn.getSampleModel().getDataType() != DataBuffer.TYPE_INT
 					|| dstOut.getSampleModel().getDataType() != DataBuffer.TYPE_INT) {
-				
+
 				if (src.getSampleModel().getDataType() == DataBuffer.TYPE_BYTE) {
 					composeSrcIndexedColor(src, dstIn, dstOut);
 					return;
@@ -245,7 +254,6 @@ public final class BlendComposite implements Composite {
 			}
 			composeSrcArgbDstArgb(src, dstIn, dstOut);
 		}
-
 
 		private void composeSrcIndexedColor(Raster src, Raster dstIn,
 				WritableRaster dstOut) {
@@ -263,30 +271,36 @@ public final class BlendComposite implements Composite {
 			int[] srcPixel = new int[4];
 			int[] dstPixel = new int[4];
 			byte[] srcPixels = null;
-			srcPixels = (byte[]) src.getDataElements(0, 0, width, height, srcPixels);
+			srcPixels = (byte[]) src.getDataElements(0, 0, width, height,
+					srcPixels);
 
 			int[] dstPixels = null;
-			dstPixels = (int[]) dstIn.getDataElements(0, 0, width, height, dstPixels);
+			dstPixels = (int[]) dstIn.getDataElements(0, 0, width, height,
+					dstPixels);
 			int len = dstPixels.length;
 			for (int i = 0; i < len; i++) {
 				int pixel = srcPixels[i];
-                srcPixel[0] = srcColorModel.getRed(pixel);
-                srcPixel[1] = srcColorModel.getGreen(pixel);
-                srcPixel[2] = srcColorModel.getBlue(pixel);
-                srcPixel[3] = srcColorModel.getAlpha(pixel);
-                
-                pixel = dstPixels[i];
-                dstPixel[0] = (pixel >> 16) & 0xFF;
-                dstPixel[1] = (pixel >>  8) & 0xFF;
-                dstPixel[2] = (pixel      ) & 0xFF;
-                dstPixel[3] = (pixel >> 24) & 0xFF;
+				srcPixel[0] = srcColorModel.getRed(pixel);
+				srcPixel[1] = srcColorModel.getGreen(pixel);
+				srcPixel[2] = srcColorModel.getBlue(pixel);
+				srcPixel[3] = srcColorModel.getAlpha(pixel);
+
+				pixel = dstPixels[i];
+				dstPixel[0] = (pixel >> 16) & 0xFF;
+				dstPixel[1] = (pixel >> 8) & 0xFF;
+				dstPixel[2] = (pixel) & 0xFF;
+				dstPixel[3] = (pixel >> 24) & 0xFF;
 				int[] result = blender.blend(srcPixel, dstPixel);
 				// mixes the result with the opacity
-				dstPixels[i] = 	((int) (dstPixel[3] + (result[3] - dstPixel[3]) * alpha) & 0xFF) << 24 |
-				                ((int) (dstPixel[0] + (result[0] - dstPixel[0]) * alpha) & 0xFF) << 16 |
-				                ((int) (dstPixel[1] + (result[1] - dstPixel[1]) * alpha) & 0xFF) <<  8 |
-				                 (int) (dstPixel[2] + (result[2] - dstPixel[2]) * alpha) & 0xFF;
-			
+				dstPixels[i] = ((int) (dstPixel[3] + (result[3] - dstPixel[3])
+						* alpha) & 0xFF) << 24
+						| ((int) (dstPixel[0] + (result[0] - dstPixel[0])
+								* alpha) & 0xFF) << 16
+						| ((int) (dstPixel[1] + (result[1] - dstPixel[1])
+								* alpha) & 0xFF) << 8
+						| (int) (dstPixel[2] + (result[2] - dstPixel[2])
+								* alpha) & 0xFF;
+
 			}
 			dstOut.setDataElements(0, 0, width, height, dstPixels);
 		}

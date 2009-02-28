@@ -8,13 +8,10 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import javax.imageio.ImageIO;
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLCanvas;
@@ -32,10 +29,6 @@ import org.lee.mugen.renderer.GameWindow;
 import org.lee.mugen.renderer.GraphicsWrapper;
 import org.lee.mugen.renderer.MugenTimer;
 
-import com.sun.opengl.util.texture.Texture;
-import com.sun.opengl.util.texture.TextureData;
-import com.sun.opengl.util.texture.TextureIO;
-
 public class JoglGameWindow implements GameWindow, GLEventListener {
 	
 	private int width;
@@ -46,7 +39,7 @@ public class JoglGameWindow implements GameWindow, GLEventListener {
 	private GL _gl;
 	private GLCanvas canvas;
 	
-	private MouseCtrl mouse = new MouseCtrl();
+	private final MouseCtrl mouse = new MouseCtrl();
 	private boolean isFinishInit = false;
 	public boolean isFinishInit() {
 		return isFinishInit;
@@ -160,7 +153,6 @@ public class JoglGameWindow implements GameWindow, GLEventListener {
 		}
 		@Override
 		public void keyTyped(KeyEvent e) {
-			// TODO Auto-generated method stub
 			
 		}
 		
@@ -248,41 +240,10 @@ public class JoglGameWindow implements GameWindow, GLEventListener {
 		return mouse;
 	}
 
-	MugenTimer joglMugenTimer = new MugenTimer() {
-
-		@Override
-		public int getFps() {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-
-		@Override
-		public long getFramerate() {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-
-		@Override
-		public void setFramerate(long famerate) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public int sleep() {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-
-		@Override
-		public void sleep(long ms) {
-			// TODO Auto-generated method stub
-			
-		}};
+	JoglMugenTimer joglMugenTimer = new JoglMugenTimer();
 	
 	@Override
-	public MugenTimer getTimer() {
-		
+	public JoglMugenTimer getTimer() {
 		return joglMugenTimer;
 	}
 
@@ -330,7 +291,6 @@ public class JoglGameWindow implements GameWindow, GLEventListener {
         frame.setVisible(true);
 
         animator.start();
-        
         
 	}
 	boolean isFinishTextureLoading;
@@ -467,6 +427,7 @@ public class JoglGameWindow implements GameWindow, GLEventListener {
 				mouse.setLeftRelease(false);
 				mouse.setRightRelease(false);
 				
+				getTimer().listen();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
