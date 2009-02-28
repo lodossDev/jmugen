@@ -528,8 +528,9 @@ public class GameFight implements Game {
 		try {
 			
 			loadSprites();
-			if (instanceOfStage == null)
-				instanceOfStage = new Stage(stage);
+			if (instanceOfStage == null) {
+				setStage(new Stage(stage));
+			}
 			loadingText += "\nloading Stage ";
 
 			addRender(new SpriteShadowRender(getSpriteInstance("1"), false));
@@ -1215,8 +1216,11 @@ public class GameFight implements Game {
 	}
 	@Override
 	public void free() {
-		// TODO Auto-generated method stub
-		
+		for (Sprite spr: getSprites())
+			spr.getSpriteSFF().free();
+		for (AbstractSprite spr: getOtherSprites())
+			spr.getSpriteSFF().free();
+		getStage().free();
 	}
 
 
