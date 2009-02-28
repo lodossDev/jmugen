@@ -27,8 +27,6 @@ import org.lee.mugen.input.ISpriteCmdProcess;
 import org.lee.mugen.renderer.GameWindow;
 import org.lee.mugen.renderer.MugenTimer;
 
-import sun.awt.windows.ThemeReader;
-
 public class JGameWindow extends Canvas implements GameWindow {
 
 	
@@ -291,8 +289,7 @@ public class JGameWindow extends Canvas implements GameWindow {
 		
 		@Override
 		public int getFps() {
-			// TODO Auto-generated method stub
-			return 0;
+			return fps;
 		}
 
 		@Override
@@ -342,7 +339,10 @@ public class JGameWindow extends Canvas implements GameWindow {
 
 		@Override
 		public void sleep(long ms) {
-			// TODO Auto-generated method stub
+			try {
+				Thread.sleep(ms);
+			} catch (InterruptedException e) {
+			}
 			
 		}};
 	public MugenTimer getTimer() {
