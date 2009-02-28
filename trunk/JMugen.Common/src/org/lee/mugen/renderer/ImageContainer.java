@@ -6,8 +6,6 @@ public class ImageContainer {
 	protected int width;
 	protected int height;
 	
-//	Texture texture;
-
 	public ImageContainer(Object img, int width, int height) {
 		this.img = img;
 		this.width = width;
@@ -32,7 +30,6 @@ public class ImageContainer {
 		this.img = img.img;
 		this.width = img.getWidth();
 		this.height = img.getHeight();
-		
 	}
 	
 }

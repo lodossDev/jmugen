@@ -14,7 +14,7 @@ import org.lee.mugen.io.LittleEndianDataInputStream;
 public class PCXLoader {
 	public static final int HEADER_SIZE = 128;
 
-	public static Image loadImageColorIndexed(InputStream file, PCXPalette pal,
+	public static BufferedImage loadImageColorIndexed(InputStream file, PCXPalette pal,
 			boolean isPalUse, boolean isUseColorKey, int colorDepth)
 			throws IOException {
 		byte[] data = ByteArrayBuilder.fromStream(file);
@@ -75,21 +75,41 @@ public class PCXLoader {
 			ByteArrayInputStream byteArrayInputStream, PCXPalette palette,
 			boolean isPalUse, boolean isUseColorKey) throws IOException {
 		
-		return (BufferedImage) loadImageColorIndexed(byteArrayInputStream,
+		return loadImageColorIndexed(byteArrayInputStream,
 				palette, isPalUse, isUseColorKey, 0);
 	}
-	public static Image loadImage(InputStream file, PCXPalette pal,
+	public static BufferedImage loadImageARGB(InputStream file, PCXPalette pal,
 			boolean isPalUse, boolean isUseColorKey) throws IOException {
-		return loadImage(file, pal, isPalUse, isUseColorKey, false, false);
+		return loadImage(BufferedImage.TYPE_INT_ARGB, file, pal, isPalUse, isUseColorKey, false, false);
 	}
-	
-	public static Image loadImage(InputStream file, PCXPalette pal,
+	public static BufferedImage loadImageARGBPRE(InputStream file, PCXPalette pal,
+			boolean isPalUse, boolean isUseColorKey) throws IOException {
+		return loadImage(BufferedImage.TYPE_INT_ARGB_PRE, file, pal, isPalUse, isUseColorKey, false, false);
+	}
+	public static BufferedImage loadImageRGB(InputStream file, PCXPalette pal,
+			boolean isPalUse, boolean isUseColorKey) throws IOException {
+		return loadImage(BufferedImage.TYPE_INT_RGB, file, pal, isPalUse, isUseColorKey, false, false);
+	}
+	public static BufferedImage loadImageBGR(InputStream file, PCXPalette pal,
+			boolean isPalUse, boolean isUseColorKey) throws IOException {
+		return loadImage(BufferedImage.TYPE_3BYTE_BGR, file, pal, isPalUse, isUseColorKey, false, false);
+	}
+	public static BufferedImage loadImage(int type, InputStream file, PCXPalette pal,
+			boolean isPalUse, boolean isUseColorKey) throws IOException {
+		return loadImage(type, file, pal, isPalUse, isUseColorKey, false, false);
+	}	
+	public static BufferedImage loadImage(int type, InputStream file, PCXPalette pal,
 			boolean isPalUse, boolean isUseColorKey, boolean isFlipH,
 			boolean isFlipV) throws IOException {
+		return loadImage(type, file, pal, isPalUse, isUseColorKey, isFlipH, isFlipV, 0);
+	}
+	public static BufferedImage loadImage(int type, InputStream file, PCXPalette pal,
+			boolean isPalUse, boolean isUseColorKey, boolean isFlipH,
+			boolean isFlipV, int color) throws IOException {
 		BufferedImage image = (BufferedImage) loadImageColorIndexed(file, pal, isPalUse, isUseColorKey, 0);
 		int width = image.getWidth();
 		int height = image.getHeight();
-		BufferedImage result = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		BufferedImage result = new BufferedImage(width, height, type);
 		if (isFlipH || isFlipV) {
 			Graphics2D g = (Graphics2D) result.getGraphics();
 			g.scale(isFlipH ? -1 : 1, isFlipV ? -1 : 1);
@@ -100,6 +120,7 @@ public class PCXLoader {
 		return result;
 	}
 
+	
 	protected static boolean isAboutTheSameColor(int r1, int g1, int b1, int r2,
 			int g2, int b2, int[] alpha) {
 		alpha[0] = 255;
