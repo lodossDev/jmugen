@@ -1219,7 +1219,8 @@ public class GameFight implements Game {
 		for (Sprite spr: getSprites())
 			spr.getSpriteSFF().free();
 		for (AbstractSprite spr: getOtherSprites())
-			spr.getSpriteSFF().free();
+			if (spr.getSpriteSFF() != null)
+				spr.getSpriteSFF().free();
 		getStage().free();
 	}
 

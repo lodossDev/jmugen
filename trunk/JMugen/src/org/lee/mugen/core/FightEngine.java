@@ -1253,6 +1253,8 @@ public class FightEngine {
 			}
 		}
 		for (Sprite s: GameFight.getInstance().getSprites()) {
+			if (s.getInfo().getLastHitdef() == null)
+				continue;
 			AbstractSprite sprToCompare = s.getInfo().getLastHitdef().getSpriteHitter();
 			if (sprToCompare instanceof ProjectileSprite) {
 				ProjectileSprite p = (ProjectileSprite) sprToCompare;
