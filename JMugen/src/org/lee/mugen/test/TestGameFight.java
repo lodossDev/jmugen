@@ -180,8 +180,10 @@ public class TestGameFight {
 		
 	}
 	public static void main(String[] args) throws Exception {
-		launchDirect();
+//		launchDirect();
 //		launchUI();
+		
+		SoundSystem.SoundBackGround.playMusic("resource/sound/ADX_S060.adx");
 	}
 	
 	public static void launchDirect() throws Exception {
@@ -200,9 +202,9 @@ public class TestGameFight {
 	    
 	    
 		String[] args = new String[] {
-				"kfm", "0", 
-				"kfm", "0",
-				"kfm.def",
+				"gokuHR", "0", 
+				"ryuDG", "0",
+				"ggxx_verdent.def",
 //				"ADX_S060.wav"
 		};
 		
