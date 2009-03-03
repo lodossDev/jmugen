@@ -1,6 +1,7 @@
 package org.lee.mugen.audio.adx.sample.convert;
 
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -331,70 +332,6 @@ public class Adx {
 	// filled
 	public int decodeAdxStandard(OutputStream buffer, int samples_needed,
 			boolean loopingEnabled) throws IOException {
-		
-		final int samples_per_block = (header.getBlockSize() - 2) * 8
-				/ header.getBitsPerSample();
-		int[] scale = new int[header.getChannelCount()];
-
-		if (loopingEnabled && !(header.getLoopFlag() != 0))
-			loopingEnabled = false;
-
-		// Loop until the requested number of samples is decoded, or the end of
-		// file is reached
-			// Calculate the number of samples that are left to be decoded in
-			// the current block
-			int sample_offset = sample_index % samples_per_block;
-			int samples_can_get;
-			if (samples_per_block - sample_offset > samples_needed)
-				samples_can_get = samples_needed;
-			else
-				samples_can_get = samples_per_block - sample_offset;
-
-			// Clamp the number of samples to be acquired if the stream isn't
-			// long enough or the loop trigger is nearby
-			if (loopingEnabled
-					&& sample_index + samples_can_get > header
-							.getLoopEndSample())
-				samples_can_get = header.getLoopEndSample() - sample_index;
-			else if (sample_index + samples_can_get > header.getSampleCount())
-				samples_can_get = header.getSampleCount() - sample_index;
-
-			// Find the start of the frame that sample_index resides in and
-			// record the location
-			long started_at = (long) ((header.getDataOffset() + 4 + sample_index
-					/ samples_per_block
-					* header.getBlockSize()
-					* header.getChannelCount()) * 8);
-
-			
-			// Save the bitstream address of the first sample immediately after
-			// the scale in the first block of the frame
-			started_at += 16;
-			file.seek(started_at);
-			int wsize;
-			while (samples_needed > 0 && sample_index < header.getSampleCount() && sample_index < header.getLoopEndSample()) {
-				short[] tmpbuf = new short[bufferSize * 2 * 2];
-				int i;
-
-				convert(0, tmpbuf, file, past_samples[0]);
-				convert(bufferSize * 2, tmpbuf, file, past_samples[1]);
-				for (i = 0; i < bufferSize * 2; i++) {
-					buffer.write((tmpbuf[i] >>> 8) & 0xFF);
-					buffer.write((tmpbuf[i + bufferSize * 2] >>> 0) & 0xFF);
-				}
-				if (samples_needed > bufferSize * 2)
-					wsize = bufferSize * 2;
-				else
-					wsize = samples_needed;
-				samples_needed -= wsize;
-				sample_index += wsize;
-
-			}
-
-			// Check if we hit the loop end marker, if we did we need to jump to
-			// the loop start
-			if (loopingEnabled && sample_index >= header.getLoopEndSample())
-				sample_index = header.getLoopStartSample();
 
 		return samples_needed;
 	}
@@ -415,22 +352,19 @@ public class Adx {
 
 	// #define BASEVOL 0x11e0
 	final int BASEVOL = 0x4000;
-	final int bufferSize = 1;
-	void convert(int indxOut, short[] out, RandomAccessFile in, PREV prev)
+	final int bufferSize = 16;
+	void convert(int indxOut, short[] out, byte[] in, int inPos, PREV prev)
 			throws IOException {
-		int pos = (int) in.getFilePointer();
-		int scale = ((in.read() << 8) | (in.read()));
+		int scale = ((in[inPos] << 8) | (in[inPos+1]));
 		int i;
 		int s0, s1, s2, d;
 		// int over=0;
 
-		in.seek(pos + 2);
-		pos += 2;
+		inPos += 2;
 		s1 = prev.s1;
 		s2 = prev.s2;
 		for (i = 0; i < bufferSize; i++) {
-			in.seek(pos + i);
-			d = in.read() >> 4;
+			d = in[inPos + i] >> 4;
 			if ((d & 8) != 0)
 				d -= 16;
 			s0 = (BASEVOL * d * scale + 0x7298 * s1 - 0x3350 * s2) >> 14;
@@ -443,8 +377,7 @@ public class Adx {
 			s2 = s1;
 			s1 = s0;
 
-			in.seek(pos + i);
-			d = in.read() & 15;
+			d = in[inPos + i] & 15;
 			if ((d & 8) != 0)
 				d -= 16;
 			s0 = (BASEVOL * d * scale + 0x7298 * s1 - 0x3350 * s2) >> 14;
