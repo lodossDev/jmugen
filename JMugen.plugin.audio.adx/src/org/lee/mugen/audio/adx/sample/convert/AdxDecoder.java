@@ -6,6 +6,7 @@ import java.io.IOException;
 
 
 public class AdxDecoder {
+	
 	public static void main(String[] args) throws IOException {
 		Adx adx = new Adx(new File("E:/dev/workspace/JMugen.plugin.audio.adx/ADX_S060.BIN"));
 		new AdxDecoder(adx);
@@ -17,7 +18,7 @@ public class AdxDecoder {
 	boolean loopingEnabled = true;
 	public byte[] read(int samples_needed) throws IOException {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		adx.decodeAdxStandard(bos, samples_needed, loopingEnabled);
+		adx.convert(bos, samples_needed);
 		return bos.toByteArray();
 		
 	}
