@@ -27,7 +27,6 @@ import org.lee.mugen.input.CmdProcDispatcher;
 import org.lee.mugen.input.ISpriteCmdProcess;
 import org.lee.mugen.renderer.GameWindow;
 import org.lee.mugen.renderer.GraphicsWrapper;
-import org.lee.mugen.renderer.MugenTimer;
 
 public class JoglGameWindow implements GameWindow, GLEventListener {
 	
