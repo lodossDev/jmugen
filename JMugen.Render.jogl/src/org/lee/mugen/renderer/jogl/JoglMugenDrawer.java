@@ -678,7 +678,7 @@ public class JoglMugenDrawer extends MugenDrawer {
 	}
 	private static TextureData getDefaultTextureData(BufferedImage image) {
 		final Buffer buffer = wrapImageDataBuffer(image.getRaster().getDataBuffer());
-		final TextureData data = new TextureData(GL.GL_COMPRESSED_RGBA_S3TC_DXT3_EXT,
+		final TextureData data = new TextureData(GL.GL_RGBA,//GL.GL_COMPRESSED_RGBA_S3TC_DXT3_EXT,
                 image.getWidth(),
                 image.getHeight(),
                 0,
