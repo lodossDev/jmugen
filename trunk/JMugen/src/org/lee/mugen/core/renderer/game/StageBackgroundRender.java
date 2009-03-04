@@ -75,8 +75,8 @@ public class StageBackgroundRender implements IBackgroundRenderer {
 			return;
 		int xTile = (int) bg.getTile().getX();
 		float startPosX = x;
-		float tileSpacingX = (bg.getTilespacing() == null? img.getWidth() : bg.getTilespacing().getX());
-		float tileSpacingY = (bg.getTilespacing() == null? img.getHeight() : bg.getTilespacing().getY());
+		float tileSpacingX = (bg.getTilespacing() == null? img.getWidth() : bg.getTilespacing().getX() == 0? img.getWidth(): bg.getTilespacing().getX());
+		float tileSpacingY = (bg.getTilespacing() == null? img.getHeight() : bg.getTilespacing().getY() == 0? img.getHeight():bg.getTilespacing().getY());
 		float deltaY = bg.getDelta().getY();
 		float deltaX = bg.getDelta().getX();
 		if (xTile == 0) {
@@ -107,9 +107,9 @@ public class StageBackgroundRender implements IBackgroundRenderer {
 		} else if (bg.getTile().getX() == 1) {
 			
 			startPosX =  (x + moveX * deltaX + xStartForAll) % (tileSpacingX);
-//			startPosX = 300;
-			while (startPosX < (320f / stage.getScaling().getXscale())) {
 				
+			//			startPosX = 300;
+			while (Float.isNaN(startPosX) || startPosX < (320f / stage.getScaling().getXscale())) {
 				float yDraw = (y + moveY * deltaY);
 				if (bg.getTile().getY() > 0)
 					yDraw = (y + moveY * deltaY) % (tileSpacingY);
@@ -117,11 +117,12 @@ public class StageBackgroundRender implements IBackgroundRenderer {
 
 				drawTileY(img, bg, startPosX, yDraw, moveX, moveY, xStartForAll, trans, isHFlip, isVFlip);
 				startPosX += tileSpacingX;
+
 			}
 			
 			startPosX =  (x + moveX * deltaX + xStartForAll) % (tileSpacingX);
 			startPosX -= tileSpacingX;
-			while (startPosX + img.getWidth() > 0) {
+			while (Float.isNaN(startPosX) || startPosX + img.getWidth() > 0) {
 				
 				float yDraw = (y + moveY * deltaY);
 				if (bg.getTile().getY() > 0)
@@ -130,7 +131,6 @@ public class StageBackgroundRender implements IBackgroundRenderer {
 
 				drawTileY(img, bg, startPosX, yDraw, moveX, moveY, xStartForAll, trans, isHFlip, isVFlip);
 				startPosX -= tileSpacingX;
-				
 			}
 		}
 

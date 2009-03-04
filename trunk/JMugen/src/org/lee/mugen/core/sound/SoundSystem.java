@@ -15,12 +15,14 @@ import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
+
+import org.lee.mugen.audio.adx.sample.convert.Adx;
+import org.lee.mugen.audio.adx.sample.convert.AdxDecoder;
 
 /**
  * Play sound, and fx Sound
@@ -38,7 +40,9 @@ public final class SoundSystem {
             try {
                 Class.forName("javazoom.spi.mpeg.sampled.file.MpegAudioFileReader");
                 Class.forName("javazoom.spi.mpeg.sampled.convert.MpegFormatConversionProvider");
-                
+            	
+                Class.forName("org.lee.mugen.audio.adx.sample.file.AdxAudioFileReader");
+                Class.forName("org.lee.mugen.audio.adx.sample.convert.AdxFormatConversionProvider");
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
@@ -46,6 +50,7 @@ public final class SoundSystem {
         
         public static final int _BUFFER = 1024 * 256;
         private AudioInputStream stream;
+        private AdxDecoder adxDecoder;
         private SourceDataLine _srcDataLine = null;
         private String file;
         private boolean stop = false;
@@ -124,19 +129,47 @@ public final class SoundSystem {
         private void setSrcDataLine(SourceDataLine srcDataLine) {
             _srcDataLine = srcDataLine;
         }
-        
+        final int BUFFER_SIZE = 1024;
+        private byte[] streamRead() throws IOException {
+        	if (stream != null) {
+                byte[] data = new byte[BUFFER_SIZE];
+                int byteRead = stream.read(data, 0, BUFFER_SIZE);
+                if (byteRead == BUFFER_SIZE) {
+                	return data;
+                } else {
+                	byte[] data2 = new byte[byteRead];
+                	System.arraycopy(data, 0, data2, 0, byteRead);
+                	return data2;
+                }
+        	} else {
+        		return adxDecoder.read(1024);
+        	}
+        }
+        private boolean isEndStream(byte[] bytes) {
+        	if (stream != null)
+        		return BUFFER_SIZE > bytes.length;
+        	return bytes.length == 0;
+        }
+        private void streamClose() throws IOException {
+        	if (stream != null) {
+        		stream.close();
+        	} else {
+        		adxDecoder.close();
+        	}
+        }
         private void playSound() {
-            final int BUFFER_SIZE = 1024;
-            byte[] data = new byte[BUFFER_SIZE];
+
             try {
-                int byteRead = 0;
-                while ((byteRead = stream.read(data, 0, BUFFER_SIZE)) > 0
-                && !stop) {
-                    getSrcDataLine().write(data, 0, byteRead);
+                byte[] bytes = null;
+                while (!stop) {
+                	bytes = streamRead();
+                	if (bytes.length > 0)
+                		getSrcDataLine().write(bytes, 0, bytes.length);
+                    stop = isEndStream(bytes);
 
                 }
                 getSrcDataLine().drain();
-                stream.close();
+                streamClose();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -144,65 +177,83 @@ public final class SoundSystem {
         
         /**
          * @param fileName
-         */        
+         * @throws Exception 
+         */  
         public void getSound(String fileName) {
-            try {
-                
-                AudioFileFormat aff = AudioSystem.getAudioFileFormat(new File(fileName));
-                AudioInputStream in = AudioSystem.getAudioInputStream(new File(fileName));
-                AudioInputStream din = null;
-                AudioFormat baseFormat = in.getFormat();
-                AudioFormat decodedFormat =
+        	try {
+            	if (fileName.toLowerCase().endsWith(".adx") || fileName.toLowerCase().endsWith(".bin")) {
+            		getSoundAdx(fileName);
+            	} else {
+            		getSoundWavMp3(fileName);
+            	}
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+        }
+
+        public void getSoundAdx(String fileName) throws Exception {
+        	adxDecoder = new AdxDecoder(new Adx(new File(fileName)));
+            AudioFormat decodedFormat =
+                new AudioFormat(
+	                AudioFormat.Encoding.PCM_SIGNED,
+	                44100.0f,
+	                16,
+	                2,
+	                2 * 2,
+	                44100.0f,
+	                false);
+            DataLine.Info outInfo = new DataLine.Info(SourceDataLine.class, decodedFormat);
+            if (!AudioSystem.isLineSupported(outInfo)) {
+                throw new Exception("this format is not supported.");
+            }
+            _srcDataLine = (SourceDataLine) AudioSystem.getLine(outInfo);
+            _srcDataLine.open(decodedFormat, _BUFFER);
+            _srcDataLine.start();
+        }
+
+        public void getSoundWavMp3(String fileName) throws Exception {
+            AudioFileFormat aff = AudioSystem.getAudioFileFormat(new File(fileName));
+            AudioInputStream in = AudioSystem.getAudioInputStream(new File(fileName));
+            AudioFormat baseFormat = in.getFormat();
+            AudioFormat decodedFormat =
+			                new AudioFormat(
+			                AudioFormat.Encoding.PCM_SIGNED,
+			                baseFormat.getSampleRate(),
+			                16,
+			                baseFormat.getChannels(),
+			                baseFormat.getChannels() * 2,
+			                baseFormat.getSampleRate(),
+			                false);
+            stream = AudioSystem.getAudioInputStream(decodedFormat, in);
+            
+            if ((decodedFormat.getEncoding() == AudioFormat.Encoding.ULAW)
+            || (decodedFormat.getEncoding()
+            == AudioFormat.Encoding.ALAW)) {
+                AudioFormat tmpFormat =
                 new AudioFormat(
                 AudioFormat.Encoding.PCM_SIGNED,
-                baseFormat.getSampleRate(),
-                16,
-                baseFormat.getChannels(),
-                baseFormat.getChannels() * 2,
-                baseFormat.getSampleRate(),
-                false);
-                stream = AudioSystem.getAudioInputStream(decodedFormat, in);
-                
-                if ((decodedFormat.getEncoding() == AudioFormat.Encoding.ULAW)
-                || (decodedFormat.getEncoding()
-                == AudioFormat.Encoding.ALAW)) {
-                    AudioFormat tmpFormat =
-                    new AudioFormat(
-                    AudioFormat.Encoding.PCM_SIGNED,
-                    decodedFormat.getSampleRate(),
-                    decodedFormat.getSampleSizeInBits(),
-                    decodedFormat.getChannels(),
-                    decodedFormat.getFrameSize(),
-                    decodedFormat.getFrameRate(),
-                    true);
-                    stream = AudioSystem.getAudioInputStream(tmpFormat, stream);
-                    decodedFormat = tmpFormat;
-                }
-                DataLine.Info info =
-                new DataLine.Info(
-                Clip.class,
-                decodedFormat,
-                ((int) stream.getFrameLength()
-                * decodedFormat.getFrameSize()));
-                if (_srcDataLine == null) {
-                    DataLine.Info outInfo =
-                    new DataLine.Info(SourceDataLine.class, decodedFormat);
-                    if (!AudioSystem.isLineSupported(outInfo)) {
-                        throw new Exception("this format is not supported.");
-                    }
-                    _srcDataLine =
-                    (SourceDataLine) AudioSystem.getLine(outInfo);
-                    _srcDataLine.open(decodedFormat, _BUFFER);
-                    _srcDataLine.start();
-                }
-                int frameSizeInBytes = decodedFormat.getFrameSize();
-                int bufferLengthInFrames = _srcDataLine.getBufferSize() / 8;
-                int bufferLengthInBytes =
-                	bufferLengthInFrames * frameSizeInBytes;
-                _frameBufferSize -= _BUFFER % frameSizeInBytes;
-            } catch (Exception e) {
-                e.printStackTrace();
+                decodedFormat.getSampleRate(),
+                decodedFormat.getSampleSizeInBits(),
+                decodedFormat.getChannels(),
+                decodedFormat.getFrameSize(),
+                decodedFormat.getFrameRate(),
+                true);
+                stream = AudioSystem.getAudioInputStream(tmpFormat, stream);
+                decodedFormat = tmpFormat;
             }
+            
+            if (_srcDataLine == null) {
+                DataLine.Info outInfo = new DataLine.Info(SourceDataLine.class, decodedFormat);
+                if (!AudioSystem.isLineSupported(outInfo)) {
+                    throw new Exception("this format is not supported.");
+                }
+                _srcDataLine = (SourceDataLine) AudioSystem.getLine(outInfo);
+                _srcDataLine.open(decodedFormat, _BUFFER);
+                _srcDataLine.start();
+            }
+            int frameSizeInBytes = decodedFormat.getFrameSize();
+            _frameBufferSize -= _BUFFER % frameSizeInBytes;
         }
     }
     public static void main(String[] args) throws IOException, UnsupportedAudioFileException, InterruptedException {
