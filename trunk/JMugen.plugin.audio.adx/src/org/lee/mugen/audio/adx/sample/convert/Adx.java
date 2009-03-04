@@ -1,15 +1,21 @@
 package org.lee.mugen.audio.adx.sample.convert;
 
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.DataInput;
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
-import java.nio.MappedByteBuffer;
 
 public class Adx {
+	public AdxHeader getHeader() {
+		return header;
+	}
+
 	/*
 	 * Address Size Contains 
 	 * 0x00 2 0x8000 
@@ -40,7 +46,7 @@ public class Adx {
 		protected AdxHeader(RandomAccessFile file) throws IOException {
 			file.seek(0);
 			head0x8000 = file.readShort();
-			dataOffset = file.readShort();
+			dataOffset = file.readShort() - 2;
 			format = file.readByte();
 			blockSize = file.readByte();
 			bitsPerSample = file.readByte();
@@ -274,126 +280,169 @@ public class Adx {
 	public Adx(File pFile) throws IOException {
 		file = new RandomAccessFile(pFile, "r");
 		header = getHeader(file);
-		init();
 	}
 
-	// Previously decoded samples from each channel,
-	// zeroed at start (size =2*channel_count)
-	private PREV[] past_samples;
-	private int sample_index = 0; // sample_index is the index of sample set
-	// that needs
-	// to be decoded next
 
-	private int[] coefficient = new int[2];
-
-	public static int ntohs(int value) {
-
-		int a = (value >>> 24) & 0xff;
-		int r = (value >>> 16) & 0xff;
-		int g = (value >>> 8) & 0xff;
-		int b = value & 0xff;
-		int[] res = new int[4];
-
-		res[0] = b;
-		res[1] = g;
-		res[2] = r;
-		res[3] = a;
-
-		return ((res[0] & 0xff) << 24) | ((res[1] & 0xff) << 16)
-				| ((res[2] & 0xff) << 8) | (res[3] & 0xff);
-	}
-
-	private void init() {
-		past_samples = new PREV[2];
-		past_samples[0] = new PREV();
-		past_samples[1] = new PREV();
-		double a, b, c;
-		double frequency_cutoff = ntohs(header.getHighPassCutOff());
-		a = Math.sqrt(2.0)
-				- Math.cos(2.0 * Math.PI
-						* (frequency_cutoff / header.getSampleRate()));
-		b = Math.sqrt(2.0) - 1.0;
-		c = (a - Math.sqrt((a + b) * (a - b))) / b; // (a+b)*(a-b) = a*a+b*b,
-		// however in floating point
-		// the "simpler" way is less
-		// accurate
-
-		// int_fast16_t coefficient[2];
-		coefficient[0] = (int) (c * 8192.0);
-		coefficient[1] = (int) (c * c * -4096.0);
-
-	}
-
-	// buffer is where the decoded samples will be put
-	// samples_needed states how many 'sets' (one sample from every channel)
-	// need to be decoded to fill the buffer
-	// looping_enabled is a boolean flag to control use of the builtin loop
-	// Returns the number of samples slots in the buffer that could not be
-	// filled
-	public int decodeAdxStandard(OutputStream buffer, int samples_needed,
-			boolean loopingEnabled) throws IOException {
-
-		return samples_needed;
-	}
-
-	static int sign_extend(int x, int len) {
-		int signbit = (1 << (len - 1));
-		int mask = (signbit << 1) - 1;
-		return ((x & mask) ^ signbit) - signbit;
-	}
 
 	public void close() throws IOException {
 		file.close();
 	}
-
-	class PREV {
-		int s1, s2;
+	final int BASEVOL = 0x4000;
+	
+	int read_long(byte[] p, int pos) throws IOException
+	{
+		byte[] bytes = new byte[p.length - pos];
+		System.arraycopy(p, pos, bytes, 0, bytes.length);
+		ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+		DataInputStream in = new DataInputStream(bis);
+        return in.readInt();
 	}
 
-	// #define BASEVOL 0x11e0
-	final int BASEVOL = 0x4000;
-	final int bufferSize = 16;
-	void convert(int indxOut, short[] out, byte[] in, int inPos, PREV prev)
-			throws IOException {
-		int scale = ((in[inPos] << 8) | (in[inPos+1]));
+	int read_word(byte[] p, int pos) throws IOException
+	{
+		byte[] bytes = new byte[p.length - pos];
+		System.arraycopy(p, pos, bytes, 0, bytes.length);
+		ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+		DataInputStream in = new DataInputStream(bis);
+		return in.readShort();
+	}
+
+	class PreviousData {
+		int channel1,channel2;
+	}
+	int step = 16;
+	void convert(short[] out, int outPos, byte[] in, int inPos, PreviousData prev)
+	{
+		int scale = ((unsignedByteToInt(in[0])<<8)|(unsignedByteToInt(in[1])));
 		int i;
-		int s0, s1, s2, d;
-		// int over=0;
+		int s0,s1,s2,d;
+//		int over=0;
 
 		inPos += 2;
-		s1 = prev.s1;
-		s2 = prev.s2;
-		for (i = 0; i < bufferSize; i++) {
-			d = in[inPos + i] >> 4;
-			if ((d & 8) != 0)
-				d -= 16;
-			s0 = (BASEVOL * d * scale + 0x7298 * s1 - 0x3350 * s2) >> 14;
-			// if (abs(s0)>32767) over=1;
-			if (s0 > 32767)
-				s0 = 32767;
-			else if (s0 < -32768)
-				s0 = -32768;
-			out[indxOut++] = (short) s0;
+		s1 = prev.channel1;
+		s2 = prev.channel2;
+		for(i=0;i<step;i++) {
+			d = unsignedByteToInt(in[inPos+i])>>4;
+			if ((d&8) != 0) 
+				d-=16;
+			s0 = (BASEVOL*d*scale + 0x7298*s1 - 0x3350*s2)>>14;
+			if (s0>32767) 
+				s0=32767;
+			else if (s0<-32768) 
+				s0=-32768;
+			int r = s0;
+
+			out[outPos++] = (short) r;
+
 			s2 = s1;
 			s1 = s0;
 
-			d = in[inPos + i] & 15;
-			if ((d & 8) != 0)
-				d -= 16;
-			s0 = (BASEVOL * d * scale + 0x7298 * s1 - 0x3350 * s2) >> 14;
-			// if (abs(s0)>32767) over=1;
-			if (s0 > 32767)
-				s0 = 32767;
-			else if (s0 < -32768)
-				s0 = -32768;
-			out[indxOut++] = (short) s0;
+			d = unsignedByteToInt(in[inPos+i])&15;
+			if ((d&8) != 0) d-=16;
+			s0 = (BASEVOL*d*scale + 0x7298*s1 - 0x3350*s2)>>14;
+			if (s0>32767) 
+				s0=32767;
+			else if (s0<-32768) 
+				s0=-32768;
+			
+			r = s0;
+			out[outPos++] = (short) r;
 			s2 = s1;
 			s1 = s0;
 		}
-		prev.s1 = s1;
-		prev.s2 = s2;
+		prev.channel1 = s1;
+		prev.channel2 = s2;
+	}
+	
+	PreviousData[] prev = new PreviousData[] {new PreviousData(), new PreviousData()};
 
-		// if (over) putchar('.');
+	int samplePosition;
+	int filePosition;
+	int convert(OutputStream outfile, int sampleNeed) throws IOException
+	{
+		RandomAccessFile in = getFile();
+		in.seek(0);
+		OrderDataOutputStream out;
+		byte[] buf = new byte[18*2];
+		short[] outbuf = new short[32*2];
+		int offset;
+		int size,wsize;
+		
+		int rest = header.getSampleCount() - samplePosition;
+		size = Math.min(sampleNeed, rest);
+//		size = Math.min(size, header.getLoopEndSample());
+		offset = header.getDataOffset();
+		
+		if (samplePosition == 0) {
+			in.seek(offset);
+			in.read(buf, 1, 6);
+		} else {
+			in.seek(filePosition);
+		}
+
+		out = new OrderDataOutputStream(new BufferedOutputStream(outfile));
+		
+		if (header.getChannelCount()==1)
+			while(size > 0) {
+				in.read(buf, 0, 18);
+				convert(outbuf,0,buf,0,prev[0]);
+				if (size>32) wsize=step*2; else wsize = size;
+				size-=wsize;
+				for (int pos = 0; pos < outbuf.length && pos < wsize*2/2; pos++) {
+					out.writeShort(outbuf[pos]);
+				}
+			}
+		else if (header.getChannelCount()==2)
+			while(size > 0) {
+				int i;
+				short[] tmpbuf = new short[32*2];
+				in.read(buf, 0, (step + 2)*2);
+				convert(tmpbuf,0,buf,0,prev[0]);
+				convert(tmpbuf,step*2,buf,step+2,prev[1]);
+
+				for(i=0;i<32;i++) {
+					outbuf[i*2]   = tmpbuf[i];
+					outbuf[i*2+1] = tmpbuf[i+step*2];
+				}
+				wsize = size>step*2? step*2: size;
+				size-=wsize;
+				samplePosition+=wsize;
+				byte[] buffer = new byte[wsize*2*2];
+				int posBuffer = 0;
+				filePosition = (int) getFile().getFilePointer();
+				for (int pos = 0; pos < wsize*2*2/2; pos++) {
+//					out.writeShort(outbuf[pos]);
+			        buffer[posBuffer++] = (byte) ((outbuf[pos]>>0) & 0xFF);
+			        buffer[posBuffer++] = (byte) ((outbuf[pos]>>8) & 0xFF);
+			        
+			        if (header.getLoopFlag() != 0) {
+						if (filePosition + posBuffer >= header.getLoopEndByte()) {
+							getFile().seek(header.getLoopStartByte());
+							samplePosition = header.getLoopStartSample();
+							break;
+						}
+					}
+				}
+				out.write(buffer, 0, posBuffer);
+				
+			}
+		out.close();
+//		if (out.written == 0)
+//			System.out.println();
+		filePosition = (int) getFile().getFilePointer();
+
+		return 0;
+	}
+	  public static int unsignedByteToInt(byte b) {
+		return (int) b & 0xFF;
 	}
 
+	public RandomAccessFile getFile() {
+		return file;
+	}
+
+//	public static void main(String[] args) throws IOException {
+//		new Adx(new File("I:/dev/workspace/JMugen.plugin.audio.adx/ADX_S060.BIN")).
+//				convert("c:/test.wav");
+//	}
 }
