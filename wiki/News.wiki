@@ -1,0 +1,13 @@
+#summary One-sentence summary of this page.
+#labels Featured
+
+= Introduction =
+
+Here I will try to update what is done on JMugen at each evolution.
+
+
+= Details =
+
+Nightly build March, 04 2009:
+  * Add Adx sound file support with loop (work correctly but need to refactor to AudioInputSream)
+  * Faster PCX image building and conversion to texture. The improvement is 10 time faster.
