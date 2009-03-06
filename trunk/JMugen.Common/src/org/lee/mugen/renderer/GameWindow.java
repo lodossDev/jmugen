@@ -107,6 +107,8 @@ public interface GameWindow {
 
 	public void addActionListener(MugenKeyListener al);
 	public void clearListener();
+	public void setRender(boolean v);
+	public boolean isRender();
 	
 	// TODO : add getTimer and add Timer interface
 }

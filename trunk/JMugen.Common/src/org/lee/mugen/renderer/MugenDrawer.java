@@ -46,4 +46,6 @@ public abstract class MugenDrawer {
 	public abstract void setColor(float r, float g, float b, float a);
 	public abstract ImageContainer getImageContainer(Object imageData, int colors);
 	public abstract void setClip(Rectangle r);
+	public abstract void setAlpha(float a);
+	public abstract float getAlpha();
 }
