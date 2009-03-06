@@ -1,5 +1,6 @@
 package org.lee.mugen.sprite.cns;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -7,7 +8,7 @@ import java.util.HashMap;
 import org.lee.mugen.parser.type.Functionable;
 import org.lee.mugen.parser.type.Valueable;
 
-public abstract class AbstractCnsFunction implements Functionable {
+public abstract class AbstractCnsFunction implements Functionable, Serializable {
 	
 	protected Valueable[][] valueableParams;
 	protected String[] paramNames;

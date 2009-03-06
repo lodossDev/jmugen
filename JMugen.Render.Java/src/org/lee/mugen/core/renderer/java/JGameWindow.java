@@ -413,8 +413,27 @@ public class JGameWindow extends Canvas implements GameWindow {
 	}
 	@Override
 	public void addActionListener(final MugenKeyListener key) {
-		// TODO Auto-generated method stub
-		
+		addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				key.action(e.getKeyCode(), true);
+				
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				key.action(e.getKeyCode(), false);
+				
+			}
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
 	}
 	@Override
 	public void clearListener() {

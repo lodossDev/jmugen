@@ -4,5 +4,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/tritonus_share-0.3.6.jar" sourcepath="/tritonus/src/classes"/>
 	<classpathentry kind="lib" path="lib/jl1.0.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/JMugen.Common"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

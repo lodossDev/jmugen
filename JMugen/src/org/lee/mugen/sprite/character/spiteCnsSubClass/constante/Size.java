@@ -1,10 +1,12 @@
 package org.lee.mugen.sprite.character.spiteCnsSubClass.constante;
 
+import java.io.Serializable;
+
 import org.lee.mugen.sprite.entity.PointF;
 
 
-public class Size implements Cloneable {
-	public static class Air implements Cloneable {
+public class Size implements Cloneable, Serializable {
+	public static class Air implements Cloneable, Serializable {
 		float back = 12; // Player width (back, air)
 		float front = 12; // Player width (front, air)
 		@Override
@@ -25,7 +27,7 @@ public class Size implements Cloneable {
 			this.front = front;
 		}
 	}
-	public static class Ground implements Cloneable {
+	public static class Ground implements Cloneable, Serializable {
 		public Ground() {
 			back = 15; // Player width (back, ground)
 			front = 16; // Player width (front, ground)
@@ -54,7 +56,7 @@ public class Size implements Cloneable {
 		}
 		
 	}
-	public static class Attack implements Cloneable {
+	public static class Attack implements Cloneable, Serializable {
 		@Override
 		protected Object clone() throws CloneNotSupportedException {
 			return super.clone();
@@ -76,7 +78,7 @@ public class Size implements Cloneable {
 			this.width[1] = width.length > 1? width[1]: this.width[1];
 		}
 	}
-	public static class Proj implements Cloneable {
+	public static class Proj implements Cloneable, Serializable {
 		float doscale = 0; // Set to 1 to scale projectiles too
 		Attack attack = new Attack(); // Default attack distance for projectiles
 		
@@ -98,7 +100,7 @@ public class Size implements Cloneable {
 		}
 	}
 	
-	public static class Position implements Cloneable {
+	public static class Position implements Cloneable, Serializable {
 		public Position(PointF p) {
 			pos = p;
 		}
@@ -147,7 +149,7 @@ public class Size implements Cloneable {
 		}
 		
 	}
-	public static class OffSet implements Cloneable {
+	public static class OffSet implements Cloneable, Serializable {
 		@Override
 		protected Object clone() throws CloneNotSupportedException {
 			OffSet offSet = (OffSet) super.clone();
@@ -188,7 +190,7 @@ public class Size implements Cloneable {
 		}
 
 	}
-	public static class Mid implements Cloneable {
+	public static class Mid implements Cloneable, Serializable {
 		Position mid = new Position(-5,-60); // Approximate position of midsection
 		@Override
 		protected Object clone() throws CloneNotSupportedException {
@@ -197,7 +199,7 @@ public class Size implements Cloneable {
 			return m;
 		}
 	}	
-	public static class Draw implements Cloneable {
+	public static class Draw implements Cloneable, Serializable {
 		OffSet draw = new OffSet(0,0); // Player drawing offset
 
 		public OffSet getDraw() {
@@ -246,7 +248,7 @@ public class Size implements Cloneable {
 		return s;
 	}
 	
-	public class Stand implements Cloneable {
+	public class Stand implements Cloneable, Serializable {
 		@Override
 		protected Object clone() throws CloneNotSupportedException {
 			return super.clone();
@@ -258,7 +260,7 @@ public class Size implements Cloneable {
 			Size.this.height = height;
 		}
 	}
-	public class Z implements Cloneable {
+	public class Z implements Cloneable, Serializable {
 		@Override
 		protected Object clone() throws CloneNotSupportedException {
 			// TODO Auto-generated method stub

@@ -1,12 +1,13 @@
 package org.lee.mugen.sprite.entity;
 
 import java.awt.Point;
+import java.io.Serializable;
 
 /**
  * @author Dr Wong
  *
  */
-public class PointF implements Cloneable {
+public class PointF implements Cloneable, Serializable {
 	private float x;
 	private float y;
 	private float z;

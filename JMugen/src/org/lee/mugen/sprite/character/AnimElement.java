@@ -1,10 +1,12 @@
 package org.lee.mugen.sprite.character;
 
 
+import java.io.Serializable;
+
 import org.lee.mugen.object.Rectangle;
 import org.lee.mugen.parser.air.AirData;
 
-public class AnimElement {
+public class AnimElement implements Serializable {
     private AirData _airData;
 
 

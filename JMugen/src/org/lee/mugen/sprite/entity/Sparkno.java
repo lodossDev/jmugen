@@ -1,6 +1,8 @@
 package org.lee.mugen.sprite.entity;
 
-public class Sparkno {
+import java.io.Serializable;
+
+public class Sparkno implements Serializable {
 	private int action;
 	private boolean isSpriteUse;
 	public int getAction() {

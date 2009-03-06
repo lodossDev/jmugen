@@ -1,6 +1,7 @@
 package org.lee.mugen.background;
 
 import java.awt.Point;
+import java.io.Serializable;
 import java.util.HashMap;
 
 import org.lee.mugen.object.Rectangle;
@@ -10,7 +11,7 @@ import org.lee.mugen.sprite.character.AnimGroup;
 import org.lee.mugen.sprite.entity.PointF;
 import org.lee.mugen.sprite.entity.SprGrpNum;
 
-public class BG implements Cloneable {
+public class BG implements Cloneable, Serializable {
 	// type = ? "Normal"/"Parallax" (def: "normal")
 	public static enum Type {
 		ANIM, NORM, NORMAL, PARALLAX;
@@ -29,7 +30,7 @@ public class BG implements Cloneable {
 		return sin;
 	}
 
-	public class Sin {
+	public class Sin implements Serializable {
 
 		public void setX(Point p) {
 			sinXAmp = p.x;

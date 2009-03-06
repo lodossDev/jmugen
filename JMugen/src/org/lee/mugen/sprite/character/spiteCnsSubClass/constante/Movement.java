@@ -1,8 +1,10 @@
 package org.lee.mugen.sprite.character.spiteCnsSubClass.constante;
 
-public class Movement implements Cloneable {
+import java.io.Serializable;
 
-	public static class Friction implements Cloneable {
+public class Movement implements Cloneable, Serializable {
+
+	public static class Friction implements Cloneable, Serializable {
 		private float friction;
 
 		public float getFriction() {
@@ -17,7 +19,7 @@ public class Movement implements Cloneable {
 			return super.clone();
 		}
 	}
-	public static class AirJump implements Cloneable {
+	public static class AirJump implements Cloneable, Serializable {
 //		 Number of air jumps allowed (opt)
 		private int num = 1;
 		

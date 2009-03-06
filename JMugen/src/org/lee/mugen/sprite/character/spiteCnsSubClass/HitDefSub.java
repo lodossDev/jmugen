@@ -1,6 +1,7 @@
 package org.lee.mugen.sprite.character.spiteCnsSubClass;
 
 import java.awt.Point;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -16,7 +17,7 @@ import org.lee.mugen.sprite.entity.Velocity;
 import org.lee.mugen.sprite.parser.Parser;
 
 
-public class HitDefSub {
+public class HitDefSub implements Serializable {
 	///
 	protected int hittime;
 	protected AbstractSprite spriteHitter;
@@ -134,7 +135,7 @@ public class HitDefSub {
 		return attr;
 	}
 	
-	public static class AttrClass {
+	public static class AttrClass implements Serializable {
 	/*
 - arg1 est soit 
 	"S", 

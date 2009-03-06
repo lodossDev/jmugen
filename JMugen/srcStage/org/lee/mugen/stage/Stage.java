@@ -3,6 +3,7 @@ package org.lee.mugen.stage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.Serializable;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
@@ -20,7 +21,7 @@ import org.lee.mugen.stage.section.elem.Scaling;
 import org.lee.mugen.stage.section.elem.Shadow;
 import org.lee.mugen.stage.section.elem.StageInfo;
 
-public class Stage {
+public class Stage implements Serializable {
 	private String filename;
 	private boolean forceImage;
 	public Stage(String filename) throws Exception {

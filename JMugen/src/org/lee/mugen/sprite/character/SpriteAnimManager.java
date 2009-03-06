@@ -82,6 +82,14 @@ public class SpriteAnimManager extends AbstractAnimManager {
 	public AnimGroup getCurrentGroupSprite(int action) {
 		if (changeAnim2) {
 			Sprite spr = GameFight.getInstance().getSpriteInstance(GameFight.getInstance().getRootId(spriteIdAnim));
+			try {
+				spr.getSprAnimMng().getGroupSprite(action);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			// TODO Fix this because the helper is clean out so it can't find
+			if (spr == null)
+				spr = GameFight.getInstance().getSpriteInstance(spriteIdAnim.substring(0, 1));
 			return spr.getSprAnimMng().getGroupSprite(action);
 		} else {
 			return groupSpriteMap.get(action);
@@ -104,7 +112,7 @@ public class SpriteAnimManager extends AbstractAnimManager {
 		if (getSprite() != null && getSprite().isPause()) {
 			return;
 		}
-			
+		
 		super.process();
 	}
 	private AbstractSprite getSprite() {

@@ -9,6 +9,7 @@ import org.lee.mugen.parser.air.AirData.TypeBlit;
 import org.lee.mugen.renderer.DrawProperties;
 import org.lee.mugen.renderer.GraphicsWrapper;
 import org.lee.mugen.renderer.ImageContainer;
+import org.lee.mugen.renderer.MugenDrawer;
 import org.lee.mugen.renderer.PalFxSub;
 import org.lee.mugen.renderer.RGB;
 import org.lee.mugen.renderer.Trans;
@@ -20,6 +21,18 @@ import org.lee.mugen.stage.Stage;
 
 public class StageBackgroundRender implements IBackgroundRenderer {
 	Stage stage;
+	MugenDrawer md = null;
+	MugenDrawer getMugenDrawer() {
+		if (md == null) {
+			md = GraphicsWrapper.getInstance();
+		}
+		return md;
+	}
+	public StageBackgroundRender(Stage stage, MugenDrawer md) {
+		this.stage = stage;
+		this.md = md;
+
+	}
 	public StageBackgroundRender(Stage stage) {
 		this.stage = stage;
 
@@ -156,7 +169,7 @@ public class StageBackgroundRender implements IBackgroundRenderer {
 			palfx.setMul(new RGB(100f, 100f, 100f, 100f ));
 			palfx.setDrawProperties(dp);
 		}
-		GraphicsWrapper.getInstance().draw(dp);	
+		getMugenDrawer().draw(dp);	
 	}
 	private void drawImage(Trans trans, ImageContainer img, float x, float y, boolean isHFlip, boolean isVFlip) {
 		drawImage(1f, trans, img, x, y, isHFlip, isVFlip);
@@ -175,7 +188,7 @@ public class StageBackgroundRender implements IBackgroundRenderer {
 		float _mvY = stage.getCamera().getY();
 		SpriteSFF sffSprite = stage.getBackground().getBgdef().getSpr();
 
-		GraphicsWrapper.getInstance().scale(stage.getScaling().getXscale(), stage.getScaling().getYscale());
+		getMugenDrawer().scale(stage.getScaling().getXscale(), stage.getScaling().getYscale());
 
 		float moveX = _mvX;
 		float moveY = _mvY;
@@ -307,7 +320,7 @@ public class StageBackgroundRender implements IBackgroundRenderer {
 				continue;
 			}
 		}
-		GraphicsWrapper.getInstance().scale(1f/stage.getScaling().getXscale(), 1f/stage.getScaling().getYscale());
+//		getMugenDrawer().scale(1f/stage.getScaling().getXscale(), 1f/stage.getScaling().getYscale());
 
 	}
 
@@ -322,7 +335,7 @@ public class StageBackgroundRender implements IBackgroundRenderer {
 		if (!palfx.isNoPalFx()) {
 			palfx.setDrawProperties(dp);
 		}
-		GraphicsWrapper.getInstance().draw(dp);
+		getMugenDrawer().draw(dp);
 		
 	}
 

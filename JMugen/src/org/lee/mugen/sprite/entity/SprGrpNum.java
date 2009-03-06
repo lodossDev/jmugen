@@ -1,6 +1,8 @@
 package org.lee.mugen.sprite.entity;
 
-public class SprGrpNum {
+import java.io.Serializable;
+
+public class SprGrpNum implements Serializable {
 	int spritegrp;
 	int spriteno;
 	public SprGrpNum(int spritegrp, int spriteno) {

@@ -1,8 +1,10 @@
 package org.lee.mugen.sprite.character.spiteCnsSubClass;
 
+import java.io.Serializable;
+
 import org.lee.mugen.sprite.cns.type.function.Assertspecial.Flag;
 
-public class AssertSpecialSub {
+public class AssertSpecialSub implements Serializable {
 	private int time = 1;
 	private Flag flag;
 	private Flag flag2;

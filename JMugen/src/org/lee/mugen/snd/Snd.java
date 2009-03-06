@@ -1,10 +1,11 @@
 package org.lee.mugen.snd;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Snd {
+public class Snd implements Serializable {
 	private Map<Integer, GroupSnd> _grpSoundMap = new HashMap<Integer, GroupSnd>();
 
 	public GroupSnd getGroup(int key) {

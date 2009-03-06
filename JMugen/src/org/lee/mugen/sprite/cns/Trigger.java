@@ -1,8 +1,10 @@
 package org.lee.mugen.sprite.cns;
 
+import java.io.Serializable;
+
 import org.lee.mugen.parser.type.Valueable;
 
-public class Trigger implements Valueable, Cloneable {
+public class Trigger implements Valueable, Cloneable, Serializable {
 	private int prio = 1;
 	private Valueable value;
 	

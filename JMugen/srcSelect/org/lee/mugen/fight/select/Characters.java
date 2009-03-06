@@ -3,6 +3,7 @@ package org.lee.mugen.fight.select;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.IOUtils;
 import org.lee.mugen.fight.section.Section;
 import org.lee.mugen.fight.system.MugenSystem;
 import org.lee.mugen.imageIO.PCXPalette;
@@ -17,6 +19,7 @@ import org.lee.mugen.imageIO.RawPCXImage;
 import org.lee.mugen.renderer.GraphicsWrapper;
 import org.lee.mugen.renderer.ImageContainer;
 import org.lee.mugen.sff.SffReader;
+import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.character.SpriteDef;
 
 public class Characters implements Section {
@@ -98,14 +101,50 @@ public class Characters implements Section {
 				return;
 		}
 	}
+	final String charCacheDir = "resource/cache/char/";
+
 	public ImageContainer getPortrait(String character) {
 		ImageContainer ic = portraitsMap.get(character);
 		if (ic == null) {
 			String sff = characterSFFMap.get(character);
-			String path = new File("resource/chars/" + character + "/" + sff).getAbsolutePath();
-			Object img = getImageFromSpriteSFF(path, 9000, 0);
+			File file = new File("resource/chars/" + character + "/" + sff);
+
+			
+			
+			new File(charCacheDir + character).mkdirs();
+			File cache = new File(charCacheDir + character + "/" + character + ".sraw");
+			File cachePal = new File(charCacheDir + character + "/" + character + ".spal");
+			File sprSff = file;
+			
+			RawPCXImage img = null;
+			if (cache.exists() && sprSff.lastModified() <= cache.lastModified()) {
+				PCXPalette pal = new PCXPalette();
+				try {
+					pal.load(new FileInputStream(cachePal));
+					img = new RawPCXImage(IOUtils.toByteArray(new FileInputStream(cache)), pal);	
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+				
+			}
+			if (img == null) {
+				String path = file.getAbsolutePath();
+				img = getImageFromSpriteSFF(path, 9000, 0);
+				try {
+					FileOutputStream fos = new FileOutputStream(cache);
+					fos.write(img.getData());
+					fos.close();
+					
+					fos = new FileOutputStream(cachePal);
+					img.getPalette().save(fos);
+					fos.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			
 			ic = GraphicsWrapper.getInstance().getImageContainer(img);
-//			ic = new ImageContainer(img, img.getWidth(), img.getHeight());
 			portraitsMap.put(character, ic);
 		}
 		return ic;
@@ -116,11 +155,41 @@ public class Characters implements Section {
 		if (ic == null) {
 			String sff = characterSFFMap.get(character);
 			File file = new File("resource/chars/" + character + "/" + sff);
+			
+			new File(charCacheDir + character).mkdirs();
+			File cache = new File(charCacheDir + character + "/" + character + ".braw");
+			File cachePal = new File(charCacheDir + character + "/" + character + ".bpal");
+			File sprSff = file;
+			
+			RawPCXImage img = null;
+			if (cache.exists() && sprSff.lastModified() <= cache.lastModified()) {
+				PCXPalette pal = new PCXPalette();
+				try {
+					pal.load(new FileInputStream(cachePal));
+					img = new RawPCXImage(IOUtils.toByteArray(new FileInputStream(cache)), pal);	
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 
-			String path = file.getAbsolutePath();
-			Object img = getImageFromSpriteSFF(path, 9000, 1);
+				
+			}
+			if (img == null) {
+				String path = file.getAbsolutePath();
+				img = getImageFromSpriteSFF(path, 9000, 1);
+				try {
+					FileOutputStream fos = new FileOutputStream(cache);
+					fos.write(img.getData());
+					fos.close();
+					
+					fos = new FileOutputStream(cachePal);
+					img.getPalette().save(fos);
+					fos.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			
 			ic = GraphicsWrapper.getInstance().getImageContainer(img);
-//			ic = new ImageContainer(img, img.getWidth(), img.getHeight());
 			bigPortraitsMap.put(character, ic);
 		}
 		return ic;
@@ -135,7 +204,7 @@ public class Characters implements Section {
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException(e);
 		}
 	}
 	
@@ -151,12 +220,16 @@ public class Characters implements Section {
 				characterStageMap.put(charStage[0], charStage[1]);
 			else
 				characterStageMap.put(charStage[0], null);
+
 		}
 	}
-
 	public String getSpriteName(String spr) {
 		return characterNameMap.get(spr);
 	}
-
+	
+	public Sprite getInstanceOfSprite(String name) {
+		return new Sprite("undefine", getSpritedef(name), 0);
+	}
+	
 
 }

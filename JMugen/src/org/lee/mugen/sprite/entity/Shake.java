@@ -1,6 +1,8 @@
 package org.lee.mugen.sprite.entity;
 
-public class Shake implements Cloneable {
+import java.io.Serializable;
+
+public class Shake implements Cloneable, Serializable {
 	private int time;
 	private float freq;
 	private int ampl;

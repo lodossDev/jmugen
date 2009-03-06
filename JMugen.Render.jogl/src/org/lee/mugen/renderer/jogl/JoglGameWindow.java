@@ -323,7 +323,7 @@ public class JoglGameWindow implements GameWindow, GLEventListener {
 			e.printStackTrace();
 		}
 
-		loadingInitThread.run();
+		loadingInitThread.start();
 		canvas.requestFocus();
 		canvas.addKeyListener(debugEventManager);
 		canvas.addMouseListener(new MouseListener() {

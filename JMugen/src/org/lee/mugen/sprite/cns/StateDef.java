@@ -1,5 +1,6 @@
 package org.lee.mugen.sprite.cns;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -10,7 +11,7 @@ import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.parser.CnsParse;
 import org.lee.mugen.sprite.parser.Parser.GroupText;
 
-public class StateDef implements Cloneable {
+public class StateDef implements Cloneable, Serializable {
 	
 	private String id;
 	private List<StateCtrl> stateCtrlList = new ArrayList<StateCtrl>();

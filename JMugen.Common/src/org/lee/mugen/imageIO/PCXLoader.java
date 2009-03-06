@@ -1,5 +1,6 @@
 package org.lee.mugen.imageIO;
 
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -26,8 +27,8 @@ public class PCXLoader {
 
 		InputStream in = new ByteArrayInputStream(data);
 
-		int width = header.xmax - header.xmin + 1;
-		int height = header.ymax - header.ymin + 1;
+		int width = header.getWidth();
+		int height = header.getHeight();
 		in.skip(128);
 		IndexColorModel icm = new IndexColorModel(8, 256,
 				pal.r, pal.g,pal.b, 0);
@@ -106,7 +107,7 @@ public class PCXLoader {
 	public static BufferedImage loadImage(int type, InputStream file, PCXPalette pal,
 			boolean isPalUse, boolean isUseColorKey, boolean isFlipH,
 			boolean isFlipV, int color) throws IOException {
-		BufferedImage image = (BufferedImage) loadImageColorIndexed(file, pal, isPalUse, isUseColorKey, 0);
+		BufferedImage image = (BufferedImage) loadImageColorIndexed(file, pal, isPalUse, isUseColorKey, color);
 		int width = image.getWidth();
 		int height = image.getHeight();
 		BufferedImage result = new BufferedImage(width, height, type);
@@ -169,6 +170,17 @@ public class PCXLoader {
 			bytesPerLine = in.readUnsignedShort();
 
 			in.close();
+		}
+		public Dimension getDimension() {
+			int width = xmax - xmin + 1;
+			int height = ymax - ymin + 1;
+			return new Dimension(width, height);
+		}
+		public int getWidth() {
+			return xmax - xmin + 1;
+		}
+		public int getHeight() {
+			return ymax - ymin + 1;
 		}
 	}
 

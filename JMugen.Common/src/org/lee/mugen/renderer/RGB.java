@@ -1,6 +1,8 @@
 package org.lee.mugen.renderer;
 
-public class RGB {
+import java.io.Serializable;
+
+public class RGB implements Serializable {
 	private float a = 255;
 	
 	private float r = 255;

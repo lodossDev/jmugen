@@ -44,7 +44,7 @@ public class Scene implements Section {
 	public boolean process() {
 		if (bgm != null && end$time == originalEnd$time) {
 			File music = new File(intro.getCurrentDir(), bgm);
-			if (music.exists())
+			if (music.exists() && !music.isDirectory())
 				SoundSystem.SoundBackGround.playMusic(music.getAbsolutePath());
 		}
 		if (fadein.getTime() > 0) {

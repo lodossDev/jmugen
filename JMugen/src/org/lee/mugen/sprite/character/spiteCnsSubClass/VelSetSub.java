@@ -1,10 +1,12 @@
 package org.lee.mugen.sprite.character.spiteCnsSubClass;
 
+import java.io.Serializable;
+
 import org.lee.mugen.core.GameFight;
 import org.lee.mugen.sprite.character.Sprite;
 
 
-public class VelSetSub implements Cloneable {
+public class VelSetSub implements Cloneable, Serializable {
 	private int precision = 1000;
 	private float x;
 	private float y;

@@ -2,6 +2,7 @@ package org.lee.mugen.sprite.baseForParse;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -16,7 +17,7 @@ import org.lee.mugen.renderer.ImageContainer;
 import org.lee.mugen.sff.SffReader;
 import org.lee.mugen.util.Logger;
 
-public class SpriteSFF {
+public class SpriteSFF {//implements Serializable {
 
 	private HashMap<Integer, GroupSpriteSFF> _groupMap;
 
@@ -69,8 +70,8 @@ public class SpriteSFF {
 //				ImageContainer imgContainer = new ImageContainer(loadImage, loadImage.getWidth(), loadImage.getHeight());
 
 				PCXHeader header = new PCXHeader(memStream.toByteArray());
-				int width = header.xmax - header.xmin + 1;
-				int height = header.ymax - header.ymin + 1;
+				int width = header.getWidth();
+				int height = header.getHeight();
 				ImageContainer imgContainer = new DeferedImageLoader(bitmap, width, height);
 				imgSpr = new ImageSpriteSFF(subFile.grpNumber, subFile.imgNumber, imgContainer, subFile.xAxis, subFile.yAxis);
 			} else {

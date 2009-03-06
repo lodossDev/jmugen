@@ -1,10 +1,12 @@
 package org.lee.mugen.parser.air;
 
+import java.io.Serializable;
+
 /**
  * @author Lee
  *
  */
-public class BasicActionData {
+public class BasicActionData implements Serializable {
     public int grpNum;
     public int imgNum;
     public int xOffSet;

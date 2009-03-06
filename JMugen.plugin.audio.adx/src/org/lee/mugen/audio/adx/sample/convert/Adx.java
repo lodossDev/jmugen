@@ -22,7 +22,7 @@ public class Adx {
 	 * 0x02 2 data offset 
 	 * 0x04 1 format (3 for ADX) 
 	 * 0x05 1 block size (typically 18) 
-	 * 0x06 1 bits per sample? (4)
+	 * 0x06 1 bits per samplWe? (4)
 	 * 0x07 1 channel count 
 	 * 0x08 4 sample rate 
 	 * 0x0c 4 sample count 
@@ -316,8 +316,6 @@ public class Adx {
 		int scale = ((unsignedByteToInt(in[0])<<8)|(unsignedByteToInt(in[1])));
 		int i;
 		int s0,s1,s2,d;
-//		int over=0;
-
 		inPos += 2;
 		s1 = prev.channel1;
 		s2 = prev.channel2;
@@ -370,7 +368,6 @@ public class Adx {
 		
 		int rest = header.getSampleCount() - samplePosition;
 		size = Math.min(sampleNeed, rest);
-//		size = Math.min(size, header.getLoopEndSample());
 		offset = header.getDataOffset();
 		
 		if (samplePosition == 0) {
@@ -411,7 +408,6 @@ public class Adx {
 				int posBuffer = 0;
 				filePosition = (int) getFile().getFilePointer();
 				for (int pos = 0; pos < wsize*2*2/2; pos++) {
-//					out.writeShort(outbuf[pos]);
 			        buffer[posBuffer++] = (byte) ((outbuf[pos]>>0) & 0xFF);
 			        buffer[posBuffer++] = (byte) ((outbuf[pos]>>8) & 0xFF);
 			        
@@ -427,8 +423,6 @@ public class Adx {
 				
 			}
 		out.close();
-//		if (out.written == 0)
-//			System.out.println();
 		filePosition = (int) getFile().getFilePointer();
 
 		return 0;
@@ -440,9 +434,4 @@ public class Adx {
 	public RandomAccessFile getFile() {
 		return file;
 	}
-
-//	public static void main(String[] args) throws IOException {
-//		new Adx(new File("I:/dev/workspace/JMugen.plugin.audio.adx/ADX_S060.BIN")).
-//				convert("c:/test.wav");
-//	}
 }

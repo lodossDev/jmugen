@@ -36,7 +36,7 @@ public class Intro {
 
 	public Intro(String filename) {
 		this.filename = filename;
-		currentDir = new File(filename).getParentFile();
+		currentDir = new File(new File(filename).getAbsolutePath()).getParentFile();
 	}
 	
 	public SpriteSFF getSpriteSff() {

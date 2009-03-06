@@ -2,6 +2,7 @@ package org.lee.mugen.sprite.cns;
 
 import static org.lee.mugen.sprite.parser.Parser.getFloatValue;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -18,7 +19,7 @@ import org.lee.mugen.sprite.cns.type.function.Changestate;
 import org.lee.mugen.sprite.cns.type.function.Selfstate;
 import org.lee.mugen.sprite.cns.type.function.Targetstate;
 
-public class StateCtrl implements Cloneable {
+public class StateCtrl implements Cloneable, Serializable {
     protected String stateDefId;
     protected String id;
     protected List<StateCtrlFunction> executors;

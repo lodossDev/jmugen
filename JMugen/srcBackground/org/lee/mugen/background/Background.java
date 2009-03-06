@@ -1,6 +1,7 @@
 package org.lee.mugen.background;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +19,7 @@ import org.lee.mugen.sprite.parser.Parser.GroupText;
 import org.lee.mugen.util.BeanTools;
 import org.lee.mugen.util.MugenTools;
 
-public class Background {
+public class Background implements Serializable {
 	private Object root;
 
 	private BGdef bgdef;

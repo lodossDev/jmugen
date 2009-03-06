@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.lee.mugen.background.BG;
 import org.lee.mugen.core.GameFight;
+import org.lee.mugen.core.gameSelect.GameSelect;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.cns.eval.function.StateCtrlFunction;
 import org.lee.mugen.sprite.parser.Parser;
@@ -23,6 +24,10 @@ public class Siny extends StateCtrlFunction {
 	@Override
 	public Object getValue(String bgId, Valueable... params) {
 		Stage stage = GameFight.getInstance().getStage();
+		if (stage == null) {
+			// call from preview in gameSelect
+			stage = GameSelect.getInstance().getStage();
+		}
 		ArrayList<BG> bgs = stage.getBackground().getBgCtrlDefMap().get(new Integer(bgId)).getBgCopys();
 
 		for (BG bg: bgs) {
