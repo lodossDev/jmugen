@@ -2,5 +2,13 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="output" path="bin"/>
+    
+    <classpathentry combineaccessrules="false" kind="src" path="/JMugen"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/JMugen.Common"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/JMugen.Properties"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/JMugen.Render.Java"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/JMugen.Render.jogl"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Syntax"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/JMugen.plugin.audio.adx"/>
+    <classpathentry kind="output" path="bin"/>
 </classpath>
