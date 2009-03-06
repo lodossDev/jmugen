@@ -15,13 +15,8 @@ import org.lee.mugen.parser.type.ObjectValueable;
 import org.lee.mugen.parser.type.Setable;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.cns.eval.function.MathFunction;
-import org.lee.mugen.sprite.parser.ExpressionFactory;
 
 public class CnsOperatorsDef {
-	public static void main(String[] args) {
-		Valueable[] v = ExpressionFactory.evalExpression("1 && (1 || 0 && 0)");
-		System.out.println(v[0].getValue(""));
-	}
 	private static Map<String, MathFunction> functionsMap = buildOperatorMap();
 	
 	private static Map<String, MathFunction> buildOperatorMap()	{

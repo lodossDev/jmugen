@@ -81,8 +81,6 @@ public class SpriteRender implements Renderable {
 
 	}
 	public void render() {
-		if (sprite instanceof SpriteHelper && sprite.getSprAnimMng().getAction() == 7000)
-			System.out.println();
 		ImageContainer imageContainer = null;
 		try {
 			imageContainer = sprite.getCurrentImage();

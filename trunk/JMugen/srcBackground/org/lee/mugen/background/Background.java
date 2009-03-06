@@ -152,8 +152,6 @@ public class Background implements Serializable {
 
 			try {
 				if (objectValues.length == 1) {
-					if (key.equals("ctrlid"))
-						System.out.println();
 					BeanTools.setObject(bean, (parent == null
 							|| parent.trim().length() == 0 ? "" : parent + ".")
 							+ key, objectValues[0]);

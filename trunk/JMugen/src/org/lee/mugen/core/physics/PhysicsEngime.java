@@ -311,17 +311,12 @@ public class PhysicsEngime {
 
 	private static void processSpriteCommonPhysics(Sprite sprite) {
 		Sprite sprOne = sprite;
-		Sprite sprTwo = null;
 		if (sprOne instanceof SpriteHelper) {
 			if (((SpriteHelper) sprOne).getHelperSub().getHelpertype().equals(
 					"normal")) {
 
 				float xVel = sprOne.getInfo().getVelset().getX();
 				float yVel = sprOne.getInfo().getVelset().getY();
-				if (((SpriteHelper) sprOne).getHelperSub().getId() == 7800)
-					System.out.println();
-				if (((SpriteHelper) sprOne).getHelperSub().getId() == 7800 && yVel != 0)
-					System.out.println();
 				sprOne.getInfo().moveXPos(xVel);
 				sprOne.getInfo().addYPos(yVel);
 			}

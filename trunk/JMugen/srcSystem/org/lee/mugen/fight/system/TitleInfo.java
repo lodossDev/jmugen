@@ -63,7 +63,7 @@ public class TitleInfo implements Section {
 
 
 	public void process() {
-		if (lastPhase == END || lastPhase == NOTHING) {
+		if (phase == NOTHING && (lastPhase == END || lastPhase == NOTHING)) {
 			init();
 		}
 		if (phase == ENTER) {

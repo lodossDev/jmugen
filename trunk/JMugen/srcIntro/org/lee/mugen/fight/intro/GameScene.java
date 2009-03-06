@@ -10,18 +10,6 @@ import org.lee.mugen.renderer.Renderable;
 public class GameScene implements Game {
 
 	@Override
-	public void addRender(Renderable r) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void displayPendingScreeen() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void free() {
 		// TODO Auto-generated method stub
 		
@@ -34,19 +22,7 @@ public class GameScene implements Game {
 	}
 
 	@Override
-	public List<Renderable> getRenderables() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public void init(GameWindow container) throws Exception {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onDebugAction(DebugAction action) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -60,12 +36,6 @@ public class GameScene implements Game {
 	@Override
 	public void render() throws Exception {
 		introRender.render();
-		
-	}
-
-	@Override
-	public void renderDebugInfo() {
-		// TODO Auto-generated method stub
 		
 	}
 

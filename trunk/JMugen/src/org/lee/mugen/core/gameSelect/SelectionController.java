@@ -159,7 +159,7 @@ public class SelectionController implements MugenKeyListener {
 		if (!isPress || now - lastPress < 100)
 			return;
 		if (KeyEvent.VK_ESCAPE == key) {
-//			backToMenu = true;
+			gs.setBackToMenu();
 			
 		}
 		lastPress = System.currentTimeMillis();

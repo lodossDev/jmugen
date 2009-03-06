@@ -17,12 +17,6 @@ import org.lee.mugen.util.MugenRandom;
 
 public class Round extends SimpleElement implements Section, Cloneable {
 	
-	public static void main(String[] args) {
-		for (int i = 0; i < 100; i++) {
-			int num = MugenRandom.getRandomNumber(0, 10);
-			System.out.println(num + " +       = " + 10);
-		}
-	}
 	public static class Match implements Cloneable {
 		int wins;
 		int maxdrawgames;

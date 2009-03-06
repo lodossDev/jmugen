@@ -15,11 +15,13 @@ import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Control;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.sound.sampled.Control.Type;
 
 import org.lee.mugen.audio.adx.sample.convert.Adx;
 import org.lee.mugen.audio.adx.sample.convert.AdxDecoder;
@@ -40,9 +42,6 @@ public final class SoundSystem {
             try {
                 Class.forName("javazoom.spi.mpeg.sampled.file.MpegAudioFileReader");
                 Class.forName("javazoom.spi.mpeg.sampled.convert.MpegFormatConversionProvider");
-            	
-                Class.forName("org.lee.mugen.audio.adx.sample.file.AdxAudioFileReader");
-                Class.forName("org.lee.mugen.audio.adx.sample.convert.AdxFormatConversionProvider");
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
@@ -76,6 +75,14 @@ public final class SoundSystem {
             Thread ts = new Thread(soundsys);
             ts.setDaemon(true);
             ts.start();
+        }
+        public static void setVolume(final float volume) {
+        	FloatControl control = (FloatControl) soundsys.getSrcDataLine().getControl(FloatControl.Type.VOLUME);
+        	control.setValue(volume);
+        }
+        public static float getVolume(final float volume) {
+        	FloatControl control = (FloatControl) soundsys.getSrcDataLine().getControl(FloatControl.Type.VOLUME);
+        	return control.getValue();
         }
         
         public static void stopMusic() {
@@ -163,10 +170,15 @@ public final class SoundSystem {
                 byte[] bytes = null;
                 while (!stop) {
                 	bytes = streamRead();
-                	if (bytes.length > 0)
-                		getSrcDataLine().write(bytes, 0, bytes.length);
-                    stop = isEndStream(bytes);
-
+                	if (bytes.length > 0) {
+//                		int step = 5;
+//                		for (int i = 0; i < bytes.length && !stop; i+=step)
+//            			getSrcDataLine().write(bytes, i, Math.min(step, bytes.length - i));
+            			getSrcDataLine().write(bytes, 0, bytes.length);
+                	}
+                    if (isEndStream(bytes))
+                    	break;
+                    
                 }
                 getSrcDataLine().drain();
                 streamClose();

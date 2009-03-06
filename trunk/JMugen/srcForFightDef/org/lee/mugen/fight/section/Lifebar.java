@@ -38,7 +38,6 @@ public class Lifebar implements Section {
 		Lifebar lifebar = new Lifebar();
 		for (GroupText grp: grps) {
 			for (String key: grp.getKeysOrdered()) {
-				System.out.println(key);
 				lifebar.parse(null, key, grp.getKeyValues().get(key));
 			}
 		}
