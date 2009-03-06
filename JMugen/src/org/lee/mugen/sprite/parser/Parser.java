@@ -374,9 +374,10 @@ public class Parser {
                         	if (!kv[1].startsWith("\"") || !kv[1].endsWith("\"")) {
                         		if (!caseSensitive)
                         			kv[1] = kv[1].toLowerCase();
-                        	} else {
-                        		System.out.println();
-                        	}
+                        	} 
+//                        	else {
+//                        		System.out.println();
+//                        	}
                         	
                         	groupText.getKeyValues().put(kv[0], kv[1]);
                         	groupText.getKeysOrdered().add(kv[0]);
@@ -401,9 +402,10 @@ public class Parser {
                         	if (!kv[1].startsWith("\"") || !kv[1].endsWith("\"")) {
                         		if (!caseSensitive)
                         			kv[1] = kv[1].toLowerCase();
-                        	} else {
-                        		System.out.println();
                         	}
+//                        	else {
+//                        		System.out.println();
+//                        	}
                         	groupText.getKeyValues().put(kv[0], kv[1]);
                         	groupText.getKeysOrdered().add(kv[0]);
                     	}

@@ -320,7 +320,7 @@ public class StageBackgroundRender implements IBackgroundRenderer {
 				continue;
 			}
 		}
-//		getMugenDrawer().scale(1f/stage.getScaling().getXscale(), 1f/stage.getScaling().getYscale());
+		getMugenDrawer().scale(1f/stage.getScaling().getXscale(), 1f/stage.getScaling().getYscale());
 
 	}
 

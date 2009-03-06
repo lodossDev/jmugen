@@ -2,10 +2,7 @@ package org.lee.mugen.core.renderer.game.select;
 
 import java.awt.Dimension;
 import java.awt.Point;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
-
-import javax.crypto.spec.PSource;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.lee.mugen.core.gameSelect.GameSelect;
@@ -19,7 +16,6 @@ import org.lee.mugen.fight.select.Characters;
 import org.lee.mugen.fight.system.MugenSystem;
 import org.lee.mugen.fight.system.SelectInfo;
 import org.lee.mugen.fight.system.elem.Cell;
-import org.lee.mugen.fight.system.elem.PlayerSelectInfo;
 import org.lee.mugen.fight.system.elem.StageDisplay;
 import org.lee.mugen.object.Rectangle;
 import org.lee.mugen.renderer.DrawProperties;
@@ -130,6 +126,8 @@ public class SelectRender extends BaseRender {
 		// Big Portrait
 		int posName = 1;
 		for (String name: names) {
+			if (name == null)
+				continue;
 			if (characters.getBigPortrait(name) != null) {
 
 				pos = (Point) getProperty(selectInfo, 

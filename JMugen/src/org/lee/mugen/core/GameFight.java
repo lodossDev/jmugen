@@ -65,7 +65,7 @@ import org.lee.mugen.util.Logger;
  * 
  * StateMachine is the core of the program
  */
-public class GameFight implements Game {
+public class GameFight implements AbstractGameFight {
 	// TeamMate
 	public static final int TEAMSIDE_ONE = 1;
 	public static final int TEAMSIDE_TWO = 2;

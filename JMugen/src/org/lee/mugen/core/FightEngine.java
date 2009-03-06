@@ -1080,7 +1080,6 @@ public class FightEngine {
 			AbstractSprite sprite, Wrap<Rectangle> outUnion) {
 		boolean isTouch = false;
 		List<Rectangle> rectangles = hitdef.getSpriteHitter().getCns1();
-//		System.out.println(hitdef.getSpriteHitter().getCns1().size());
 		for (Rectangle rAttack : rectangles) {
 			for (Rectangle rCln2 : sprite.getCns2()) {
 				if (rAttack.intersects(rCln2)) {

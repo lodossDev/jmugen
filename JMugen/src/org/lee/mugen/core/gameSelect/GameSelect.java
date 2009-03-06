@@ -1,14 +1,7 @@
 package org.lee.mugen.core.gameSelect;
 
 import java.awt.Point;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
 import java.util.Iterator;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.lee.mugen.core.Game;
@@ -20,7 +13,6 @@ import org.lee.mugen.fight.select.Characters;
 import org.lee.mugen.fight.system.MugenSystem;
 import org.lee.mugen.fight.system.elem.StageDisplay;
 import org.lee.mugen.renderer.GameWindow;
-import org.lee.mugen.renderer.Renderable;
 import org.lee.mugen.renderer.jogl.JoglMugenDrawer;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns.Teammode.TeamMode;
@@ -86,22 +78,6 @@ public class GameSelect implements Game {
 		// TODO Auto-generated constructor stub
 	}
 
-
-	
-	@Override
-	public void addRender(Renderable r) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	@Override
-	public void displayPendingScreeen() {
-		// TODO Auto-generated method stub
-		
-	}
-
-
 	@Override
 	public void free() {
 		// TODO Auto-generated method stub
@@ -116,12 +92,6 @@ public class GameSelect implements Game {
 	}
 	public String getNextMode() {
 		return nextMode;
-	}
-
-	@Override
-	public List<Renderable> getRenderables() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	private String getSelectedSprite(Point p) {
@@ -202,12 +172,6 @@ public class GameSelect implements Game {
 			gameWindow.addActionListener(sc);
 	}
 
-	@Override
-	public void onDebugAction(DebugAction action) {
-		// TODO Auto-generated method stub
-		
-	}
-
 	
 	@Override
 	public void reInit(GameWindow container) throws Exception {
@@ -226,12 +190,6 @@ public class GameSelect implements Game {
 //		} else {
 			selectRender.render();
 //		}
-	}
-	
-	@Override
-	public void renderDebugInfo() {
-		// TODO Auto-generated method stub
-		
 	}
 	public void setNextMode(String nextMode) {
 		this.nextMode = nextMode;
@@ -325,6 +283,10 @@ public class GameSelect implements Game {
 
 	public void setStageChanged() {
 		changeStage = true;
+		
+	}
+	public void setBackToMenu() {
+		backToMenu = true;
 		
 	}
 }
