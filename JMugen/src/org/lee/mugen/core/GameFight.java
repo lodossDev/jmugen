@@ -4,7 +4,10 @@ import static org.lee.mugen.util.Logger.log;
 
 import java.awt.event.KeyEvent;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -16,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.lee.mugen.core.command.SpriteCmdProcess;
+import org.lee.mugen.core.gameSelect.GameSelect;
 import org.lee.mugen.core.renderer.game.AfterimageRender;
 import org.lee.mugen.core.renderer.game.CnsRender;
 import org.lee.mugen.core.renderer.game.DebugExplodRender;
@@ -53,6 +57,7 @@ import org.lee.mugen.sprite.entity.ExplodSprite;
 import org.lee.mugen.sprite.entity.MakeDustSpriteManager;
 import org.lee.mugen.sprite.entity.ProjectileSprite;
 import org.lee.mugen.stage.Stage;
+import org.lee.mugen.util.Logger;
 
 /**
  * 
@@ -202,6 +207,7 @@ public class GameFight implements Game {
 		return stateMachine;
 	}
 	public static void clear() {
+		stateMachine.free();
 		stateMachine = null;
 	}
 	
@@ -323,6 +329,20 @@ public class GameFight implements Game {
 		}
 	}
 
+	public void addSprite(Sprite spr, int teamSide) throws FileNotFoundException, IOException {
+			
+		spriteDefs.put(spr.getSpriteId(), spr.getDefinition());
+		spr.buildSpriteSff();
+		if (teamSide == TEAMSIDE_ONE) {
+			getTeamOne().put(spr.getSpriteId(), spr);
+		} else if (teamSide == TEAMSIDE_TWO) {
+			getTeamTwo().put(spr.getSpriteId(), spr);
+			
+		}
+		_spriteMap.put(spr.getSpriteId(), spr);
+		spriteMapRenderable.put(spr.getSpriteId(), new SpriteRender(spr));
+		addRender(spriteMapRenderable.get(spr.getSpriteId()));
+	}
 	
 	private void loadSprite(SpriteLoader sprLoader)
 		throws Exception {
@@ -335,6 +355,7 @@ public class GameFight implements Game {
 			spriteDefs.put(sprLoader.getSpriteId(), sprDef);
 			log("Load Sprite");
 			spr = new Sprite(sprLoader.getSpriteId(), sprDef, sprLoader.getPal());
+			spr.buildSpriteSff();
 			log("End Load Sprite");
 			if (sprLoader.getTeamSide() == TEAMSIDE_ONE) {
 				getTeamOne().put(sprLoader.getSpriteId(), spr);
@@ -611,6 +632,7 @@ public class GameFight implements Game {
 		getGameState().enter(this);
 
 		for (Sprite s : getSprites()) {
+
 			ISpriteCmdProcess sprCmdProc = spriteCmdProcessMap.get(s.getSpriteId());
 			if (sprCmdProc != null) {
 				sprCmdProc.process(s.getSpriteId());
@@ -1216,12 +1238,18 @@ public class GameFight implements Game {
 	}
 	@Override
 	public void free() {
-		for (Sprite spr: getSprites())
+		for (Sprite spr: getSprites()) {
+			Logger.log("Free " + spr.getSpriteId());
 			spr.getSpriteSFF().free();
-		for (AbstractSprite spr: getOtherSprites())
-			if (spr.getSpriteSFF() != null)
+		}
+		for (AbstractSprite spr: getOtherSprites()) {
+			if (spr.getSpriteSFF() != null) {
+				Logger.log("Free " + spr);
 				spr.getSpriteSFF().free();
-		getStage().free();
+			}
+		}
+//		if (getStage() != null)
+//			getStage().free();
 	}
 
 

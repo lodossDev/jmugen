@@ -3,6 +3,7 @@ package org.lee.mugen.core;
 import java.util.List;
 
 import org.lee.mugen.background.Background;
+import org.lee.mugen.core.gameSelect.GameSelect;
 import org.lee.mugen.core.renderer.game.system.TitleInfoRender;
 import org.lee.mugen.fight.system.MugenSystem;
 import org.lee.mugen.fight.system.elem.ItemName;
