@@ -1,5 +1,6 @@
 package org.lee.mugen.core.renderer.java;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Graphics2D;
@@ -8,7 +9,6 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
-import org.lee.mugen.imageIO.ByteArrayBuilder;
 import org.lee.mugen.imageIO.PCXLoader;
 import org.lee.mugen.imageIO.RawPCXImage;
 import org.lee.mugen.imageIO.PCXLoader.PCXHeader;
@@ -45,29 +45,32 @@ public class JMugenDrawer extends MugenDrawer {
 		
 		Composite composite = null;
 		if (dp.getTrans() == Trans.ADD) {
-			composite = BlendComposite.Add;
-//			composite = AlphaComposite.getInstance(AlphaComposite.SRC_ATOP);
+			if(alpha == 1)
+				composite = BlendComposite.Add;
+			else
+				composite = BlendComposite.Add.derive(alpha);
+				
 		} else if (dp.getTrans() == Trans.ADD1) {
-			composite = BlendComposite.Add;
-//			composite = AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 0.5f);
+			if(alpha == 1)
+				composite = BlendComposite.Add;
+			else
+				composite = BlendComposite.Add.derive(alpha);
+
 		} else if (dp.getTrans() == Trans.SUB) {
-			composite = BlendComposite.Subtract.derive(0.5f);
-//			composite = AlphaComposite.getInstance(AlphaComposite.DST_OUT);
+			if(alpha == 1)
+				composite = BlendComposite.Subtract.derive(0.5f);
+			else
+				composite = BlendComposite.Subtract.derive(0.5f*alpha);
 
 		}
 		if (composite != null) {
-//			g.setComposite(AlphaComposite.getInstance( AlphaComposite.SRC_OVER, 0.5f ));
+			g.setComposite(composite);
+		} else if (alpha != 1) {
+			composite = AlphaComposite.getInstance(AlphaComposite.SRC, alpha);
 			g.setComposite(composite);
 		}
 		
 
-//		float data[] = { 0.0625f, 0.125f, 0.0625f, 0.125f, 0.25f, 0.125f,
-//		        0.0625f, 0.125f, 0.0625f };
-//		    Kernel kernel = new Kernel(3, 3, data);
-//		    ConvolveOp convolve = new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP,
-//		        null);
-//		    img = convolve.filter(img, null);
-		
 		
 		processRotationProperties(dp.getAngleDrawProperties());
 		
@@ -216,6 +219,19 @@ public class JMugenDrawer extends MugenDrawer {
 	public void setClip(Rectangle r) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	float alpha;
+	@Override
+	public float getAlpha() {
+		return alpha;
+		
+	}
+
+
+	@Override
+	public void setAlpha(float a) {
+		this.alpha = a;
 	}
 
 }

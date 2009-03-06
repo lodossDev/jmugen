@@ -19,8 +19,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import org.lee.framework.swing.WindowsUtils;
+import org.lee.mugen.core.AbstractGameFight;
 import org.lee.mugen.core.Game;
-import org.lee.mugen.core.Game.DebugAction;
+import org.lee.mugen.core.AbstractGameFight.DebugAction;
 import org.lee.mugen.imageIO.ImageScale2x;
 import org.lee.mugen.input.CmdProcDispatcher;
 import org.lee.mugen.input.ISpriteCmdProcess;
@@ -247,8 +248,8 @@ public class JGameWindow extends Canvas implements GameWindow {
 
 			if (callback != null) {
 				callback.update(1);
-				if (lack-- > 0)
-					continue;
+//				if (lack-- > 0)
+//					continue;
 //				synchronized (getTimer()) {
 					lack = getTimer().sleep();
 					
@@ -257,9 +258,13 @@ public class JGameWindow extends Canvas implements GameWindow {
 				Graphics2D g = (Graphics2D) getDrawGraphics();
 				g.setColor(Color.BLACK);
 				g.fillRect(0, 0, 320, 240);
-				callback.render();
-				callback.renderDebugInfo();
-				
+				if (isRender()) {
+					callback.render();
+					if (callback instanceof AbstractGameFight) {
+						AbstractGameFight game = (AbstractGameFight) callback;
+						game.renderDebugInfo();
+					}
+				}
 				Image image = normalBuffer;
 //				image = imgScale2x.getScaledImage();
 //				gStrategy.scale(2, 2);
@@ -386,16 +391,20 @@ public class JGameWindow extends Canvas implements GameWindow {
 		}
 		@Override
 		public void keyReleased(KeyEvent e) {
-			for (DebugAction action : actionKeyMap.keySet()) {
-				if (e.getKeyCode() == actionKeyMap.get(action)[0]) {
+			if (callback instanceof AbstractGameFight) {
+				AbstractGameFight game = (AbstractGameFight) callback;
+				for (DebugAction action : actionKeyMap.keySet()) {
+					if (e.getKeyCode() == actionKeyMap.get(action)[0]) {
 
-					if (actionCtrl.get(action).booleanValue()
-							&& e.isControlDown()) {
-						callback.onDebugAction(action);
-					} else if (!actionCtrl.get(action).booleanValue()) {
-						callback.onDebugAction(action);
+						if (actionCtrl.get(action).booleanValue()
+								&& e.isControlDown()) {
+							game.onDebugAction(action);
+						} else if (!actionCtrl.get(action).booleanValue()) {
+							game.onDebugAction(action);
+						}
 					}
 				}
+				
 			}
 		}
 		@Override
@@ -441,5 +450,15 @@ public class JGameWindow extends Canvas implements GameWindow {
 			removeKeyListener(kl);
 		addKeyListener(debugEventManager);
 		
+	}
+	boolean isRender = true;
+
+	@Override
+	public boolean isRender() {
+		return isRender;
+	}
+	@Override
+	public void setRender(boolean isRender) {
+		this.isRender = isRender;
 	}
 }
