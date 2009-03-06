@@ -54,23 +54,6 @@ import com.sun.opengl.util.texture.TextureIO;
 
 public class JoglMugenDrawer extends MugenDrawer {
 
-	private Texture backend;
-	private Texture backend2;
-
-	public Texture getBackend() {
-		if (backend == null) {
-			backend = getNewEmptyTexture(640, 480);
-		}
-		return backend;
-	}
-
-	public Texture getBackend2() {
-		if (backend2 == null) {
-			backend2 = getNewEmptyTexture(640, 480);
-		}
-		return backend2;
-	}
-
 	private final JoglGameWindow gameWindow = new JoglGameWindow();
 
 	//
@@ -130,6 +113,7 @@ public class JoglMugenDrawer extends MugenDrawer {
 			yScale = dp.getAngleDrawProperties().getYScale();
 		}
 
+		gl.glColor4f(1f, 1f, 1f, this.alpha * dp.getAlpha());
 		// draw a quad textured to match the sprite
 		Texture texture = (Texture) dp.getIc().getImg();
 		TextureCoords coords = texture.getImageTexCoords();
@@ -224,13 +208,12 @@ public class JoglMugenDrawer extends MugenDrawer {
 			gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_SRC1_RGB, GL.GL_TEXTURE);
 			gl.glBlendFunc(GL.GL_DST_COLOR, GL.GL_SRC_ALPHA);
 			drawImage(xlDst, xrDst, ytDst, ybDst, xlSrc, xrSrc, ytSrc, ybSrc, dp);
-			drawImage(xlDst, xrDst, ytDst, ybDst, xlSrc, xrSrc, ytSrc, ybSrc, dp);
-			drawImage(xlDst, xrDst, ytDst, ybDst, xlSrc, xrSrc, ytSrc, ybSrc, dp);
+//			drawImage(xlDst, xrDst, ytDst, ybDst, xlSrc, xrSrc, ytSrc, ybSrc, dp);
+//			drawImage(xlDst, xrDst, ytDst, ybDst, xlSrc, xrSrc, ytSrc, ybSrc, dp);
 
 			type = 3;
 		} else {
-			gl.glTexEnvi(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE,
-					GL.GL_REPLACE);
+			gl.glTexEnvi(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_REPLACE);
 			gl.glBlendFunc(GL.GL_ONE, GL.GL_ONE_MINUS_SRC_ALPHA);
 
 		}
@@ -262,7 +245,7 @@ public class JoglMugenDrawer extends MugenDrawer {
 					dp.getImageProperties().getPalcontrast().mul(bits),
 					dp.getImageProperties().getPalpostbright().mul(bits),
 					dp.getImageProperties().getPaladd().mul(bits),
-					dp.getImageProperties().getPalmul(), type, 2f);
+					dp.getImageProperties().getPalmul(), type, 1f);
 			drawImage(xlDst, xrDst, ytDst, ybDst, xlSrc, xrSrc, ytSrc, ybSrc, dp);
 			getAfterImageShader().endRender(gl);
 		} else {
@@ -300,84 +283,89 @@ public class JoglMugenDrawer extends MugenDrawer {
 	}
 	private final List<DrawProperties> oldDp = new LinkedList<DrawProperties>();
 
+	// need for movie
+	public void drawBufferedImage(DrawProperties dp) {
+		GL gl = getGl();
+		if (gl == null)
+			return;
+		Graphics2D g = ((JoglMugenDrawer) GraphicsWrapper.getInstance())
+				.getJoglTextureDrawer().getBackBuffer().createGraphics();
+		g.setBackground(new Color(0, 0, 0, 0));
+		g.clearRect(0, 0, 640, 480);
+
+		joglTextureDrawer.draw(dp);
+
+		for (DrawProperties d : oldDp) {
+			((JoglMugenDrawer) GraphicsWrapper.getInstance())
+					.getJoglTextureDrawer().getBackBuffer().markDirty(
+							(int) (d.getXLeftDst()),
+							(int) (d.getYTopDst()),
+							(int) Math.abs(d.getXRightDst()
+									- d.getXLeftDst()),
+							(int) Math.abs(d.getYTopDst()
+									- d.getYBottomDst()));
+		}
+		oldDp.clear();
+		oldDp.add(dp);
+		((JoglMugenDrawer) GraphicsWrapper.getInstance())
+				.getJoglTextureDrawer().getBackBuffer().markDirty(
+						(int) (dp.getXLeftDst()),
+						(int) (dp.getYTopDst()),
+						(int) Math
+								.abs(dp.getXRightDst() - dp.getXLeftDst()),
+						(int) Math
+								.abs(dp.getYTopDst() - dp.getYBottomDst()));
+
+		final TextureRenderer textRender = ((JoglMugenDrawer) GraphicsWrapper
+				.getInstance()).getJoglTextureDrawer().getBackBuffer();
+
+		Texture tex = textRender.getTexture();
+		TextureCoords tc = tex.getImageTexCoords();
+		final float tx1 = tc.left();
+		final float ty1 = tc.top();
+		final float tx2 = tc.right();
+		final float ty2 = tc.bottom();
+
+		// Enable blending, using the SrcOver rule
+		gl.glEnable(GL.GL_BLEND);
+		gl.glBlendFunc(GL.GL_ONE, GL.GL_ONE_MINUS_SRC_ALPHA);
+
+		// Use the GL_MODULATE texture function to effectively multiply
+		// each pixel in the texture by the current alpha value
+		gl.glTexEnvi(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE,
+				GL.GL_MODULATE);
+
+		final float x = 0;
+		final float y = 0;
+		final float w = 640;
+		final float h = 480;
+
+		tex.bind();
+		tex.enable();
+		gl.glBegin(GL.GL_QUADS);
+		// Render image right-side up
+		final float a = 1f;
+		gl.glColor4f(a, a, a, a);
+		gl.glTexCoord2f(tx1, ty2);
+		gl.glVertex3f(x, y + h, 0f);
+		gl.glTexCoord2f(tx2, ty2);
+		gl.glVertex3f(x + w, y + h, 0f);
+		gl.glTexCoord2f(tx2, ty1);
+		gl.glVertex3f(x + w, y, 0f);
+		gl.glTexCoord2f(tx1, ty1);
+		gl.glVertex3f(x, y, 0f);
+		gl.glEnd();
+	
+	}
+		
+	
 	@Override
 	public void draw(DrawProperties dp) {
 		GL gl = getGl();
 		if (gl == null)
 			return;
 		if (dp.getIc().getImg() instanceof BufferedImage) {
-			Graphics2D g = ((JoglMugenDrawer) GraphicsWrapper.getInstance())
-					.getJoglTextureDrawer().getBackBuffer().createGraphics();
-			g.setBackground(new Color(0, 0, 0, 0));
-			g.clearRect(0, 0, 640, 480);
-			// ((JoglMugenDrawer)GraphicsWrapper.getInstance()).getJoglTextureDrawer().getBackBuffer().markDirty(
-			// 0,
-			// 0,
-			// 640,
-			// 480
-			// );
-			joglTextureDrawer.draw(dp);
-
-			for (DrawProperties d : oldDp) {
-				((JoglMugenDrawer) GraphicsWrapper.getInstance())
-						.getJoglTextureDrawer().getBackBuffer().markDirty(
-								(int) (d.getXLeftDst()),
-								(int) (d.getYTopDst()),
-								(int) Math.abs(d.getXRightDst()
-										- d.getXLeftDst()),
-								(int) Math.abs(d.getYTopDst()
-										- d.getYBottomDst()));
-			}
-			oldDp.clear();
-			oldDp.add(dp);
-			((JoglMugenDrawer) GraphicsWrapper.getInstance())
-					.getJoglTextureDrawer().getBackBuffer().markDirty(
-							(int) (dp.getXLeftDst()),
-							(int) (dp.getYTopDst()),
-							(int) Math
-									.abs(dp.getXRightDst() - dp.getXLeftDst()),
-							(int) Math
-									.abs(dp.getYTopDst() - dp.getYBottomDst()));
-
-			final TextureRenderer textRender = ((JoglMugenDrawer) GraphicsWrapper
-					.getInstance()).getJoglTextureDrawer().getBackBuffer();
-
-			Texture tex = textRender.getTexture();
-			TextureCoords tc = tex.getImageTexCoords();
-			final float tx1 = tc.left();
-			final float ty1 = tc.top();
-			final float tx2 = tc.right();
-			final float ty2 = tc.bottom();
-
-			// Enable blending, using the SrcOver rule
-			gl.glEnable(GL.GL_BLEND);
-			gl.glBlendFunc(GL.GL_ONE, GL.GL_ONE_MINUS_SRC_ALPHA);
-
-			// Use the GL_MODULATE texture function to effectively multiply
-			// each pixel in the texture by the current alpha value
-			gl.glTexEnvi(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE,
-					GL.GL_MODULATE);
-
-			final float x = 0;
-			final float y = 0;
-			final float w = 640;
-			final float h = 480;
-
-			tex.bind();
-			tex.enable();
-			gl.glBegin(GL.GL_QUADS);
-			// Render image right-side up
-			final float a = 1f;
-			gl.glColor4f(a, a, a, a);
-			gl.glTexCoord2f(tx1, ty2);
-			gl.glVertex3f(x, y + h, 0f);
-			gl.glTexCoord2f(tx2, ty2);
-			gl.glVertex3f(x + w, y + h, 0f);
-			gl.glTexCoord2f(tx2, ty1);
-			gl.glVertex3f(x + w, y, 0f);
-			gl.glTexCoord2f(tx1, ty1);
-			gl.glVertex3f(x, y, 0f);
-			gl.glEnd();
+			drawBufferedImage(dp);
 			return;
 		}
 		final Texture texture = (Texture) dp.getIc().getImg();
@@ -834,5 +822,16 @@ public class JoglMugenDrawer extends MugenDrawer {
 			Logger.log("No More Texture To Load");
 		return result;
 	}
+	float alpha;
+	@Override
+	public float getAlpha() {
+		return alpha;
+	}
 
+
+	@Override
+	public void setAlpha(float a) {
+		this.alpha = a;
+		getJoglTextureDrawer().setAlpha(a);
+	}
 }
