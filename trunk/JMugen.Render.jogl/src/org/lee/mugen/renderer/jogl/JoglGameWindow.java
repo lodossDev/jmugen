@@ -21,8 +21,9 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 import org.lee.framework.swing.WindowsUtils;
+import org.lee.mugen.core.AbstractGameFight;
 import org.lee.mugen.core.Game;
-import org.lee.mugen.core.Game.DebugAction;
+import org.lee.mugen.core.AbstractGameFight.DebugAction;
 import org.lee.mugen.input.CmdProcDispatcher;
 import org.lee.mugen.input.ISpriteCmdProcess;
 import org.lee.mugen.renderer.GameWindow;
@@ -138,17 +139,21 @@ public class JoglGameWindow implements GameWindow, GLEventListener {
 		}
 		@Override
 		public void keyReleased(KeyEvent e) {
-			for (DebugAction action : actionKeyMap.keySet()) {
-				if (e.getKeyCode() == actionKeyMap.get(action)[0]) {
+			if (callback instanceof AbstractGameFight) {
+				AbstractGameFight game = (AbstractGameFight) callback;
+				for (DebugAction action : actionKeyMap.keySet()) {
+					if (e.getKeyCode() == actionKeyMap.get(action)[0]) {
 
-					if (actionCtrl.get(action).booleanValue()
-							&& e.isControlDown()) {
-						callback.onDebugAction(action);
-					} else if (!actionCtrl.get(action).booleanValue()) {
-						callback.onDebugAction(action);
+						if (actionCtrl.get(action).booleanValue()
+								&& e.isControlDown()) {
+							game.onDebugAction(action);
+						} else if (!actionCtrl.get(action).booleanValue()) {
+							game.onDebugAction(action);
+						}
 					}
 				}
 			}
+
 		}
 		@Override
 		public void keyTyped(KeyEvent e) {
@@ -394,7 +399,10 @@ public class JoglGameWindow implements GameWindow, GLEventListener {
 		_gl = drawable.getGL();
 
 		if (!isFinishInit) {
-			callback.displayPendingScreeen();
+			if (callback instanceof AbstractGameFight) {
+				AbstractGameFight game = (AbstractGameFight) callback;
+				game.displayPendingScreeen();
+			}
 		} else {
 			try {
 				_gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT
@@ -411,15 +419,20 @@ public class JoglGameWindow implements GameWindow, GLEventListener {
 					callback.free();
 					callback = another;
 				} else {
-					callback.render();
+					if (isRender())
+						callback.render();
 				}
 		        _gl.glEnd();
-		        
-
 				_gl.glPopMatrix();
-				
 				_gl.glPushMatrix();
-				callback.renderDebugInfo();
+				if (isRender()) {
+					if (callback instanceof AbstractGameFight) {
+						AbstractGameFight game = (AbstractGameFight) callback;
+						game.renderDebugInfo();
+					}
+					
+				}
+
 				_gl.glPopMatrix();
 				mouse.setLeftPress(false);
 				mouse.setRightPress(false);
@@ -483,5 +496,14 @@ public class JoglGameWindow implements GameWindow, GLEventListener {
 	}
 	
 	
+	boolean isRender = true;
 
+	@Override
+	public boolean isRender() {
+		return isRender;
+	}
+	@Override
+	public void setRender(boolean isRender) {
+		this.isRender = isRender;
+	}
 }

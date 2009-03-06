@@ -12,6 +12,7 @@ import org.lee.mugen.renderer.DrawProperties;
 import org.lee.mugen.renderer.Trans;
 
 import com.sun.opengl.util.j2d.TextureRenderer;
+import composite.BlendComposite;
 
 public class JoglTextureDrawer {
 	private TextureRenderer backBuffer;
@@ -40,29 +41,53 @@ public class JoglTextureDrawer {
 
 	}
 	
-	
+	float alpha = 1;
+	public float getAlpha() {
+		return alpha;
+	}
+
+
+
+	public void setAlpha(float alpha) {
+		this.alpha = alpha;
+	}
+
+
+
 	public void draw(DrawProperties dp) {
-		Graphics2D g = getGraphics();
+		Graphics2D g = (Graphics2D) getGraphics();
+		g.scale(xScale, yScale);
+		BufferedImage img = (BufferedImage) dp.getIc().getImg();
+		g.setClip((int)dp.getXLeftDst(), (int)dp.getYTopDst(), img.getWidth(), img.getHeight());
+		
 		Composite composite = null;
 		if (dp.getTrans() == Trans.ADD) {
-//			composite = MiscCompositeIndexColor.getInstance(MiscCompositeIndexColor.ADD, 1f);
-			composite = AlphaComposite.getInstance(AlphaComposite.SRC_ATOP);
+			if(alpha == 1)
+				composite = BlendComposite.Add;
+			else
+				composite = BlendComposite.Add.derive(alpha);
+				
 		} else if (dp.getTrans() == Trans.ADD1) {
-//			composite = MiscCompositeIndexColor.getInstance(MiscCompositeIndexColor.ADD, 1f);
-			composite = AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 0.5f);
+			if(alpha == 1)
+				composite = BlendComposite.Add;
+			else
+				composite = BlendComposite.Add.derive(alpha);
+
 		} else if (dp.getTrans() == Trans.SUB) {
-//			composite = MiscCompositeIndexColor.getInstance(MiscCompositeIndexColor.SUBTRACT, 0.5f);
-			composite = AlphaComposite.getInstance(AlphaComposite.DST_OUT);
+			if(alpha == 1)
+				composite = BlendComposite.Subtract.derive(0.5f);
+			else
+				composite = BlendComposite.Subtract.derive(0.5f*alpha);
 
 		}
-		
 		if (composite != null) {
-			g.setComposite(AlphaComposite.getInstance( AlphaComposite.SRC_OVER, 0.5f ));
+			g.setComposite(composite);
+		} else if (alpha != 1) {
+			composite = AlphaComposite.getInstance(AlphaComposite.SRC, alpha);
 			g.setComposite(composite);
 		}
 		
-		g.setComposite(AlphaComposite.getInstance( AlphaComposite.SRC_OVER, dp.getAlpha()));
-		BufferedImage img = (BufferedImage) dp.getIc().getImg();
+
 		
 		processRotationProperties(dp.getAngleDrawProperties());
 		
@@ -89,7 +114,7 @@ public class JoglTextureDrawer {
 				(int)dp.getYTopSrc(), 
 				(int)dp.getXRightSrc(), 
 				(int)dp.getYBottomSrc(), null);
-
+		
 		
 	}
 	public void drawLine(int x1, int y1, int x2, int y2) {
