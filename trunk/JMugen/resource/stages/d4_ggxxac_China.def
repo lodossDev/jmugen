@@ -43,7 +43,7 @@ screenleft  =15
 screenright =15
 
 [StageInfo]
-zoffset = 222�@�@�@  �@�@�@�@;�n��
+zoffset = 222
 autoturn = 2                 ;�e�̒���
 resetBG = 0
 Hires = 1
