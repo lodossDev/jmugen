@@ -1,9 +1,11 @@
 package org.lee.mugen.sprite.character.spiteCnsSubClass.constante;
 
+import java.io.Serializable;
+
 import org.lee.mugen.sprite.entity.Sparkno;
 
-public class Data implements Cloneable {
-	public static class Fall implements Cloneable {
+public class Data implements Cloneable, Serializable {
+	public static class Fall implements Cloneable, Serializable {
 		// Percentage to increase defense everytime player is knocked down
 		private float defence_up = 50f;
 
@@ -20,7 +22,7 @@ public class Data implements Cloneable {
 		}
 	}
 	
-	public static class Liedown implements Cloneable {
+	public static class Liedown implements Cloneable, Serializable {
 //		 Time which player lies down for, before getting up
 		private int time = 60;
 
@@ -37,7 +39,7 @@ public class Data implements Cloneable {
 		}
 	}
 	
-	public static class Guard implements Cloneable {
+	public static class Guard implements Cloneable, Serializable {
 //		 Default guard spark number
 		private Sparkno sparkno = new Sparkno();
 
@@ -58,7 +60,7 @@ public class Data implements Cloneable {
 		}
 	}
 	
-	public static class KOClass implements Cloneable {
+	public static class KOClass implements Cloneable, Serializable {
 		// 1 to enable echo on KO
 		private int echo = 0;
 

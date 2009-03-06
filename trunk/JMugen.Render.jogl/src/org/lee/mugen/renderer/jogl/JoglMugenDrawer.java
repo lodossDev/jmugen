@@ -31,6 +31,7 @@ import javax.media.opengl.GL;
 import org.lee.mugen.imageIO.PCXLoader;
 import org.lee.mugen.imageIO.RawPCXImage;
 import org.lee.mugen.imageIO.PCXLoader.PCXHeader;
+import org.lee.mugen.object.RawImage;
 import org.lee.mugen.object.Rectangle;
 import org.lee.mugen.renderer.AngleDrawProperties;
 import org.lee.mugen.renderer.DrawProperties;
@@ -530,6 +531,10 @@ public class JoglMugenDrawer extends MugenDrawer {
 			this(0, img, width, height);
 		}
 
+		public ImageContainerText(RawImage ri) {
+			this(0, ri, ri.getWidth(), ri.getHeight());
+		}
+
 		private static final int RAW_PCX = 0;
 		private static final int DATA = 1;
 		private static final int TEXTURE = 2;
@@ -538,7 +543,13 @@ public class JoglMugenDrawer extends MugenDrawer {
 
 		@Override
 		public Object getImg() {
+
 			synchronized (this) {
+				if (img instanceof RawImage) {
+					RawImage ri = (RawImage) img;
+					img = getDefaultTextureData(IntBuffer.wrap(ri.getData()), ri.getWidth(), ri.getHeight());
+					imageStatus.set(DATA);
+				}
 				TextureData data = null;
 				switch (imageStatus.get()) {
 				case TEXTURE:
@@ -577,6 +588,11 @@ public class JoglMugenDrawer extends MugenDrawer {
 		}
 		public void prepareImageToTexture() {
 			synchronized (this) {
+				if (img instanceof RawImage) {
+					RawImage ri = (RawImage) img;
+					img = getDefaultTextureData(IntBuffer.wrap(ri.getData()), ri.getWidth(), ri.getHeight());
+					imageStatus.set(DATA);
+				}
 				if (imageStatus.get() == RAW_PCX) {
 					final RawPCXImage pcx = (RawPCXImage) img;
 					img = getInitializedTexture(pcx, color);
@@ -593,22 +609,29 @@ public class JoglMugenDrawer extends MugenDrawer {
 
 	@Override
 	public ImageContainer getImageContainer(Object imageData, int colors) {
-		final RawPCXImage pcx = (RawPCXImage) imageData;
-		PCXHeader header = null;
-		final byte[] data = pcx.getData();
+		if (imageData instanceof RawImage) {
+			RawImage ri = (RawImage) imageData;
+			final ImageContainerText result = new ImageContainerText(ri);
+			return result;
+		} else if (imageData instanceof RawPCXImage) {
+			final RawPCXImage pcx = (RawPCXImage) imageData;
+			PCXHeader header = null;
+			final byte[] data = pcx.getData();
 
-		try {
-			header = new PCXHeader(data);
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			try {
+				header = new PCXHeader(data);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			final int width = header.getWidth();
+			final int height = header.getHeight();
+
+			final ImageContainerText result = new ImageContainerText(colors, pcx, width, height);
+			addToImageToProcess(result);
+			return result;
 		}
-		final int width = header.xmax - header.xmin + 1;
-		final int height = header.ymax - header.ymin + 1;
-
-		final ImageContainerText result = new ImageContainerText(colors, pcx, width, height);
-		addToImageToProcess(result);
-		return result;
+		throw new IllegalArgumentException();
 
 	}
 	@Override
@@ -678,9 +701,15 @@ public class JoglMugenDrawer extends MugenDrawer {
 	}
 	private static TextureData getDefaultTextureData(BufferedImage image) {
 		final Buffer buffer = wrapImageDataBuffer(image.getRaster().getDataBuffer());
-		final TextureData data = new TextureData(GL.GL_RGBA,//GL.GL_COMPRESSED_RGBA_S3TC_DXT3_EXT,
-                image.getWidth(),
-                image.getHeight(),
+		return getDefaultTextureData(buffer, image.getWidth(), image.getHeight());
+	}
+	private static TextureData getDefaultTextureData(Buffer buffer, int width, int height) {
+		final TextureData data = 
+//			new TextureData(GL.GL_RGBA,//GL.GL_COMPRESSED_RGBA_S3TC_DXT3_EXT,
+//			new TextureData(GL.GL_COMPRESSED_RGBA_S3TC_DXT3_EXT,
+			new TextureData(GL.GL_COMPRESSED_RGBA_S3TC_DXT3_EXT,
+				width,
+				height,
                 0,
                 GL.GL_BGRA,
                 GL.GL_UNSIGNED_BYTE,

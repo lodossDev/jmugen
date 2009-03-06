@@ -1,6 +1,7 @@
 package org.lee.mugen.sprite.base;
 
 import java.awt.Rectangle;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,7 +17,7 @@ import org.lee.mugen.sprite.character.AnimElement;
 import org.lee.mugen.sprite.character.SpriteAnimManager;
 import org.lee.mugen.sprite.entity.PointF;
 
-public abstract class AbstractSprite {
+public abstract class AbstractSprite implements Serializable {
 	public static Fightfx getMugenFightfx() {
 		return GameFight.getInstance().getFightdef().getFiles().getFightfx();
 	}
@@ -87,7 +88,7 @@ public abstract class AbstractSprite {
 	// /////////////////////:
 	protected AbstractAnimManager sprAnimMng;
 
-	protected SpriteSFF spriteSFF;
+	protected transient SpriteSFF spriteSFF;
 
 	protected List<Rectangle> getCns(org.lee.mugen.object.Rectangle[] rects) {
 		ImageSpriteSFF img = getCurrentImageSpriteSFF();

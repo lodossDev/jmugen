@@ -2,6 +2,7 @@ package org.lee.mugen.imageIO;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * Quake 2 Palette
@@ -33,6 +34,13 @@ public class PCXPalette {
             r[i] = (byte) in.read();
             g[i] = (byte) in.read();
             b[i] = (byte) in.read();       
+        }
+    }
+    public void save(OutputStream out) throws IOException {
+        for (int i = 0; i < 256; i++) {
+            out.write(r[i]);
+            out.write(g[i]);
+            out.write(b[i]);
         }
     }
     public PCXPalette() {

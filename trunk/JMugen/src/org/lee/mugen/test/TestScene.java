@@ -1,22 +1,16 @@
 package org.lee.mugen.test;
 
-import org.lee.mugen.core.gameSelect.GameSelect;
+import org.lee.mugen.fight.intro.GameScene;
 import org.lee.mugen.renderer.GameWindow;
 import org.lee.mugen.renderer.GraphicsWrapper;
 
-public class TestSelect {
+public class TestScene {
 	public static void main(String[] args) throws Exception {
-		GameSelect gameSelect = GameSelect.getInstance();
+		GameScene gameScene = new GameScene();
 		
 		GraphicsWrapper.init();
 		final GameWindow gameWindow = GraphicsWrapper.getInstance().getInstanceOfGameWindow();
-		gameWindow.setGameWindowCallback(gameSelect);
-
-//		SoundSystem.SoundBackGround.playMusic("resource/sound/" + "mvc2/ADX_S070.BIN");
-
+		gameWindow.setGameWindowCallback(gameScene);
 		gameWindow.start();
-
-		
-		
 	}
 }

@@ -160,8 +160,9 @@ public class JMugenDrawer extends MugenDrawer {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-		int width = header.xmax - header.xmin + 1;
-		int height = header.ymax - header.ymin + 1;
+		int width = header.getWidth();
+		int height = header.getHeight();
+		
 		return new ImageContainer(imageData, width, height) {
 			@Override
 			public Object getImg() {
@@ -200,7 +201,6 @@ public class JMugenDrawer extends MugenDrawer {
 //			BufferedImage image = (BufferedImage) PCXLoader.loadImage(new ByteArrayInputStream(
 //					pcx.getData()), pcx.getPalette(), false, true);
 
-			
 			BufferedImage image = (BufferedImage) PCXLoader.loadImageColorIndexed(new ByteArrayInputStream(
 					pcx.getData()), pcx.getPalette(), false, true, colors);
 

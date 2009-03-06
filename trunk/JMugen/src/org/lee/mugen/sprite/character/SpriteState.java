@@ -1,5 +1,6 @@
 package org.lee.mugen.sprite.character;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -16,7 +17,7 @@ import org.lee.mugen.sprite.cns.StateCtrl;
 import org.lee.mugen.sprite.cns.StateDef;
 import org.lee.mugen.sprite.parser.Parser;
 
-public class SpriteState {
+public class SpriteState implements Serializable {
 	private StateDef currentStateDef;
 	private StateDef previousStateDef;
 	private String spriteId;
@@ -41,7 +42,7 @@ public class SpriteState {
 	// Var
 	private Var vars = new Var();
 	private Var originalVars = vars;
-	public class Var {
+	public class Var implements Serializable {
 		
 		private Map<String, Integer> varInt = new HashMap<String, Integer>();
 		private Map<String, Float> varFloat = new HashMap<String, Float>();

@@ -1,6 +1,8 @@
 package org.lee.mugen.lang;
 
-public interface Wrap<T> {
+import java.io.Serializable;
+
+public interface Wrap<T> extends Serializable {
 	void setValue(T o);
 	T getValue();
 }

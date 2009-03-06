@@ -17,7 +17,7 @@ import org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns.Teammode.TeamMod
 import org.lee.mugen.stage.Stage;
 import org.lee.mugen.util.debugger.SpriteDebugerUI;
 
-public class TestGameFight {
+public class TestGameFight  {
 
 
 	public static void launchUI() throws Exception {
@@ -205,8 +205,8 @@ public class TestGameFight {
 				"cvsgouki", "0", 
 				"KENSHIROU", "0",
 //				"kenstageDG.def",
-				"ggxx_london.def",
-				"mvc2/ADX_S070.BIN"
+				"stage0.def",
+				"mvc2/ADX_S060.BIN"
 		};
 		
 		final GameFight statemachine = GameFight.getInstance();
@@ -230,12 +230,12 @@ public class TestGameFight {
 
 		
 		gameWindow.start();
-//		Method m = gameWindow.getClass().getDeclaredMethod("isFinishInit");
+		Method m = gameWindow.getClass().getDeclaredMethod("isFinishInit");
 
-//		while (!(Boolean)m.invoke(gameWindow))
-//			Thread.sleep(1000);
-//		debugerUI.setVisible(true);
-//		ExpressionTester.lanch();
+		while (!(Boolean)m.invoke(gameWindow))
+			Thread.sleep(1000);
+		debugerUI.setVisible(true);
+		ExpressionTester.lanch();
 
 	}
 

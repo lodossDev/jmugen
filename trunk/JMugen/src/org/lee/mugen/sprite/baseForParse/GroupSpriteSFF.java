@@ -1,8 +1,9 @@
 package org.lee.mugen.sprite.baseForParse;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
-public class GroupSpriteSFF {
+public class GroupSpriteSFF implements Serializable {
 	
 	private int _grpNum;
 

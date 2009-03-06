@@ -1,8 +1,10 @@
 package org.lee.mugen.sprite.character.spiteCnsSubClass;
 
+import java.io.Serializable;
+
 import org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub.AttrClass;
 
-public class HitBySub implements Cloneable {
+public class HitBySub implements Cloneable, Serializable {
 
 	private AttrClass value;
 	private AttrClass value2;

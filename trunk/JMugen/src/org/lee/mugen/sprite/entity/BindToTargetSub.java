@@ -1,11 +1,13 @@
 package org.lee.mugen.sprite.entity;
 
+import java.io.Serializable;
 
-public class BindToTargetSub {
+
+public class BindToTargetSub implements Serializable {
 	public static enum BindToTargetType {
 		FOOT, HEAD, MID;
 	}
-	public static class Pos {
+	public static class Pos implements Serializable {
 		BindToTargetType type = BindToTargetType.MID; //TODO check if default
 		int x;
 		int y;

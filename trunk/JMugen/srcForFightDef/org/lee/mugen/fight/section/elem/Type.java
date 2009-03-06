@@ -22,8 +22,18 @@ public class Type implements Cloneable {
 
 	CommonType type;
 	Point offset = new Point();
-
-
+	
+	@Override
+	public Object clone() {
+		try {
+			return super.clone();
+		} catch (CloneNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new IllegalStateException(e);
+		}
+	}
+	
 	int displaytime = -1;
 	int originalDisplaytime = -1;
 	int facing = 1;

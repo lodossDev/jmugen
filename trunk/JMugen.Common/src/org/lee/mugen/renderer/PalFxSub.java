@@ -1,5 +1,7 @@
 package org.lee.mugen.renderer;
 
+import java.io.Serializable;
+
 /*
 time = durée (entier)
     Indique le nombre de tick que dureront les effets de palette. 
@@ -43,7 +45,7 @@ color = value (entier)
     add et mul. La valeur défaut est 256.
 
 */
-public class PalFxSub {
+public class PalFxSub implements Serializable {
 	public void setDrawProperties(DrawProperties dp) {
 		dp.setPalfx(this);
 	}
@@ -77,7 +79,7 @@ public class PalFxSub {
 	}
 
 	
-	public static class Sinadd {
+	public static class Sinadd implements Serializable {
 		private int ampl_r;
 		private int ampl_g;
 		private int ampl_b;

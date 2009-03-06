@@ -1,9 +1,11 @@
 package org.lee.mugen.sprite.entity;
 
+import java.io.Serializable;
+
 import org.lee.mugen.sprite.character.Sprite;
 
 
-public class BindToParentSub implements Cloneable {
+public class BindToParentSub implements Cloneable, Serializable {
 	private Sprite caller;
 	int facing;
 	int time = 1;

@@ -1,9 +1,11 @@
 package org.lee.mugen.sprite.entity;
 
+import java.io.Serializable;
+
 import org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub.AttrLevel;
 import org.lee.mugen.sprite.character.spiteCnsSubClass.HitDefSub.AttrType;
 
-public class CoupleOfAttrTypeAndLevel {
+public class CoupleOfAttrTypeAndLevel implements Serializable{
 	public CoupleOfAttrTypeAndLevel() {
 		
 	}

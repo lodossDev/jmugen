@@ -15,9 +15,9 @@ public class IntroRender extends BaseRender {
 	private Intro intro;
 	
 	public IntroRender() {
-		intro = new Intro("C:/dev/workspace/JMugen/resource/chars/kfm/intro.def");
-		intro = new Intro("C:/dev/workspace/JMugen/resource/chars/kfm/ending.def");
-//		intro = new Intro("C:/dev/workspace/JMugen/intro.def");
+//		intro = new Intro("E:/dev/workspace/JMugen/resource/chars/kfm/intro.def");
+		intro = new Intro("resource/chars/kfm/ending.def");
+//		intro = new Intro("resource/chars/sf3alex/alexending.def");
 		try {
 			intro.parse();
 		} catch (Exception e) {

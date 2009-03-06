@@ -2,6 +2,7 @@ package org.lee.mugen.sprite.character;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,7 +16,7 @@ import org.lee.mugen.sprite.parser.Parser;
 import org.lee.mugen.sprite.parser.Parser.GroupText;
 import org.lee.mugen.util.BeanTools;
 
-public class SpriteDef {
+public class SpriteDef implements Serializable {
 	private String parentPath;
 	private Info info = new Info();
 	private Files files = new Files();
@@ -57,11 +58,11 @@ public class SpriteDef {
 		return spriteDef;
 	}
 
-	public static class Arcade {
+	public static class Arcade implements Serializable {
 		private StoryBoard intro = new StoryBoard();
 		private StoryBoard ending = new StoryBoard();
 
-		public static class StoryBoard {
+		public static class StoryBoard implements Serializable {
 			private String storyboard;
 
 			public String getStoryboard() {
@@ -82,7 +83,7 @@ public class SpriteDef {
 		}
 	}
 
-	public static class Pal {
+	public static class Pal implements Serializable {
 		List<Integer> defaults = new ArrayList<Integer>();
 
 		public void setDefaults(int... params) {
@@ -117,7 +118,7 @@ public class SpriteDef {
 
 	}
 
-	public static class Info {
+	public static class Info implements Serializable {
 		private String name;
 		private String displayname;
 		private String versiondate;
@@ -173,7 +174,7 @@ public class SpriteDef {
 
 	}
 
-	public static class Files {
+	public static class Files implements Serializable {
 		private String cmd; // Command
 
 		private String cns; // Const

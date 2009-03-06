@@ -1,12 +1,14 @@
 package org.lee.mugen.input;
 
+import java.io.Serializable;
+
 
 /**
  * MugenSingleCmd describes a single command of the sequence in *.cmd
  * @author Dr Wong
  *
  */
-public class MugenSingleCmd {
+public class MugenSingleCmd implements Serializable {
 	public static enum CommandType {
 		PRESS(1, ""), HOLD(2, "/"), RELEASED(4, "~"), DIRECTION(8, "$"), SIMULTANEOUS(16, "+"), 
 		NO_OTHER_KEY_BEFORE(32, ">");

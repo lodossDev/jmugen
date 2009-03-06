@@ -5,6 +5,5 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/JMugen.Common"/>
 	<classpathentry kind="lib" path="lib/gluegen-rt.jar"/>
 	<classpathentry kind="lib" path="lib/jogl.jar" sourcepath="jogl-1.1.1-src.zip"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/joglUtils"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

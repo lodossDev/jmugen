@@ -1,10 +1,11 @@
 package org.lee.mugen.sprite.entity;
 
 import java.awt.Point;
+import java.io.Serializable;
 
 import org.lee.mugen.sprite.character.Sprite;
 
-public class SuperpauseSub {
+public class SuperpauseSub implements Serializable {
 	public static final int DARKEN = 1;
 	public static final int INVERT = 2;
 	public static final int BLUR = 3;

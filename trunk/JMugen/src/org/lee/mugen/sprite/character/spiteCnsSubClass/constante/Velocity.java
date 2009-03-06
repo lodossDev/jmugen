@@ -1,12 +1,14 @@
 package org.lee.mugen.sprite.character.spiteCnsSubClass.constante;
 
+import java.io.Serializable;
+
 import org.lee.mugen.sprite.entity.PointF;
 
 
-public class Velocity implements Cloneable {
+public class Velocity implements Cloneable, Serializable {
 
 	
-	public static class Move implements Cloneable {
+	public static class Move implements Cloneable, Serializable {
 		private PointF fwd = new PointF(0,0);
 		private PointF back = new PointF(0,0);
 		@Override

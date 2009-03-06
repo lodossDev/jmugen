@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -223,7 +224,7 @@ public class Parser {
 	private static boolean isValidExpression(List<String> tokens) {
 		return false;
 	}
-	public static class GroupText {
+	public static class GroupText implements Serializable {
 		private String section;
 		private String sectionRaw;
 		private List<String> keysOrdered = new LinkedList<String>();

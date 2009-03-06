@@ -1,8 +1,10 @@
 package org.lee.mugen.sprite.entity;
 
+import java.io.Serializable;
+
 import org.lee.mugen.sprite.parser.Parser;
 
-public class SndGrpNum {
+public class SndGrpNum implements Serializable {
 	private boolean isPlaySpriteSnd = false;
 	private int snd_grp = -1;
 	private int snd_item;

@@ -1,5 +1,6 @@
 package org.lee.mugen.sprite.base;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 import org.lee.mugen.parser.air.AirGroup;
@@ -7,8 +8,8 @@ import org.lee.mugen.parser.air.AirParser;
 import org.lee.mugen.sprite.character.AnimElement;
 import org.lee.mugen.sprite.character.AnimGroup;
 
-public class AbstractAnimManager {
-	public static class SpriteDrawProperties {
+public class AbstractAnimManager implements Serializable {
+	public static class SpriteDrawProperties implements Serializable {
 		private float angleset;
 		private boolean isActive = false;
 		private boolean nextSetDrawPropertiesToFalse = false;

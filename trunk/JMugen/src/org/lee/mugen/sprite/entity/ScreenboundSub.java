@@ -1,8 +1,9 @@
 package org.lee.mugen.sprite.entity;
 
 import java.awt.Point;
+import java.io.Serializable;
 
-public class ScreenboundSub {
+public class ScreenboundSub implements Serializable {
 	private int time;
 	private Point movecamera = new Point(1,1);
 	private int value = 0;

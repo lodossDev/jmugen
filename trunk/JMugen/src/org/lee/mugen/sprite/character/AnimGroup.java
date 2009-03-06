@@ -1,11 +1,12 @@
 package org.lee.mugen.sprite.character;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import org.lee.mugen.parser.air.AirData;
 import org.lee.mugen.parser.air.AirGroup;
 
-public class AnimGroup {
+public class AnimGroup implements Serializable {
         private int _groupID;
         private int _imgLoopStart;
         private AnimElement[] _ImgSprArray;

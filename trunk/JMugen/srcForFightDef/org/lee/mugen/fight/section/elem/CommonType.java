@@ -17,4 +17,14 @@ public abstract class CommonType implements Cloneable {
 		// TODO Auto-generated method stub
 		
 	}
+	@Override
+	public Object clone() {
+		try {
+			return super.clone();
+		} catch (CloneNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new IllegalStateException(e);
+		}
+	}
 }

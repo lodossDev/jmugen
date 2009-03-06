@@ -1,5 +1,7 @@
 package org.lee.mugen.input;
 
+import java.io.Serializable;
+
 import org.lee.mugen.input.AbstractCommand.Kind;
 import org.lee.mugen.input.KeyLockCommand.State;
 import org.lee.mugen.input.MugenSingleCmd.CommandType;
@@ -11,7 +13,7 @@ import org.lee.mugen.lang.WrapInt;
  * @author Dr Wong
  *
  */
-public class MugenCommands {
+public class MugenCommands implements Serializable {
 	private MugenSingleCmd[] _cmds;
 	private long _time = 1;
 	private String _commandName;

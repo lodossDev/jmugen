@@ -1,5 +1,6 @@
 package org.lee.mugen.sprite.cns.eval.function;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,7 +13,7 @@ import org.lee.mugen.sprite.cns.AbstractCnsFunction;
 import org.lee.mugen.sprite.parser.ExpressionFactory;
 import org.lee.mugen.util.BeanTools;
 
-public abstract class StateCtrlFunction extends AbstractCnsFunction {
+public abstract class StateCtrlFunction extends AbstractCnsFunction implements Serializable {
 	private boolean isInterrupt = false;
 	
 	public boolean containsParam(String param) {

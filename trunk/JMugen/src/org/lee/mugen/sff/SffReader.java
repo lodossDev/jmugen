@@ -166,19 +166,6 @@ public class SffReader {
                 subFileHead.pcxFile = null;
             }
             next = subFileHead.nextPosition;
-        
-            
-//            if (subFileHead.grpNumber == 72) {
-//            	new File("ryu").mkdir();
-//				FileOutputStream fos = new FileOutputStream("ryu/" + subFileHead.grpNumber + "_" + subFileHead.imgNumber + ".pcx");
-//				
-//				fos.write(subFileHead.pcxFile.pcxStream.toByteArray());
-//				fos.flush();
-//				fos.close();
-//        	System.exit(0);
-
-//
-//            }
         }
         if (enter)
         	SubFileList.add(subFileHead);

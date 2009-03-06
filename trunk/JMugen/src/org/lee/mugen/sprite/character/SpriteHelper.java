@@ -65,21 +65,21 @@ public class SpriteHelper extends Sprite {
 	}
 	@Override
 	public void process() {
-		if (helperSub.getBindtime() == -1) {
-			PointF pos = helperSub.getPostype().computePos(helperSub.getSpriteFrom(), FightEngine.getNearestEnnemies(this), helperSub.getPos(), helperSub.getFacing());
-			getInfo().setXPos(pos.getX());
-			getInfo().setYPos(pos.getY());
-
-			boolean isFlipH = helperSub.getSpriteFrom().isFlip();
-			if (helperSub.getPostype() == Postype.p2) {
-				Sprite s = FightEngine.getNearestEnnemies(helperSub.getSpriteFrom());
-				isFlipH = s.isFlip();
-			}
-			if (helperSub.getFacing() == -1) {
-				isFlipH = !isFlipH;
-			}
-			getInfo().setFlip(isFlipH);
-		}
+//		if (helperSub.getBindtime() == -1) {
+//			PointF pos = helperSub.getPostype().computePos(helperSub.getSpriteFrom(), FightEngine.getNearestEnnemies(this), helperSub.getPos(), helperSub.getFacing());
+//			getInfo().setXPos(pos.getX());
+//			getInfo().setYPos(pos.getY());
+//
+//			boolean isFlipH = helperSub.getSpriteFrom().isFlip();
+//			if (helperSub.getPostype() == Postype.p2) {
+//				Sprite s = FightEngine.getNearestEnnemies(helperSub.getSpriteFrom());
+//				isFlipH = s.isFlip();
+//			}
+//			if (helperSub.getFacing() == -1) {
+//				isFlipH = !isFlipH;
+//			}
+//			getInfo().setFlip(isFlipH);
+//		}
 			
 		super.process();
 	}

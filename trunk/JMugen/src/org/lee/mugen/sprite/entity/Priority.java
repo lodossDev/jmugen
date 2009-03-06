@@ -1,7 +1,9 @@
 package org.lee.mugen.sprite.entity;
 
+import java.io.Serializable;
 
-public class Priority {
+
+public class Priority implements Serializable {
 	private int hit_prior;
 	private HitType hit_type;
 	
