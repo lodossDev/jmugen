@@ -15,34 +15,17 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.IOUtils;
+import org.lee.mugen.core.JMugenConstant;
 import org.lee.mugen.lang.Wrap;
-import org.lee.mugen.lang.Wrapper;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.cns.eval.function.MathFunction;
 import org.lee.mugen.sprite.cns.eval.operator.CnsOperatorsDef;
 import org.lee.mugen.util.BeanTools;
-import org.lee.mugen.util.Logger;
 
 public class Parser {
-	public static void main(String[] args) {
-		String[] tokens = ExpressionFactory.expression2Tokens("Hidefattr = 3");
-		Wrap<MathFunction> firstOp = new Wrapper<MathFunction>();
-		Wrap<Valueable> value1 = new Wrapper<Valueable>();
-		Wrap<MathFunction> compareOp = new Wrapper<MathFunction>();
-		Wrap<Valueable> value2 = new Wrapper<Valueable>();
-		Wrap<String[]> key = new Wrapper<String[]>();
-		getValueForSpecialOpAndReturnPos(tokens, 0, key, firstOp, value1, compareOp, value2);
-		
-		Logger.log(
-								key.getValue()[0] 
-				               + firstOp.getValue().getOp()
-				               + value1.getValue().getValue("") 
-				               + (compareOp.getValue() != null ? compareOp.getValue().getOp() : "") 
-				               + (value2.getValue() != null? value2.getValue().getValue(""): ""));
-		
-	}
 	private static final File[] SEARCH_DIR_FOR = new File[] {
-		new File("."), new File("resource"), new File("resource/data"), new File("data")
+		new File("."), new File("resource"), new File(JMugenConstant.RESOURCE + "data"), new File("data")
 	};
 	public static String getExistFile(String filename) {
 		File result = new File(filename);
@@ -264,12 +247,12 @@ public class Parser {
 
 		
 	}
-	private static final String S_END = "(?:(?:\\s*;.*$)|(?:\\s*$))";
-	private static final String S_COMMENT_OR_EMPTY_REGEX = "^ *;.*$|^ *$";
+	public static final String S_END = "(?:(?:\\s*;.*$)|(?:\\s*$))";
+	public static final String S_COMMENT_OR_EMPTY_REGEX = "^\\s*;.*$|^\\s*$";
 	
-	private static final Pattern P_COMMENT_OR_EMPTY_REGEX = Pattern.compile(S_COMMENT_OR_EMPTY_REGEX);
-	private static final Pattern P_END = Pattern.compile(S_END);
-	private static final Pattern P_SECTION_REGEX = Pattern.compile("^\\s*\\[(.*)\\]" + S_END);
+	public static final Pattern P_COMMENT_OR_EMPTY_REGEX = Pattern.compile(S_COMMENT_OR_EMPTY_REGEX);
+	public static final Pattern P_END = Pattern.compile(S_END);
+	public static final Pattern P_SECTION_REGEX = Pattern.compile("^\\s*\\[(.*)\\]" + S_END);
 
 	public static String[] getGroupText(String src) {
 		src = src.replaceAll("\\t", " ");
@@ -329,13 +312,14 @@ public class Parser {
 		return keyValue;
 	}
 	// "^ *\\[.*\\]" + _END
-	public static List<GroupText> getGroupTextMap(String src) {
+	public static List<GroupText> getGroupTextMap(String src) throws IOException {
 		return getGroupTextMap(src, false);
 	}
-	public static List<GroupText> getGroupTextMap(String src, boolean caseSensitive) {
+	public static List<GroupText> getGroupTextMap(String src, boolean caseSensitive) throws IOException {
 		return getGroupTextMap(src, caseSensitive, false);
 	}
-	public static List<GroupText> getGroupTextMap(String src, boolean caseSensitive, boolean keyCaseSensistive) {
+	public static List<GroupText> getGroupTextMap(String src, boolean caseSensitive, boolean keyCaseSensistive) throws IOException {
+//		String src = IOUtils.toString(r);
 		StringTokenizer strToken = new StringTokenizer(src, "\r\n");
     
         List<GroupText> result = new ArrayList<GroupText>();
@@ -422,6 +406,51 @@ public class Parser {
         return result;
     }
     
+	public static List<GroupText> getGroupTextMap2(
+			BufferedReader r, 
+			boolean valueCaseSensitive, 
+			boolean keyCaseSensistive) throws IOException {
+		
+		String line;
+		List<GroupText> result = new ArrayList<GroupText>();
+		GroupText grp = null;
+		while ((line = r.readLine()) != null) {
+			if (P_COMMENT_OR_EMPTY_REGEX.matcher(line).find()) {
+				continue;
+			}
+			Matcher m = P_SECTION_REGEX.matcher(line);
+			if (m.find()) {
+				grp = new GroupText();
+				grp.setSection(m.group(1).toLowerCase());
+				grp.setSectionRaw(line);
+				result.add(grp);
+			} else {
+				try {
+					line = line.replaceAll(S_END, "");
+					String[] kv = getSeparateKeyValue(line, true);
+					grp.appendText(line);
+					if (kv != null && kv.length != 0) {
+						grp.getOriginalKeysOrdered().add(kv[0]);
+						kv[0] = keyCaseSensistive? kv[0]: kv[0].toLowerCase();
+						kv[1] = kv[1] == null? "": kv[1];
+                    	if (!kv[1].startsWith("\"") || !kv[1].endsWith("\"")) {
+                    		if (!valueCaseSensitive)
+                    			kv[1] = kv[1].toLowerCase();
+                    	}
+						grp.getKeysOrdered().add(kv[0]);
+						grp.getKeyValues().put(kv[0], kv[1]);
+					}
+					
+				} catch (Exception e) {
+					e.printStackTrace();
+					// TODO: handle exception
+				}
+			}
+		}
+		
+        return result;
+	}
+	
     public static String getText(InputStream in) throws IOException {
     	InputStreamReader isr = new InputStreamReader(in, "utf-8");
     	BufferedReader br = new BufferedReader(isr);

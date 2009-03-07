@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.lee.mugen.core.JMugenConstant;
 import org.lee.mugen.core.sound.SoundSystem;
 import org.lee.mugen.io.IOUtils;
 import org.lee.mugen.io.LittleEndianDataInputStream;
@@ -79,8 +80,8 @@ public class SndReader {
 	}
 	
 	public static void main(String[] args) throws IOException {
-		SoundSystem.SoundBackGround.playMusic("resource/sound/LeeKyungwon_WayOfRebirth.mp3");
-		Snd snd = SndReader.parse("resource/chars/xiangfei/files/xiangfei.snd");
+		SoundSystem.SoundBackGround.playMusic(JMugenConstant.RESOURCE + "sound/LeeKyungwon_WayOfRebirth.mp3");
+		Snd snd = SndReader.parse(JMugenConstant.RESOURCE + "chars/xiangfei/files/xiangfei.snd");
 		for (GroupSnd grp: snd.getGroups())
 			for (byte[] bytes: grp.getSounds())
 				SoundSystem.Sfx.playSnd(bytes, false);

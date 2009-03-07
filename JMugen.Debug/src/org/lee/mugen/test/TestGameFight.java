@@ -10,6 +10,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileFilter;
 
 import org.lee.mugen.core.GameFight;
+import org.lee.mugen.core.JMugenConstant;
 import org.lee.mugen.core.sound.SoundSystem;
 import org.lee.mugen.renderer.GameWindow;
 import org.lee.mugen.renderer.GraphicsWrapper;
@@ -69,7 +70,7 @@ public class TestGameFight  {
 				"Now it will prompt to choose Characters, stage and music (music is not required)", "JMugen 0.01b", JOptionPane.INFORMATION_MESSAGE);
 		
 		JOptionPane.showMessageDialog(null, "Choose the first Char", "JMugen 0.01b", JOptionPane.INFORMATION_MESSAGE);
-		JFileChooser fcSelectChar = new JFileChooser(new File(".", "resource/chars"));
+		JFileChooser fcSelectChar = new JFileChooser(new File(".", JMugenConstant.RESOURCE + "chars"));
 		fcSelectChar.setFileFilter(new FileFilter() {
 			@Override
 			public boolean accept(File f) {
@@ -90,7 +91,7 @@ public class TestGameFight  {
 		
 		
 		JOptionPane.showMessageDialog(null, "Choose the second Char", "JMugen 0.01b", JOptionPane.INFORMATION_MESSAGE);
-		fcSelectChar = new JFileChooser(new File(".", "resource/chars"));
+		fcSelectChar = new JFileChooser(new File(".", JMugenConstant.RESOURCE + "chars"));
 		fcSelectChar.setFileFilter(new FileFilter() {
 			@Override
 			public boolean accept(File f) {
@@ -111,7 +112,7 @@ public class TestGameFight  {
 		
 		
 		JOptionPane.showMessageDialog(null, "Choose Stage", "JMugen 0.01b", JOptionPane.INFORMATION_MESSAGE);
-		fcSelectChar = new JFileChooser(new File(".", "resource/stages"));
+		fcSelectChar = new JFileChooser(new File(".", JMugenConstant.RESOURCE + "stages"));
 		fcSelectChar.setFileFilter(new FileFilter() {
 			@Override
 			public boolean accept(File f) {
@@ -132,7 +133,7 @@ public class TestGameFight  {
 		
 		
 		JOptionPane.showMessageDialog(null, "Choose Music", "JMugen 0.01b", JOptionPane.INFORMATION_MESSAGE);
-		fcSelectChar = new JFileChooser(new File(".", "resource/sound"));
+		fcSelectChar = new JFileChooser(new File(".", JMugenConstant.RESOURCE + "sound"));
 		fcSelectChar.setFileFilter(new FileFilter() {
 			@Override
 			public boolean accept(File f) {
@@ -183,7 +184,7 @@ public class TestGameFight  {
 		launchDirect();
 //		launchUI();
 		
-//		SoundSystem.SoundBackGround.playMusic("resource/sound/ADX_S060.adx");
+//		SoundSystem.SoundBackGround.playMusic(JMugenConstant.RESOURCE + "sound/ADX_S060.adx");
 	}
 	
 	public static void launchDirect() throws Exception {
@@ -213,21 +214,21 @@ public class TestGameFight  {
 //		statemachine.getGameState().setGameType(TeamMode.SINGLE); // TODO
 		statemachine.setTeamOneMode(TeamMode.SINGLE);
 		statemachine.setTeamTwoMode(TeamMode.SINGLE);
-		statemachine.preloadSprite(GameFight.TEAMSIDE_ONE, "1", "resource/chars/" + args[0] + "/" + args[0] + ".def", Integer.parseInt(args[1]));
-		statemachine.preloadSprite(GameFight.TEAMSIDE_TWO, "2", "resource/chars/" + args[2] + "/" + args[2] + ".def", Integer.parseInt(args[3]));
+		statemachine.preloadSprite(GameFight.TEAMSIDE_ONE, "1", JMugenConstant.RESOURCE + "chars/" + args[0] + "/" + args[0] + ".def", Integer.parseInt(args[1]));
+		statemachine.preloadSprite(GameFight.TEAMSIDE_TWO, "2", JMugenConstant.RESOURCE + "chars/" + args[2] + "/" + args[2] + ".def", Integer.parseInt(args[3]));
 
 
 
 		
 		GraphicsWrapper.init();
-		statemachine.setStage("resource/stages/" + args[4]);
+		statemachine.setStage(JMugenConstant.RESOURCE + "stages/" + args[4]);
 		if (args.length > 5)
-			SoundSystem.SoundBackGround.playMusic("resource/sound/" + args[5]);
+			SoundSystem.SoundBackGround.playMusic(JMugenConstant.RESOURCE + "sound/" + args[5]);
 		final GameWindow gameWindow = GraphicsWrapper.getInstance().getInstanceOfGameWindow();
 		gameWindow.setGameWindowCallback(statemachine);
 		SpriteDebugerUI debugerUI = new SpriteDebugerUI();
 		
-//		gameWindow.setRender(false);
+		gameWindow.setRender(true);
 //		debugerUI.setVisible(true);
 //		ExpressionTester.lanch();
 		gameWindow.start();

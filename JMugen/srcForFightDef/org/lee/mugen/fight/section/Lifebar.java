@@ -15,33 +15,6 @@ public class Lifebar implements Section {
 	PlayerLifebar p2 = new PlayerLifebar();
 	
 	
-	public static void main(String[] args) {
-		String test = "[Lifebar]" + "\n" + 
-			"p1.pos    = 140,12" + "\n" +
-			"p1.bg0.anim = 10" + "\n" +
-			"p1.bg1.spr = 11,0" + "\n" +
-			"p1.mid.spr = 12,0" + "\n" +
-			"p1.front.spr = 13,0" + "\n" +
-			"p1.range.x  = 0,-127" + "\n" +
-			"p2.pos    = 178,12" + "\n" +
-			"p2.bg0.anim = 10" + "\n" +
-			"p2.bg0.facing = -1" + "\n" +
-			"p2.bg1.spr = 11,0" + "\n" +
-			"p2.bg1.facing = -1" + "\n" +
-			"p2.mid.spr = 12,0" + "\n" +
-			"p2.mid.facing = -1" + "\n" +
-			"p2.front.spr = 13,0" + "\n" +
-			"p2.front.facing = -1" + "\n" +
-			"p2.range.x = 0,127" + "\n";
-		
-		List<GroupText> grps = Parser.getGroupTextMap(test);
-		Lifebar lifebar = new Lifebar();
-		for (GroupText grp: grps) {
-			for (String key: grp.getKeysOrdered()) {
-				lifebar.parse(null, key, grp.getKeyValues().get(key));
-			}
-		}
-	}
 	
 	public void parse(Object root, String name, String value) {
 		if (name.startsWith("p1.")) {

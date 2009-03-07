@@ -112,7 +112,7 @@ public class JoglMugenDrawer extends MugenDrawer {
 			xScale = dp.getAngleDrawProperties().getXScale();
 			yScale = dp.getAngleDrawProperties().getYScale();
 		}
-
+//		gl.glColor4f(1f, 1f, 1f, 1f);
 		gl.glColor4f(1f, 1f, 1f, this.alpha * dp.getAlpha());
 		// draw a quad textured to match the sprite
 		Texture texture = (Texture) dp.getIc().getImg();
@@ -822,7 +822,7 @@ public class JoglMugenDrawer extends MugenDrawer {
 			Logger.log("No More Texture To Load");
 		return result;
 	}
-	float alpha;
+	float alpha = 1f;
 	@Override
 	public float getAlpha() {
 		return alpha;

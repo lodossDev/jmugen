@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.lee.mugen.core.Game;
 import org.lee.mugen.core.GameFight;
 import org.lee.mugen.core.GameMenu;
+import org.lee.mugen.core.JMugenConstant;
 import org.lee.mugen.core.renderer.game.StageBackgroundRender;
 import org.lee.mugen.core.renderer.game.select.SelectRender;
 import org.lee.mugen.fight.select.Characters;
@@ -23,7 +24,7 @@ public class GameSelect implements Game {
 		@Override
 		public void run() {
 			try {
-				String path = "resource/" + MugenSystem.getInstance().getFiles().getSelect().getExtraStages().getStages().get(getIndexOfStage());
+				String path = JMugenConstant.RESOURCE + MugenSystem.getInstance().getFiles().getSelect().getExtraStages().getStages().get(getIndexOfStage());
 				Stage newStage = new Stage(path);
 				oldStageToDelete = stage;
 				stage = newStage;
@@ -260,7 +261,7 @@ public class GameSelect implements Game {
 		sprite.setSpriteId("2");
 		gameFight.addSprite(sprite, GameFight.TEAMSIDE_TWO);
 		if (stage == null) {
-			String path = "resource/" + MugenSystem.getInstance().getFiles().getSelect().getExtraStages().getStages().get(getIndexOfStage());
+			String path = JMugenConstant.RESOURCE + MugenSystem.getInstance().getFiles().getSelect().getExtraStages().getStages().get(getIndexOfStage());
 			stage = new Stage(path);
 		}
 		{
