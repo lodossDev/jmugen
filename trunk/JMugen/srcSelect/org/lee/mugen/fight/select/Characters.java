@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
+import org.lee.mugen.core.JMugenConstant;
 import org.lee.mugen.fight.section.Section;
 import org.lee.mugen.fight.system.MugenSystem;
 import org.lee.mugen.imageIO.PCXPalette;
@@ -43,7 +44,7 @@ public class Characters implements Section {
 		SpriteDef spriteDef = charactersMap.get(character);
 		if (spriteDef == null) {
 			try {
-				spriteDef = SpriteDef.parseSpriteDef(new File("resource/chars/" + character + "/" + character + ".def").getAbsolutePath());
+				spriteDef = SpriteDef.parseSpriteDef(new File(JMugenConstant.RESOURCE + "chars/" + character + "/" + character + ".def").getAbsolutePath());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -59,7 +60,7 @@ public class Characters implements Section {
 	private Map<String, ImageContainer> bigPortraitsMap = new HashMap<String, ImageContainer>();
 	
 	private void doSpriteInformation(String character) throws IOException {
-		File path = new File("resource/chars/" + character + "/" + character + ".def");
+		File path = new File(JMugenConstant.RESOURCE + "chars/" + character + "/" + character + ".def");
 		BufferedReader br = new BufferedReader(new FileReader(path));
 		String line;
 		boolean findFiles = false;
@@ -101,13 +102,13 @@ public class Characters implements Section {
 				return;
 		}
 	}
-	final String charCacheDir = "resource/cache/char/";
+	final String charCacheDir = JMugenConstant.RESOURCE + "cache/char/";
 
 	public ImageContainer getPortrait(String character) {
 		ImageContainer ic = portraitsMap.get(character);
 		if (ic == null) {
 			String sff = characterSFFMap.get(character);
-			File file = new File("resource/chars/" + character + "/" + sff);
+			File file = new File(JMugenConstant.RESOURCE + "chars/" + character + "/" + sff);
 
 			
 			
@@ -154,7 +155,7 @@ public class Characters implements Section {
 		ImageContainer ic = bigPortraitsMap.get(character);
 		if (ic == null) {
 			String sff = characterSFFMap.get(character);
-			File file = new File("resource/chars/" + character + "/" + sff);
+			File file = new File(JMugenConstant.RESOURCE + "chars/" + character + "/" + sff);
 			
 			new File(charCacheDir + character).mkdirs();
 			File cache = new File(charCacheDir + character + "/" + character + ".braw");

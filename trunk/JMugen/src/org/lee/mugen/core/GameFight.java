@@ -516,23 +516,23 @@ public class GameFight implements AbstractGameFight {
 						stage = instanceOfStage.getFilename();
 					} else if (KeyEvent.VK_F2 == key && !isPress) {
 						
-						String newStage = stage.substring("resource/".length());
+						String newStage = stage.substring(JMugenConstant.RESOURCE.length());
 						LinkedList<String> list = MugenSystem.getInstance().getFiles().getSelect().getExtraStages().getStages();
 						int index = list.indexOf(newStage);
 						index--;
 						if (index < 0)
 							index = list.size() - 1;
-						stage = "resource/" + list.get(index);
+						stage = JMugenConstant.RESOURCE + list.get(index);
 						reloadStage = true;
 					} else if (KeyEvent.VK_F3 == key && !isPress) {
 						
-						String newStage = stage.substring("resource/".length());
+						String newStage = stage.substring(JMugenConstant.RESOURCE.length());
 						LinkedList<String> list = MugenSystem.getInstance().getFiles().getSelect().getExtraStages().getStages();
 						int index = list.indexOf(newStage);
 						index++;
 						if (index > list.size() - 1)
 							index = 0;
-						stage = "resource/" + list.get(index);
+						stage = JMugenConstant.RESOURCE + list.get(index);
 						reloadStage = true;
 					}
 					
@@ -545,7 +545,7 @@ public class GameFight implements AbstractGameFight {
 		loadingText += "\nloading Fight.def";
 		if (fightdef != null)
 			fightdef.free();
-		fightdef = new Fightdef("resource/data/fight.def");
+		fightdef = new Fightdef(JMugenConstant.RESOURCE + "data/fight.def");
 		try {
 			
 			loadSprites();

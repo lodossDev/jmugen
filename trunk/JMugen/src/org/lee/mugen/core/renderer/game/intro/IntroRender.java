@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.lee.mugen.core.JMugenConstant;
 import org.lee.mugen.core.renderer.game.fight.BaseRender;
 import org.lee.mugen.fight.intro.Intro;
 import org.lee.mugen.fight.intro.sub.Scene;
@@ -16,8 +17,8 @@ public class IntroRender extends BaseRender {
 	
 	public IntroRender() {
 //		intro = new Intro("E:/dev/workspace/JMugen/resource/chars/kfm/intro.def");
-		intro = new Intro("resource/chars/kfm/ending.def");
-//		intro = new Intro("resource/chars/sf3alex/alexending.def");
+		intro = new Intro(JMugenConstant.RESOURCE + "chars/kfm/ending.def");
+//		intro = new Intro(JMugenConstant.RESOURCE + "chars/sf3alex/alexending.def");
 		try {
 			intro.parse();
 		} catch (Exception e) {
