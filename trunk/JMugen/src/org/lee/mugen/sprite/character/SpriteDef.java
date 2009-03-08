@@ -2,6 +2,8 @@ package org.lee.mugen.sprite.character;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,7 +31,9 @@ public class SpriteDef implements Serializable {
 		SpriteDef spriteDef = new SpriteDef();
 		String parentPath = new File(def).getParentFile().getAbsolutePath();
 		spriteDef.setParentPath(parentPath);
-		List<GroupText> groups = Parser.getGroupTextMap(org.apache.commons.io.IOUtils.toString(new FileInputStream(def)));
+        Reader r = new InputStreamReader(new FileInputStream(def), "utf-8");
+
+		List<GroupText> groups = Parser.getGroupTextMap(r);
 
 		for (GroupText grp : groups) {
 			String section = grp.getSection();

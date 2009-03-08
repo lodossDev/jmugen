@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,7 +16,6 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.io.IOUtils;
 import org.lee.mugen.core.JMugenConstant;
 import org.lee.mugen.lang.Wrap;
 import org.lee.mugen.parser.type.Valueable;
@@ -312,13 +312,13 @@ public class Parser {
 		return keyValue;
 	}
 	// "^ *\\[.*\\]" + _END
-	public static List<GroupText> getGroupTextMap(String src) throws IOException {
+	public static List<GroupText> getGroupTextMap(Reader src) throws IOException {
 		return getGroupTextMap(src, false);
 	}
-	public static List<GroupText> getGroupTextMap(String src, boolean caseSensitive) throws IOException {
+	public static List<GroupText> getGroupTextMap(Reader src, boolean caseSensitive) throws IOException {
 		return getGroupTextMap(src, caseSensitive, false);
 	}
-	public static List<GroupText> getGroupTextMap(String src, boolean caseSensitive, boolean keyCaseSensistive) throws IOException {
+	public static List<GroupText> getGroupTextMap2(String src, boolean caseSensitive, boolean keyCaseSensistive) throws IOException {
 //		String src = IOUtils.toString(r);
 		StringTokenizer strToken = new StringTokenizer(src, "\r\n");
     
@@ -406,11 +406,16 @@ public class Parser {
         return result;
     }
     
-	public static List<GroupText> getGroupTextMap2(
-			BufferedReader r, 
+	public static List<GroupText> getGroupTextMap(
+			Reader reader, 
 			boolean valueCaseSensitive, 
 			boolean keyCaseSensistive) throws IOException {
-		
+		BufferedReader r = null;
+		if (reader instanceof BufferedReader) {
+			r = (BufferedReader) reader;
+		} else {
+			r = new BufferedReader(reader);
+		}
 		String line;
 		List<GroupText> result = new ArrayList<GroupText>();
 		GroupText grp = null;

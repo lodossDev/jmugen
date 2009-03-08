@@ -1,25 +1,16 @@
 package org.lee.mugen.fight.select;
 
-import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
-import org.lee.mugen.core.renderer.java.JMugenDrawer;
+import org.lee.mugen.core.JMugenConstant;
 import org.lee.mugen.fight.section.Section;
-import org.lee.mugen.fight.system.MugenSystem;
-import org.lee.mugen.object.Rectangle;
-import org.lee.mugen.renderer.DrawProperties;
-import org.lee.mugen.renderer.GameWindow;
-import org.lee.mugen.renderer.ImageContainer;
-import org.lee.mugen.renderer.MugenDrawer;
-import org.lee.mugen.sprite.parser.CnsParse;
 import org.lee.mugen.sprite.parser.Parser;
 import org.lee.mugen.sprite.parser.Parser.GroupText;
-import org.lee.mugen.stage.Stage;
 
 public class ExtraStages implements Section {
 	LinkedList<String> stages = new LinkedList<String>();
@@ -37,7 +28,7 @@ public class ExtraStages implements Section {
 		if (pathRealNameMap.containsKey(path))
 			return pathRealNameMap.get(path);
 		try {
-			List<GroupText> groups = Parser.getGroupTextMap(IOUtils.toString(new FileInputStream("resource/" + path)), true);
+			List<GroupText> groups = Parser.getGroupTextMap(new InputStreamReader(new FileInputStream(JMugenConstant.RESOURCE + path), "utf-8"), true);
 			for (GroupText grp: groups) {
 				if (grp.getSection().equals("info")) {
 					String stageName = grp.getKeyValues().get("name");

@@ -1,11 +1,17 @@
 package org.lee.mugen.sprite.parser;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.SequenceInputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -100,30 +106,39 @@ public class CnsParse {
 	}
 	
 	public static List<GroupText> getCnsGroup(String parentPath, String constPath, String commonCns, String[] cns) throws Exception {
-		StringBuilder cnsBuilder = new StringBuilder();
+		List<InputStream> cnsBuilder = new ArrayList<InputStream>();
 		BufferedReader br = new BufferedReader(fileToReader(new File(parentPath, constPath).getAbsolutePath()));
-		String cnsData = org.apache.commons.io.IOUtils.toString(br);
+		FileInputStream cnsData = new FileInputStream(new File(parentPath, constPath));
 		
-		String cnsCommon = "";
+		FileInputStream cnsCommon = null;
 		File dataDir = new File(new File(parentPath).getParentFile().getParentFile(), "data");
 		if (new File(parentPath, commonCns).exists())
-			cnsCommon = org.apache.commons.io.IOUtils.toString(fileToReader(new File(parentPath, commonCns).getAbsolutePath()));
+			cnsCommon = new FileInputStream(new File(parentPath, commonCns).getAbsolutePath());
 		else if (new File(dataDir, commonCns).exists()) {
-			cnsCommon = org.apache.commons.io.IOUtils.toString(fileToReader(new File(dataDir, commonCns).getAbsolutePath()));
+			cnsCommon = new FileInputStream(new File(dataDir, commonCns).getAbsolutePath());
 		} else {
 			throw new IllegalArgumentException("Can't find common cns");
 		}
 
-		cnsBuilder.append(cnsData + "\n");
+		cnsBuilder.add(cnsData);
+		cnsBuilder.add(new ByteArrayInputStream("\n".getBytes()));
+		
 
 		for (String s: cns) {
 			if (s.equals(constPath) || !new File(parentPath, s).isFile())
 				continue;
-			String grpText = org.apache.commons.io.IOUtils.toString(fileToReader(new File(parentPath, s).getAbsolutePath()));
-			cnsBuilder.append(grpText + "\n");
+			FileInputStream grpText = new FileInputStream(new File(parentPath, s).getAbsolutePath());
+			cnsBuilder.add(grpText);
+			cnsBuilder.add(new ByteArrayInputStream("\n".getBytes()));
+
 		}
-		cnsBuilder.append(cnsCommon + "\n");
-		List<GroupText> grps = Parser.getGroupTextMap(cnsBuilder.toString(), true);
+		cnsBuilder.add(cnsCommon);
+		cnsBuilder.add(new ByteArrayInputStream("\n".getBytes()));
+
+		Enumeration<InputStream> e = Collections.enumeration(cnsBuilder);
+		SequenceInputStream sis = new SequenceInputStream(e);
+		
+		List<GroupText> grps = Parser.getGroupTextMap(new InputStreamReader(sis, "utf-8"), true);
 		return grps;
 	}
 	

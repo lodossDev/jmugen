@@ -1,6 +1,8 @@
 package org.lee.mugen.fight.select;
 
+import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -53,8 +55,8 @@ public class Select {
 	}
 
 	private void parse() throws Exception {
-		String src = IOUtils.toString(new FileInputStream(filename), "utf-8");
-		List<GroupText> groups = Parser.getGroupTextMap(src, true, true);
+		BufferedReader r = new BufferedReader(new InputStreamReader(new FileInputStream(filename), "utf-8"));
+		List<GroupText> groups = Parser.getGroupTextMap(r, true, true);
 
 		for (GroupText grp: groups) {
 			if (grp.getSection().equals("characters")) {

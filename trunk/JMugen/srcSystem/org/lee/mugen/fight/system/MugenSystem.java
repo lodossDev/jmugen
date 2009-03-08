@@ -2,10 +2,12 @@ package org.lee.mugen.fight.system;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.lee.mugen.background.Background;
+import org.lee.mugen.core.JMugenConstant;
 import org.lee.mugen.fight.section.Section;
 import org.lee.mugen.sprite.baseForParse.SpriteSFF;
 import org.lee.mugen.sprite.parser.Parser;
@@ -19,7 +21,7 @@ public class MugenSystem {
 
 	public static final synchronized MugenSystem getInstance() {
 		if (instance == null) {
-			instance = new MugenSystem("resource/data/system.def");
+			instance = new MugenSystem(JMugenConstant.RESOURCE + "data/system.def");
 			try {
 				instance.parse();
 			} catch (Exception e) {
@@ -86,8 +88,9 @@ public class MugenSystem {
 	}
 	
 	private void parse() throws Exception {
-		String src = IOUtils.toString(new FileInputStream(filename));
-		List<GroupText> groups = Parser.getGroupTextMap(src);
+        Reader r = new InputStreamReader(new FileInputStream(filename), "utf-8");
+
+		List<GroupText> groups = Parser.getGroupTextMap(r);
 
 		titleBackground = buildBackground("title");
 		titleBackground.parse(this, groups);

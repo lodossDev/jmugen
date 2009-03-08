@@ -9,6 +9,7 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -256,7 +257,7 @@ public class SpriteDebugerUI extends JFrame {
 					Sprite sprite = GameFight.getInstance().getSpriteInstance(spriteId);
 					StateDef statedef = sprite.getSpriteState().getStateDef(action);
 					statedef.getGroups().clear();
-					List<GroupText> groups = Parser.getGroupTextMap(raw, true);
+					List<GroupText> groups = Parser.getGroupTextMap(new StringReader(raw), true);
 					statedef.getGroups().addAll(groups);
 					statedef.recompile();
 						

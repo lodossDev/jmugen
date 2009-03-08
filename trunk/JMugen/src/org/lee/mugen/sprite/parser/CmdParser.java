@@ -1,14 +1,20 @@
 package org.lee.mugen.sprite.parser;
 
+import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.SequenceInputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
+import org.lee.mugen.core.JMugenConstant;
 import org.lee.mugen.input.Key;
 import org.lee.mugen.input.MugenCommands;
 import org.lee.mugen.input.MugenSingleCmd;
@@ -24,15 +30,19 @@ public class CmdParser {
 
 	
 	public static void parse(InputStream in, Sprite sprite) throws Exception {
-		String raw = IOUtils.toString(new InputStreamReader(in, "utf-8"));
-
-		// Common.cmd : TODO safer
-		String rawCommon = IOUtils.toString(new InputStreamReader(new FileInputStream("resource/data/common.cmd"), "utf-8"));
-
-		raw = raw + "\n" + rawCommon;
-		
 		boolean caseSensitive = true;
-		List<GroupText> grps = Parser.getGroupTextMap(raw, caseSensitive);
+		
+		List<InputStream> inList = new ArrayList<InputStream>();
+		inList.add(in);
+		inList.add(new ByteArrayInputStream("\n".getBytes()));
+		inList.add(new FileInputStream(JMugenConstant.RESOURCE + "data/common.cmd"));
+		
+		Enumeration<InputStream> e = Collections.enumeration(inList);
+		
+		SequenceInputStream sis = new SequenceInputStream(e);
+		Reader r = new InputStreamReader(sis, "utf-8");
+		
+		List<GroupText> grps = Parser.getGroupTextMap(r, caseSensitive);
 		
 		CnsParse.buildSpriteInfo(grps, sprite, sprite.getInfo(), sprite.getSpriteState());
 //		

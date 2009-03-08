@@ -2,7 +2,10 @@ package org.lee.mugen.stage;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.Serializable;
 import java.util.List;
 
@@ -59,8 +62,8 @@ public class Stage implements Serializable {
 	}
 	
 	private void parse() throws Exception {
-		String src = IOUtils.toString(new BufferedReader(new FileReader(filename)));
-		List<GroupText> groups = Parser.getGroupTextMap(src, true);
+		Reader r = new InputStreamReader(new FileInputStream(filename), "utf-8");
+		List<GroupText> groups = Parser.getGroupTextMap(r, true);
 		
 		String bgdefRegex = " *bgdef *";
 		String bgRegex = "( *bg +" + "(.*)\\s*)|(bg)";
