@@ -1,9 +1,10 @@
 package org.lee.mugen.fight.section;
 
 import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.lee.mugen.parser.air.AirParser;
 import org.lee.mugen.sprite.base.AbstractAnimManager;
 import org.lee.mugen.sprite.baseForParse.SpriteSFF;
@@ -30,8 +31,8 @@ public class Fightdef {
 	
 	
 	public Fightdef(String filename) throws Exception {
-        String text = IOUtils.toString(new FileInputStream(filename));
-        List<GroupText> list = Parser.getGroupTextMap(text);
+        Reader r = new InputStreamReader(new FileInputStream(filename), "utf-8");
+        List<GroupText> list = Parser.getGroupTextMap(r);
 
         AirParser airParser = new AirParser(filename);
         anim = new AbstractAnimManager(airParser);

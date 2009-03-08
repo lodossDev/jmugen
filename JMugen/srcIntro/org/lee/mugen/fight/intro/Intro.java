@@ -2,7 +2,10 @@ package org.lee.mugen.fight.intro;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -91,9 +94,9 @@ public class Intro {
 	}
 	
 	public void parse() throws Exception {
-		List<GroupText> groups = 
-			Parser.getGroupTextMap(IOUtils.toString(new BufferedReader(
-					new FileReader(filename))));
+        Reader r = new InputStreamReader(new FileInputStream(filename), "utf-8");
+
+		List<GroupText> groups = Parser.getGroupTextMap(r);
         AirParser airParser = new AirParser(filename);
         anim = new AbstractAnimManager(airParser);
         parse(groups);

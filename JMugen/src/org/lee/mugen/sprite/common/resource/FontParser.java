@@ -1,20 +1,18 @@
 package org.lee.mugen.sprite.common.resource;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.lee.mugen.core.JMugenConstant;
 import org.lee.mugen.imageIO.PCXPalette;
 import org.lee.mugen.imageIO.RawPCXImage;
 import org.lee.mugen.io.LittleEndianDataInputStream;
-import org.lee.mugen.renderer.GraphicsWrapper;
-import org.lee.mugen.renderer.ImageContainer;
 import org.lee.mugen.sprite.parser.Parser;
 import org.lee.mugen.sprite.parser.Parser.GroupText;
 
@@ -22,7 +20,7 @@ public class FontParser {
 	static FontProducer fontProducer;
 	public static FontProducer getFontProducer() throws Exception {
 		if (fontProducer == null) {
-			FileInputStream fis = new FileInputStream(new File("resource/font/name1.fnt"));
+			FileInputStream fis = new FileInputStream(new File(JMugenConstant.RESOURCE + "font/name1.fnt"));
 			fontProducer = parse(new LittleEndianDataInputStream(fis));
 			
 		}
@@ -68,7 +66,7 @@ public class FontParser {
 		
 		FontProducer fontProducer = new FontProducer();
 		String text = new String(buffer);
-		List<GroupText> grpsText = Parser.getGroupTextMap(text, true);
+		List<GroupText> grpsText = Parser.getGroupTextMap(new StringReader(text), true);
 		for (GroupText grp: grpsText) {
 			if (grp.getSection().equalsIgnoreCase("def")) {
 				String[] strsSize = grp.getKeyValues().get("size").replaceAll(" ", "").split(",");
