@@ -245,6 +245,15 @@ public class Parser {
 			this.sectionRaw = sectionRaw;
 		}
 
+		@Override
+		public String toString() {
+			StringBuilder buffer = new StringBuilder();
+			
+			buffer.append(getSectionRaw() + "\n");
+			buffer.append(getText());
+			
+			return buffer.toString();
+		}
 		
 	}
 	public static final String S_END = "(?:(?:\\s*;.*$)|(?:\\s*$))";
@@ -424,6 +433,7 @@ public class Parser {
 				continue;
 			}
 			Matcher m = P_SECTION_REGEX.matcher(line);
+			line = line.replaceAll(S_END, "");
 			if (m.find()) {
 				grp = new GroupText();
 				grp.setSection(m.group(1).toLowerCase());
