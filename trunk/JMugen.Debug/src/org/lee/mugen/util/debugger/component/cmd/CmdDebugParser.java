@@ -22,7 +22,7 @@ import org.lee.mugen.core.JMugenConstant;
 import org.lee.mugen.sprite.parser.Parser.GroupText;
 
 
-public class DebugParser {
+public class CmdDebugParser {
 
 	enum FileType {
 		CMD, CNS
@@ -82,7 +82,7 @@ public class DebugParser {
 	
 	
 
-	public DebugParser(FileType fileType, String...files) throws Exception {
+	public CmdDebugParser(FileType fileType, String...files) throws Exception {
 		switch (fileType) {
 		case CNS:
 			buildCns(files);

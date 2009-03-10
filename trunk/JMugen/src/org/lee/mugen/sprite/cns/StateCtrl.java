@@ -9,6 +9,9 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.lee.mugen.core.GameFight;
+import org.lee.mugen.core.debug.BreakPoint;
+import org.lee.mugen.core.debug.BreakPosition;
+import org.lee.mugen.core.debug.Debug;
 import org.lee.mugen.parser.type.Functionable;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.character.Sprite;
@@ -103,12 +106,67 @@ public class StateCtrl implements Cloneable, Serializable {
 		}
 		return isTriggered;
 	}
-	
+	private int getPosition(String spriteId) {
+		return GameFight.getInstance().getSpriteInstance(spriteId).getSpriteState().getStateDef(getStateDefId()).getStateCtrls().indexOf(this);
+	}
 	public boolean execute(String spriteId) {
- 		if (getSprite(spriteId).isPause())
-			return false;
+		if (!Debug.getDebug().isEnable() || !Debug.getDebug().isStop()) {
 
+			if (getSprite(spriteId).isPause())
+				return false;
+		}
+
+		////////// DEBUG BREAK POINT
+		if (Debug.getDebug().isEnable()) {
+			boolean isDebugStop = Debug.getDebug().isStop();
+			boolean isGo = Debug.getDebug().isGo();
+
+			BreakPoint bp = Debug.getDebug().getBreakPoint(spriteId, Integer.parseInt(getStateDefId()), getPosition(spriteId), BreakPosition.Before);
+			BreakPoint bpAfter = Debug.getDebug().getBreakPoint(spriteId, Integer.parseInt(getStateDefId()), getPosition(spriteId), BreakPosition.After);
+			if (isDebugStop && !isGo)
+				return false;
+			if (isDebugStop && isGo && bp != null) {
+				bp.setReach(false);
+				Debug.getDebug().setStop(false);
+				Debug.getDebug().setGo(false);
+				bp = null;
+			} else if (isDebugStop && bpAfter == null) {
+				return false;
+			}
+			if (bp != null) {
+				bp.setReach(true);
+				Debug.getDebug().setStop(true);
+				Debug.getDebug().setGo(false);
+				return false;
+			}
+		}
+		////////// END DEBUG BREAK POINT
 		if (testTriggered(spriteId)){
+			////////// DEBUG BREAK POINT
+			if (Debug.getDebug().isEnable()) {
+				boolean isDebugStop = Debug.getDebug().isStop();
+				boolean isGo = Debug.getDebug().isGo();
+
+				BreakPoint bp = Debug.getDebug().getBreakPoint(spriteId, Integer.parseInt(getStateDefId()), getPosition(spriteId), BreakPosition.After);
+				if (isDebugStop && !isGo)
+					return false;
+				if (isDebugStop && isGo && bp != null) {
+					bp.setReach(false);
+					Debug.getDebug().setStop(false);
+					Debug.getDebug().setGo(false);
+					bp = null;
+				} else if (isDebugStop) {
+					return false;
+				}
+				if (bp != null) {
+					bp.setReach(true);
+					Debug.getDebug().setStop(true);
+					Debug.getDebug().setGo(false);
+					
+					return false;
+				}
+			}
+			////////// END DEBUG BREAK POINT
 			if (persistentCounter == 0 || (persistentCounter % persistent == 0 && persistentCounter != -1)) {
 				for (StateCtrlFunction f: executors) {
 					if (

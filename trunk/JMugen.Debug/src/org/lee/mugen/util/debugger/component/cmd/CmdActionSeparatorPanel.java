@@ -10,12 +10,12 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
 
-public class ActionSeparatorPanel extends JPanel {
+public class CmdActionSeparatorPanel extends JPanel {
 	AddButton btnAddSection;
 	RemoveButton btnRemoveSection;
 	SingleCmdPanel pnlParentSingleCmd;
 	JPanel cntParent;
-	public ActionSeparatorPanel(SingleCmdPanel main, JPanel pnlList) {
+	public CmdActionSeparatorPanel(SingleCmdPanel main, JPanel pnlList) {
 		this.pnlParentSingleCmd = main;
 		this.cntParent = pnlList;
 		setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
@@ -33,8 +33,8 @@ public class ActionSeparatorPanel extends JPanel {
 					int index = 0;
 					for (Component c: cntParent.getComponents()) {
 
-						if (c instanceof ActionSeparatorPanel) {
-							if (((ActionSeparatorPanel)c).btnAddSection != AddButton.this) {
+						if (c instanceof CmdActionSeparatorPanel) {
+							if (((CmdActionSeparatorPanel)c).btnAddSection != AddButton.this) {
 								
 								index++;
 								continue;
@@ -43,7 +43,7 @@ public class ActionSeparatorPanel extends JPanel {
 								cntParent.add(pnlParentSingleCmd.createDefaultTextPane(), index + 1);
 							else
 								cntParent.add(pnlParentSingleCmd.createDefaultTextPane(), 1);
-							cntParent.add(new ActionSeparatorPanel(pnlParentSingleCmd, cntParent), index + 2);
+							cntParent.add(new CmdActionSeparatorPanel(pnlParentSingleCmd, cntParent), index + 2);
 						}
 						index++;
 					}
@@ -63,8 +63,8 @@ public class ActionSeparatorPanel extends JPanel {
 				public void mouseClicked(MouseEvent e) {
 					int index = 0;
 					for (Component c: cntParent.getComponents()) {
-						if (c instanceof ActionSeparatorPanel) {
-							if (((ActionSeparatorPanel)c).btnRemoveSection != RemoveButton.this) {
+						if (c instanceof CmdActionSeparatorPanel) {
+							if (((CmdActionSeparatorPanel)c).btnRemoveSection != RemoveButton.this) {
 								index++;
 								continue;
 								
@@ -87,7 +87,7 @@ public class ActionSeparatorPanel extends JPanel {
 						index++;
 					}
 					if (cntParent.getComponentCount() == 0)
-						cntParent.add(new ActionSeparatorPanel(pnlParentSingleCmd, cntParent));
+						cntParent.add(new CmdActionSeparatorPanel(pnlParentSingleCmd, cntParent));
 					cntParent.validate();
 					cntParent.repaint();
 				}

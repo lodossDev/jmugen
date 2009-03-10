@@ -1,9 +1,8 @@
-package org.lee.mugen.util.debugger.component.cmd;
+package org.lee.mugen.util.debugger.component.cnsFile;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
@@ -14,7 +13,6 @@ import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JFrame;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -22,10 +20,10 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextPane;
 
 import org.lee.mugen.core.JMugenConstant;
-import org.lee.mugen.util.debugger.component.cmd.CmdDebugParser.FileType;
-import org.lee.mugen.util.debugger.component.cmd.CmdDebugParser.GrpTxtCategory;
+import org.lee.mugen.util.debugger.component.cnsFile.CnsDebugParser.FileType;
+import org.lee.mugen.util.debugger.component.cnsFile.CnsDebugParser.GrpTxtCategory;
 
-public class CommandPanel extends JPanel {
+public class CnsPanel extends JPanel {
 	final List<JTextPane> listOfTextPane = new ArrayList<JTextPane>();
 	final JTabbedPane tbPane = new JTabbedPane(JTabbedPane.LEFT, JTabbedPane.SCROLL_TAB_LAYOUT);
 	final Action actNewCategoryBefore = new AbstractAction("< New category") {
@@ -38,7 +36,7 @@ public class CommandPanel extends JPanel {
 				int index = tbPane.getSelectedIndex();
 				if (index < 0)
 					index = 0;
-				tbPane.insertTab(in, null, new SingleCmdPanel(listOfTextPane, gtCategory), null, index);
+				tbPane.insertTab(in, null, new SingleCnsPanel(listOfTextPane, gtCategory), null, index);
 			}
 
 		}
@@ -52,7 +50,7 @@ public class CommandPanel extends JPanel {
 				GrpTxtCategory gtCategory = new GrpTxtCategory(in);
 				int index = tbPane.getSelectedIndex();
 				index++;
-				tbPane.insertTab(in, null, new SingleCmdPanel(listOfTextPane, gtCategory), null, index);
+				tbPane.insertTab(in, null, new SingleCnsPanel(listOfTextPane, gtCategory), null, index);
 			}
 		}
 	};
@@ -80,7 +78,7 @@ public class CommandPanel extends JPanel {
 		
 	};
 	final JPopupMenu menu = new JPopupMenu();
-	public CommandPanel(String cmdFile) throws Exception {
+	public CnsPanel(String[] files) throws Exception {
 		setLayout(new BorderLayout());
 		menu.add(actNewCategoryBefore);
 		menu.add(actNewCategoryAfter);
@@ -99,10 +97,10 @@ public class CommandPanel extends JPanel {
 	        }
 	    });
 
-		CmdDebugParser debugParser = new CmdDebugParser(FileType.CMD, new String[] {cmdFile});
+		CnsDebugParser debugParser = new CnsDebugParser(FileType.CNS, files);
 	    
 		for (GrpTxtCategory c: debugParser.getCategories()) {
-			SingleCmdPanel cmdPanel = new SingleCmdPanel(listOfTextPane, c);
+			SingleCnsPanel cmdPanel = new SingleCnsPanel(listOfTextPane, c);
 			cmdPanel.setPreferredSize(new Dimension(300, 500));
 			tbPane.addTab(c.getCategory(), cmdPanel);
 		}
@@ -120,10 +118,23 @@ public class CommandPanel extends JPanel {
 			}
 		});
 		String name = "kfm";
-		String sFile = JMugenConstant.RESOURCE + "chars/" + name + "/" + name + ".cmd";
+//		String[] sFiles = {
+//				JMugenConstant.RESOURCE + "chars/" + name + "/" + "kof_joe-N.cns"
+//				,JMugenConstant.RESOURCE + "chars/" + name + "/" + "kof_joe-N.cns"
+//				,JMugenConstant.RESOURCE + "chars/" + name + "/" + "kof_joe-S.cns"
+//				,JMugenConstant.RESOURCE + "chars/" + name + "/" + "kof_joe-H.cns"
+//				,JMugenConstant.RESOURCE + "chars/" + name + "/" + "SNK-common.cns"
+//				,JMugenConstant.RESOURCE + "data/common1.cns"
+//		};
+		
+		String[] sFiles = {
+				JMugenConstant.RESOURCE + "chars/" + name + "/" + name + ".cns"
+				,JMugenConstant.RESOURCE + "data/common1.cns"
+		};
+		
 //		String sCommonFile = JMugenConstant.RESOURCE + "data/common1.cns";
 	
-		frm.getContentPane().add(new CommandPanel(sFile));
+		frm.getContentPane().add(new CnsPanel(sFiles));
 		
 		frm.pack();
 		

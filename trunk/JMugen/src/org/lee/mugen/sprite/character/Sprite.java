@@ -15,6 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.lee.mugen.core.GameFight;
+import org.lee.mugen.core.debug.Debug;
 import org.lee.mugen.core.physics.PhysicsEngime;
 import org.lee.mugen.input.MugenCommands;
 import org.lee.mugen.io.IOUtils;
