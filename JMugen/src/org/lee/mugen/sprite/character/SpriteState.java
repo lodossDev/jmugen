@@ -393,5 +393,8 @@ public class SpriteState implements Serializable {
 		
 		return getStateDef(i) != null;
 	}
+	public void executeDebug() {
+		currentStateDef.execute(spriteId);		
+	}
 
 }

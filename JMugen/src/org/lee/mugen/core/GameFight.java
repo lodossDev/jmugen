@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.lee.mugen.core.command.SpriteCmdProcess;
+import org.lee.mugen.core.debug.Debug;
 import org.lee.mugen.core.gameSelect.GameSelect;
 import org.lee.mugen.core.renderer.game.AfterimageRender;
 import org.lee.mugen.core.renderer.game.CnsRender;
@@ -603,6 +604,16 @@ public class GameFight implements AbstractGameFight {
 	}
 
 	public void update(int delta) throws Exception {
+		if (Debug.getDebug().isStop()) {
+			if (Debug.getDebug().isGo()) {
+				for (Sprite s : getSprites()) {
+
+					s.getSpriteState().executeDebug();
+				}
+				
+			}
+			return;
+		}
 		if (freeNow) {
 			next = GameSelect.getInstance();
 			return;

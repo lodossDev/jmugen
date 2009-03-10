@@ -6,6 +6,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.lee.mugen.core.GameFight;
+import org.lee.mugen.core.debug.BreakPoint;
+import org.lee.mugen.core.debug.BreakPosition;
+import org.lee.mugen.core.debug.Debug;
 import org.lee.mugen.parser.type.Functionable;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.parser.CnsParse;
@@ -14,6 +17,7 @@ import org.lee.mugen.sprite.parser.Parser.GroupText;
 public class StateDef implements Cloneable, Serializable {
 	
 	private String id;
+
 	private List<StateCtrl> stateCtrlList = new ArrayList<StateCtrl>();
 	private List<Functionable> executors = new ArrayList<Functionable>();
 	
@@ -49,8 +53,9 @@ public class StateDef implements Cloneable, Serializable {
 		executors.add(f);
 	}
 	private boolean isExecMainFunc = false;
-	public void execute(String spriteId) {
+	private void compile(String spriteId) {
 		if (!isCompiled) {
+			
 			Sprite sprite = GameFight.getInstance().getSpriteInstance(spriteId);
 			try {
 				getStateCtrls().clear();
@@ -67,11 +72,40 @@ public class StateDef implements Cloneable, Serializable {
 			
 			isCompiled = true;
 		}
+	}
+	public void execute(String spriteId) {
+		compile(spriteId);
+		
 		if (GameFight.getInstance().getSpriteInstance(spriteId) == null)
 			return; // case where helper is not add again
+		
 		long time = GameFight.getInstance().getSpriteInstance(spriteId).getSpriteState().getTimeInState();
 		
 		if (!isExecMainFunc) {
+			////////// DEBUG BREAK POINT
+			if (Debug.getDebug().isEnable()) {
+				boolean isDebugStop = Debug.getDebug().isStop();
+				boolean isGo = Debug.getDebug().isGo();
+				boolean hasBreakPointInStateCtrl = Debug.getDebug().hasBreakPointInStateCtrl(spriteId, getIntId());
+				BreakPoint bp = Debug.getDebug().getBreakPoint(spriteId, getIntId(), BreakPosition.Before);
+				if (isDebugStop && !isGo)
+					return;
+				if (isDebugStop && isGo && bp != null) {
+					bp.setReach(false);
+					Debug.getDebug().setStop(false);
+					Debug.getDebug().setGo(false);
+					bp = null;
+				} else if (isDebugStop && !hasBreakPointInStateCtrl) {
+					return;
+				}
+				if (bp != null) {
+					bp.setReach(true);
+					Debug.getDebug().setStop(true);
+					Debug.getDebug().setGo(false);
+					return;
+				}
+			}
+			////////// END DEBUG BREAK POINT
 			isExecMainFunc = true;
 			for (Functionable f: executors) {
 				try {
@@ -82,6 +116,30 @@ public class StateDef implements Cloneable, Serializable {
 				}
 			}
 		}
+		////////// DEBUG BREAK POINT
+		if (Debug.getDebug().isEnable()) {
+			boolean isDebugStop = Debug.getDebug().isStop();
+			boolean isGo = Debug.getDebug().isGo();
+			boolean hasBreakPointInStateCtrl = Debug.getDebug().hasBreakPointInStateCtrl(spriteId, getIntId());
+			BreakPoint bp = Debug.getDebug().getBreakPoint(spriteId, getIntId(), BreakPosition.After);
+			if (isDebugStop && !isGo)
+				return;
+			if (isDebugStop && isGo && bp != null) {
+				bp.setReach(false);
+				Debug.getDebug().setStop(false);
+				Debug.getDebug().setGo(false);
+				bp = null;
+			} else if (isDebugStop && !hasBreakPointInStateCtrl) {
+				return;
+			}
+			if (bp != null) {
+				bp.setReach(true);
+				Debug.getDebug().setStop(true);
+				Debug.getDebug().setGo(false);
+				return;
+			}
+		}
+		////////// END DEBUG BREAK POINT
 		int pos = 0;
 		for (StateCtrl state: stateCtrlList) {
 			try {
