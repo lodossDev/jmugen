@@ -1,10 +1,8 @@
 package org.lee.mugen.core.debug;
 
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import org.lee.mugen.sprite.cns.StateCtrl;
 import org.lee.mugen.sprite.cns.StateDef;
@@ -29,7 +27,7 @@ public class Debug {
 		this.go = go;
 	}
 
-	private boolean enable = true;
+	private boolean enable = false;
 	private List<BreakPoint> breakPoints = new LinkedList<BreakPoint>();
 
 	public boolean isEnable() {
@@ -121,8 +119,8 @@ public class Debug {
 						StatectrlBreakPoint sbp = (StatectrlBreakPoint) bp.getType();
 						if (sbp.getStateDef() == statedef && sbp.getStateCtrlPosition() == indexStateCtrl) {
 							iter.remove();
-							Debug.getDebug().setGo(true);
-//							Debug.getDebug().setStop(false);
+//							Debug.getDebug().setGo(true);
+							Debug.getDebug().setStop(false);
 						}
 					}
 				}
@@ -139,8 +137,8 @@ public class Debug {
 						StatedefBreakPoint sbp = (StatedefBreakPoint) bp.getType();
 						if (sbp.getStateDef() == statedef) {
 							iter.remove();
-							Debug.getDebug().setGo(true);
-//							Debug.getDebug().setStop(false);
+//							Debug.getDebug().setGo(true);
+							Debug.getDebug().setStop(false);
 						}
 					}
 				}

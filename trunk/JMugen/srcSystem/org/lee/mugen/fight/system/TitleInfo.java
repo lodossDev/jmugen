@@ -36,10 +36,15 @@ public class TitleInfo implements Section {
 				fadeout = new Fade();
 			fadeout.parse(Type.getNext(name), value);
 			
-		} else if (name.startsWith("menu.")) {
+		} else if (name.startsWith("menu.") || name.startsWith("cursor.")) {
 			if (menu == null)
 				menu = new Menu();
-			menu.parse(root, Type.getNext(name), value);
+			if (name.startsWith("cursor.")) {
+				menu.parse(root, name, value);
+			} else {
+				menu.parse(root, Type.getNext(name), value);
+				
+			}
 			
 		}
 		

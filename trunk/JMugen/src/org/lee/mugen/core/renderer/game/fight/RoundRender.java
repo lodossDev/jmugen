@@ -4,13 +4,16 @@ import org.lee.mugen.core.GameFight;
 import org.lee.mugen.core.GameState.WinType;
 import org.lee.mugen.fight.section.Round;
 import org.lee.mugen.fight.section.elem.FontType;
+import org.lee.mugen.fight.section.elem.Type;
 import org.lee.mugen.renderer.GraphicsWrapper;
 import org.lee.mugen.renderer.MugenDrawer;
 import org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns.Roundstate;
 
 public class RoundRender extends BaseRender {
 
-	
+	public static void main(String[] args) {
+		System.out.println("round %i".replaceAll("%i", "1"));
+	}
 	@Override
 	public void render() {
 		MugenDrawer md = GraphicsWrapper.getInstance();
@@ -21,15 +24,17 @@ public class RoundRender extends BaseRender {
 			return;
 		
 		if (round.getRound().getDefault() != null && round.getRound().getDefault().getDisplaytime() > 0) {
+			
 			if (round.getRound().getDefault().getType() instanceof FontType) {
-				FontType f = (FontType) round.getRound().getDefault().getType();
+				Type type = (Type) round.getRound().getDefault().clone();
+				FontType f = (FontType) type.getType();
 				String text = f.getText().replaceAll("%i", GameFight.getInstance().getGameState().getRoundno() + "");
 				f.setText(text);
-				
+				render(md, round.getPos(), type);
 			} else {
 				
 			}
-			render(md, round.getPos(), round.getRound().getDefault());
+			
 		}
 		
 		if ((round.getFight().getDisplaytime() > 0 || round.getFight().getDisplaytime() == -1) 

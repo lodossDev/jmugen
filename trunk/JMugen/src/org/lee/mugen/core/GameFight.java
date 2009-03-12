@@ -1074,8 +1074,10 @@ public class GameFight implements AbstractGameFight {
 		return sprites;
 	}
 
-	
-	private void initRound() {
+	public void initRound() {
+		initRound(1);
+	}
+	public void initRound(int round) {
 		getFightdef().rezet();
 		getStage().getCamera().init();
 		
@@ -1109,7 +1111,7 @@ public class GameFight implements AbstractGameFight {
 			s.getSpriteState().selfstate(5900);
 			s.getInfo().init();
   		}
-		getGameState().init(stateMachine);
+		getGameState().init(stateMachine, round);
 	}
 	
 	private void processPosition() {

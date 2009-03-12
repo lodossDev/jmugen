@@ -5,6 +5,7 @@ import java.util.List;
 import org.lee.mugen.background.Background;
 import org.lee.mugen.core.gameSelect.GameSelect;
 import org.lee.mugen.core.renderer.game.system.TitleInfoRender;
+import org.lee.mugen.core.sound.SoundSystem;
 import org.lee.mugen.fight.system.MugenSystem;
 import org.lee.mugen.fight.system.TitleInfo;
 import org.lee.mugen.fight.system.elem.ItemName;
@@ -84,12 +85,25 @@ public class GameMenu implements Game {
 						lastPress = System.currentTimeMillis();
 						lastStartIndex = getMenu().getItemname().startIndex();
 						getMenu().getItemname().increaseCurrentIndex();
+						
+						int grp = MugenSystem.getInstance().getTitleInfo().getMenu().getCursor$move$snd().getSnd_grp();
+						int num = MugenSystem.getInstance().getTitleInfo().getMenu().getCursor$move$snd().getSnd_item();
+						byte[] snd = MugenSystem.getInstance().getFiles().getSnd().getGroup(grp).getSound(num);
+						SoundSystem.Sfx.playSnd(snd);
 					} else if (cmdOne.getUp() == key) {
 						lastPress = System.currentTimeMillis();
 						lastStartIndex = getMenu().getItemname().startIndex();
 						getMenu().getItemname().decreaseCurrentIndex();
+						int grp = MugenSystem.getInstance().getTitleInfo().getMenu().getCursor$move$snd().getSnd_grp();
+						int num = MugenSystem.getInstance().getTitleInfo().getMenu().getCursor$move$snd().getSnd_item();
+						byte[] snd = MugenSystem.getInstance().getFiles().getSnd().getGroup(grp).getSound(num);
+						SoundSystem.Sfx.playSnd(snd);
 					} else if (isButton(cmdOne, key)) {
 						fire = true;
+						int grp = MugenSystem.getInstance().getTitleInfo().getMenu().getCursor$done$snd().getSnd_grp();
+						int num = MugenSystem.getInstance().getTitleInfo().getMenu().getCursor$done$snd().getSnd_item();
+						byte[] snd = MugenSystem.getInstance().getFiles().getSnd().getGroup(grp).getSound(num);
+						SoundSystem.Sfx.playSnd(snd);
 					}
 				}
 			}

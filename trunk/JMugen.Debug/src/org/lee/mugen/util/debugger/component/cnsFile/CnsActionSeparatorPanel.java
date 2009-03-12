@@ -29,6 +29,7 @@ public class CnsActionSeparatorPanel extends JPanel {
 	RemoveButton btnRemoveSection;
 	BreakPointBefore btnBreakPointBefore = new BreakPointBefore();
 	BreakPointAfter btnBreakPointAfter = new BreakPointAfter();
+	GoBtn btnGo = new GoBtn();
 	
 	SingleCnsPanel pnlParentSingleCmd;
 	JPanel cntParent;
@@ -36,10 +37,13 @@ public class CnsActionSeparatorPanel extends JPanel {
 		this.pnlParentSingleCmd = main;
 		this.cntParent = pnlList;
 		setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
+
 		add(btnAddSection = new AddButton());
 		add(btnRemoveSection = new RemoveButton());
 		add(btnBreakPointBefore);
 		add(btnBreakPointAfter);
+		add(btnGo);
+		add(Box.createHorizontalGlue());
 		
 		btnBreakPointBefore.addActionListener(new ActionListener() {
 
@@ -53,6 +57,19 @@ public class CnsActionSeparatorPanel extends JPanel {
 				
 			}});
 		
+	}
+	class GoBtn extends JButton {
+		public GoBtn() {
+			super("Go");
+			setPreferredSize(new Dimension(100, 20));
+			addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					Debug.getDebug().setGo(true);
+					
+				}});
+		}
 	}
 	class BreakPointBefore extends JToggleButton {
 		public BreakPointBefore() {

@@ -9,8 +9,9 @@
 	<classpathentry kind="src" path="srcBackground"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/jl1.0.jar"/>
-	<classpathentry kind="lib" path="lib/mp3spi1.9.2.jar"/>
 	<classpathentry kind="lib" path="lib/tritonus_share-0.3.6.jar"/>
+	<classpathentry kind="lib" path="lib/vorbisspi1.0.3.jar"/>
+	<classpathentry kind="lib" path="lib/mp3spi1.9.2.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JMugen.Common"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JMugen.Properties"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JMugen.Render.Java"/>

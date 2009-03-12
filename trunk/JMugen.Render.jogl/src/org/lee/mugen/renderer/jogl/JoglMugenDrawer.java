@@ -182,9 +182,18 @@ public class JoglMugenDrawer extends MugenDrawer {
 			trans = dp.getImageProperties().getTrans();
 		}
 
-		if (trans == Trans.ADD) {
+		if (trans == Trans.ADD || trans == Trans.ADDALPHA) {
 			gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE,
 					GL.GL_MODULATE);
+			// gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_COMBINE_RGB, GL.GL_ADD);
+			// gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_COMBINE_ALPHA, GL.GL_ADD);
+			// gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_SRC0_RGB, GL.GL_PREVIOUS);
+			// gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_SRC1_RGB, GL.GL_TEXTURE);
+			gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_DST_ALPHA);
+			type = 1;
+		} else if (trans == Trans.ADDALPHA) {
+			gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE,
+					GL.GL_ADD);
 			// gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_COMBINE_RGB, GL.GL_ADD);
 			// gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_COMBINE_ALPHA, GL.GL_ADD);
 			// gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_SRC0_RGB, GL.GL_PREVIOUS);
@@ -208,8 +217,8 @@ public class JoglMugenDrawer extends MugenDrawer {
 			gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_SRC1_RGB, GL.GL_TEXTURE);
 			gl.glBlendFunc(GL.GL_DST_COLOR, GL.GL_SRC_ALPHA);
 			drawImage(xlDst, xrDst, ytDst, ybDst, xlSrc, xrSrc, ytSrc, ybSrc, dp);
-//			drawImage(xlDst, xrDst, ytDst, ybDst, xlSrc, xrSrc, ytSrc, ybSrc, dp);
-//			drawImage(xlDst, xrDst, ytDst, ybDst, xlSrc, xrSrc, ytSrc, ybSrc, dp);
+			drawImage(xlDst, xrDst, ytDst, ybDst, xlSrc, xrSrc, ytSrc, ybSrc, dp);
+			drawImage(xlDst, xrDst, ytDst, ybDst, xlSrc, xrSrc, ytSrc, ybSrc, dp);
 
 			type = 3;
 		} else {
@@ -418,7 +427,8 @@ public class JoglMugenDrawer extends MugenDrawer {
 			scale(0.5f, 0.5f); // This scale help me to see out of screen
 			gl.glTranslated(160, 240, 0);
 		}
-
+		gl.glDisable(GL.GL_TEXTURE_2D);
+		gl.glColor4f(rgba.getR(), rgba.getG(), rgba.getB(), rgba.getA());
 		gl.glBegin(GL.GL_POINTS);
 		gl.glVertex2f(x1, y1);
 		gl.glVertex2f(x2, y2);
@@ -440,7 +450,7 @@ public class JoglMugenDrawer extends MugenDrawer {
 		final GL gl = getGl();
 		if (gl == null)
 			return;
-
+		gl.glColor4f(rgba.getR(), rgba.getG(), rgba.getB(), rgba.getA());
 		gl.glDisable(GL.GL_TEXTURE_2D);
 		gl.glBegin(GL.GL_LINE_STRIP);
 		gl.glVertex2f(x, y);
@@ -692,20 +702,34 @@ public class JoglMugenDrawer extends MugenDrawer {
 		return getDefaultTextureData(buffer, image.getWidth(), image.getHeight());
 	}
 	private static TextureData getDefaultTextureData(Buffer buffer, int width, int height) {
-		final TextureData data = 
-//			new TextureData(GL.GL_RGBA,//GL.GL_COMPRESSED_RGBA_S3TC_DXT3_EXT,
-//			new TextureData(GL.GL_COMPRESSED_RGBA_S3TC_DXT3_EXT,
-			new TextureData(GL.GL_COMPRESSED_RGBA_S3TC_DXT3_EXT,
-				width,
-				height,
-                0,
-                GL.GL_BGRA,
-                GL.GL_UNSIGNED_BYTE,
-                false,
-                false,
-                false,
-                buffer,
-                null);
+		final TextureData data;
+		if (width * height < 200 * 100) {
+			data = 
+				new TextureData(GL.GL_RGBA,//GL.GL_COMPRESSED_RGBA_S3TC_DXT3_EXT,
+					width,
+					height,
+	                0,
+	                GL.GL_BGRA,
+	                GL.GL_UNSIGNED_BYTE,
+	                false,
+	                false,
+	                false,
+	                buffer,
+	                null);
+		} else {
+			data = 
+				new TextureData(GL.GL_COMPRESSED_RGBA_S3TC_DXT3_EXT,
+					width,
+					height,
+	                0,
+	                GL.GL_BGRA,
+	                GL.GL_UNSIGNED_BYTE,
+	                false,
+	                false,
+	                false,
+	                buffer,
+	                null);
+		}
 		return data;
 	}
 	private static Texture getNewEmptyTexture(int width, int height) {
