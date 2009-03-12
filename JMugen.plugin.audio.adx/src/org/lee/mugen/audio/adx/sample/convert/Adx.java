@@ -287,7 +287,7 @@ public class Adx {
 	public void close() throws IOException {
 		file.close();
 	}
-	final int BASEVOL = 0x4000;
+	final int BASEVOL = 0x0200; //0x4000
 	
 	int read_long(byte[] p, int pos) throws IOException
 	{

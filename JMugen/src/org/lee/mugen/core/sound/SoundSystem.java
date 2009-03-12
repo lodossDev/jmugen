@@ -11,17 +11,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Control;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
-import javax.sound.sampled.Control.Type;
 
 import org.lee.mugen.audio.adx.sample.convert.Adx;
 import org.lee.mugen.audio.adx.sample.convert.AdxDecoder;
@@ -42,6 +39,10 @@ public final class SoundSystem {
             try {
                 Class.forName("javazoom.spi.mpeg.sampled.file.MpegAudioFileReader");
                 Class.forName("javazoom.spi.mpeg.sampled.convert.MpegFormatConversionProvider");
+
+//                Class.forName("javazoom.spi.vorbis.sampled.file.VorbisAudioFileFormat");
+//                Class.forName("javazoom.spi.vorbis.sampled.convert.VorbisFormatConversionProvider");
+
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
@@ -80,7 +81,7 @@ public final class SoundSystem {
         	FloatControl control = (FloatControl) soundsys.getSrcDataLine().getControl(FloatControl.Type.VOLUME);
         	control.setValue(volume);
         }
-        public static float getVolume(final float volume) {
+        public static float getVolume() {
         	FloatControl control = (FloatControl) soundsys.getSrcDataLine().getControl(FloatControl.Type.VOLUME);
         	return control.getValue();
         }
@@ -225,7 +226,7 @@ public final class SoundSystem {
         }
 
         public void getSoundWavMp3(String fileName) throws Exception {
-            AudioFileFormat aff = AudioSystem.getAudioFileFormat(new File(fileName));
+//            AudioFileFormat aff = AudioSystem.getAudioFileFormat(new File(fileName));
             AudioInputStream in = AudioSystem.getAudioInputStream(new File(fileName));
             AudioFormat baseFormat = in.getFormat();
             AudioFormat decodedFormat =
@@ -332,7 +333,7 @@ public final class SoundSystem {
                dataLine.open( audioFormat );
                if( dataLine.isControlSupported( FloatControl.Type.MASTER_GAIN ) ) {
                   FloatControl volume = (FloatControl) dataLine.getControl( FloatControl.Type.MASTER_GAIN );
-//                  volume.setValue(0);
+                  volume.setValue(-20);
                }
                dataLine.start();
          

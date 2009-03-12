@@ -35,7 +35,7 @@ public abstract class MugenDrawer {
     
     
 	public void setColor(Color color) {
-		setColor(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+		setColor(color.getRed()/255f, color.getGreen()/255f, color.getBlue()/255f, color.getAlpha()/255f);
 		
 	}
 	public void draw(java.awt.Rectangle r) {

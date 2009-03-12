@@ -18,7 +18,7 @@ public class GameScene implements Game {
 	@Override
 	public Game getNext() throws Exception {
 		// TODO Auto-generated method stub
-		return null;
+		return this;
 	}
 
 	@Override

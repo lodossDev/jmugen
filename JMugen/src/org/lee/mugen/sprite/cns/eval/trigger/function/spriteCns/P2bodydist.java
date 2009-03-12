@@ -7,6 +7,7 @@ import org.lee.mugen.core.GameFight;
 import org.lee.mugen.parser.type.StringValueable;
 import org.lee.mugen.parser.type.Valueable;
 import org.lee.mugen.sprite.character.Sprite;
+import org.lee.mugen.sprite.character.SpriteHelper;
 import org.lee.mugen.sprite.cns.eval.function.SpriteCnsTriggerFunction;
 /**
  * 
@@ -28,6 +29,8 @@ public class P2bodydist extends SpriteCnsTriggerFunction {
 		for (Sprite spr : GameFight.getInstance().getSprites()) {
 			if (!spr.equals(sprOne) && !GameFight.getInstance().getRoot(sprOne).equals(spr)
 					&& !GameFight.getInstance().getRoot(sprOne).equals(GameFight.getInstance().getRoot(spr))) {
+				if (spr instanceof SpriteHelper)
+					continue;
 				sprTwo = spr;
 			}
 		}

@@ -206,7 +206,7 @@ public class TestGameFight  {
 				"kfm", "0", 
 				"kfm", "0",
 //				"kenstageDG.def",
-				"stage0.def",
+				"sky.def",
 //				"mvc2/ADX_S060.BIN"
 		};
 		

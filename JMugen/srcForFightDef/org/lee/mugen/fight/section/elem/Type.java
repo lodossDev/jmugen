@@ -26,7 +26,16 @@ public class Type implements Cloneable {
 	@Override
 	public Object clone() {
 		try {
-			return super.clone();
+			Type clone = (Type) super.clone();
+			if (type != null)
+				clone.type = (CommonType) type.clone();
+			if (offset != null)
+				clone.offset = (Point) offset.clone();
+			if (snd != null)
+				clone.snd = (SndType) snd.clone();
+			if (scale != null)
+				clone.scale = (PointF) scale.clone();
+			return clone;
 		} catch (CloneNotSupportedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

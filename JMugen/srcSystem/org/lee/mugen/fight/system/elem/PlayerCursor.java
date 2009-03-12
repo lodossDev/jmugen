@@ -10,7 +10,18 @@ public class PlayerCursor implements Section {
 	private Point startcell;
 	private Type active;
 	private Type done;
+	private Type move;
 	
+
+
+	public Type getMove() {
+		return move;
+	}
+
+	public void setMove(Type move) {
+		this.move = move;
+	}
+
 	@Override
 	public void parse(Object root, String name, String value) throws Exception {
 		if (name.equals("startcell")) {
@@ -19,12 +30,17 @@ public class PlayerCursor implements Section {
 			if (active == null)
 				active = new Type();
 			active.setType(Type.getNext(name), active, value, root);
-			active.parse(name, value);
+			active.parse(Type.getNext(name), value);
 		} else if (name.startsWith("done")) {
 			if (done == null)
 				done = new Type();
 			done.setType(Type.getNext(name), done, value, root);
-			done.parse(name, value);
+			done.parse(Type.getNext(name), value);
+		} else if (name.startsWith("move")) {
+			if (move == null)
+				move = new Type();
+			move.setType(Type.getNext(name), move, value, root);
+			move.parse(Type.getNext(name), value);
 		}
 		
 	}

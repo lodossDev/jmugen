@@ -73,7 +73,7 @@ public class BG implements Cloneable, Serializable {
 
 	// Parallax-only:
 	// xscale = ?, ? Top xscale, bottom xscale (float)
-	private PointF xscale = new PointF(1f, 2f);
+	private PointF xscale = new PointF(1f, 1f);
 	// trans = ? Transparency settings: "none"/"add"/"add1"/"sub"" (def: "none")
 	private Trans trans = Trans.NONE;
 	private Type type = Type.NORMAL;

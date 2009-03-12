@@ -115,7 +115,6 @@ public class StateCtrl implements Cloneable, Serializable {
 			if (getSprite(spriteId).isPause())
 				return false;
 		}
-
 		////////// DEBUG BREAK POINT
 		if (Debug.getDebug().isEnable()) {
 			boolean isDebugStop = Debug.getDebug().isStop();

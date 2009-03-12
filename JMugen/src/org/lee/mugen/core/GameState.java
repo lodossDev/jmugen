@@ -164,100 +164,109 @@ public class GameState {
 					winner = GameFight.getInstance().getSpriteInstance(spriteId);
 				}
 			}
-			if (winner != null) {
-				Collection<Sprite> winners = new LinkedList<Sprite>();
-				Collection<Sprite> loser = new LinkedList<Sprite>();
-				if (Winko.isWinKo(winner.getSpriteId()))
-					lastWin = WinType.KO;
-				if (Win.isWin(winner.getSpriteId()) && !Winko.isWinKo(winner.getSpriteId()))
-					lastWin = WinType.TO;
-				
-				if (GameFight.getInstance().getTeamOne().containsKey(winner.getSpriteId())) {
-					winners.addAll(GameFight.getInstance().getTeamOne().values());
-					loser.addAll(GameFight.getInstance().getTeamTwo().values());
-					teamOneWinRound++;
+			if (lastWin == null) {
+				if (winner != null) {
+					Collection<Sprite> winners = new LinkedList<Sprite>();
+					Collection<Sprite> loser = new LinkedList<Sprite>();
+					if (Winko.isWinKo(winner.getSpriteId()))
+						lastWin = WinType.KO;
+					if (Win.isWin(winner.getSpriteId()) && !Winko.isWinKo(winner.getSpriteId()))
+						lastWin = WinType.TO;
+					
+					if (GameFight.getInstance().getTeamOne().containsKey(winner.getSpriteId())) {
+						winners.addAll(GameFight.getInstance().getTeamOne().values());
+						loser.addAll(GameFight.getInstance().getTeamTwo().values());
+						teamOneWinRound++;
 
-				} else {
-					winners.addAll(GameFight.getInstance().getTeamTwo().values());
-					loser.addAll(GameFight.getInstance().getTeamOne().values());
-					teamTwoWinRound++;
-				}
-				for (Sprite s: winners) {
-					if (s instanceof SpriteHelper)
-						continue;
-					if (s.getInfo().getType() == Type.L)
-						continue;
-					if (spriteIdStateMap.get(s.getSpriteId()) != Roundstate.VICTORY) {
-						List<Integer> validNumber = new ArrayList<Integer>();
-						
-						for (int i = 180; i < 190; i++) {
-							if (s.getSpriteState().isStateExist(i)) {
-								validNumber.add(i);
+					} else {
+						winners.addAll(GameFight.getInstance().getTeamTwo().values());
+						loser.addAll(GameFight.getInstance().getTeamOne().values());
+						teamTwoWinRound++;
+					}
+					for (Sprite s: winners) {
+						if (s instanceof SpriteHelper)
+							continue;
+						if (s.getInfo().getType() == Type.L)
+							continue;
+						if (spriteIdStateMap.get(s.getSpriteId()) != Roundstate.VICTORY) {
+							List<Integer> validNumber = new ArrayList<Integer>();
+							
+							for (int i = 180; i < 190; i++) {
+								if (s.getSpriteState().isStateExist(i)) {
+									validNumber.add(i);
+								}
+							}
+							int size = validNumber.size();
+							if (size > 0) {
+								int state = MugenRandom.getRandomNumber(0, size - 1);
+								s.getSpriteState().changeStateDef(validNumber.get(state));
+								spriteIdStateMap.put(s.getSpriteId(), Roundstate.VICTORY);
 							}
 						}
-						int size = validNumber.size();
-						if (size > 0) {
-							int state = MugenRandom.getRandomNumber(0, size - 1);
-							s.getSpriteState().changeStateDef(validNumber.get(state));
-							spriteIdStateMap.put(s.getSpriteId(), Roundstate.VICTORY);
+					}
+					for (Sprite s: loser) {
+						if (s instanceof SpriteHelper)
+							continue;
+						if (s.getInfo().getType() == Type.L)
+							continue;
+						if (spriteIdStateMap.get(s.getSpriteId()) != Roundstate.VICTORY) {
+							List<Integer> validNumber = new ArrayList<Integer>();
+							
+							if (s.getSpriteState().isStateExist(170)) {
+								validNumber.add(170);
+							}
+							int size = validNumber.size();
+							if (size > 0) {
+								int state = MugenRandom.getRandomNumber(0, size - 1);
+								s.getSpriteState().changeStateDef(validNumber.get(state));
+								spriteIdStateMap.put(s.getSpriteId(), Roundstate.VICTORY);
+							}
 						}
 					}
-				}
-				for (Sprite s: loser) {
-					if (s instanceof SpriteHelper)
-						continue;
-					if (s.getInfo().getType() == Type.L)
-						continue;
-					if (spriteIdStateMap.get(s.getSpriteId()) != Roundstate.VICTORY) {
-						List<Integer> validNumber = new ArrayList<Integer>();
-						
-						if (s.getSpriteState().isStateExist(170)) {
-							validNumber.add(170);
-						}
-						int size = validNumber.size();
-						if (size > 0) {
-							int state = MugenRandom.getRandomNumber(0, size - 1);
-							s.getSpriteState().changeStateDef(validNumber.get(state));
-							spriteIdStateMap.put(s.getSpriteId(), Roundstate.VICTORY);
-						}
-					}
-				}
-				
-			} else {
-				int lifeTeamOne = 0;
-				int lifeTeamTwo = 0;
-				for (Sprite s: GameFight.getInstance().getTeamOne().values()) {
-					if (s.getClass() == Sprite.class) {
-						lifeTeamOne += s.getInfo().getLife();
-					}
-				}
-				for (Sprite s: GameFight.getInstance().getTeamTwo().values()) {
-					if (s.getClass() == Sprite.class) {
-						lifeTeamTwo += s.getInfo().getLife();
-					}
-				}
-				if (lifeTeamOne == 0)
-					lastWin = WinType.DKO;
-				else
-					lastWin = WinType.TO;
 					
-				drawCountMap++;
-				for (Sprite s: GameFight.getInstance().getSprites()) {
-					if (s instanceof SpriteHelper)
-						continue;
-					if (s.getInfo().getType() == Type.L)
-						continue;
-					if (spriteIdStateMap.get(s.getSpriteId()) != Roundstate.VICTORY) {
-						s.getSpriteState().changeStateDef(175);
-						spriteIdStateMap.put(s.getSpriteId(), Roundstate.VICTORY);
+				} else {
+					int lifeTeamOne = 0;
+					int lifeTeamTwo = 0;
+					for (Sprite s: GameFight.getInstance().getTeamOne().values()) {
+						if (s.getClass() == Sprite.class) {
+							lifeTeamOne += s.getInfo().getLife();
+						}
 					}
+					for (Sprite s: GameFight.getInstance().getTeamTwo().values()) {
+						if (s.getClass() == Sprite.class) {
+							lifeTeamTwo += s.getInfo().getLife();
+						}
+					}
+					if (lifeTeamOne == 0)
+						lastWin = WinType.DKO;
+					else
+						lastWin = WinType.TO;
+						
+					drawCountMap++;
+					for (Sprite s: GameFight.getInstance().getSprites()) {
+						if (s instanceof SpriteHelper)
+							continue;
+						if (s.getInfo().getType() == Type.L)
+							continue;
+						if (spriteIdStateMap.get(s.getSpriteId()) != Roundstate.VICTORY) {
+							s.getSpriteState().changeStateDef(175);
+							spriteIdStateMap.put(s.getSpriteId(), Roundstate.VICTORY);
+						}
+					}
+				}
+			} else {
+				timeBeforeStartNewRound--;
+				if (timeBeforeStartNewRound <= 0) {
+					sm.initRound(roundno + 1);
 				}
 			}
+
 			
 		}
 		
 	}
-
+	int timeBeforeStartNewRound = DEFAULT_TIME_BEFORE_START_NEWROUND;
+	static final int DEFAULT_TIME_BEFORE_START_NEWROUND = 120;
 	
 	public void enter(GameFight sm) {
 		for (String spriteId: spriteIdStateMap.keySet()) {
@@ -286,7 +295,6 @@ public class GameState {
 			if (getRoundState() == Roundstate.COMBAT 
 					&& getRoundsExisted() == 0) {
 				
-				roundno++;
 				for (String spriteId: spriteIdStateMap.keySet()) {
 					sm.getSpriteInstance(spriteId).getInfo().setCtrl(1);
 				}
@@ -295,7 +303,7 @@ public class GameState {
 			}
 		}
 	}
-	
+
 	public int getRoundTime() {
 		return DEFAULT_TIME + 1;//roundTime;
 	}
@@ -303,12 +311,14 @@ public class GameState {
 	public void setRoundTime(int roundTime) {
 		this.roundTime = roundTime;
 	}
-	public void init(GameFight sm) {
+	public void init(GameFight sm, int round) {
 		setRoundState(0);
 		setRoundsExisted(0);
-		roundno = 0;
+		roundno = round;
 		roundTime = DEFAULT_TIME;
 		spriteIdStateMap.clear();
+		lastWin = null;
+		timeBeforeStartNewRound = DEFAULT_TIME_BEFORE_START_NEWROUND;
 		for (Sprite s: sm.getSprites()) {
 			if (s instanceof SpriteHelper)
 				continue;

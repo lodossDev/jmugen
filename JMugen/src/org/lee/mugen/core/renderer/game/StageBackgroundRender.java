@@ -3,6 +3,7 @@ package org.lee.mugen.core.renderer.game;
 import org.lee.mugen.background.BG;
 import org.lee.mugen.background.BGCtrlDef;
 import org.lee.mugen.core.GameFight;
+import org.lee.mugen.core.sound.SoundSystem;
 import org.lee.mugen.object.Rectangle;
 import org.lee.mugen.parser.air.AirData;
 import org.lee.mugen.parser.air.AirData.TypeBlit;
@@ -217,7 +218,6 @@ public class StageBackgroundRender implements IBackgroundRenderer {
 					float x =  (bg.getPos().getX() - imgSprSff.getXAxis());
 					float y =  bg.getPos().getY() - imgSprSff.getYAxis();
 //
-					
 					drawTileXY(img, bg, x, y, moveX, moveY,
 							xStartForAll, bg.getBgTrans(), false, false);
 

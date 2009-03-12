@@ -3,6 +3,10 @@ package org.lee.mugen.core.gameSelect;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 
+import org.apache.commons.beanutils.PropertyUtils;
+import org.lee.mugen.core.sound.SoundSystem;
+import org.lee.mugen.fight.section.elem.SndType;
+import org.lee.mugen.fight.section.elem.Type;
 import org.lee.mugen.fight.system.MugenSystem;
 import org.lee.mugen.input.CmdProcDispatcher;
 import org.lee.mugen.input.ISpriteCmdProcess;
@@ -89,20 +93,40 @@ public class SelectionController implements MugenKeyListener {
 		synchronized (monitor) {
 			shareState = shareState | getCharacterBit();
 		}
+		Type type = (Type) getProperty(MugenSystem.getInstance().getSelectInfo(), "p" + id + ".cursor.done");
+		SndType snd = type.getSnd();
+		byte[] data = MugenSystem.getInstance().getFiles().getSnd().getGroup(snd.getGrp()).getSound(snd.getNum());
+		
+		SoundSystem.Sfx.playSnd(data);
 	}
 	private void setUnSelected() {
 		synchronized (monitor) {
 			shareState = shareState & ~getCharacterBit();
-		}	
+		}
+		Type type = (Type) getProperty(MugenSystem.getInstance().getSelectInfo(), "cancel");
+		SndType snd = type.getSnd();
+		byte[] data = MugenSystem.getInstance().getFiles().getSnd().getGroup(snd.getGrp()).getSound(snd.getNum());
+		
+		SoundSystem.Sfx.playSnd(data);
 	}
 	private static void setStageSelected() {
 		synchronized (monitor) {
 			shareState = shareState | STAGE_SELECTED;
+			Type type = (Type) getProperty(MugenSystem.getInstance().getSelectInfo(), "stage.done");
+			SndType snd = type.getSnd();
+			byte[] data = MugenSystem.getInstance().getFiles().getSnd().getGroup(snd.getGrp()).getSound(snd.getNum());
+			
+			SoundSystem.Sfx.playSnd(data);
 		}
 	}
 	private static void setStageUnSelected() {
 		synchronized (monitor) {
-			shareState = shareState | STAGE_SELECTED;
+			shareState = shareState & ~STAGE_SELECTED;
+			Type type = (Type) getProperty(MugenSystem.getInstance().getSelectInfo(), "cancel");
+			SndType snd = type.getSnd();
+			byte[] data = MugenSystem.getInstance().getFiles().getSnd().getGroup(snd.getGrp()).getSound(snd.getNum());
+			
+			SoundSystem.Sfx.playSnd(data);
 		}
 	}
 	
@@ -145,13 +169,33 @@ public class SelectionController implements MugenKeyListener {
 	private void addToPosition(int x, int y) {
 		int row = MugenSystem.getInstance().getSelectInfo().getRows();
 		int col = MugenSystem.getInstance().getSelectInfo().getColumns();
-		if (position.x + x < row && position.x + x >= 0)
-			position.x += x;
-		if (position.y + y < col && position.y + y >= 0)
-			position.y += y;
+		Point original = (Point) position.clone();
+		position.x += x;
+		position.y += y;
+		if (position.x < 0)
+			position.x = row - 1;
+		if (position.y < 0)
+			position.y = col - 1;
 		
+		if (position.x > row - 1)
+			position.x = 0;
+		if (position.y > col - 1)
+			position.y = 0;
+		if (original.x != position.x || original.y != position.y) {
+			Type type = (Type) getProperty(MugenSystem.getInstance().getSelectInfo(), "p" + id + ".cursor.move");
+			SndType snd = type.getSnd();
+			byte[] data = MugenSystem.getInstance().getFiles().getSnd().getGroup(snd.getGrp()).getSound(snd.getNum());
+			
+			SoundSystem.Sfx.playSnd(data);
+		}
 	}
-	
+	private static Object getProperty(Object o, String path) {
+		try {
+			return PropertyUtils.getNestedProperty(o, path);
+		} catch (Exception e) {
+			throw new IllegalArgumentException("Unknow path " + path + " for " + o.getClass());
+		} 
+	}
 	@Override
 	public void action(int key, boolean isPress) {
 		long now = System.currentTimeMillis();
@@ -179,11 +223,22 @@ public class SelectionController implements MugenKeyListener {
 		} else {
 			if (!isStageSelected()) {
 				if (cmd.getBack() == key) {
-					if (getShareIndexOfStage() != decIndexOfStage())
+					if (getShareIndexOfStage() != decIndexOfStage()) {
 						gs.setStageChanged();
+						Type type = (Type) getProperty(MugenSystem.getInstance().getSelectInfo(), "stage.move");
+						SndType snd = type.getSnd();
+						byte[] data = MugenSystem.getInstance().getFiles().getSnd().getGroup(snd.getGrp()).getSound(snd.getNum());
+						
+						SoundSystem.Sfx.playSnd(data);
+					}
 				} else if (cmd.getForward() == key) {
-					if (getShareIndexOfStage() != incIndexOfStage())
+					if (getShareIndexOfStage() != incIndexOfStage()) {
 						gs.setStageChanged();
+						Type type = (Type) getProperty(MugenSystem.getInstance().getSelectInfo(), "stage.move");
+						SndType snd = type.getSnd();
+						byte[] data = MugenSystem.getInstance().getFiles().getSnd().getGroup(snd.getGrp()).getSound(snd.getNum());
+						SoundSystem.Sfx.playSnd(data);
+					}
 				}
 				////
 				if (isButtonConfirm(cmd, key)) {
