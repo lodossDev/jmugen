@@ -76,6 +76,7 @@ public final class SoundSystem {
         		return;
             soundsys = new SoundBackGround(path);
             soundsys.setloop(true);
+
             Thread ts = new Thread(soundsys);
             ts.setDaemon(true);
             ts.start();
@@ -121,6 +122,10 @@ public final class SoundSystem {
             if (loop) {
                 while (!stop) {
                     getSound(file);
+                    if( getSrcDataLine().isControlSupported( FloatControl.Type.MASTER_GAIN ) ) {
+                        FloatControl volume = (FloatControl) getSrcDataLine().getControl( FloatControl.Type.MASTER_GAIN );
+                        volume.setValue(-5);
+                     }
                     playSound();
                 }
                 getSrcDataLine().stop();
@@ -338,7 +343,7 @@ public final class SoundSystem {
                dataLine.open( audioFormat );
                if( dataLine.isControlSupported( FloatControl.Type.MASTER_GAIN ) ) {
                   FloatControl volume = (FloatControl) dataLine.getControl( FloatControl.Type.MASTER_GAIN );
-                  volume.setValue(-20);
+                  volume.setValue(-5);
                }
                dataLine.start();
          

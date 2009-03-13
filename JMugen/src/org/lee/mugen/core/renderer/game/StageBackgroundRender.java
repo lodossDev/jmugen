@@ -123,7 +123,7 @@ public class StageBackgroundRender implements IBackgroundRenderer {
 			startPosX =  (x + moveX * deltaX + xStartForAll) % (tileSpacingX);
 				
 			//			startPosX = 300;
-			while (Float.isNaN(startPosX) || startPosX < (320f / stage.getScaling().getXscale())) {
+			while (startPosX < (320f / stage.getScaling().getXscale())) {
 				float yDraw = (y + moveY * deltaY);
 				if (bg.getTile().getY() > 0)
 					yDraw = (y + moveY * deltaY) % (tileSpacingY);
@@ -136,7 +136,7 @@ public class StageBackgroundRender implements IBackgroundRenderer {
 			
 			startPosX =  (x + moveX * deltaX + xStartForAll) % (tileSpacingX);
 			startPosX -= tileSpacingX;
-			while (Float.isNaN(startPosX) || startPosX + img.getWidth() > 0) {
+			while (startPosX + img.getWidth() > 0) {
 				
 				float yDraw = (y + moveY * deltaY);
 				if (bg.getTile().getY() > 0)
