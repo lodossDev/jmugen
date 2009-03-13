@@ -266,7 +266,7 @@ public class GameState {
 		
 	}
 	int timeBeforeStartNewRound = DEFAULT_TIME_BEFORE_START_NEWROUND;
-	static final int DEFAULT_TIME_BEFORE_START_NEWROUND = 120;
+	static final int DEFAULT_TIME_BEFORE_START_NEWROUND = 60 * 5;
 	
 	public void enter(GameFight sm) {
 		for (String spriteId: spriteIdStateMap.keySet()) {
@@ -305,7 +305,7 @@ public class GameState {
 	}
 
 	public int getRoundTime() {
-		return DEFAULT_TIME + 1;//roundTime;
+		return roundTime;
 	}
 
 	public void setRoundTime(int roundTime) {

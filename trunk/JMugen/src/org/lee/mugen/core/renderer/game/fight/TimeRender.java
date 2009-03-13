@@ -32,7 +32,7 @@ public class TimeRender extends BaseRender {
 		MugenDrawer md = GraphicsWrapper.getInstance();
 		Type counter = GameFight.getInstance().getFightdef().getTime().getCounter();
 		int framepersec = GameFight.getInstance().getFightdef().getTime().getFramespercount();
-		String display = (time/framepersec) + "";
+		String display = (int)(time/framepersec) + "";
 		if (time == GameState.DEFAULT_TIME + 1) {
 			display = "o";
 		}

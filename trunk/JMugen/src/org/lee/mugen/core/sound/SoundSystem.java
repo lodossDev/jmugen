@@ -71,6 +71,9 @@ public final class SoundSystem {
          * @param path
          */        
         public static void playMusic(final String path) {
+        	stopMusic();
+        	if (!new File(path).exists() || new File(path).isDirectory())
+        		return;
             soundsys = new SoundBackGround(path);
             soundsys.setloop(true);
             Thread ts = new Thread(soundsys);
@@ -87,7 +90,8 @@ public final class SoundSystem {
         }
         
         public static void stopMusic() {
-            soundsys.stopPlay();
+        	if (soundsys != null)
+        		soundsys.stopPlay();
         }
         
         /**
@@ -100,7 +104,8 @@ public final class SoundSystem {
             getSrcDataLine().stop();
             getSrcDataLine().close();
             try {
-                stream.close();
+            	if (stream != null)
+            		stream.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -7,9 +7,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.lee.mugen.core.Game;
 import org.lee.mugen.core.GameFight;
 import org.lee.mugen.core.GameMenu;
+import org.lee.mugen.core.GameVsScreen;
 import org.lee.mugen.core.JMugenConstant;
 import org.lee.mugen.core.renderer.game.StageBackgroundRender;
 import org.lee.mugen.core.renderer.game.select.SelectRender;
+import org.lee.mugen.core.sound.SoundSystem;
 import org.lee.mugen.fight.select.Characters;
 import org.lee.mugen.fight.system.MugenSystem;
 import org.lee.mugen.fight.system.elem.StageDisplay;
@@ -124,6 +126,9 @@ public class GameSelect implements Game {
 	GameWindow gameWindow;
 	@Override
 	public void init(GameWindow container) throws Exception {
+		SoundSystem.SoundBackGround.stopMusic();
+		SoundSystem.SoundBackGround.playMusic(JMugenConstant.RESOURCE + MugenSystem.getInstance().getMusic().getSelect$bgm());
+
 		next = null;
 		selectRender = new SelectRender(this);
 		gameWindow = container;
@@ -238,11 +243,20 @@ public class GameSelect implements Game {
 		// Launch the game
 		int playerCount = selectionControllers.length;
 		if (SelectionController.isAllSelectionDone(playerCount)) {
-			launchGameFight();
+			launchGameVsScreen();
 		}
 		
 	}
-	private void launchGameFight() throws Exception {
+	private void launchGameVsScreen() {
+		final GameVsScreen gameVsScreen = new GameVsScreen(this);
+		next = gameVsScreen;
+	}
+
+	public String getSelectedSpriteName(int index) {
+		return getSelectedSprite(selectionControllers[index].getPosition());
+	}
+	
+	public Game getGameFight() throws Exception {
 		GameFight.clear();
 		final GameFight gameFight = GameFight.getInstance();
 		gameFight.setTeamOneMode(TeamMode.SINGLE);
@@ -277,7 +291,7 @@ public class GameSelect implements Game {
         
 		gameFight.setStage(stage);
 		
-		next = gameFight;
+		return gameFight;
 	}
 
 

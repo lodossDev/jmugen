@@ -14,7 +14,7 @@ public class PlayerName extends SimpleElement {
 	
 	@Override
 	public void parse(Object root, String pname, String value) {
-		super.parse(root, pname, value);
+		super.parse(root, Type.getNext(pname), value);
 		if (pname.startsWith("name")) {
 			if (name == null) {
 				name = new Type();
