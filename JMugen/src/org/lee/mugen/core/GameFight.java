@@ -34,6 +34,7 @@ import org.lee.mugen.core.renderer.game.StageBackgroundRender;
 import org.lee.mugen.core.renderer.game.fight.FightdefRender;
 import org.lee.mugen.core.renderer.game.fight.RoundRender;
 import org.lee.mugen.core.renderer.game.system.TitleInfoRender;
+import org.lee.mugen.core.sound.SoundSystem;
 import org.lee.mugen.fight.section.Fightdef;
 import org.lee.mugen.fight.select.ExtraStages;
 import org.lee.mugen.fight.system.MugenSystem;
@@ -501,6 +502,9 @@ public class GameFight implements AbstractGameFight {
 	boolean freeNow;
 	boolean reloadStage;
 	public void init(GameWindow container) throws Exception {
+		SoundSystem.SoundBackGround.stopMusic();
+		SoundSystem.SoundBackGround.playMusic(JMugenConstant.RESOURCE + instanceOfStage.getMusic().getBgmusic());
+
 		setWindow(container);
 		next = null;
 		freeNow = false;

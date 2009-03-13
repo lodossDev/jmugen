@@ -22,6 +22,7 @@ public class Type implements Cloneable {
 
 	CommonType type;
 	Point offset = new Point();
+	Point pos = new Point();
 	
 	@Override
 	public Object clone() {
@@ -31,6 +32,8 @@ public class Type implements Cloneable {
 				clone.type = (CommonType) type.clone();
 			if (offset != null)
 				clone.offset = (Point) offset.clone();
+			if (pos != null)
+				clone.pos = (Point) pos.clone();
 			if (snd != null)
 				clone.snd = (SndType) snd.clone();
 			if (scale != null)
@@ -140,7 +143,9 @@ public class Type implements Cloneable {
 		if (getType() != null) {
 			getType().parse(name, value);
 		}
-		if (name.equalsIgnoreCase("offset")) {
+		if (name.equalsIgnoreCase("pos")) {
+			pos = (Point) BeanTools.getConvertersMap().get(Point.class).convert(value);
+		} else if (name.equalsIgnoreCase("offset")) {
 			offset = (Point) BeanTools.getConvertersMap().get(Point.class).convert(value);
 		} else if (name.equalsIgnoreCase("starttime")) {
 			setStarttime((Integer) BeanTools.getConvertersMap().get(Integer.class).convert(value));
@@ -171,6 +176,12 @@ public class Type implements Cloneable {
 	}
 
 
+	public Point getPos() {
+		return pos;
+	}
+	public void setPos(Point pos) {
+		this.pos = pos;
+	}
 	public float getAlpha() {
 		return alpha;
 	}

@@ -63,6 +63,8 @@ public class GameMenu implements Game {
 
 	@Override
 	public void init(GameWindow container) throws Exception {
+		SoundSystem.SoundBackGround.stopMusic();
+		SoundSystem.SoundBackGround.playMusic(JMugenConstant.RESOURCE + MugenSystem.getInstance().getMusic().getTitle$bgm());
 		render = new TitleInfoRender(this);
 		fire = false;
 		next = null;

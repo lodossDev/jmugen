@@ -112,8 +112,6 @@ public class JoglMugenDrawer extends MugenDrawer {
 			xScale = dp.getAngleDrawProperties().getXScale();
 			yScale = dp.getAngleDrawProperties().getYScale();
 		}
-//		gl.glColor4f(1f, 1f, 1f, 1f);
-		gl.glColor4f(1f, 1f, 1f, this.alpha * dp.getAlpha());
 		// draw a quad textured to match the sprite
 		Texture texture = (Texture) dp.getIc().getImg();
 		TextureCoords coords = texture.getImageTexCoords();
@@ -249,6 +247,7 @@ public class JoglMugenDrawer extends MugenDrawer {
 
 		} else if (dp.getImageProperties() != null) {
 			final RGB bits = new RGB(1f / 255f, 1f / 255f, 1f / 255f, 1f);
+			
 			getAfterImageShader().render(gl,
 					dp.getImageProperties().getPalbright().mul(bits),
 					dp.getImageProperties().getPalcontrast().mul(bits),
