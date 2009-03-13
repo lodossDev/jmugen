@@ -1047,7 +1047,8 @@ public class FightEngine {
 				if (hasAttackRect(hitdef.getSpriteHitter())) {
 					if (sprTwo.getInfo().getCommand("\"holdback\"") == 1 
 							&& sprTwo.getInfo().getCtrl() == 1
-							&& sprTwo.getInfo().getLastHitdef().getHittime() <= 0
+							&& (sprTwo.getInfo().getLastHitdef() == null 
+									|| sprTwo.getInfo().getLastHitdef().getHittime() <= 0)
 							&& (stateTwo < 120 || stateTwo > 155)
 							&& sprTwo.getInfo().getMovetype() != MoveType.A) 
 //							&& sprTwo.getInfo().getMovetype() != MoveType.H
