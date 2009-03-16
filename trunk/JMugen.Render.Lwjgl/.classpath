@@ -5,7 +5,6 @@
 	<classpathentry kind="lib" path="lwjgl/jinput.jar"/>
 	<classpathentry kind="lib" path="lwjgl/lwjgl_util.jar"/>
 	<classpathentry kind="lib" path="lwjgl/lwjgl.jar" sourcepath="lwjgl-source-2.0rc2.zip"/>
-	<classpathentry kind="lib" path="lib/timer.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JMugen.Common"/>
 	<classpathentry kind="lib" path="dll"/>
 	<classpathentry kind="output" path="bin"/>

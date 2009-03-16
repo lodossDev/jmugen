@@ -6,6 +6,7 @@ uniform vec4 mul;
 uniform vec4 ampl;
 //uniform int invertall;
 uniform vec4 color;
+uniform float alpha;
 
 
 void main (void)
@@ -15,6 +16,7 @@ void main (void)
     vec4 result = (sprColor + add + ampl) * mul;
     result = clamp(result, 0.0, 1.0);
 
+    result.a = result.a * alpha;
 	if (sprColor.a > 0.0)
 	    gl_FragColor = result;
 

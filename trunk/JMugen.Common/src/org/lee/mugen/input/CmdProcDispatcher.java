@@ -567,26 +567,30 @@ public class CmdProcDispatcher {
 			mugenKeyEvents.add(new SingleCmdProcessor(time, kp));
 		}
 	}
+	
+	int[] keys = null;
 	/* (non-Javadoc)
 	 * @see org.lee.mugen.core.command.ICmdProcDispatcher#getKeys()
 	 */
 	public int[] getKeys() {
-		
-		return new int[] {
-				this.up,
-				this.down,
-				this.back,
-				this.forward,
-				this.a,
-				this.b,
-				this.c,
-				this.x,
-				this.y,
-				this.z,
-				this.abc,
-				this.xyz
+		if (keys == null) {
+			keys = new int[] {
+					this.up,
+					this.down,
+					this.back,
+					this.forward,
+					this.a,
+					this.b,
+					this.c,
+					this.x,
+					this.y,
+					this.z,
+					this.abc,
+					this.xyz
 
-		};
+			};
+		}
+		return keys; 
 	}
 	public int getForward() {
 		return forward;
