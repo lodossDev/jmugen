@@ -74,8 +74,8 @@ public class TitleInfoRender extends BaseRender {
 			
 			if (i == itemName.getCurrentIndex()) {
 				if (menu.getBoxcursor$visible() != 0) {
-					float coef = (float) Math.abs(Math.sin(gameMenu.getTime()/8f));
-					md.setColor(0.5f, 0.5f, 0.5f, coef - 0.2f);
+					float coef = (float) Math.abs(Math.sin(gameMenu.getTime()/10f));
+					md.setColor(0.4f, 0.4f, 0.4f, coef - 0.2f);
 					md.fillRect(pos.x + box.getX1(), pos.y + box.getY1(), 
 							-box.getX1() + box.getX2(), -box.getY1() + box.getY2());
 					md.setColor(1f, 1f, 1f, 1f);

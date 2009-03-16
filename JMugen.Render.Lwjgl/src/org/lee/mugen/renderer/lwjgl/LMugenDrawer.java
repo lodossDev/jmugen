@@ -1,34 +1,22 @@
 package org.lee.mugen.renderer.lwjgl;
 
-import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
-import java.awt.image.ComponentColorModel;
-import java.awt.image.DataBuffer;
-import java.awt.image.DataBufferByte;
-import java.awt.image.Raster;
-import java.awt.image.WritableRaster;
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel.MapMode;
+import java.nio.ByteOrder;
+import java.nio.IntBuffer;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.lee.mugen.imageIO.ImageUtils;
 import org.lee.mugen.imageIO.PCXLoader;
-import org.lee.mugen.imageIO.PCXPalette;
 import org.lee.mugen.imageIO.RawPCXImage;
 import org.lee.mugen.imageIO.PCXLoader.PCXHeader;
+import org.lee.mugen.object.Rectangle;
 import org.lee.mugen.renderer.AngleDrawProperties;
 import org.lee.mugen.renderer.DrawProperties;
 import org.lee.mugen.renderer.GameWindow;
@@ -39,7 +27,11 @@ import org.lee.mugen.renderer.Trans;
 import org.lee.mugen.renderer.lwjgl.shader.AfterImageShader;
 import org.lee.mugen.renderer.lwjgl.shader.PalFxShader;
 import org.lee.mugen.util.Logger;
+import org.lwjgl.opengl.EXTFramebufferObject;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
+import org.lwjgl.opengl.GL15;
+import org.lwjgl.opengl.GLContext;
 
 public class LMugenDrawer extends MugenDrawer {
 	private boolean isScaleByForMeDebug() {
@@ -69,6 +61,8 @@ public class LMugenDrawer extends MugenDrawer {
 	}
 
 	public void fillRect(float x1, float y1, float width, float height) {
+		GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
+		GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		// GL11.glColor4f(rgb.getA(), rgb.getG(), rgb.getB(), rgb.getA());
 
@@ -127,9 +121,10 @@ public class LMugenDrawer extends MugenDrawer {
 	static PalFxShader palFxShader = null;
 
 	private PalFxShader getPalFxShader() {
-		if (palFxShader == null)
+		if (palFxShader == null) {
 			palFxShader = new PalFxShader();
-
+			palFxShader.compileShader();
+		}
 		return palFxShader;
 	}
 	
@@ -137,9 +132,10 @@ public class LMugenDrawer extends MugenDrawer {
 	static AfterImageShader afterImageShader = null;
 
 	private AfterImageShader getAfterImageShader() {
-		if (afterImageShader == null)
+		if (afterImageShader == null) {
 			afterImageShader = new AfterImageShader();
-
+			afterImageShader.compileShader();
+		}
 		return afterImageShader;
 	}
 
@@ -161,108 +157,112 @@ public class LMugenDrawer extends MugenDrawer {
 				* texture.getHeight();
 
 		ImageContainer ic = dp.getIc();
-		if (dp.getTrans() == Trans.ADD1) {
-			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_DST_ALPHA);
-		} else if (dp.getTrans() == Trans.ADD) {
-			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_DST_ALPHA);
-		} else if (dp.getTrans() == Trans.ADDALPHA) {
-			GL11.glBlendFunc(GL11.GL_SRC_ALPHA,
-							GL11.GL_ONE_MINUS_SRC_ALPHA);
-			GL11.glColor4f(1f, 1f, 1f, 0.5f);
+		float type = 0;
+		Trans trans = dp.getTrans();
+		if (dp.getImageProperties() != null) {
+			// Afterimage
+			trans = dp.getImageProperties().getTrans();
 		}
-		if (dp.getPalfx() != null) {
 
-			float alpha = (float) (Math.PI * dp.getPalfx().getTimeActivate() / dp
+		if (trans == Trans.ADD || trans == Trans.ADDALPHA) {
+			GL11.glTexEnvf(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE,
+					GL11.GL_MODULATE);
+			// GL11.glTexEnvf(GL11.GL_TEXTURE_ENV, GL11.GL_COMBINE_RGB, GL11.GL_ADD);
+			// GL11.glTexEnvf(GL11.GL_TEXTURE_ENV, GL11.GL_COMBINE_ALPHA, GL11.GL_ADD);
+			// GL11.glTexEnvf(GL11.GL_TEXTURE_ENV, GL11.GL_SRC0_RGB, GL11.GL_PREVIOUS);
+			// GL11.glTexEnvf(GL11.GL_TEXTURE_ENV, GL11.GL_SRC1_RGB, GL11.GL_TEXTURE);
+			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_DST_ALPHA);
+			type = 1;
+		} else if (trans == Trans.ADDALPHA) {
+			GL11.glTexEnvf(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE,
+					GL11.GL_ADD);
+			// GL11.glTexEnvf(GL11.GL_TEXTURE_ENV, GL11.GL_COMBINE_RGB, GL11.GL_ADD);
+			// GL11.glTexEnvf(GL11.GL_TEXTURE_ENV, GL11.GL_COMBINE_ALPHA, GL11.GL_ADD);
+			// GL11.glTexEnvf(GL11.GL_TEXTURE_ENV, GL11.GL_SRC0_RGB, GL11.GL_PREVIOUS);
+			// GL11.glTexEnvf(GL11.GL_TEXTURE_ENV, GL11.GL_SRC1_RGB, GL11.GL_TEXTURE);
+			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_DST_ALPHA);
+			type = 1;
+		} else if (trans == Trans.ADD1) {
+			GL11.glTexEnvf(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE,
+					GL11.GL_MODULATE);
+			// GL11.glTexEnvf(GL11.GL_TEXTURE_ENV, GL11.GL_COMBINE_RGB, GL11.GL_ADD);
+			// GL11.glTexEnvf(GL11.GL_TEXTURE_ENV, GL11.GL_COMBINE_ALPHA, GL11.GL_ADD);
+			// GL11.glTexEnvf(GL11.GL_TEXTURE_ENV, GL11.GL_SRC0_RGB, GL11.GL_PREVIOUS);
+			// GL11.glTexEnvf(GL11.GL_TEXTURE_ENV, GL11.GL_SRC1_RGB, GL11.GL_TEXTURE);
+			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_DST_ALPHA);
+			type = 2;
+		} else if (trans == Trans.SUB) {
+			GL11.glTexEnvf(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL13.GL_COMBINE);
+			GL11.glTexEnvf(GL11.GL_TEXTURE_ENV, GL13.GL_COMBINE_RGB, GL13.GL_SUBTRACT);
+			GL11.glTexEnvf(GL11.GL_TEXTURE_ENV, GL13.GL_COMBINE_ALPHA, GL13.GL_SUBTRACT);
+			GL11.glTexEnvf(GL11.GL_TEXTURE_ENV, GL15.GL_SRC0_RGB, GL13.GL_PREVIOUS);
+			GL11.glTexEnvf(GL11.GL_TEXTURE_ENV, GL15.GL_SRC1_RGB, GL11.GL_TEXTURE);
+			GL11.glBlendFunc(GL11.GL_DST_COLOR, GL11.GL_SRC_ALPHA);
+			drawImage(xlDst, xrDst, ytDst, ybDst, xlSrc, xrSrc, ytSrc, ybSrc, dp);
+			drawImage(xlDst, xrDst, ytDst, ybDst, xlSrc, xrSrc, ytSrc, ybSrc, dp);
+			drawImage(xlDst, xrDst, ytDst, ybDst, xlSrc, xrSrc, ytSrc, ybSrc, dp);
+
+			type = 3;
+		} else {
+//			GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
+//			GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
+		}
+
+		if (dp.getPalfx() != null) {
+			final float alpha = (float) (Math.PI * dp.getPalfx().getTimeActivate() / dp
 					.getPalfx().getSinadd().getPeriod());
 
-			int rPlus = (int) (dp.getPalfx().getSinadd().getAmpl_r() * Math
+			final int rPlus = (int) (dp.getPalfx().getSinadd().getAmpl_r() * Math
 					.sin(2 * alpha));
-			int gPlus = (int) (dp.getPalfx().getSinadd().getAmpl_g() * Math
+			final int gPlus = (int) (dp.getPalfx().getSinadd().getAmpl_g() * Math
 					.sin(2 * alpha));
-			int bPlus = (int) (dp.getPalfx().getSinadd().getAmpl_b() * Math
+			final int bPlus = (int) (dp.getPalfx().getSinadd().getAmpl_b() * Math
 					.sin(2 * alpha));
 
-			RGB ampl = new RGB(rPlus, gPlus, bPlus, 255f);
-			RGB bits = new RGB(1f/255f, 1f/255f, 1f/255f, 1f/255f);
-			getPalFxShader().render(
-					dp.getPalfx().getAdd().mul(bits),
-					dp.getPalfx().getMul().mul(bits),
-					ampl.mul(bits));
+			final RGB ampl = new RGB(rPlus, gPlus, bPlus, 255f);
+			final RGB bits = new RGB(1f / 255f, 1f / 255f, 1f / 255f, 1f / 255f);
+			getPalFxShader().render(dp.getPalfx().getAdd().mul(bits),
+					dp.getPalfx().getMul().mul(bits), ampl.mul(bits),
+					dp.getAlpha());
 			drawImage(xlDst, xrDst, ytDst, ybDst, xlSrc, xrSrc, ytSrc, ybSrc,
 					dp);
 			getPalFxShader().endRender();
-			// shader.cleanup();
 
 		} else if (dp.getImageProperties() != null) {
-			float type = 0;
-			if (dp.getImageProperties().getTrans() == Trans.ADD) {
-				GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
-				GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_DST_ALPHA);
-				type = 1;
-			} else if (dp.getImageProperties().getTrans() == Trans.ADD1) {
-				GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
-				GL11.glBlendFunc(GL11.GL_ONE_MINUS_DST_COLOR, GL11.GL_ONE_MINUS_SRC_ALPHA);
-				type = 2;
-			} else if (dp.getImageProperties().getTrans() == Trans.SUB) {
-				GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
-				GL11.glBlendFunc(GL11.GL_ONE_MINUS_DST_COLOR, GL11.GL_ONE_MINUS_SRC_ALPHA);
-				GL11.glBlendFunc(GL11.GL_ONE_MINUS_DST_ALPHA, GL11.GL_ONE_MINUS_SRC_COLOR);
-				GL11.glBlendFunc(GL11.GL_DST_COLOR, GL11.GL_ONE);
-				type = 3;
-			}
-			RGB bits = new RGB(1f/255f, 1f/255f, 1f/255f, 1f/255f);
+			final RGB bits = new RGB(1f / 255f, 1f / 255f, 1f / 255f, 1f);
+			
 			getAfterImageShader().render(
-					dp.getImageProperties().getPalbright().mul(bits), 
-					dp.getImageProperties().getPalcontrast().mul(bits), 
+					dp.getImageProperties().getPalbright().mul(bits),
+					dp.getImageProperties().getPalcontrast().mul(bits),
 					dp.getImageProperties().getPalpostbright().mul(bits),
 					dp.getImageProperties().getPaladd().mul(bits),
-					dp.getImageProperties().getPalmul(),
-					type
-			
-				);
-			drawImage(xlDst, xrDst, ytDst, ybDst, xlSrc, xrSrc, ytSrc, ybSrc,
-					dp);
-			getAfterImageShader().endRender();			
-			
+					dp.getImageProperties().getPalmul(), type, 1f);
+			drawImage(xlDst, xrDst, ytDst, ybDst, xlSrc, xrSrc, ytSrc, ybSrc, dp);
+			getAfterImageShader().endRender();
 		} else {
-
-			GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE,
-					GL11.GL_MODULATE);
-			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-
-			if (dp.getTrans() == Trans.ADD1) {
-				GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_DST_ALPHA);
-			} else if (dp.getTrans() == Trans.ADD) {
-				GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_DST_ALPHA);
-			} else if (dp.getTrans() == Trans.ADDALPHA) {
-				GL11.glBlendFunc(GL11.GL_SRC_ALPHA,
-								GL11.GL_ONE_MINUS_SRC_ALPHA);
-				GL11.glColor4f(1f, 1f, 1f, 0.5f);
-			}
-			drawImage(xlDst, xrDst, ytDst, ybDst, xlSrc, xrSrc, ytSrc, ybSrc,
-					dp);
+			drawImage(xlDst, xrDst, ytDst, ybDst, xlSrc, xrSrc, ytSrc, ybSrc, dp);
 		}
-
-		// GL11.glColor4f(dp.getPalcontrast().getR(),
-		// dp.getPalcontrast().getG(), dp.getPalcontrast().getB(),
-		// dp.getPalcontrast().getA());
-
-		// drawAdd(dp.getPalcontrast().mul(dp.getPalcontrast()), xlDst, xrDst,
-		// ytDst, ybDst,
-		// xlSrc, xrSrc, ytSrc, ybSrc, dp);
 
 		GL11.glDisable(GL11.GL_ALPHA_TEST);
 	}
 
+
 	public void draw(DrawProperties dp) {
-//		GL11.glDisable(GL11.GL_DEPTH_TEST);
-//		GL11.glEnable(GL11.GL_BLEND);
-//		GL11.glDisable(GL11.GL_LIGHTING);
-//		GL11.glMatrixMode(GL11.GL_PROJECTION);
-//		GL11.glLoadIdentity();
-//		GL11.glOrtho(0, gameWindow.getWidth(), gameWindow.getHeight(), 0, -1, 1);
-//		GL11.glScaled((float) gameWindow.getWidth() / 320, (float) gameWindow.getHeight() / 240, 0);
-//		
+
+		
+		Texture text = (Texture) dp.getIc().getImg();
+		
+		GL11.glColor4f(1f, 1f, 1f, 1f);
+		GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE,
+				GL11.GL_MODULATE);
+		GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		text.bind();
+		drawChild(dp);
+
+		
+	}
+	public void drawChild(DrawProperties dp) {
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 
 		GL11.glColorMask(true, true, true, true);
@@ -270,20 +270,13 @@ public class LMugenDrawer extends MugenDrawer {
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glDisable(GL11.GL_ALPHA_TEST);
 
-		GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE,
-				GL11.GL_MODULATE);
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
-		Texture texture = (Texture) dp.getIc().getImg();
+		GL11.glEnable(GL11.GL_BLEND);
 
 		// store the current model matrix
 		GL11.glPushMatrix();
 
 		// bind to the appropriate texture for this sprite
-		texture.bind();
-		
 		
 		if (isScaleByForMeDebug()) {
 			scale(0.5f, 0.5f); // This scale help me to see out of screen
@@ -329,13 +322,13 @@ public class LMugenDrawer extends MugenDrawer {
 
 	@Override
 	public void setColor(float r, float g, float b, float a) {
-		GL11.glColor4f(r / 255f, g / 255f, b / 255f, a / 255f);
+		GL11.glColor4f(r, g, b, a);
 
 	}
 
 	@Override
 	public void setColor(float r, float g, float b) {
-		GL11.glColor3f(r / 255f, g / 255f, b / 255f);
+		GL11.glColor3f(r, g, b);
 
 	}
 
@@ -348,8 +341,13 @@ public class LMugenDrawer extends MugenDrawer {
 
 	public class ImageContainerText extends ImageContainer {
 
+		private int color;
 		public ImageContainerText(Object img, int width, int height) {
 			super(img, width, height);
+		}
+		public ImageContainerText(int color, Object img, int width, int height) {
+			super(img, width, height);
+			this.color = color;
 		}
 		
 		
@@ -374,19 +372,8 @@ public class LMugenDrawer extends MugenDrawer {
 				} else if (imageStatus.get() == RAW_PCX) {
 					RawPCXImage pcx = (RawPCXImage) img;
 					try {
-						img = pcxToRawRGBA(pcx.getData());
-						float len = (((byte[])img).length / (1024f * 1024f));
-						Logger.log(width + " x " + height + " > " + len);
-						if (len >= MINIMUN_TO_SWAP) {
-							long[] result = writeToSwap((byte[]) img);
-							isFile = true;
-							position = result[0];
-							size = result[1];
-							img = getTempSwap().getChannel().map(MapMode.READ_ONLY, position, size);
-						} else {
-							img = ByteBuffer.wrap((byte[]) img);
-						}
-						img = TextureLoader.getTextureLoader().getTexture((ByteBuffer) img, width, height);
+						img = getDefaultImageType(pcx, color);
+						img = TextureLoader.getTextureLoader().getTexture((BufferedImage) img);
 						imageStatus.set(TEXTURE);
 						return img;
 					} catch (IOException e) {
@@ -415,32 +402,15 @@ public class LMugenDrawer extends MugenDrawer {
 			}
 
 		}
-		private long position;
-		private long size;
-		private boolean isFile = false;
 		public void prepareImageToTexture() {
 			synchronized (this) {
 				if (imageStatus.get() == RAW_PCX) {
 					RawPCXImage pcx = (RawPCXImage) img;
 					
-					try {
-						img = pcxToRawRGBA(pcx.getData());
-						float len = (((byte[])img).length / (1024f * 1024f));
-						Logger.log(width + " x " + height + " > " + len);
-						if (len >= MINIMUN_TO_SWAP) {
-							long[] result = writeToSwap((byte[]) img);
-							isFile = true;
-							position = result[0];
-							size = result[1];
-							img = getTempSwap().getChannel().map(MapMode.READ_ONLY, position, size);
-						} else {
-							img = ByteBuffer.wrap((byte[]) img);
-						}
-						imageStatus.set(BYTE);
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					img = getDefaultImageType(pcx, color);
+					img =TextureLoader.getTextureLoader().convertImageData((BufferedImage) img);
+					
+					imageStatus.set(BYTE);
 					
 					
 					
@@ -450,40 +420,22 @@ public class LMugenDrawer extends MugenDrawer {
 		}
 		
 	}
-	private static float MINIMUN_TO_SWAP = 2f;
-	private static RandomAccessFile tempFile;
-	
-	private static RandomAccessFile getTempSwap() {
-		if (tempFile == null) {
-			try {
-				tempFile = new RandomAccessFile(File.createTempFile("JMugen", "Temp"), "rw");
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	private BufferedImage getDefaultImageType(RawPCXImage pcx, int color) {
+		try {
+			final BufferedImage image = PCXLoader.loadImage(
+					BufferedImage.TYPE_INT_ARGB,
+					new ByteArrayInputStream(pcx.getData()),
+					pcx.getPalette(), false, true, false, false, color);
+			return image;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		return tempFile;
+		throw new IllegalStateException();
 	}
 	
-	private static long[] writeToSwap(byte[] data) throws IOException {
-		getTempSwap();
-		synchronized (tempFile) {
-			long position = 0;
-			long size = 0;
-			position = getTempSwap().getFilePointer();
-			size = data.length;
-			getTempSwap().write(data);
-			return new long[] {position, size};
-		}
-
-	}
-	private static long memoryusage = 0;
 	
-	
-	private static final int LIST_IMG_TO_PROCESS_COUNT = 2;
+	private static final int LIST_IMG_TO_PROCESS_COUNT = 0;
 	private static final int LIST_IMG_TO_PROCESS_THREAD_YELD_TIME = 10;
 	private static List<ImageContainerText>[] IMAGE_TO_PROCESS_LIST = null;
 	private static boolean[] jobFinish = new boolean[LIST_IMG_TO_PROCESS_COUNT];
@@ -491,6 +443,8 @@ public class LMugenDrawer extends MugenDrawer {
 	
 	
 	private static void addToImageToProcess(ImageContainerText img) {
+		if (LIST_IMG_TO_PROCESS_COUNT <= 0)
+			return;
 		if (IMAGE_TO_PROCESS_LIST == null) {
 			IMAGE_TO_PROCESS_LIST = new List[LIST_IMG_TO_PROCESS_COUNT];
 			for (int i = 0; i < LIST_IMG_TO_PROCESS_COUNT; i++) {
@@ -555,6 +509,27 @@ public class LMugenDrawer extends MugenDrawer {
 
 	@Override
 	public ImageContainer getImageContainer(Object imageData) {
+		return getImageContainer(imageData, 0);
+	}
+
+
+	
+	private LwjgGameWindow gameWindow = new LwjgGameWindow();
+
+	@Override
+	public GameWindow getInstanceOfGameWindow() {
+		return gameWindow;
+	}
+
+
+	
+	@Override
+	public float getAlpha() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	@Override
+	public ImageContainer getImageContainer(Object imageData, int colors) {
 		RawPCXImage pcx = (RawPCXImage) imageData;
 		
 		PCXHeader header = null;
@@ -567,137 +542,45 @@ public class LMugenDrawer extends MugenDrawer {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-        int width = header.xmax - header.xmin + 1;
-        int height = header.ymax - header.ymin + 1;
+        int width = header.getWidth();
+        int height = header.getHeight();
         
-        ImageContainerText result = new ImageContainerText(pcx , width, height);
+        ImageContainerText result = new ImageContainerText(colors, pcx , width, height);
         addToImageToProcess(result);
 		return result;
 			
 			
 	}
-
-
-	
-	private LwjgGameWindow gameWindow = new LwjgGameWindow();
-
 	@Override
-	public GameWindow getInstanceOfGameWindow() {
-		return gameWindow;
+	public void setAlpha(float a) {
+		// TODO Auto-generated method stub
+		
 	}
+	@Override
+	public void setClip(Rectangle r) {
+		if (r != null) {
+			r = (Rectangle) r.clone();
+			final int xl = r.getX1() * 2;
+			final int yt = r.getY1() * 2;
+			final int xr = r.getX2() * 2;
+			final int yb = r.getY2() * 2;
 
-	
-	
-	
-	static ColorModel glAlphaColorModel = new ComponentColorModel(ColorSpace
-			.getInstance(ColorSpace.CS_sRGB), new int[] { 8, 8, 8, 8 }, true,
-			false, ComponentColorModel.TRANSLUCENT, DataBuffer.TYPE_BYTE);
-    static ColorModel glColorModel = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB),
-            new int[] {8,8,8,0},
-            false,
-            false,
-            ComponentColorModel.BITMASK,
-            DataBuffer.TYPE_BYTE);
-    
-    
-	public static byte[] pcxToRawRGBA(byte[] data) throws IOException {
-    	BufferedImage image;
+			GL11.glMatrixMode(GL11.GL_PROJECTION);
+			GL11.glLoadIdentity();
+			GL11.glOrtho(0, xr - xl, (yb - yt), 0, -10000, 10000);
+			GL11.glViewport(xl, 480 - yb, xr - xl, (yb - yt));
+			//			
+			GL11.glScaled(2f, 2f, 0);
 
-    	PCXPalette pal = new PCXPalette();
-    	PCXHeader header = new PCXHeader(data);
-       	pal.load(new ByteArrayInputStream(data));
-        
-        InputStream in = new ByteArrayInputStream(data);
-        
-        in.skip(128);
-        int width = header.xmax - header.xmin + 1;
-        int height = header.ymax - header.ymin + 1;
-        
-        int xp = 0;
-        int yp = 0;
-        int value;
-        int count;
-        
-        int texWidth = 2;
-        int texHeight = 2;
-        
-        // find the closest power of 2 for the width and height
-        // of the produced texture
-        while (texWidth < width) {
-            texWidth *= 2;
-        }
-        while (texHeight < height) {
-            texHeight *= 2;
-        }
+		} else {
+			GL11.glMatrixMode(GL11.GL_PROJECTION);
+			GL11.glLoadIdentity();
+			GL11.glViewport(0, 0, 640, 480);
+			GL11.glOrtho(0, 640, 640, 0, -10000, 10000);
+			GL11.glScaled((float) 640 / 320, (float) 640 / 240, 0);
+		}
 
-        WritableRaster raster = Raster.createInterleavedRaster(DataBuffer.TYPE_BYTE, texWidth, texHeight, 4, null);
-        image = new BufferedImage(glAlphaColorModel, raster, false, new Hashtable());
-        
-        while (yp < height) {
-            value = in.read();
-            // if the byte has the top two bits set
-            if (value >= 192) {
-                count = (value - 192);
-                value = in.read();
-            } else {
-                count = 1;
-            }
-            
-            // update data
-            for (int i = 0; i < count; i++) {
-                if (xp < width) {
-                	int[] alpha = new int[] {255};
-
-                     
-                	if (
-                	isAboutTheSameColor(
-                             pal.r[value],
-                             pal.g[value],
-                             pal.b[value], 
-                             pal.r[0], 
-                             pal.g[0], 
-                             pal.b[0], 
-                             alpha)) {
-//                		
-                	} else {
-                        int color = ImageUtils.getARGB(
-                                alpha[0],
-                                pal.r[value],
-                                pal.g[value],
-                                pal.b[value]);
-                        image.setRGB(xp, yp, color);
-                		
-                	}
-
-//                    texinfo.texels[xp + yp * width] = ImageUtils.getARGB(alpha[0], pal.r[value], pal.g[value], pal.b[value]);
-//                    pal.r[value];
-//                    texinfo.texels[xp * 4 + yp * width + 1] = pal.g[value];
-//                    texinfo.texels[xp * 4 + yp * width + 2] = pal.b[value];
-//                    texinfo.texels[xp * 4 + yp * width + 3] = alpha[0];
-
-                    
-                    // TODO Find a way to load it directly in a byte
-                }
-                xp++;
-                if (xp == header.bytesPerLine) {
-                    xp = 0;
-                    yp ++;
-                    break;
-                }
-            }
-        }
-        in.close();
-        return ((DataBufferByte) image.getRaster().getDataBuffer()).getData(); 
-	}
-	
-	private static boolean isAboutTheSameColor(int r1, int g1, int b1, int r2, int g2, int b2, int[] alpha) {
-        alpha[0] = 255;
-        if (r1 == r2 && b1 == b2 && g1 == g2) {
-            alpha[0] = 0;
-            return true;
-        } else
-            return false;
-    }	
+	}	
 	
 	
    

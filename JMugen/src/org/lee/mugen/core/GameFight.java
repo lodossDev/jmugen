@@ -503,7 +503,7 @@ public class GameFight implements AbstractGameFight {
 	boolean reloadStage;
 	public void init(GameWindow container) throws Exception {
 		SoundSystem.SoundBackGround.stopMusic();
-		SoundSystem.SoundBackGround.playMusic(JMugenConstant.RESOURCE + instanceOfStage.getMusic().getBgmusic());
+		
 
 		setWindow(container);
 		next = null;
@@ -556,6 +556,8 @@ public class GameFight implements AbstractGameFight {
 			loadSprites();
 			if (instanceOfStage == null) {
 				setStage(new Stage(stage));
+				SoundSystem.SoundBackGround.playMusic(JMugenConstant.RESOURCE + instanceOfStage.getMusic().getBgmusic());
+
 			}
 			loadingText += "\nloading Stage ";
 

@@ -18,5 +18,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/JMugen.Render.jogl"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Syntax"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JMugen.plugin.audio.adx"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/JMugen.Render.Lwjgl"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

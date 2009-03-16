@@ -208,8 +208,7 @@ public class StageBackgroundRender implements IBackgroundRenderer {
 						e.printStackTrace();
 					}
 					int imgno = bg.getSpriteno().getSpriteno();
-					ImageSpriteSFF imgSprSff = sffSprite.getGroupSpr(grpno)
-							.getImgSpr(imgno);
+					ImageSpriteSFF imgSprSff = sffSprite.getGroupSpr(grpno).getImgSpr(imgno);
 					ImageContainer img = (ImageContainer) imgSprSff.getImage();
 					img = getImgProcessSuperpause(img);
 
