@@ -101,6 +101,12 @@ public interface GameWindow {
 		
 		
 	}
+	public int getKeyEsc();
+	public int getKeyF1();
+	public int getKeyF2();
+	public int getKeyF3();
+
+	
 	public static interface MugenKeyListener {
 		public void action(int key, boolean isPress);
 	}

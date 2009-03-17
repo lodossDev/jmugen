@@ -10,7 +10,7 @@ import org.lee.mugen.renderer.MugenTimer;
 public final class LMugenTimer implements MugenTimer {
 	long lastTime = 0;
 
-	long ONE = 1000 / 60;
+	long ONE = 1000 / 55;
 	private long frameRate = ONE;
 	int frame = 0;
 	int fps = 0;

@@ -10,6 +10,7 @@ import org.lee.mugen.fight.section.elem.Type;
 import org.lee.mugen.fight.system.MugenSystem;
 import org.lee.mugen.input.CmdProcDispatcher;
 import org.lee.mugen.input.ISpriteCmdProcess;
+import org.lee.mugen.renderer.GraphicsWrapper;
 import org.lee.mugen.renderer.GameWindow.MugenKeyListener;
 
 public class SelectionController implements MugenKeyListener {
@@ -202,7 +203,7 @@ public class SelectionController implements MugenKeyListener {
 		
 		if (!isPress || now - lastPress < 100)
 			return;
-		if (KeyEvent.VK_ESCAPE == key) {
+		if (GraphicsWrapper.getInstance().getInstanceOfGameWindow().getKeyEsc() == key) {
 			gs.setBackToMenu();
 			
 		}

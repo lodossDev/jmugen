@@ -14,8 +14,6 @@
 	<classpathentry kind="lib" path="lib/mp3spi1.9.2.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JMugen.Common"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JMugen.Properties"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/JMugen.Render.Java"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/JMugen.Render.jogl"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Syntax"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JMugen.plugin.audio.adx"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JMugen.Render.Lwjgl"/>

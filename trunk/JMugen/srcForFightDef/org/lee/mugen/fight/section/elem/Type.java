@@ -68,7 +68,7 @@ public class Type implements Cloneable {
 		this.starttime = starttime;
 	}
 	public void decreaseDisplayTime() {
-		if (displaytime > 0)
+		if (displaytime >= 0)
 			displaytime--;
 	}
 	

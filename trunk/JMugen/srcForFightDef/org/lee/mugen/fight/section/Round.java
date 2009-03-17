@@ -9,14 +9,24 @@ import java.util.regex.Pattern;
 
 import org.lee.mugen.core.GameFight;
 import org.lee.mugen.core.GameState.WinType;
+import org.lee.mugen.core.sound.SoundSystem;
+import org.lee.mugen.core.sound.SoundSystem.SoundBackGround;
 import org.lee.mugen.fight.section.elem.SimpleElement;
+import org.lee.mugen.fight.section.elem.SndType;
 import org.lee.mugen.fight.section.elem.Start;
 import org.lee.mugen.fight.section.elem.Type;
+import org.lee.mugen.fight.system.MugenSystem;
 import org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns.Roundstate;
 import org.lee.mugen.util.MugenRandom;
 
 public class Round extends SimpleElement implements Section, Cloneable {
 	
+	public Map<Integer, Type> getRounds() {
+		return rounds;
+	}
+
+
+
 	public static class Match implements Cloneable {
 		int wins;
 		int maxdrawgames;
@@ -226,7 +236,7 @@ public class Round extends SimpleElement implements Section, Cloneable {
 			start.setOriginalTime(Integer.parseInt(value));
 		} else if (name.startsWith("round.")) {
 			round.parse(root, Type.getNext(name), value);
-		} else if (Pattern.matches("round[0-9]+\\.", name)) {
+		} else if (Pattern.matches("round[0-9]+\\..*", name)) {
 			String sNum = name.substring(5, name.indexOf("."));
 			int num = 0;
 			if (sNum.length() > 0) {
@@ -383,8 +393,19 @@ public class Round extends SimpleElement implements Section, Cloneable {
 	public void process() {
 		if (GameFight.getInstance().getGameState().getRoundState() <= Roundstate.COMBAT) {
 			getStart().decrease();
-			if (getRound().getDefault() != null)
+			if (getRound().getDefault() != null) {
+				if (getRound().getDefault().getDisplaytime() == getRound().getDefault().getOriginalDisplaytime()) {
+					SndType snd = MugenSystem.getInstance().getFiles().getFight().getRound().getRounds().get(1).getSnd();
+					byte[] data = MugenSystem.getInstance().getFiles().getFight().getFiles().getSnd().getGroup(snd.getGrp()).getSound(snd.getNum());
+					SoundSystem.Sfx.playSnd(data);
+				}
 				getRound().getDefault().decreaseDisplayTime();
+				if (getRound().getDefault().getDisplaytime() < 0) {
+					SndType snd = MugenSystem.getInstance().getFiles().getFight().getRound().getFight().getSnd();
+					byte[] data = MugenSystem.getInstance().getFiles().getFight().getFiles().getSnd().getGroup(snd.getGrp()).getSound(snd.getNum());
+					SoundSystem.Sfx.playSnd(data);
+				}
+			}
 		}
 		
 		if (GameFight.getInstance().getGameState().getRoundState() == Roundstate.VICTORY) {

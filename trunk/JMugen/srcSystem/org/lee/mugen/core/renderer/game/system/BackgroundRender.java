@@ -175,7 +175,6 @@ public class BackgroundRender implements Renderable {
 			GraphicsWrapper.getInstance().setColor(rgb.getR(), rgb.getG(), rgb.getB());
 			GraphicsWrapper.getInstance().fillRect(0, 0, 640, 480);
 		}		
-
 		for (BG bg : getBackground().getBgs()) {
 			if (bg.getLayerno() != layerDisplay)
 				continue;
