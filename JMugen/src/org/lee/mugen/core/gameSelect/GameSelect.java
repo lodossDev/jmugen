@@ -16,7 +16,6 @@ import org.lee.mugen.fight.select.Characters;
 import org.lee.mugen.fight.system.MugenSystem;
 import org.lee.mugen.fight.system.elem.StageDisplay;
 import org.lee.mugen.renderer.GameWindow;
-import org.lee.mugen.renderer.jogl.JoglMugenDrawer;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.cns.eval.trigger.function.spriteCns.Teammode.TeamMode;
 import org.lee.mugen.stage.Stage;
@@ -33,7 +32,7 @@ public class GameSelect implements Game {
 				StageDisplay stageDisplay = MugenSystem.getInstance().getSelectInfo().getStagedisplay();
 				if (stageDisplay != null) {
 					StageBackgroundRender newStageBackgroundRender = new StageBackgroundRender(stage);
-					JoglMugenDrawer.createImageToTextPreparer();
+//					JoglMugenDrawer.createImageToTextPreparer();
 					stageBackgroundRender = newStageBackgroundRender;
 					stage.getCamera().setForcePos(true);
 					

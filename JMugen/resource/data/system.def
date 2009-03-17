@@ -64,7 +64,7 @@ vs.bgm.loop = 1
 ;-------------------------------------------------------------------
 ;Title screen definition
 [Title Info]
-fadein.time = 10
+fadein.time = 100
 fadeout.time = 10
 menu.pos = 159,158
 menu.item.font = 3,0,0

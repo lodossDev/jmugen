@@ -4,8 +4,6 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.IntBuffer;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -27,11 +25,9 @@ import org.lee.mugen.renderer.Trans;
 import org.lee.mugen.renderer.lwjgl.shader.AfterImageShader;
 import org.lee.mugen.renderer.lwjgl.shader.PalFxShader;
 import org.lee.mugen.util.Logger;
-import org.lwjgl.opengl.EXTFramebufferObject;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL15;
-import org.lwjgl.opengl.GLContext;
 
 public class LMugenDrawer extends MugenDrawer {
 	private boolean isScaleByForMeDebug() {
@@ -86,7 +82,9 @@ public class LMugenDrawer extends MugenDrawer {
 			xScale = dp.getAngleDrawProperties().getXScale();
 			yScale = dp.getAngleDrawProperties().getYScale();
 		}
-
+//		GL11.glColor4f(1, 1, 1, 1);
+//		GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
+//		GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		// draw a quad textured to match the sprite
 		GL11.glBegin(GL11.GL_QUADS);
 		{
@@ -198,8 +196,10 @@ public class LMugenDrawer extends MugenDrawer {
 			GL11.glTexEnvf(GL11.GL_TEXTURE_ENV, GL15.GL_SRC0_RGB, GL13.GL_PREVIOUS);
 			GL11.glTexEnvf(GL11.GL_TEXTURE_ENV, GL15.GL_SRC1_RGB, GL11.GL_TEXTURE);
 			GL11.glBlendFunc(GL11.GL_DST_COLOR, GL11.GL_SRC_ALPHA);
+			GL11.glColor4f(1, 1, 1, 1f);
 			drawImage(xlDst, xrDst, ytDst, ybDst, xlSrc, xrSrc, ytSrc, ybSrc, dp);
 			drawImage(xlDst, xrDst, ytDst, ybDst, xlSrc, xrSrc, ytSrc, ybSrc, dp);
+			
 			drawImage(xlDst, xrDst, ytDst, ybDst, xlSrc, xrSrc, ytSrc, ybSrc, dp);
 
 			type = 3;
@@ -522,11 +522,11 @@ public class LMugenDrawer extends MugenDrawer {
 	}
 
 
-	
+	private float alpha = 1;
 	@Override
 	public float getAlpha() {
 		// TODO Auto-generated method stub
-		return 0;
+		return alpha;
 	}
 	@Override
 	public ImageContainer getImageContainer(Object imageData, int colors) {
@@ -553,8 +553,7 @@ public class LMugenDrawer extends MugenDrawer {
 	}
 	@Override
 	public void setAlpha(float a) {
-		// TODO Auto-generated method stub
-		
+		alpha = a;		
 	}
 	@Override
 	public void setClip(Rectangle r) {

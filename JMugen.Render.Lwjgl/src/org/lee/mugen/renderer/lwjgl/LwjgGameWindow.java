@@ -12,8 +12,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.Set;
-import java.util.Map.Entry;
 
 import org.lee.mugen.core.AbstractGameFight;
 import org.lee.mugen.core.Game;
@@ -91,10 +89,27 @@ public class LwjgGameWindow implements GameWindow {
 		}
 		
 	}
-	
-	private static class SprCmdProcessListenerAction {
-		private boolean[] areKeysPress;
-		private int[] keys;
+	private static class CmdProcessListener {
+		boolean[] areKeysPress;
+		int[] keys;
+		public boolean[] getAreKeysPress() {
+			return areKeysPress;
+		}
+
+		public int[] getKeys() {
+			return keys;
+		}
+		public void setAreKeysPress(boolean[] areKeysPress) {
+			this.areKeysPress = areKeysPress;
+		}
+
+		public void setKeys(int[] keys) {
+			this.keys = keys;
+			areKeysPress = new boolean[keys.length];
+		}
+	}
+	private static class SprCmdProcessListenerAction extends CmdProcessListener {
+
 		private ISpriteCmdProcess scp;
 
 		public SprCmdProcessListenerAction(ISpriteCmdProcess scp) {
@@ -103,25 +118,13 @@ public class LwjgGameWindow implements GameWindow {
 			areKeysPress = new boolean[keys.length];
 		}
 
-		public boolean[] getAreKeysPress() {
-			return areKeysPress;
-		}
 
-		public int[] getKeys() {
-			return keys;
-		}
 
 		public ISpriteCmdProcess getScp() {
 			return scp;
 		}
 
-		public void setAreKeysPress(boolean[] areKeysPress) {
-			this.areKeysPress = areKeysPress;
-		}
 
-		public void setKeys(int[] keys) {
-			this.keys = keys;
-		}
 	}
 
 	public LwjgGameWindow() {
@@ -140,7 +143,8 @@ public class LwjgGameWindow implements GameWindow {
 	boolean isLeftRelease = false;
 
 	MouseCtrl mouse = new MouseCtrl();
-
+	
+	private List<CmdProcessListener> cmdProcess = new LinkedList<CmdProcessListener>();
 	private List<SprCmdProcessListenerAction> spriteCmdProcess = new LinkedList<SprCmdProcessListenerAction>();
 
 	private MugenTimer timer = new LMugenTimer();
@@ -185,7 +189,18 @@ public class LwjgGameWindow implements GameWindow {
 			initKeys();
 			
 			Mouse.create();
-			
+			if (myFBOId == 0) {
+				IntBuffer buffer = ByteBuffer.allocateDirect(1*4).order(ByteOrder.nativeOrder()).asIntBuffer(); // allocate a 1 int byte buffer
+				EXTFramebufferObject.glGenFramebuffersEXT( buffer ); // generate 
+				myFBOId = buffer.get();
+				BufferedImage img = new BufferedImage(640, 480, BufferedImage.TYPE_INT_ARGB);
+				try {
+					temp = TextureLoader.getTextureLoader().getTexture(img);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 
 		} catch (LWJGLException le) {
 		}
@@ -197,18 +212,6 @@ public class LwjgGameWindow implements GameWindow {
 	public void gameLoop() throws Exception {
 		callback.init(this);
 		int lack = 0;
-		if (myFBOId == 0) {
-			IntBuffer buffer = ByteBuffer.allocateDirect(1*4).order(ByteOrder.nativeOrder()).asIntBuffer(); // allocate a 1 int byte buffer
-			EXTFramebufferObject.glGenFramebuffersEXT( buffer ); // generate 
-			myFBOId = buffer.get();
-			BufferedImage img = new BufferedImage(640, 480, BufferedImage.TYPE_INT_ARGB);
-			try {
-				temp = TextureLoader.getTextureLoader().getTexture(img);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
 		while (gameRunning) {
 			if (getTimer().getFramerate() == 0) {
 				getTimer().sleep(1000 / 60);
@@ -231,12 +234,7 @@ public class LwjgGameWindow implements GameWindow {
 					keyManagementExecute();
 					if (getTimer().getFramerate() == 0) {
 						getTimer().sleep(1000 / 60);
-						
-						
 						callback.render();
-						
-
-						
 						Display.update();
 						continue;
 					}
@@ -247,58 +245,20 @@ public class LwjgGameWindow implements GameWindow {
 					GL11.glLoadIdentity();
 
 					callback.update(1);
-					lack = getTimer().sleep();
 					
-					
-					
-					
-					EXTFramebufferObject.glBindFramebufferEXT( EXTFramebufferObject.GL_FRAMEBUFFER_EXT, myFBOId );
-					EXTFramebufferObject.glFramebufferTexture2DEXT( EXTFramebufferObject.GL_FRAMEBUFFER_EXT, EXTFramebufferObject.GL_COLOR_ATTACHMENT0_EXT,
-					                GL11.GL_TEXTURE_2D, temp.getTextureID(), 0);
-					EXTFramebufferObject.glBindFramebufferEXT( EXTFramebufferObject.GL_FRAMEBUFFER_EXT, myFBOId );
-					GL11.glPushAttrib(GL11.GL_VIEWPORT_BIT);
-					GL11.glViewport( 0, 0, 640, 480);
-					GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
-					
-					callback.render();
-					
-					
-					EXTFramebufferObject.glBindFramebufferEXT( EXTFramebufferObject.GL_FRAMEBUFFER_EXT, 0);
-					GL11.glPopAttrib();
-					
-					temp.bind();
-
-					DrawProperties dp = new DrawProperties(0, 0, false, true, new ImageContainer(temp, 640, 480));
-					
-					
-					float scale = 0.5f;
-					GL11.glScalef(scale, scale, 1);
-					GL11.glColor4f(1, 1, 1, 1f);
-					
-					GL11.glColor4f(1f, 0f, 1f, 1f);
-					GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE,
-							GL11.GL_REPLACE);
-					GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA);
-					
-					
-					((LMugenDrawer)GraphicsWrapper.getInstance()).drawChild(dp);
-					GL11.glScalef(1f/scale, 1f/scale, 1);
-					
-
-					
-					if (callback instanceof AbstractGameFight) {
-						((AbstractGameFight)callback).renderDebugInfo();
+					Game another = callback.getNext();
+					if (another != callback) {
+						another.init(this);
+						callback.free();
+						callback = another;
+					} else {
+						render();
 					}
-					
-					
 				}
+				lack = getTimer().sleep();	
 			}
-			
-			
-			getTimer().sleep();
 			Display.update();
-			if (Display.isCloseRequested()
-					|| Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
+			if (Display.isCloseRequested()) {
 				gameRunning = false;
 				Display.destroy();
 				System.exit(0);
@@ -307,7 +267,50 @@ public class LwjgGameWindow implements GameWindow {
 		}
 		
 	}
+	private void render() throws Exception {
 
+		if (isRender()) {
+
+			EXTFramebufferObject.glBindFramebufferEXT( EXTFramebufferObject.GL_FRAMEBUFFER_EXT, myFBOId );
+			EXTFramebufferObject.glFramebufferTexture2DEXT( EXTFramebufferObject.GL_FRAMEBUFFER_EXT, EXTFramebufferObject.GL_COLOR_ATTACHMENT0_EXT,
+			                GL11.GL_TEXTURE_2D, temp.getTextureID(), 0);
+			EXTFramebufferObject.glBindFramebufferEXT( EXTFramebufferObject.GL_FRAMEBUFFER_EXT, myFBOId );
+			GL11.glPushAttrib(GL11.GL_VIEWPORT_BIT);
+			GL11.glViewport( 0, 0, 640, 480);
+			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+			
+			callback.render();
+			
+			
+			EXTFramebufferObject.glBindFramebufferEXT( EXTFramebufferObject.GL_FRAMEBUFFER_EXT, 0);
+			GL11.glPopAttrib();
+			
+			temp.bind();
+
+			DrawProperties dp = new DrawProperties(0, 0, false, true, new ImageContainer(temp, 640, 480));
+			
+			
+			float scale = 0.5f;
+			float alpha = GraphicsWrapper.getInstance().getAlpha();
+			GL11.glScalef(scale, scale, 1);
+			GL11.glColor4f(alpha, alpha, alpha, alpha);
+			
+			GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE,
+					GL11.GL_MODULATE);
+			GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA);
+			
+			
+			((LMugenDrawer)GraphicsWrapper.getInstance()).drawChild(dp);
+			GL11.glScalef(1f/scale, 1f/scale, 1);
+			
+
+			
+			if (callback instanceof AbstractGameFight) {
+				((AbstractGameFight)callback).renderDebugInfo();
+			}							
+		}
+	
+	}
 	
 
 	public Game getCallback() {
@@ -345,7 +348,11 @@ public class LwjgGameWindow implements GameWindow {
 	
 	private void initKeys() throws IllegalArgumentException, SecurityException, IllegalAccessException, NoSuchFieldException {
 		ResourceBundle bundle = ResourceBundle.getBundle("keys");
-		
+		{
+			CmdProcessListener cmdProcessListener = new CmdProcessListener();
+			cmdProcessListener.setKeys(new int[] {Keyboard.KEY_ESCAPE, Keyboard.KEY_F1, Keyboard.KEY_F2, Keyboard.KEY_F3, Keyboard.KEY_F4, Keyboard.KEY_F5,Keyboard.KEY_F6, Keyboard.KEY_F7, Keyboard.KEY_F8,Keyboard.KEY_F9, Keyboard.KEY_F10, Keyboard.KEY_F11, Keyboard.KEY_F12});
+			cmdProcess.add(cmdProcessListener);
+			}
 		// P1
 
 		
@@ -364,8 +371,11 @@ public class LwjgGameWindow implements GameWindow {
 				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P1.XYZ").toUpperCase()).getInt(null));	
 		
 		CmdProcDispatcher.getSpriteDispatcherMap().put("1", cd1);
-		
-		
+		{
+		CmdProcessListener cmdProcessListener = new CmdProcessListener();
+		cmdProcessListener.setKeys(cd1.getKeys());
+		cmdProcess.add(cmdProcessListener);
+		}
 		CmdProcDispatcher cd2 = new CmdProcDispatcher(
 				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P2.UP").toUpperCase()).getInt(null), 
 				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P2.DOWN").toUpperCase()).getInt(null),
@@ -381,45 +391,58 @@ public class LwjgGameWindow implements GameWindow {
 				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P2.XYZ").toUpperCase()).getInt(null));	
 		
 		CmdProcDispatcher.getSpriteDispatcherMap().put("2", cd2);
-		
+		{
+			CmdProcessListener cmdProcessListener = new CmdProcessListener();
+			cmdProcessListener.setKeys(cd2.getKeys());
+			cmdProcess.add(cmdProcessListener);
+			}
 		CmdProcDispatcher cd3 = new CmdProcDispatcher(
-				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P1.UP").toUpperCase()).getInt(null), 
-				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P1.DOWN").toUpperCase()).getInt(null),
-				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P1.LEFT").toUpperCase()).getInt(null),
-				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P1.RIGHT").toUpperCase()).getInt(null),
-				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P1.A").toUpperCase()).getInt(null),
-				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P1.B").toUpperCase()).getInt(null),
-				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P1.C").toUpperCase()).getInt(null),
-				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P1.X").toUpperCase()).getInt(null),
-				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P1.Y").toUpperCase()).getInt(null),
-				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P1.Z").toUpperCase()).getInt(null),
-				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P1.ABC").toUpperCase()).getInt(null),
-				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P1.XYZ").toUpperCase()).getInt(null));	
+				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P3.UP").toUpperCase()).getInt(null), 
+				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P3.DOWN").toUpperCase()).getInt(null),
+				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P3.LEFT").toUpperCase()).getInt(null),
+				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P3.RIGHT").toUpperCase()).getInt(null),
+				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P3.A").toUpperCase()).getInt(null),
+				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P3.B").toUpperCase()).getInt(null),
+				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P3.C").toUpperCase()).getInt(null),
+				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P3.X").toUpperCase()).getInt(null),
+				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P3.Y").toUpperCase()).getInt(null),
+				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P3.Z").toUpperCase()).getInt(null),
+				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P3.ABC").toUpperCase()).getInt(null),
+				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P3.XYZ").toUpperCase()).getInt(null));	
 		
-		CmdProcDispatcher.getSpriteDispatcherMap().put("3", cd1);
-		
+		CmdProcDispatcher.getSpriteDispatcherMap().put("3", cd3);
+		{
+			CmdProcessListener cmdProcessListener = new CmdProcessListener();
+			cmdProcessListener.setKeys(cd3.getKeys());
+			cmdProcess.add(cmdProcessListener);
+			}
 		
 		CmdProcDispatcher cd4 = new CmdProcDispatcher(
-				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P2.UP").toUpperCase()).getInt(null), 
-				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P2.DOWN").toUpperCase()).getInt(null),
-				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P2.LEFT").toUpperCase()).getInt(null),
-				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P2.RIGHT").toUpperCase()).getInt(null),
-				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P2.A").toUpperCase()).getInt(null),
-				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P2.B").toUpperCase()).getInt(null),
-				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P2.C").toUpperCase()).getInt(null),
-				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P2.X").toUpperCase()).getInt(null),
-				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P2.Y").toUpperCase()).getInt(null),
-				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P2.Z").toUpperCase()).getInt(null),
-				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P2.ABC").toUpperCase()).getInt(null),
-				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P2.XYZ").toUpperCase()).getInt(null));	
+				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P4.UP").toUpperCase()).getInt(null), 
+				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P4.DOWN").toUpperCase()).getInt(null),
+				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P4.LEFT").toUpperCase()).getInt(null),
+				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P4.RIGHT").toUpperCase()).getInt(null),
+				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P4.A").toUpperCase()).getInt(null),
+				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P4.B").toUpperCase()).getInt(null),
+				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P4.C").toUpperCase()).getInt(null),
+				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P4.X").toUpperCase()).getInt(null),
+				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P4.Y").toUpperCase()).getInt(null),
+				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P4.Z").toUpperCase()).getInt(null),
+				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P4.ABC").toUpperCase()).getInt(null),
+				Keyboard.class.getDeclaredField("KEY_" + bundle.getString("P4.XYZ").toUpperCase()).getInt(null));	
 		
-		CmdProcDispatcher.getSpriteDispatcherMap().put("4", cd2);
+		CmdProcDispatcher.getSpriteDispatcherMap().put("4", cd4);
+		{
+			CmdProcessListener cmdProcessListener = new CmdProcessListener();
+			cmdProcessListener.setKeys(cd4.getKeys());
+			cmdProcess.add(cmdProcessListener);
+			}
+		
 	}
 	
 	@Override
 	public boolean isRender() {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 	private void keyDown(int eventKey) {
 		for (SprCmdProcessListenerAction sa : spriteCmdProcess) {
@@ -440,6 +463,25 @@ public class LwjgGameWindow implements GameWindow {
 	}
     private void keyManagementExecute() {
 		debugEventManager.process(callback);
+		
+		for (CmdProcessListener cmd: cmdProcess) {
+			boolean[] areKeysPress = cmd.getAreKeysPress();
+			int[] keys = cmd.getKeys();
+
+			for (int i = 0; i < keys.length; ++i) {
+				if (!areKeysPress[i] && Keyboard.isKeyDown(keys[i])) {
+					areKeysPress[i] = true;
+					for (MugenKeyListener kl: mugenKeyListeners)
+						kl.action(keys[i], true);
+
+				} else if (areKeysPress[i] && !Keyboard.isKeyDown(keys[i])) {
+					areKeysPress[i] = false;
+					for (MugenKeyListener kl: mugenKeyListeners)
+						kl.action(keys[i], false);
+				}
+
+			}
+		}
 		
 		for (SprCmdProcessListenerAction sa : spriteCmdProcess) {
 			boolean[] areKeysPress = sa.getAreKeysPress();
@@ -567,6 +609,26 @@ public class LwjgGameWindow implements GameWindow {
 	@Override
 	public void clearListener() {
 		clearMugenKeyListener();
+	}
+
+	@Override
+	public int getKeyEsc() {
+		return Keyboard.KEY_ESCAPE;
+	}
+
+	@Override
+	public int getKeyF1() {
+		return Keyboard.KEY_F1;
+	}
+
+	@Override
+	public int getKeyF2() {
+		return Keyboard.KEY_F2;
+	}
+
+	@Override
+	public int getKeyF3() {
+		return Keyboard.KEY_F3;
 	}
 	
 }

@@ -41,9 +41,9 @@ public class TitleInfoRender extends BaseRender {
 			md.setAlpha(alpha);
 			
 		} else if (titleInfo.getPhase() == TitleInfo.CURRENT) {
-			
+			md.setAlpha(1f);
 		} else if (titleInfo.getPhase() == TitleInfo.NOTHING) {
-			
+			md.setAlpha(1f);
 		} else if (titleInfo.getPhase() == TitleInfo.END) {
 			md.setAlpha(0);
 		}
@@ -104,7 +104,7 @@ public class TitleInfoRender extends BaseRender {
 //				200
 //		));
 		md.setClip(null);
-		md.setAlpha(1f);
+//		md.setAlpha(1f);
 	}
 	
 }

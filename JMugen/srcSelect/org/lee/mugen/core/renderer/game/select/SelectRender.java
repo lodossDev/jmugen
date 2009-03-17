@@ -48,7 +48,7 @@ public class SelectRender extends BaseRender {
 		md.setColor(rgb.getR(), rgb.getG(), rgb.getB(), rgb.getA());
 		md.fillRect(0, 0, 640, 480);
 		br.render();
-		
+		md.setAlpha(1);
 		
 		
 		////// Title

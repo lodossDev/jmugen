@@ -2,12 +2,8 @@ package org.lee.mugen.core;
 
 import static org.lee.mugen.util.Logger.log;
 
-import java.awt.event.KeyEvent;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -19,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.lee.mugen.core.command.SpriteCmdProcess;
-import org.lee.mugen.core.debug.Debug;
 import org.lee.mugen.core.gameSelect.GameSelect;
 import org.lee.mugen.core.renderer.game.AfterimageRender;
 import org.lee.mugen.core.renderer.game.CnsRender;
@@ -33,10 +28,8 @@ import org.lee.mugen.core.renderer.game.SpriteShadowRender;
 import org.lee.mugen.core.renderer.game.StageBackgroundRender;
 import org.lee.mugen.core.renderer.game.fight.FightdefRender;
 import org.lee.mugen.core.renderer.game.fight.RoundRender;
-import org.lee.mugen.core.renderer.game.system.TitleInfoRender;
 import org.lee.mugen.core.sound.SoundSystem;
 import org.lee.mugen.fight.section.Fightdef;
-import org.lee.mugen.fight.select.ExtraStages;
 import org.lee.mugen.fight.system.MugenSystem;
 import org.lee.mugen.input.CmdProcDispatcher;
 import org.lee.mugen.input.ISpriteCmdProcess;
@@ -501,7 +494,7 @@ public class GameFight implements AbstractGameFight {
 	boolean addListener;
 	boolean freeNow;
 	boolean reloadStage;
-	public void init(GameWindow container) throws Exception {
+	public void init(final GameWindow container) throws Exception {
 		SoundSystem.SoundBackGround.stopMusic();
 		
 
@@ -514,12 +507,12 @@ public class GameFight implements AbstractGameFight {
 
 				@Override
 				public void action(int key, boolean isPress) {
-					if (KeyEvent.VK_ESCAPE == key) {
+					if (container.getKeyEsc() == key) {
 						freeNow = true;
-					} else if (KeyEvent.VK_F1 == key) {
+					} else if (container.getKeyF1() == key) {
 						reloadStage = true;
 						stage = instanceOfStage.getFilename();
-					} else if (KeyEvent.VK_F2 == key && !isPress) {
+					} else if (container.getKeyF2() == key && !isPress) {
 						
 						String newStage = stage.substring(JMugenConstant.RESOURCE.length());
 						LinkedList<String> list = MugenSystem.getInstance().getFiles().getSelect().getExtraStages().getStages();
@@ -529,7 +522,7 @@ public class GameFight implements AbstractGameFight {
 							index = list.size() - 1;
 						stage = JMugenConstant.RESOURCE + list.get(index);
 						reloadStage = true;
-					} else if (KeyEvent.VK_F3 == key && !isPress) {
+					} else if (container.getKeyF3() == key && !isPress) {
 						
 						String newStage = stage.substring(JMugenConstant.RESOURCE.length());
 						LinkedList<String> list = MugenSystem.getInstance().getFiles().getSelect().getExtraStages().getStages();
@@ -547,10 +540,7 @@ public class GameFight implements AbstractGameFight {
 			addListener = true;
 		}
 		
-		loadingText += "\nloading Fight.def";
-		if (fightdef != null)
-			fightdef.free();
-		fightdef = new Fightdef(JMugenConstant.RESOURCE + "data/fight.def");
+		fightdef = MugenSystem.getInstance().getFiles().getFight();
 		try {
 			
 			loadSprites();
@@ -591,7 +581,7 @@ public class GameFight implements AbstractGameFight {
 			if (spriteCmdProcessMap.get(s) == null) {
 				CmdProcDispatcher cmd = CmdProcDispatcher.getSpriteDispatcherMap().get(s.getSpriteId());
 				if (cmd != null)
-				cmd.clear();
+					cmd.clear();
 				SpriteCmdProcess scp = new SpriteCmdProcess(cmd);
 				scp.addSprite(s.getSpriteId());
 				spriteCmdProcessMap.put(s.getSpriteId(), scp);
@@ -610,16 +600,6 @@ public class GameFight implements AbstractGameFight {
 	}
 
 	public void update(int delta) throws Exception {
-		if (Debug.getDebug().isStop()) {
-			if (Debug.getDebug().isGo()) {
-				for (Sprite s : getSprites()) {
-
-					s.getSpriteState().executeDebug();
-				}
-				
-			}
-			return;
-		}
 		if (freeNow) {
 			next = GameSelect.getInstance();
 			return;
