@@ -7,6 +7,7 @@ import org.lee.mugen.fight.system.MugenSystem;
 import org.lee.mugen.fight.system.TitleInfo;
 import org.lee.mugen.fight.system.VsScreen;
 import org.lee.mugen.renderer.GameWindow;
+import org.lee.mugen.renderer.GraphicsWrapper;
 
 public class GameVsScreen implements Game {
 
@@ -55,6 +56,7 @@ public class GameVsScreen implements Game {
 			if (vsScreen.getPhase() != TitleInfo.END) {
 				vsScreen.setPhase(TitleInfo.LEAVE);
 			} else {
+				GraphicsWrapper.getInstance().setAlpha(1);
 				next = gameSelect.getGameFight();
 				return;
 			}

@@ -160,7 +160,7 @@ public final class SoundSystem {
                 	return data2;
                 }
         	} else {
-        		return adxDecoder.read(1024);
+        		return adxDecoder.read(2048);
         	}
         }
         private boolean isEndStream(byte[] bytes) {

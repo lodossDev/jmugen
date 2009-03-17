@@ -257,7 +257,7 @@ public class LwjgGameWindow implements GameWindow {
 				}
 				lack = getTimer().sleep();	
 			}
-			Display.update();
+			
 			if (Display.isCloseRequested()) {
 				gameRunning = false;
 				Display.destroy();
@@ -267,7 +267,7 @@ public class LwjgGameWindow implements GameWindow {
 		}
 		
 	}
-	private void render() throws Exception {
+	public void render() {
 
 		if (isRender()) {
 
@@ -279,7 +279,12 @@ public class LwjgGameWindow implements GameWindow {
 			GL11.glViewport( 0, 0, 640, 480);
 			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 			
-			callback.render();
+			try {
+				callback.render();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 			
 			EXTFramebufferObject.glBindFramebufferEXT( EXTFramebufferObject.GL_FRAMEBUFFER_EXT, 0);
@@ -309,7 +314,7 @@ public class LwjgGameWindow implements GameWindow {
 				((AbstractGameFight)callback).renderDebugInfo();
 			}							
 		}
-	
+		Display.update();
 	}
 	
 
@@ -525,8 +530,10 @@ public class LwjgGameWindow implements GameWindow {
 		}
 		
 	}
-
-	
+	@Override
+	public void removeSpriteKeysProcessors() {
+		spriteCmdProcess.clear();
+	}
 	public void removeSpriteKeyProcessor(ISpriteCmdProcess scp) {
 		for (Iterator<SprCmdProcessListenerAction> iter = spriteCmdProcess
 				.iterator(); iter.hasNext();) {

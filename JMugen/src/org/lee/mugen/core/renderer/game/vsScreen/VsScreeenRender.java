@@ -12,7 +12,9 @@ import org.lee.mugen.fight.section.elem.PlayerName;
 import org.lee.mugen.fight.section.elem.Type;
 import org.lee.mugen.fight.select.Characters;
 import org.lee.mugen.fight.system.MugenSystem;
+import org.lee.mugen.fight.system.TitleInfo;
 import org.lee.mugen.fight.system.VsScreen;
+import org.lee.mugen.fight.system.elem.Menu;
 import org.lee.mugen.renderer.DrawProperties;
 import org.lee.mugen.renderer.GraphicsWrapper;
 import org.lee.mugen.renderer.ImageContainer;
@@ -34,9 +36,25 @@ public class VsScreeenRender extends BaseRender {
 		MugenSystem ms = MugenSystem.getInstance();
 		Characters characters = ms.getFiles().getSelect().getCharacters();
 		
+		VsScreen vsScreen = ms.getVsScreen();
+		if (vsScreen.getPhase() == TitleInfo.ENTER) {
+			float alpha = (float)(vsScreen.getFadein().getTime()) / vsScreen.getFadein().getOriginalTime();
+			md.setAlpha(1f-alpha);
+			
+		} else if (vsScreen.getPhase() == TitleInfo.LEAVE) {
+			float alpha = (float)(vsScreen.getFadeout().getTime()) / vsScreen.getFadeout().getOriginalTime();
+			md.setAlpha(alpha);
+			
+		} else if (vsScreen.getPhase() == TitleInfo.CURRENT) {
+			md.setAlpha(1f);
+		} else if (vsScreen.getPhase() == TitleInfo.NOTHING) {
+			md.setAlpha(1f);
+		} else if (vsScreen.getPhase() == TitleInfo.END) {
+			md.setAlpha(0);
+		}
+		
 		br.render();
 		
-		VsScreen vsScreen = ms.getVsScreen();
 		Point pos = vsScreen.getP1().getPos();
 		
 		pos = (Point) pos.clone();

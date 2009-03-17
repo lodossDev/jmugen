@@ -115,6 +115,8 @@ public interface GameWindow {
 	public void clearListener();
 	public void setRender(boolean v);
 	public boolean isRender();
+	public void render();
+	void removeSpriteKeysProcessors();
 	
 	// TODO : add getTimer and add Timer interface
 }

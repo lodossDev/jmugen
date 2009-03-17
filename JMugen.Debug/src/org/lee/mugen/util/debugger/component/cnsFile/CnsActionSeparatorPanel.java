@@ -66,7 +66,7 @@ public class CnsActionSeparatorPanel extends JPanel {
 
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					Debug.getDebug().setGo(true);
+					Debug.getDebug().setStop(false);
 					
 				}});
 		}
