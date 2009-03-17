@@ -222,8 +222,8 @@ public class TestGameFight  {
 		
 		GraphicsWrapper.init();
 		statemachine.setStage(JMugenConstant.RESOURCE + "stages/" + args[4]);
-		if (args.length > 5)
-			SoundSystem.SoundBackGround.playMusic(JMugenConstant.RESOURCE + "sound/" + args[5]);
+//		if (args.length > 5)
+//			SoundSystem.SoundBackGround.playMusic(JMugenConstant.RESOURCE + "sound/" + args[5]);
 		final GameWindow gameWindow = GraphicsWrapper.getInstance().getInstanceOfGameWindow();
 		gameWindow.setGameWindowCallback(statemachine);
 		SpriteDebugerUI debugerUI = new SpriteDebugerUI();

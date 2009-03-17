@@ -400,7 +400,7 @@ public class Round extends SimpleElement implements Section, Cloneable {
 					SoundSystem.Sfx.playSnd(data);
 				}
 				getRound().getDefault().decreaseDisplayTime();
-				if (getRound().getDefault().getDisplaytime() < 0) {
+				if (getRound().getDefault().getDisplaytime() == 0) {
 					SndType snd = MugenSystem.getInstance().getFiles().getFight().getRound().getFight().getSnd();
 					byte[] data = MugenSystem.getInstance().getFiles().getFight().getFiles().getSnd().getGroup(snd.getGrp()).getSound(snd.getNum());
 					SoundSystem.Sfx.playSnd(data);

@@ -3,6 +3,7 @@ package org.lee.mugen.core.debug;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.lee.mugen.sprite.cns.StateCtrl;
 import org.lee.mugen.sprite.cns.StateDef;
@@ -17,17 +18,9 @@ public class Debug {
 	Debug() {
 
 	}
-	private boolean stop;
-	private boolean go;
-	public boolean isGo() {
-		return go;
-	}
+	private AtomicBoolean stop = new AtomicBoolean();
 
-	public void setGo(boolean go) {
-		this.go = go;
-	}
-
-	private boolean enable = false;
+	private boolean enable = true;
 	private List<BreakPoint> breakPoints = new LinkedList<BreakPoint>();
 
 	public boolean isEnable() {
@@ -39,11 +32,11 @@ public class Debug {
 	}
 
 	public boolean isStop() {
-		return !enable? false: stop;
+		return stop.get();
 	}
 
 	public void setStop(boolean stop) {
-		this.stop = stop;
+		this.stop.set(stop);
 	}
 	
 	public boolean haveBreakPoint(String spriteId, StateDef statedef, BreakPosition pos) {

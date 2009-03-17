@@ -83,7 +83,10 @@ public class FightEngine {
 			if (!(hitdef instanceof ProjectileSub)) {
 				Sprite spr = GameFight.getInstance().getSpriteInstance(
 						hitdef.getSpriteId());
-				if (spr == null || spr.getInfo().getMovetype() != MoveType.A)
+				if (spr == null || 
+						(spr.getInfo().getMovetype() != MoveType.A 
+							&& 	hitdef.getTimeCreated() != GameFight.getInstance().getGameState().getGameTime()
+						)) 
 					removes.add(hitdef);
 			}
 			if (hitdefsWhenClns1IsDefine.contains(hitdef) && !(hitdef instanceof ProjectileSub)) {

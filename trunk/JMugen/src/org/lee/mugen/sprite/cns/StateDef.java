@@ -10,6 +10,7 @@ import org.lee.mugen.core.debug.BreakPoint;
 import org.lee.mugen.core.debug.BreakPosition;
 import org.lee.mugen.core.debug.Debug;
 import org.lee.mugen.parser.type.Functionable;
+import org.lee.mugen.renderer.GraphicsWrapper;
 import org.lee.mugen.sprite.character.Sprite;
 import org.lee.mugen.sprite.parser.CnsParse;
 import org.lee.mugen.sprite.parser.Parser.GroupText;
@@ -84,25 +85,18 @@ public class StateDef implements Cloneable, Serializable {
 		if (!isExecMainFunc) {
 			////////// DEBUG BREAK POINT
 			if (Debug.getDebug().isEnable()) {
-				boolean isDebugStop = Debug.getDebug().isStop();
-				boolean isGo = Debug.getDebug().isGo();
-				boolean hasBreakPointInStateCtrl = Debug.getDebug().hasBreakPointInStateCtrl(spriteId, getIntId());
 				BreakPoint bp = Debug.getDebug().getBreakPoint(spriteId, getIntId(), BreakPosition.Before);
-				if (isDebugStop && !isGo)
-					return;
-				if (isDebugStop && isGo && bp != null) {
-					bp.setReach(false);
-					Debug.getDebug().setStop(false);
-					Debug.getDebug().setGo(false);
-					bp = null;
-				} else if (isDebugStop && !hasBreakPointInStateCtrl) {
-					return;
-				}
+				Debug.getDebug().setStop(true);
 				if (bp != null) {
-					bp.setReach(true);
-					Debug.getDebug().setStop(true);
-					Debug.getDebug().setGo(false);
-					return;
+					while (Debug.getDebug().isStop()) {
+						GraphicsWrapper.getInstance().getInstanceOfGameWindow().render();
+						try {
+							Thread.sleep(100);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
 				}
 			}
 			////////// END DEBUG BREAK POINT
@@ -118,25 +112,18 @@ public class StateDef implements Cloneable, Serializable {
 		}
 		////////// DEBUG BREAK POINT
 		if (Debug.getDebug().isEnable()) {
-			boolean isDebugStop = Debug.getDebug().isStop();
-			boolean isGo = Debug.getDebug().isGo();
-			boolean hasBreakPointInStateCtrl = Debug.getDebug().hasBreakPointInStateCtrl(spriteId, getIntId());
 			BreakPoint bp = Debug.getDebug().getBreakPoint(spriteId, getIntId(), BreakPosition.After);
-			if (isDebugStop && !isGo)
-				return;
-			if (isDebugStop && isGo && bp != null) {
-				bp.setReach(false);
-				Debug.getDebug().setStop(false);
-				Debug.getDebug().setGo(false);
-				bp = null;
-			} else if (isDebugStop && !hasBreakPointInStateCtrl) {
-				return;
-			}
+			Debug.getDebug().setStop(true);
 			if (bp != null) {
-				bp.setReach(true);
-				Debug.getDebug().setStop(true);
-				Debug.getDebug().setGo(false);
-				return;
+				while (Debug.getDebug().isStop()) {
+					GraphicsWrapper.getInstance().getInstanceOfGameWindow().render();
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 			}
 		}
 		////////// END DEBUG BREAK POINT

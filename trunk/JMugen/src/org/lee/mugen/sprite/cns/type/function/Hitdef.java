@@ -84,7 +84,7 @@ public class Hitdef extends StateCtrlFunction {
 		hitDef.setTimeCreated(GameFight.getInstance().getGameState().getGameTime());
 		
 		GameFight.getInstance().getFightEngine().add(hitDef);
-//		StateMachine.getInstance().getFightEngine().process();
+//		GameFight.getInstance().getFightEngine().process();
 		return null;
 	}
 

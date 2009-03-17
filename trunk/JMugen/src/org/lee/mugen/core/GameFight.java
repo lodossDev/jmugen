@@ -221,6 +221,7 @@ public class GameFight implements AbstractGameFight {
 		if (instanceOfStage != null)
 			instanceOfStage.free();
 		instanceOfStage = stage;
+		this.stage = instanceOfStage.getFilename();
 		instanceOfStage.getCamera().setForcePos(false);
 		addRender(new StageBackgroundRender(instanceOfStage));
 		reloadStage = false;
@@ -406,7 +407,8 @@ public class GameFight implements AbstractGameFight {
 	public void flipRender() {
 		synchronized (renderableList) {
 			while (!renderableListTemp.isEmpty()) {
-				Renderable r = renderableListTemp.pollLast();
+//				Renderable r = renderableListTemp.pollLast();
+				Renderable r = renderableListTemp.removeLast();
 				if (r instanceof StageBackgroundRender) {
 					backgroundRenderList.add((StageBackgroundRender) r);
 					return;
@@ -510,8 +512,8 @@ public class GameFight implements AbstractGameFight {
 					if (container.getKeyEsc() == key) {
 						freeNow = true;
 					} else if (container.getKeyF1() == key) {
-						reloadStage = true;
-						stage = instanceOfStage.getFilename();
+//						reloadStage = true;
+//						stage = instanceOfStage.getFilename();
 					} else if (container.getKeyF2() == key && !isPress) {
 						
 						String newStage = stage.substring(JMugenConstant.RESOURCE.length());
@@ -524,7 +526,9 @@ public class GameFight implements AbstractGameFight {
 						reloadStage = true;
 					} else if (container.getKeyF3() == key && !isPress) {
 						
-						String newStage = stage.substring(JMugenConstant.RESOURCE.length());
+						String newStage = stage;
+						if (stage.startsWith(JMugenConstant.RESOURCE))
+							newStage = stage.substring(JMugenConstant.RESOURCE.length());
 						LinkedList<String> list = MugenSystem.getInstance().getFiles().getSelect().getExtraStages().getStages();
 						int index = list.indexOf(newStage);
 						index++;
@@ -576,6 +580,8 @@ public class GameFight implements AbstractGameFight {
 			e.printStackTrace();
 			throw new IllegalStateException();
 		}
+
+		((GameWindow)container).removeSpriteKeysProcessors();
 
 		for (Sprite s : getSprites()) {
 			if (spriteCmdProcessMap.get(s) == null) {
