@@ -8,6 +8,10 @@ Here I will try to update what is done on JMugen at each evolution.
 
 = Details =
 
+May, 1st 2009
+  * Correct coef for life and power
+  * Block status and Fight engine
+
 March, 08 2009
   * JMugen will be not just a Fight engine, but also an user friendly editor to create Sprite and stage, for this I add live debuging.
   * What is live debug:
