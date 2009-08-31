@@ -147,7 +147,7 @@ public class LwjgGameWindow implements GameWindow {
 	private List<CmdProcessListener> cmdProcess = new LinkedList<CmdProcessListener>();
 	private List<SprCmdProcessListenerAction> spriteCmdProcess = new LinkedList<SprCmdProcessListenerAction>();
 
-	private MugenTimer timer = new LMugenTimer();
+	private LMugenTimer timer = new LMugenTimer();
 
 	/**
 	 * Title of window, we get it before our window is ready, so store it till
@@ -213,6 +213,11 @@ public class LwjgGameWindow implements GameWindow {
 		callback.init(this);
 		int lack = 0;
 		while (gameRunning) {
+			((LMugenTimer) timer).listen();
+			if (1f/timer.getFramerate() > timer.getDeltas()) {
+				continue;
+			}
+
 			if (getTimer().getFramerate() == 0) {
 				getTimer().sleep(1000 / 60);
 				continue;
@@ -243,7 +248,8 @@ public class LwjgGameWindow implements GameWindow {
 							| GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_ACCUM_BUFFER_BIT);
 					GL11.glMatrixMode(GL11.GL_MODELVIEW);
 					GL11.glLoadIdentity();
-
+					
+					
 					callback.update(1);
 					
 					Game another = callback.getNext();
@@ -263,7 +269,6 @@ public class LwjgGameWindow implements GameWindow {
 				Display.destroy();
 				System.exit(0);
 			}
-
 		}
 		
 	}
