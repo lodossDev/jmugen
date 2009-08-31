@@ -126,9 +126,8 @@ public class SelectRender extends BaseRender {
 		// Big Portrait
 		int posName = 1;
 		for (String name: names) {
-			if (name == null)
-				continue;
-			if (characters.getBigPortrait(name) != null) {
+			if (name == null) {
+			} else if (characters.getBigPortrait(name) != null) {
 
 				pos = (Point) getProperty(selectInfo, 
 						"p" + posName + ".face.offset");
