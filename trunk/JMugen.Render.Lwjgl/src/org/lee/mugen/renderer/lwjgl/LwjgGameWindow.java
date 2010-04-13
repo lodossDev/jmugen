@@ -128,7 +128,7 @@ public class LwjgGameWindow implements GameWindow {
 	}
 
 	public LwjgGameWindow() {
-		setResolution(320, 240);
+//		setResolution(320, 240);
 		setResolution(640, 480);
 	}
 	
