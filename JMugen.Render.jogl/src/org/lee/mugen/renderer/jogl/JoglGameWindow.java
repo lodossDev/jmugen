@@ -506,4 +506,40 @@ public class JoglGameWindow implements GameWindow, GLEventListener {
 	public void setRender(boolean isRender) {
 		this.isRender = isRender;
 	}
+
+	@Override
+	public int getKeyEsc() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getKeyF1() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getKeyF2() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getKeyF3() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void removeSpriteKeysProcessors() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void render() {
+		// TODO Auto-generated method stub
+		
+	}
 }
