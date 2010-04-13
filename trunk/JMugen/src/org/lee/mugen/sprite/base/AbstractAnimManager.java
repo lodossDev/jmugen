@@ -247,8 +247,6 @@ public class AbstractAnimManager implements Serializable {
 	}
 	protected int animTime = 0;
 	public int getAnimTime() {
-//		if (1310 == _action)
-//			return getAnimTimeReal();
 		return animTime;
 	}
 	public int getAnimTimeReal() {
@@ -263,7 +261,6 @@ public class AbstractAnimManager implements Serializable {
 		for (AnimElement ae: animeElems)
 			count += ae.getDelay() == -1? 1: ae.getDelay();
 		return count;
-	//	return _imgCount;
 	}
 
 
@@ -282,7 +279,6 @@ public class AbstractAnimManager implements Serializable {
 			count += ae.getDelay() == -1? 1: ae.getDelay();
 		}
 		return count;
-	//	return _imgCount;
 	}
 	public AnimGroup getCurrentGroupSprite() {
 		return getCurrentGroupSprite(getAction());
@@ -335,16 +331,12 @@ public class AbstractAnimManager implements Serializable {
 	}
 
 	public void process() {
-//		if (isFirstChange) {
-//			isFirstChange = false;
-//			return;
-//		}
 		if (changeToNewAnimElem) {
 			_animElem = animElemeTochange;
 			changeToNewAnimElem = false;
 			_imgCount = 0;
 		}
-		if (_action == -1)
+		if (_action < 0)
 			return;
 		if (getCurrentGroupSprite() == null)
 			return;
